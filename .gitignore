@@ -3,3 +3,5 @@
 *.o
 webserv
 a.out
+log
+tester

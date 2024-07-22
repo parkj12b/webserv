@@ -32,7 +32,8 @@ Client& Client::operator=(const Client& src)
 
 Client::~Client()
 {
-    std::cout<<"client close"<<std::endl;
+    // close(fd);
+    std::cout<<fd<<" client close"<<std::endl;
 }
 
 Client::Client(int fd) : fd(fd)
@@ -188,16 +189,22 @@ int Client::setTe(void)
 //temp(must delete)
 void    Client::showMessage(void)
 {
-    std::deque<std::string>::iterator  itv;
+    std::deque<std::string>::iterator  itd;
+
+    time_t now = time(0);
+    // time_t 형식을 문자열로 변환합니다.
+    char* dt = ctime(&now);
+    std::cout<<"time : "<<dt;
     //request 출력
     std::cout<<"=====strat line=====\n";
+    std::cout<<"fd : "<<fd<<std::endl;
     std::cout<<request.method<<" "<<request.version<<" "<<request.url<<std::endl;
     std::cout<<"=====header line=====\n";
     for (std::map<std::string, std::deque<std::string> >::iterator it = request.header.begin(); it != request.header.end(); it++)
     {
         std::cout<<it->first<<": ";
-        for (itv = request.header[it->first].begin(); itv != request.header[it->first].end(); itv++)
-            std::cout<<*itv<<"  ";
+        for (itd = request.header[it->first].begin(); itd != request.header[it->first].end(); itd++)
+            std::cout<<*itd<<"  ";
         std::cout<<"\n";
     }
     while (!message.empty())
@@ -233,6 +240,10 @@ void    Client::setMessage(std::string str)
     if (entityline.getCompletion() && headerline.getTe() == NOT && message.empty())
     {
        request.fin = true;
+    }
+    if (headerline.getEntitytype() == ENOT && message.empty())
+    {
+        request.fin = true;
     }
     //message 남아있을 경우에 에러 처리하기
 }

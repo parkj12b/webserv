@@ -26,9 +26,13 @@
 #include <arpa/inet.h>
 
 # define BUFFER_SIZE 4096
-# define PORT 8080
+# define PORT 80
 # define CLIENT_CNT 10
-# define EVENTCNT 5
+# define EVENTCNT 10
+
+//server를 여러 개 만들 경우에는 kq클래스 만들기
+//kq 클래스에서 서버 클래스를 관리하기
+//kq 클래스에서 클라이언트 fd마다 서버 fd를 map을 통해 갖고 있기 때문에 event 발생시 클라이언트 fd를 통해 server를 예측하고 server에서 다시 클라이언트 fd를 통해 클라이언트 소켓으로 접근
 
 class Server
 {
