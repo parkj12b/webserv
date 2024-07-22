@@ -14,8 +14,8 @@
 # define HEADERLINE_HPP
 
 # include <iostream>
-# include <deque>
 # include <vector>
+# include <deque>
 # include <map>
 # include <sstream>
 # include <algorithm>

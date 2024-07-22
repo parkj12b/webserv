@@ -16,9 +16,13 @@
 # include "StartLine.hpp"
 # include "HeaderLine.hpp"
 # include "EntityLine.hpp"
+# include <unistd.h>
 // # include <iostream> 
 // # include <map>
 # include <queue>
+
+//delete
+# include <ctime>
 
 typedef struct Request
 {
@@ -27,6 +31,7 @@ typedef struct Request
     Version version;
     std::string url;
     std::map<std::string, std::deque<std::string> >  header;
+    std::vector<std::string>    entity;
 }   Request;
 
 class Client

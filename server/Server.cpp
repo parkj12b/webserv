@@ -17,10 +17,10 @@ Server::Server()
     int                 option;
 
     //IP config file에서 받기
-    // 무한 루프 만들기
-    serverFd = socket(PF_INET, SOCK_STREAM, 0);
-    if (serverFd < 0)
-        errorHandler("socket error.");
+    while ((serverFd = socket(PF_INET, SOCK_STREAM, 0)) < 0);
+    // serverFd = socket(PF_INET, SOCK_STREAM, 0);
+    // if (serverFd < 0)
+    //     errorHandler("socket error.");
     option = 1;
     while (setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)));
     // do {
@@ -31,17 +31,14 @@ Server::Server()
     serverAdr.sin_family = AF_INET;
     serverAdr.sin_addr.s_addr = htonl(INADDR_ANY);
     serverAdr.sin_port = htons(PORT);
-    // 무한 루프 만들기
     while (bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0);
     // if (bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0)
     //     errorHandler("bind error.");
-    // 무한 루프 만들기
     while (listen(serverFd, CLIENT_CNT) < 0);
     // if (listen(serverFd, CLIENT_CNT) < 0) 
     //     errorHandler("listen error.");
     while ((kq = kqueue()) < 0);
-    kq = kqueue();
-    // 무한 루프 만들기
+    // kq = kqueue();
     // if (kq < 0)
     //     errorHandler("kqueue error.");
     plusEvent(serverFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
@@ -127,9 +124,10 @@ void    Server::plusClient(void)
     Client              newClient;
 
     adrSize = sizeof(clntAdr);
-    clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize);
-    if (clntFd < 0)
-        errorHandler("accept error.");
+    //accept 무한 루프
+    while ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0);
+    // if (clntFd < 0)
+    //     errorHandler("accept error.");
     plusEvent(clntFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     newClient.setFd(clntFd);
     client[clntFd] = newClient;
@@ -145,29 +143,30 @@ void    Server::mainLoop(void)
     int             sum = 0;
     const char *temp = "HTTP/1.1 200 OK\nContent-Type: text/html;charset=UTF-8\nContent-Length: ";
 
-    count = kevent(kq, &fdList[0], fdList.size(), store, 5, NULL);
-    if (count < 0)
-        errorHandler("kevent error.");
+    count = kevent(kq, &fdList[0], fdList.size(), store, EVENTCNT, NULL);
+    while ((count = kevent(kq, &fdList[0], fdList.size(), store, EVENTCNT, NULL)) < 0);
     fdList.clear();
     for (int i = 0; i < count; i++)
     {
-        if (store[i].ident == static_cast<uintptr_t>(serverFd))
+        if (static_cast<int>(store[i].ident) == serverFd)
         {
-            if (store[i].flags == EV_ERROR)
-                errorHandler("server error.");
+            // if (store[i].flags == EV_ERROR)
+            //     continue ;
+                // errorHandler("server error.");
             if (store[i].filter == EVFILT_READ)
                 plusClient();
         }
         else
         {
-            if (store[i].flags == EV_ERROR)
-                errorHandler("client error.");
-            else if (store[i].filter == EVFILT_READ)
+            // if (store[i].flags == EV_ERROR)
+            //     continue ;
+                // errorHandler("client error.");
+            if (store[i].filter == EVFILT_READ)
             {
                 // std::cout<<"==EVFILT_READ==\n";
-                readSize = read(store[i].ident, buffer, BUFFER_SIZE);
-                if (readSize < 0)
-                    errorHandler("clientFd's read error");
+                while ((readSize = read(store[i].ident, buffer, BUFFER_SIZE)) < 0);
+                // if (readSize < 0)
+                //     errorHandler("clientFd's read error");
                 buffer[readSize] = '\0';
                 //여기서 적어주어야 함
                 client[store[i].ident].setMessage(buffer);
@@ -209,8 +208,8 @@ void    Server::mainLoop(void)
                 }
                 EV_SET(&store[i], store[i].ident, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
                 close(fd);
-                close(store[i].ident);
                 client.erase(store[i].ident);
+                close(static_cast<int>(store[i].ident));
             }
         }
     }
