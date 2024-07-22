@@ -17,23 +17,33 @@ Server::Server()
     int                 option;
 
     //IP config file에서 받기
+    // 무한 루프 만들기
     serverFd = socket(PF_INET, SOCK_STREAM, 0);
     if (serverFd < 0)
         errorHandler("socket error.");
     option = 1;
-    setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
+    while (setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)));
+    // do {
+    //     setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
+    // } while (errno != 0);
     memset(&serverAdr, 0, sizeof(serverAdr));
     // nullSet(&serverAdr, sizeof(serverAdr));
     serverAdr.sin_family = AF_INET;
     serverAdr.sin_addr.s_addr = htonl(INADDR_ANY);
     serverAdr.sin_port = htons(PORT);
-    if (bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0)
-        errorHandler("bind error.");
-    if (listen(serverFd, 5) < 0)
-        errorHandler("listen error.");
+    // 무한 루프 만들기
+    while (bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0);
+    // if (bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0)
+    //     errorHandler("bind error.");
+    // 무한 루프 만들기
+    while (listen(serverFd, CLIENT_CNT) < 0);
+    // if (listen(serverFd, CLIENT_CNT) < 0) 
+    //     errorHandler("listen error.");
+    while ((kq = kqueue()) < 0);
     kq = kqueue();
-    if (kq < 0)
-        errorHandler("kqueue error.");
+    // 무한 루프 만들기
+    // if (kq < 0)
+    //     errorHandler("kqueue error.");
     plusEvent(serverFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 }
 

@@ -60,5 +60,12 @@ int main()
     v.push_back(4);
     v.pop_back();
     std::cout<<v.front()<<"\n";
+    std::cout<<"\n\n=======test7=======\n";
+    int temp;
+    while ((temp = 3) == 3)
+    {
+        std::cout<<"here\n";
+        return (0);
+    }
     return 0;
 }
