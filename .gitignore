@@ -1,0 +1,5 @@
+#gitignore도 추가할 것
+.vscode
+*.o
+webserv
+a.out
