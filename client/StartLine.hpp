@@ -42,8 +42,9 @@ class StartLine
         Version     version;
         std::string url;
     public:
-        static std::map<std::string, Method>  originMethod;
-        static std::map<std::string, Version>  originVersion;
+        //static variable
+        static std::map<std::string, Method>    originMethod;
+        static std::map<std::string, Version>   originVersion;
         StartLine();
         StartLine(const StartLine& src);
         StartLine&  operator=(const StartLine& src);

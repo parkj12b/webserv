@@ -129,8 +129,10 @@ void    Server::plusClient(void)
     // if (clntFd < 0)
     //     errorHandler("accept error.");
     plusEvent(clntFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
-    newClient.setFd(clntFd);
+    newClient.setFd(clntFd);  //요기서 생성이 한 번 되고
     client[clntFd] = newClient;
+    //나갈 때 소멸자가 호출됨
+    std::cout<<"temp delete\n";
 }
 
 void    Server::mainLoop(void)
@@ -171,7 +173,7 @@ void    Server::mainLoop(void)
                 //여기서 적어주어야 함
                 client[store[i].ident].setMessage(buffer);
                 // write(1, buffer, readSize);
-                if (readSize < BUFFER_SIZE)
+                if (client[store[i].ident].getRequestFin() == true)
                 {
                     EV_SET(&store[i], store[i].ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
                     plusEvent(store[i].ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
@@ -208,6 +210,7 @@ void    Server::mainLoop(void)
                 }
                 EV_SET(&store[i], store[i].ident, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
                 close(fd);
+                std::cout<<"read delete\n";
                 client.erase(store[i].ident);
                 close(static_cast<int>(store[i].ident));
             }
