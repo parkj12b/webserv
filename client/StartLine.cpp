@@ -116,7 +116,3 @@ int     StartLine::plus(std::string temp)
     completion = true;
     return (0);
 }
-
-
-
-

@@ -127,9 +127,7 @@ int Client::setHeader(void)
             {
                 if (headerline.headerError() < 0)
                     return (-2);  //vital header not or header double
-                headerline.setCompletion(true);
                 request.header = headerline.getHeader();
-                //여기서 header 오류 체크
                 break ;
             }
             str = msg.substr(0, flag);
