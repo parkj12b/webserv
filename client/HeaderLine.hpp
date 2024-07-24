@@ -44,7 +44,7 @@ class HeaderLine
         std::string value;
         std::map<std::string, std::deque<std::string> > header;
         void    eraseSpace(std::string& str);
-        bool    checkMime(std::string temp);
+        // bool    checkMime(std::string temp);
         int     pushValue();
     public:
         //static variable

@@ -47,19 +47,19 @@ void    HeaderLine::eraseSpace(std::string& str)
     str.erase(pos + 1);
 }
 
-bool    HeaderLine::checkMime(std::string temp)
-{
-    std::istringstream  strStream(temp);
-    std::string         str;
-    int                 ans;
+// bool    HeaderLine::checkMime(std::string temp)
+// {
+//     std::istringstream  strStream(temp);
+//     std::string         str;
+//     int                 ans;
 
-    ans = 0;
-    while (std::getline(strStream, str, '/'))
-        ans++;
-    if (ans == 2)
-        return (true);
-    return (false);
-}
+//     ans = 0;
+//     while (std::getline(strStream, str, '/'))
+//         ans++;
+//     if (ans == 2)
+//         return (true);
+//     return (false);
+// }
 
 int HeaderLine::pushValue()
 {
@@ -186,11 +186,12 @@ int HeaderLine::checkTe(std::string &temp)
     }
     else
     {
-        if (key.size() == 0 && !checkMime(temp))
-            return (-2);  //message/htpp타입이 아닌데 obs-fold를 사용한 상황
-        value = temp;
-        if (pushValue() < 0)
-            return (-2);
+        return (-2);
+        // if (key.size() == 0 && !checkMime(temp))
+        //     return (-2);  //message/htpp타입이 아닌데 obs-fold를 사용한 상황
+        // value = temp;
+        // if (pushValue() < 0)
+        //     return (-2);
     }
     return (0);
 }
@@ -222,11 +223,12 @@ int HeaderLine::plus(std::string& temp)
     }
     else
     {
-        if (key.size() == 0 && !checkMime(temp))
-            return (-2);  //message/htpp타입이 아닌데 obs-fold를 사용한 상황
-        value = temp;
-        if (pushValue() < 0)
-            return (-2);
+        return (-2);
+        // if (key.size() == 0 && !checkMime(temp))
+        //     return (-2);  //message/htpp타입이 아닌데 obs-fold를 사용한 상황
+        // value = temp;
+        // if (pushValue() < 0)
+        //     return (-2);
     }
     return (0);
 }
