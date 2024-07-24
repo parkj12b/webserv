@@ -80,17 +80,19 @@ int EntityLine::chunkedEntity()
     int                 size;
 
     ans = 0;
-    std::cout<<chunked;
+    //chunked인데  \r\n이 아니라 \n
     while (getline(chunkedStream, temp))
     {
-        if (!temp.empty()) //temp[temp.size() - 1] == '\r'
+        if (temp[temp.size() - 1] != '\r')
+            return (-1);
+        if (temp[temp.size() - 1] == '\r') //temp[temp.size() - 1] == '\r'
             temp.erase(temp.size() - 1);
         if (ans % 2 == 0)
             size = std::stoi(temp, nullptr, 16);
         else
         {
             if (size != static_cast<int>(temp.size()))
-                return (-1);
+                return (-2);
             entity.push_back(temp);
         }
         ans++;
@@ -98,7 +100,6 @@ int EntityLine::chunkedEntity()
     completion = true;
     return (0);
 }
-
 
 int EntityLine::plus(std::string &str, ENTITYTYPE entitytype)
 {
@@ -108,7 +109,8 @@ int EntityLine::plus(std::string &str, ENTITYTYPE entitytype)
     {
         if (contentLength >= static_cast<int>(str.size()))
         {
-            minusContentLength(str.size());
+            contentLength -= static_cast<int>(str.size());
+            // minusContentLength(str.size());
             if (contentLength == 0)
                 completion = true;
             entity.push_back(str);
@@ -124,6 +126,7 @@ int EntityLine::plus(std::string &str, ENTITYTYPE entitytype)
     else if (entitytype == TRANSFER)
     {
         flag = str.find("0\r\n\r\n");
+        //에러 발생시 중간에 빠져 나왔을 떄
         if (flag == std::string::npos)
         {
             chunked += str;
@@ -132,6 +135,7 @@ int EntityLine::plus(std::string &str, ENTITYTYPE entitytype)
         else
         {
             chunked += str.substr(0, flag);
+            //chunked 크기 확인하기
             str = str.substr(flag + 5);
             if (chunkedEntity() < 0)
                 return (-1);

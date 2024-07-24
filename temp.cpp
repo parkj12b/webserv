@@ -20,12 +20,12 @@ int main()
     m["ONE"] = "ONE";
     m["TWO"] = "TWO";
     m["THREE"] = "THREE";
-    // while (std::getline(test, str, ' '))
-    // {
-    //     if (m[str] == "\0")
-    //         std::cout<<"here";
-    //     std::cout<<str<<": "<<m[str]<<std::endl;
-    // }
+    while (std::getline(test, str, ' '))
+    {
+        if (m[str] == "\0")
+            std::cout<<"here";
+        std::cout<<str<<": "<<m[str]<<std::endl;
+    }
     std::cout<<"\n\n======test2=======\n";
     std::istringstream  test2("hi   ");
     while (std::getline(test2, str, ':'))
@@ -70,14 +70,3 @@ int main()
     return 0;
 }
 
-
-
-trailer: A, B, C, D, E
-
-afdasfadsklj
-asfjldfjsa
-asdj;
-
-A: 
-B: 
-C: adjkshfkjs

@@ -47,7 +47,6 @@ class Client
         HeaderLine  headerline;
         EntityLine  entityline;
         //temp(must delete)
-        std::queue<std::string>     message;
     public:
         Client();
         explicit Client(const Client& src);
@@ -61,7 +60,6 @@ class Client
         StartLine                   getStartLine() const;
         HeaderLine                  getHeaderline() const;
         EntityLine                  getEntity() const;
-        std::queue<std::string>     getMessage() const;
         bool                        getRequestFin() const;
         //set function
         void    setFd(int fd);
@@ -69,7 +67,7 @@ class Client
         int     setHeaderUtil(std::string temp);
         int     setHeader(void);
         int     setEntityLine(void);
-        int     setTe(void);
+        int     setTrailer(void);
         //logic
         void    setMessage(std::string str);
         bool    getRequestFin();

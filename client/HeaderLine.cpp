@@ -74,7 +74,7 @@ int HeaderLine::pushValue()
         {
             eraseSpace(str);
             if (str.empty())
-                continue ;
+                continue ;  //error check rfc check
             header[key].push_back(str);
         }
     }
@@ -154,12 +154,12 @@ void    HeaderLine::setContentLength(int minus)
     contentLength -= minus;
 }
 
-void    HeaderLine::setTe(TE temp)
+void    HeaderLine::setTrailer(TE temp)
 {
     te = temp;
 }
 
-int HeaderLine::checkTe(std::string &temp)
+int HeaderLine::checkTrailer(std::string &temp)
 {
     size_t  colon;
 
@@ -173,11 +173,15 @@ int HeaderLine::checkTe(std::string &temp)
     {
         key = temp.substr(0, colon);
         eraseSpace(key);
-        if (key != header["Trailer"].front())
+        if (key.empty())
             return (-2);
+        if (key != header["Trailer"].front())
+            return (-3);
         header["Trailer"].pop_front();
         value = temp.substr(colon + 1);
         eraseSpace(value);
+        if (value.empty())
+            return (-2);
         // std::cout<<"key: "<<key;
         if (pushValue() < 0)
             return (-3);
@@ -212,16 +216,20 @@ int HeaderLine::plus(std::string& temp)
     {
         key = temp.substr(0, colon);
         eraseSpace(key);
+        if (key.empty())
+            return (-2);
         value = temp.substr(colon + 1);
         eraseSpace(value);
+        if (value.empty())
+            return (-3);  //(ingu check)
         // std::cout<<"key: "<<key;
         if (pushValue() < 0)
-            return (-2);
+            return (-4);
         // header[key].push_back(str);
     }
     else
     {
-        return (-2);
+        return (-5);
         // if (key.size() == 0 && !checkMime(temp))
         //     return (-2);  //message/htpp타입이 아닌데 obs-fold를 사용한 상황
         // value = temp;
