@@ -97,7 +97,6 @@ int Client::setStartLine(void)
     flag = msg.find("\r\n");
     if (flag != std::string::npos)
     {
-        // std::cout<<"plus msg: "<<msg.substr(0, flag - 1)<<"\n";
         if (startline.plus(msg.substr(0, flag)) < 0)
             return (-1);  //시작줄 에러
         msg = msg.substr(flag + 2);
@@ -220,7 +219,7 @@ void    Client::setMessage(std::string str)
     if (!startline.getCompletion())
     {
         if (setStartLine() < 0)
-            return ;  //여기서 에러 처리하기
+            return ;  //시작줄 에러 처리하기
     }
     if (startline.getCompletion() && !headerline.getCompletion())
     {
@@ -238,13 +237,9 @@ void    Client::setMessage(std::string str)
             return ; 
     }
     if (entityline.getCompletion() && headerline.getTe() == NOT && message.empty())
-    {
        request.fin = true;
-    }
     if (headerline.getEntitytype() == ENOT && message.empty())
-    {
         request.fin = true;
-    }
     //message 남아있을 경우에 에러 처리하기
 }
 

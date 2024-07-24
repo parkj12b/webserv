@@ -20,7 +20,7 @@ std::map<std::string, Method> originMethodInit()
     m["HEAD"] = HEAD;
     m["POST"] = POST;
     m["DELETE"] = DELETE;
-    return m;
+    return (m);
 }
 
 std::map<std::string, Version> originVersionInit()
@@ -32,7 +32,7 @@ std::map<std::string, Version> originVersionInit()
     m["HTTP/1.2"] = HTTP12;
     m["HTTP/2.0"] = HTTP20;
     m["HTTP/3.0"] = HTTP30;
-    return m;
+    return (m);
 }
 
 // 여기에 정의를 추가하세요
@@ -87,8 +87,6 @@ int     StartLine::plus(std::string temp)
     // std::cout<<temp<<std::endl;
     while (getline(strStream, str, ' '))
     {
-        if (answer > 2)
-            return (-4);
         switch (answer)
         {
             case 0:
@@ -111,7 +109,7 @@ int     StartLine::plus(std::string temp)
                 // std::cout<<str<<": "<<version<<std::endl;
                 break ;
             default:
-                break ;
+                return (-4);
         }
         answer++;
     }
