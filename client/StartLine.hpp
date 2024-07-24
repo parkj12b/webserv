@@ -45,6 +45,7 @@ class StartLine
         //static variable
         static std::map<std::string, Method>    originMethod;
         static std::map<std::string, Version>   originVersion;
+        //occf
         StartLine();
         StartLine(const StartLine& src);
         StartLine&  operator=(const StartLine& src);
@@ -54,6 +55,7 @@ class StartLine
         Method      getMethod() const;
         Version     getVersion() const;
         std::string getUrl() const;
+        //logic
         int plus(std::string tmp);
 };
 

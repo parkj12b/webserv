@@ -21,6 +21,9 @@ EntityLine::EntityLine()
 EntityLine::EntityLine(const EntityLine& src)
 {
     completion = src.getCompletion();
+    sizeEqual = src.getSizeEqual();
+    contentLength = src.getContentLength();
+    chunked = src.getChunked();
     entity = src.getEntity();
 }
 
@@ -37,6 +40,21 @@ EntityLine& EntityLine::operator=(const EntityLine& src)
 bool    EntityLine::getCompletion() const
 {
     return (completion);
+}
+
+bool    EntityLine::getSizeEqual() const
+{
+    return (sizeEqual);
+}
+
+int EntityLine::getContentLength() const
+{
+    return (contentLength);
+}
+
+std::string EntityLine::getChunked() const
+{
+    return (chunked);
 }
 
 std::vector<std::string>    EntityLine::getEntity() const
@@ -62,6 +80,7 @@ int EntityLine::chunkedEntity()
     int                 size;
 
     ans = 0;
+    std::cout<<chunked;
     while (getline(chunkedStream, temp))
     {
         if (!temp.empty()) //temp[temp.size() - 1] == '\r'
@@ -81,7 +100,7 @@ int EntityLine::chunkedEntity()
 }
 
 
-int EntityLine::setEntity(std::string &str, ENTITYTYPE entitytype)
+int EntityLine::plus(std::string &str, ENTITYTYPE entitytype)
 {
     size_t  flag;
 

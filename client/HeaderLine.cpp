@@ -37,36 +37,42 @@ std::vector<std::string>    vitalHeaderInit()
 std::vector<std::string> HeaderLine::manyHeader = manyHeaderInit();
 std::vector<std::string> HeaderLine::vitalHeader = vitalHeaderInit();
 
-bool    HeaderLine::checkMime(std::string temp)
+void    HeaderLine::eraseSpace(std::string& str)
 {
-    std::istringstream  strStream(temp);
-    std::string         str;
-    int                 ans;
+    size_t  pos;
 
-    ans = 0;
-    while (std::getline(strStream, str, '/'))
-        ans++;
-    if (ans == 2)
-        return (true);
-    return (false);
+    pos = str.find_first_not_of(' ');
+    str.erase(0, pos);
+    pos = str.find_last_not_of(' ');
+    str.erase(pos + 1);
 }
+
+// bool    HeaderLine::checkMime(std::string temp)
+// {
+//     std::istringstream  strStream(temp);
+//     std::string         str;
+//     int                 ans;
+
+//     ans = 0;
+//     while (std::getline(strStream, str, '/'))
+//         ans++;
+//     if (ans == 2)
+//         return (true);
+//     return (false);
+// }
 
 int HeaderLine::pushValue()
 {
     std::vector<std::string>::iterator  it;
     std::istringstream                  strStream(value);
     std::string                         str;
-    size_t                              pos;
 
     it = std::find(manyHeader.begin(), manyHeader.end(), key);
     if (it != manyHeader.end())
     {
         while (std::getline(strStream, str, ','))
         {
-            pos = str.find_first_not_of(' ');
-            str.erase(0, pos);
-            pos = str.find_last_not_of(' ');
-            str.erase(pos + 1);
+            eraseSpace(str);
             if (str.empty())
                 continue ;
             header[key].push_back(str);
@@ -81,7 +87,7 @@ int HeaderLine::pushValue()
     return (0);
 }
 
-HeaderLine::HeaderLine() : completion(false), te(NOT)
+HeaderLine::HeaderLine() : completion(false), te(NOT), entitytype(ENOT)
 {}
 
 HeaderLine::HeaderLine(const HeaderLine& src)
@@ -143,11 +149,6 @@ std::map<std::string, std::deque<std::string> > HeaderLine::getHeader() const
     return (header);
 }
 
-void    HeaderLine::setCompletion(bool temp)
-{
-    completion = temp;
-}
-
 void    HeaderLine::setContentLength(int minus)
 {
     contentLength -= minus;
@@ -160,13 +161,9 @@ void    HeaderLine::setTe(TE temp)
 
 int HeaderLine::checkTe(std::string &temp)
 {
-    size_t  pos;
     size_t  colon;
 
-    pos = temp.find_first_not_of(' ');
-    temp.erase(0, pos);
-    pos = temp.find_last_not_of(' ');
-    temp.erase(pos + 1);
+    eraseSpace(temp);
     if (temp.empty())
         return (-1);  //공백만 들어온 상황
     //pop_front(): 앞쪽에서 요소를 제거합니다.
@@ -175,14 +172,12 @@ int HeaderLine::checkTe(std::string &temp)
     if (colon != std::string::npos)
     {
         key = temp.substr(0, colon);
+        eraseSpace(key);
         if (key != header["Trailer"].front())
             return (-2);
         header["Trailer"].pop_front();
         value = temp.substr(colon + 1);
-        pos = value.find_first_not_of(' ');
-        value.erase(0, pos);
-        pos = value.find_last_not_of(' ');
-        value.erase(pos + 1);
+        eraseSpace(value);
         // std::cout<<"key: "<<key;
         if (pushValue() < 0)
             return (-3);
@@ -190,11 +185,12 @@ int HeaderLine::checkTe(std::string &temp)
     }
     else
     {
-        if (key.size() == 0 && !checkMime(temp))
-            return (-2);  //message/htpp타입이 아닌데 obs-fold를 사용한 상황
-        value = temp;
-        if (pushValue() < 0)
-            return (-2);
+        return (-2);
+        // if (key.size() == 0 && !checkMime(temp))
+        //     return (-2);  //message/htpp타입이 아닌데 obs-fold를 사용한 상황
+        // value = temp;
+        // if (pushValue() < 0)
+        //     return (-2);
     }
     return (0);
 }
@@ -203,13 +199,9 @@ int HeaderLine::plus(std::string& temp)
 {
     std::string str;
     size_t      colon;
-    int         pos;
 
     // std::cout<<temp<<std::endl;
-    pos = temp.find_first_not_of(' ');
-    temp.erase(0, pos);
-    pos = temp.find_last_not_of(' ');
-    temp.erase(pos + 1);
+    eraseSpace(temp);
     if (temp.empty())
         return (-1);  //공백만 들어온 상황
     // if (temp[temp.size() - 1] == ',')
@@ -219,11 +211,9 @@ int HeaderLine::plus(std::string& temp)
     if (colon != std::string::npos)
     {
         key = temp.substr(0, colon);
+        eraseSpace(key);
         value = temp.substr(colon + 1);
-        pos = value.find_first_not_of(' ');
-        value.erase(0, pos);
-        pos = value.find_last_not_of(' ');
-        value.erase(pos + 1);
+        eraseSpace(value);
         // std::cout<<"key: "<<key;
         if (pushValue() < 0)
             return (-2);
@@ -231,11 +221,12 @@ int HeaderLine::plus(std::string& temp)
     }
     else
     {
-        if (key.size() == 0 && !checkMime(temp))
-            return (-2);  //message/htpp타입이 아닌데 obs-fold를 사용한 상황
-        value = temp;
-        if (pushValue() < 0)
-            return (-2);
+        return (-2);
+        // if (key.size() == 0 && !checkMime(temp))
+        //     return (-2);  //message/htpp타입이 아닌데 obs-fold를 사용한 상황
+        // value = temp;
+        // if (pushValue() < 0)
+        //     return (-2);
     }
     return (0);
 }
@@ -252,25 +243,26 @@ int HeaderLine::headerError()
             return (-1);
     }
     itm = header.find("Content-Length");
-    if (itm == header.end())
+    if (itm != header.end())
     {
-        entitytype = TRANSFER;
         itm = header.find("Transfer-Encoding");
         if (itm == header.end())
-            entitytype = ENOT;
+        {
+            contentLength = std::stoi(header["Content-Length"].front());
+            entitytype = CONTENT;
+        }
+        else
+            return (-2);
     }
     else
     {
-        entitytype = CONTENT;
         itm = header.find("Transfer-Encoding");
         if (itm != header.end())
-        {
-            entitytype = ENOT;
-            return (-2);
-        }
+            entitytype = TRANSFER;
     }
     itm = header.find("Trailer");
     if (itm != header.end())
         te = YES;
+    completion = true;
     return (0);
 }

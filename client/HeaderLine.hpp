@@ -43,11 +43,14 @@ class HeaderLine
         std::string key;
         std::string value;
         std::map<std::string, std::deque<std::string> > header;
-        bool    checkMime(std::string temp);
+        void    eraseSpace(std::string& str);
+        // bool    checkMime(std::string temp);
         int     pushValue();
     public:
+        //static variable
         static std::vector<std::string> manyHeader;
         static std::vector<std::string> vitalHeader;
+        //occf
         HeaderLine();
         HeaderLine(const HeaderLine& src);
         ~HeaderLine();
@@ -61,7 +64,6 @@ class HeaderLine
         std::string getValue() const;
         std::map<std::string, std::deque<std::string> > getHeader() const;
         //set function
-        void    setCompletion(bool temp);
         void    setContentLength(int minus);
         void    setTe(TE temp);
         //logic

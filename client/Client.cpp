@@ -84,6 +84,11 @@ void    Client::setFd(int fd)
     this->fd = fd;
 }
 
+bool    Client::getRequestFin()
+{
+    return (request.fin);
+}
+
 int Client::setStartLine(void)
 {
     size_t      flag;
@@ -97,7 +102,6 @@ int Client::setStartLine(void)
     flag = msg.find("\r\n");
     if (flag != std::string::npos)
     {
-        // std::cout<<"plus msg: "<<msg.substr(0, flag - 1)<<"\n";
         if (startline.plus(msg.substr(0, flag)) < 0)
             return (-1);  //시작줄 에러
         msg = msg.substr(flag + 2);
@@ -128,9 +132,8 @@ int Client::setHeader(void)
             {
                 if (headerline.headerError() < 0)
                     return (-2);  //vital header not or header double
-                headerline.setCompletion(true);
                 request.header = headerline.getHeader();
-                //여기서 header 오류 체크
+                msg = msg.substr(flag + 2);
                 break ;
             }
             str = msg.substr(0, flag);
@@ -151,7 +154,9 @@ int Client::setEntityLine(void)
         msg += message.back();
         message.pop();
     }
-    entityline.setEntity(msg, headerline.getEntitytype());
+    entityline.initContentLength(headerline.getContentLength());
+    entityline.plus(msg, headerline.getEntitytype());
+    request.entity = entityline.getEntity();
     return (0);
 }
 
@@ -180,7 +185,6 @@ int Client::setTe(void)
         else
             break ;
     }
-    request.fin = true;
     headerline.setTe(NOT);
     return (0);
 }
@@ -207,10 +211,10 @@ void    Client::showMessage(void)
             std::cout<<*itd<<"  ";
         std::cout<<"\n";
     }
-    while (!message.empty())
+    std::cout<<"=====entity line=====\n";
+    for (std::vector<std::string>::iterator it = request.entity.begin(); it != request.entity.end(); it++)
     {
-        std::cout<<message.front();
-        message.pop();
+        std::cout<<*it;
     }
 }
 
@@ -220,7 +224,7 @@ void    Client::setMessage(std::string str)
     if (!startline.getCompletion())
     {
         if (setStartLine() < 0)
-            return ;  //여기서 에러 처리하기
+            return ;  //시작줄 에러 처리하기
     }
     if (startline.getCompletion() && !headerline.getCompletion())
     {
@@ -238,18 +242,10 @@ void    Client::setMessage(std::string str)
             return ; 
     }
     if (entityline.getCompletion() && headerline.getTe() == NOT && message.empty())
-    {
        request.fin = true;
-    }
     if (headerline.getEntitytype() == ENOT && message.empty())
-    {
         request.fin = true;
-    }
     //message 남아있을 경우에 에러 처리하기
 }
 
-bool    Client::getRequestFin()
-{
-    return (request.fin);
-}
 
