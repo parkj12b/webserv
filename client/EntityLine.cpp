@@ -21,6 +21,9 @@ EntityLine::EntityLine()
 EntityLine::EntityLine(const EntityLine& src)
 {
     completion = src.getCompletion();
+    sizeEqual = src.getSizeEqual();
+    contentLength = src.getContentLength();
+    chunked = src.getChunked();
     entity = src.getEntity();
 }
 
@@ -37,6 +40,21 @@ EntityLine& EntityLine::operator=(const EntityLine& src)
 bool    EntityLine::getCompletion() const
 {
     return (completion);
+}
+
+bool    EntityLine::getSizeEqual() const
+{
+    return (sizeEqual);
+}
+
+bool    EntityLine::getContentLength() const
+{
+    return (sizeEqual);
+}
+
+std::string EntityLine::getChunked() const
+{
+    return (chunked);
 }
 
 std::vector<std::string>    EntityLine::getEntity() const

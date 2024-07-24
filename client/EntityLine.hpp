@@ -25,13 +25,16 @@ class EntityLine
         std::vector<std::string>    entity;
     public:
         //생성자 get고쳐야 함
+        //occf
         EntityLine();
         EntityLine(const EntityLine& src);
         ~EntityLine();
         EntityLine& operator=(const EntityLine& src);
         //get function
-        bool    getCompletion() const;
-        int     getContentLength() const;
+        bool                        getCompletion() const;
+        bool                        getSizeEqual() const;
+        int                         getContentLength() const;
+        std::string                 getChunked() const;
         std::vector<std::string>    getEntity() const;
         //logic
         void    initContentLength(int init);

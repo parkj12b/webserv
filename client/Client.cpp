@@ -84,6 +84,11 @@ void    Client::setFd(int fd)
     this->fd = fd;
 }
 
+bool    Client::getRequestFin()
+{
+    return (request.fin);
+}
+
 int Client::setStartLine(void)
 {
     size_t      flag;
@@ -177,7 +182,6 @@ int Client::setTe(void)
         else
             break ;
     }
-    request.fin = true;
     headerline.setTe(NOT);
     return (0);
 }
@@ -241,8 +245,4 @@ void    Client::setMessage(std::string str)
     //message 남아있을 경우에 에러 처리하기
 }
 
-bool    Client::getRequestFin()
-{
-    return (request.fin);
-}
 
