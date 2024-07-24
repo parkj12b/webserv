@@ -247,7 +247,10 @@ int HeaderLine::headerError()
     {
         itm = header.find("Transfer-Encoding");
         if (itm == header.end())
+        {
+            contentLength = std::stoi(header["Content-Length"].front());
             entitytype = CONTENT;
+        }
         else
             return (-2);
     }

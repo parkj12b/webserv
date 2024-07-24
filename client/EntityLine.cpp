@@ -80,6 +80,7 @@ int EntityLine::chunkedEntity()
     int                 size;
 
     ans = 0;
+    std::cout<<chunked;
     while (getline(chunkedStream, temp))
     {
         if (!temp.empty()) //temp[temp.size() - 1] == '\r'
@@ -99,7 +100,7 @@ int EntityLine::chunkedEntity()
 }
 
 
-int EntityLine::setEntity(std::string &str, ENTITYTYPE entitytype)
+int EntityLine::plus(std::string &str, ENTITYTYPE entitytype)
 {
     size_t  flag;
 

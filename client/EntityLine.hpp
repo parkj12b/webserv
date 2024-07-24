@@ -40,7 +40,7 @@ class EntityLine
         void    initContentLength(int init);
         void    minusContentLength(int minus);
         int     chunkedEntity();
-        int     setEntity(std::string &str, ENTITYTYPE entitytype);
+        int     plus(std::string &str, ENTITYTYPE entitytype);
 };
 
 #endif

@@ -133,6 +133,7 @@ int Client::setHeader(void)
                 if (headerline.headerError() < 0)
                     return (-2);  //vital header not or header double
                 request.header = headerline.getHeader();
+                msg = msg.substr(flag + 2);
                 break ;
             }
             str = msg.substr(0, flag);
@@ -153,7 +154,9 @@ int Client::setEntityLine(void)
         msg += message.back();
         message.pop();
     }
-    entityline.setEntity(msg, headerline.getEntitytype());
+    entityline.initContentLength(headerline.getContentLength());
+    entityline.plus(msg, headerline.getEntitytype());
+    request.entity = entityline.getEntity();
     return (0);
 }
 
@@ -208,10 +211,10 @@ void    Client::showMessage(void)
             std::cout<<*itd<<"  ";
         std::cout<<"\n";
     }
-    while (!message.empty())
+    std::cout<<"=====entity line=====\n";
+    for (std::vector<std::string>::iterator it = request.entity.begin(); it != request.entity.end(); it++)
     {
-        std::cout<<message.front();
-        message.pop();
+        std::cout<<*it;
     }
 }
 
