@@ -47,8 +47,7 @@ StartLine::StartLine(const StartLine& src) : completion(src.getCompletion()), me
 
 StartLine&  StartLine::operator=(const StartLine& src)
 {
-    // completion = src.getCompletion();
-    completion = src.completion;
+    completion = src.getCompletion();
     method = src.getMethod();
     version = src.getVersion();
     url = src.getUrl();

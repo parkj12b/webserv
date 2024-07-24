@@ -248,3 +248,8 @@ void    Client::setMessage(std::string str)
     //message 남아있을 경우에 에러 처리하기
 }
 
+bool    Client::getRequestFin()
+{
+    return (request.fin);
+}
+

@@ -26,7 +26,7 @@
 #include <arpa/inet.h>
 
 # define BUFFER_SIZE 4096
-# define PORT 80
+# define PORT 8080
 # define CLIENT_CNT 10
 # define EVENTCNT 10
 

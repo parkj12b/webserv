@@ -24,6 +24,9 @@
 //delete
 # include <ctime>
 
+//뭔가 생성이 될 때에 소멸자가 생성이 되는 느낌?? 왜 일까??
+
+
 typedef struct Request
 {
     bool    fin;
@@ -67,9 +70,11 @@ class Client
         int     setHeader(void);
         int     setEntityLine(void);
         int     setTe(void);
+        //logic
+        void    setMessage(std::string str);
+        bool    getRequestFin();
         //temp(must delete)
         void    showMessage(void);
-        void    setMessage(std::string str);
 };
 
 #endif
