@@ -65,9 +65,9 @@ class HeaderLine
         std::map<std::string, std::deque<std::string> > getHeader() const;
         //set function
         void    setContentLength(int minus);
-        void    setTe(TE temp);
+        void    setTrailer(TE temp);
         //logic
-        int checkTe(std::string& temp);
+        int checkTrailer(std::string& temp);
         int plus(std::string& temp);
         int headerError();
 };

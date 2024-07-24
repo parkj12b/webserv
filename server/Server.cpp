@@ -143,9 +143,10 @@ void    Server::mainLoop(void)
     int             count;
     int             readSize;
     int             sum = 0;
-    const char *temp = "HTTP/1.1 200 OK\nContent-Type: text/html;charset=UTF-8\nContent-Length: ";
+    int             fd;
+    const char  *temp = "HTTP/1.1 200 OK\nContent-Type: text/html;charset=UTF-8\nContent-Length: ";
 
-    count = kevent(kq, &fdList[0], fdList.size(), store, EVENTCNT, NULL);
+    // count = kevent(kq, &fdList[0], fdList.size(), store, EVENTCNT, NULL);
     while ((count = kevent(kq, &fdList[0], fdList.size(), store, EVENTCNT, NULL)) < 0);
     fdList.clear();
     for (int i = 0; i < count; i++)
@@ -172,9 +173,9 @@ void    Server::mainLoop(void)
                 buffer[readSize] = '\0';
                 //여기서 적어주어야 함
                 client[store[i].ident].setMessage(buffer);
-                // write(1, buffer, readSize);
                 if (client[store[i].ident].getRequestFin() == true)
                 {
+                    // request 완성 -> respond 만들면 되지 않나?
                     EV_SET(&store[i], store[i].ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
                     plusEvent(store[i].ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
                     client[store[i].ident].showMessage();
@@ -185,7 +186,7 @@ void    Server::mainLoop(void)
             {
                 //write부분 고치기
                 //write의 성공 및 실패 여부에 따라 바뀌게 짜는 것이 좋을 듯하다. 
-                int fd = open("./index.html", O_RDONLY);
+                // int fd = open("./index.html", O_RDONLY);
 
                 sum = 0;
                 while (1)

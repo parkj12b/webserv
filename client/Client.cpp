@@ -15,7 +15,7 @@
 Client::Client() : fd(-1)
 {}
 
-Client::Client(const Client& src) : fd(src.getFd()), msg(src.getMsg()), request(src.getRequest()), startline(src.getStartLine()), headerline(src.getHeaderline()), entityline(src.getEntity()), message(src.getMessage())
+Client::Client(const Client& src) : fd(src.getFd()), msg(src.getMsg()), request(src.getRequest()), startline(src.getStartLine()), headerline(src.getHeaderline()), entityline(src.getEntity())
 {}
 
 Client& Client::operator=(const Client& src)
@@ -26,7 +26,6 @@ Client& Client::operator=(const Client& src)
     startline = src.getStartLine();
     headerline = src.getHeaderline();
     entityline = src.getEntity();
-    message = src.getMessage();
     return (*this);
 }
 
@@ -69,11 +68,6 @@ EntityLine    Client::getEntity() const
     return (entityline);
 }
 
-std::queue<std::string> Client::getMessage() const
-{
-    return (message);
-}
-
 bool    Client::getRequestFin() const
 {
     return (request.fin);
@@ -93,16 +87,11 @@ int Client::setStartLine(void)
 {
     size_t      flag;
 
-    if (message.size())
-    {
-        msg += message.back();
-        message.pop();
-    }
     // std::cout<<"msg: "<<msg<<"\n";
     flag = msg.find("\r\n");
     if (flag != std::string::npos)
     {
-        if (startline.plus(msg.substr(0, flag)) < 0)
+        if (startline.plus(msg.substr(0, flag)) < 0)  //ingu test
             return (-1);  //시작줄 에러
         msg = msg.substr(flag + 2);
         // std::cout<<"msg: "<<msg<<"\n";
@@ -118,11 +107,6 @@ int Client::setHeader(void)
     size_t      flag;
     std::string str;
 
-    if (message.size())
-    {
-        msg += message.back();
-        message.pop();
-    }
     while (1)
     {
         flag = msg.find("\r\n");
@@ -133,7 +117,7 @@ int Client::setHeader(void)
                 if (headerline.headerError() < 0)
                     return (-2);  //vital header not or header double
                 request.header = headerline.getHeader();
-                msg = msg.substr(flag + 2);
+                msg = msg.substr(flag + 2);  //(ingu check)
                 break ;
             }
             str = msg.substr(0, flag);
@@ -149,27 +133,17 @@ int Client::setHeader(void)
 
 int Client::setEntityLine(void)
 {
-    if (message.size())
-    {
-        msg += message.back();
-        message.pop();
-    }
     entityline.initContentLength(headerline.getContentLength());
     entityline.plus(msg, headerline.getEntitytype());
     request.entity = entityline.getEntity();
     return (0);
 }
 
-int Client::setTe(void)
+int Client::setTrailer(void)
 {
     size_t      flag;
     std::string str;
 
-    if (message.size())
-    {
-        msg += message.back();
-        message.pop();
-    }
     while (1)
     {
         if (msg.empty())
@@ -178,14 +152,14 @@ int Client::setTe(void)
         if (flag != std::string::npos)
         {
             str = msg.substr(0, flag);
-            if (headerline.checkTe(str) < 0)
+            if (headerline.checkTrailer(str) < 0)
                 return (-1);
             msg = msg.substr(flag + 2);
         }
         else
             break ;
     }
-    headerline.setTe(NOT);
+    headerline.setTrailer(NOT);
     return (0);
 }
 
@@ -220,7 +194,7 @@ void    Client::showMessage(void)
 
 void    Client::setMessage(std::string str)
 {
-    message.push(str);
+    msg += str;
     if (!startline.getCompletion())
     {
         if (setStartLine() < 0)
@@ -238,12 +212,12 @@ void    Client::setMessage(std::string str)
     }
     if (entityline.getCompletion() && headerline.getTe() == YES)
     {
-        if (setTe() < 0)
+        if (setTrailer() < 0)
             return ; 
     }
-    if (entityline.getCompletion() && headerline.getTe() == NOT && message.empty())
+    if (entityline.getCompletion() && headerline.getTe() == NOT && msg.empty())
        request.fin = true;
-    if (headerline.getEntitytype() == ENOT && message.empty())
+    if (headerline.getCompletion() && headerline.getEntitytype() == ENOT && msg.empty())
         request.fin = true;
     //message 남아있을 경우에 에러 처리하기
 }
