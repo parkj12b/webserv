@@ -47,9 +47,9 @@ bool    EntityLine::getSizeEqual() const
     return (sizeEqual);
 }
 
-bool    EntityLine::getContentLength() const
+int EntityLine::getContentLength() const
 {
-    return (sizeEqual);
+    return (contentLength);
 }
 
 std::string EntityLine::getChunked() const

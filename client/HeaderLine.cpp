@@ -161,7 +161,6 @@ void    HeaderLine::setTe(TE temp)
 
 int HeaderLine::checkTe(std::string &temp)
 {
-    size_t  pos;
     size_t  colon;
 
     eraseSpace(temp);
@@ -200,7 +199,6 @@ int HeaderLine::plus(std::string& temp)
 {
     std::string str;
     size_t      colon;
-    int         pos;
 
     // std::cout<<temp<<std::endl;
     eraseSpace(temp);
