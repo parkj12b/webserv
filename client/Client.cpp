@@ -143,7 +143,6 @@ int Client::setHeader(void)
             {
                 if (headerline.headerError() < 0)
                 {
-                    std::cout<<"hee\n";
                     request.status = 400;
                     return (-2);  //vital header not or header double
                 }
@@ -261,7 +260,7 @@ void    Client::setMessage(std::string str)
     {
         if (setStartLine() < 0)
         {
-            std::cout<<"Startline\n";
+            std::cout<<"Startline Error\n";
             return ;  //시작줄 에러 처리하기
         }
     }
@@ -269,7 +268,7 @@ void    Client::setMessage(std::string str)
     {
         if (setHeader() < 0)
         {
-            std::cout<<"Header\n";
+            std::cout<<"Header Error\n";
             return ;  //여기서 에러 처리하기
         }
     }
@@ -277,7 +276,7 @@ void    Client::setMessage(std::string str)
     {
         if (setEntityLine() < 0)
         {
-            std::cout<<"Body\n";
+            std::cout<<"Body Error\n";
             return ;   //여기서 에러 처리하기
         }
     }
@@ -285,7 +284,7 @@ void    Client::setMessage(std::string str)
     {
         if (setTrailer() < 0)
         {
-            std::cout<<"Trailer\n";
+            std::cout<<"Trailer Error\n";
             return ; 
         }
     }
