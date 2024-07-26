@@ -18,6 +18,7 @@ SOURCE = ./client/Client.cpp \
 		./client/HeaderLine.cpp \
 		./client/StartLine.cpp \
 		./server/Server.cpp \
+		./server/Kq.cpp \
 		./main.cpp
 OBJS = $(SOURCE:.cpp=.o)
 CC = c++

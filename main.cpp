@@ -10,13 +10,16 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./server/Server.hpp"
+#include "./server/Kq.hpp"
+
+int logs = open("./log", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 
 int main(void)
 {
-    Server  server;
+    Kq  kq;
 
     std::ios::sync_with_stdio(false);
     while (1)
-        server.mainLoop();
+        kq.mainLoop();
+    close(logs);
 }

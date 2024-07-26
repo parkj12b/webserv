@@ -41,7 +41,7 @@ typedef struct Request
 class Client
 {
     private:
-        uintptr_t   fd;
+        int         fd;
         std::string msg;
         Request     request;
         StartLine   startline;
@@ -50,10 +50,10 @@ class Client
         //temp(must delete)
     public:
         Client();
+        Client(int fd);
         explicit Client(const Client& src);
         Client& operator=(const Client& src);
         ~Client();
-        Client(int fd);
         //get function
         int                         getFd() const;
         std::string                 getMsg() const;

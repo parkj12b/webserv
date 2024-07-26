@@ -12,6 +12,8 @@
 
 #include "HeaderLine.hpp"
 
+extern int logs;
+
 //header 줄에서 여러 개의 value를 받을 수 있는 key들을 모음
 std::vector<std::string>    manyHeaderInit()
 {
