@@ -289,8 +289,15 @@ void    Client::setMessage(std::string str)
             return ; 
         }
     }
-    if (entityline.getCompletion() && headerline.getTe() == NOT && msg.empty())
-       request.fin = true;
+    if (entityline.getCompletion() && headerline.getTe() == NOT)
+    {
+        if (!msg.empty())
+        {
+            request.status = 414;
+            return ;
+        }
+        request.fin = true;
+    }
     if (headerline.getCompletion() && headerline.getEntitytype() == ENOT && msg.empty())
         request.fin = true;
     //message 남아있을 경우에 에러 처리하기

@@ -259,6 +259,8 @@ int HeaderLine::headerError()
         if (itm == header.end())
         {
             contentLength = std::stoi(header["Content-Length"].front());
+            if (contentLength < 0)
+                return (-2);
             entitytype = CONTENT;
         }
         else
@@ -268,7 +270,11 @@ int HeaderLine::headerError()
     {
         itm = header.find("Transfer-Encoding");
         if (itm != header.end())
+        {
+            if (header["Transfer-Encoding"].front() != "chunked")
+                return (-2);
             entitytype = TRANSFER;
+        }
     }
     itm = header.find("Trailer");
     if (itm != header.end())
