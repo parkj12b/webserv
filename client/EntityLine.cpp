@@ -126,6 +126,7 @@ int EntityLine::plus(std::string &str, ENTITYTYPE entitytype)
     else if (entitytype == TRANSFER)
     {
         flag = str.find("0\r\n\r\n");
+        // flag = str.find("0\r\n");  //talnet 때문에 임시로 대체함
         //에러 발생시 중간에 빠져 나왔을 떄
         if (flag == std::string::npos)
         {
@@ -137,6 +138,7 @@ int EntityLine::plus(std::string &str, ENTITYTYPE entitytype)
             chunked += str.substr(0, flag);
             //chunked 크기 확인하기
             str = str.substr(flag + 5);
+            // str = str.substr(flag + 3);
             if (chunkedEntity() < 0)
                 return (-1);
         }
