@@ -12,6 +12,8 @@
 
 #include "StartLine.hpp"
 
+extern int logs;
+
 std::map<std::string, Method> originMethodInit()
 {
     std::map<std::string, Method> m;

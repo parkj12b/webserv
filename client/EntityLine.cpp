@@ -12,6 +12,8 @@
 
 #include "EntityLine.hpp"
 
+extern int logs;
+
 EntityLine::EntityLine()
 {
     completion = false;

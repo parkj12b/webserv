@@ -12,8 +12,17 @@
 
 #include "Client.hpp"
 
+extern int logs;
+
 Client::Client() : fd(0)
 {
+    request.fin = false;
+    request.status = 0;
+}
+
+Client::Client(int fd)
+{
+    this->fd = fd;
     request.fin = false;
     request.status = 0;
 }
@@ -37,9 +46,6 @@ Client::~Client()
     // close(static_cast<int>(fd));
     std::cout<<fd<<" client close"<<std::endl;
 }
-
-Client::Client(int fd) : fd(fd)
-{}
 
 int Client::getFd(void) const
 {
@@ -137,6 +143,7 @@ int Client::setHeader(void)
             {
                 if (headerline.headerError() < 0)
                 {
+                    std::cout<<"hee\n";
                     request.status = 400;
                     return (-2);  //vital header not or header double
                 }
@@ -243,12 +250,13 @@ void    Client::showMessage(void)
     {
         std::cout<<*it;
     }
+    std::cout<<"\n\n";
 }
 
 void    Client::setMessage(std::string str)
 {
     msg += str;
-    std::cout<<msg;
+    write(logs, &str[0], str.size());
     if (!startline.getCompletion())
     {
         if (setStartLine() < 0)
