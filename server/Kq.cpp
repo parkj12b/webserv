@@ -91,19 +91,22 @@ void    Kq::eventRead(struct kevent& store)
     int     serverFd;
     EVENT   event;
 
-    serverFd = findServer[store.ident];
-    event = server[serverFd].clientRead(store.ident);
-    switch (event)
+    if (store.ident != 0)
     {
-        case ERROR:
-            //연결 종료하기
-            break ;
-        case ING:
-            break ;
-        case FINISH:
-            EV_SET(&store, store.ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
-            plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
-            break ;
+        serverFd = findServer[store.ident];
+        event = server[serverFd].clientRead(store.ident);
+        switch (event)
+        {
+            case ERROR:
+                //연결 종료하기
+                break ;
+            case ING:
+                break ;
+            case FINISH:
+                EV_SET(&store, store.ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+                plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
+                break ;
+        }
     }
 }
 
