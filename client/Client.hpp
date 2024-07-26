@@ -30,6 +30,7 @@
 typedef struct Request
 {
     bool    fin;
+    int     status;
     Method  method;
     Version version;
     std::string url;
@@ -40,7 +41,7 @@ typedef struct Request
 class Client
 {
     private:
-        int         fd;
+        uintptr_t   fd;
         std::string msg;
         Request     request;
         StartLine   startline;
@@ -61,8 +62,9 @@ class Client
         HeaderLine                  getHeaderline() const;
         EntityLine                  getEntity() const;
         bool                        getRequestFin() const;
+        int                         getRequestStatus() const;
         //set function
-        void    setFd(int fd);
+        void    setFd(uintptr_t fd);
         int     setStartLine(void);
         int     setHeaderUtil(std::string temp);
         int     setHeader(void);

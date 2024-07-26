@@ -26,7 +26,7 @@
 #include <arpa/inet.h>
 
 # define BUFFER_SIZE 4096
-# define PORT 8080
+# define PORT 8000
 # define CLIENT_CNT 10
 # define EVENTCNT 10
 
@@ -43,6 +43,7 @@ class Server
         int kq;
         std::map<int, Client>  client;
     public:
+        static std::map<int, std::string>   statusContent;
         Server();
         Server(const Server& src);
         Server &operator=(const Server& src);
@@ -54,7 +55,7 @@ class Server
         int getKq(void) const;
         std::map<int, Client>  getClient(void) const;
         //Server assistant function
-        void    errorHandler(std::string message);
+        void    errorHandler(Client& c);
         void    nullSet(void *ptr, size_t len);
         //Server main function
         void    plusEvent(uintptr_t fd, int16_t filter, uint16_t flags, uint32_t fflags, intptr_t data, void *udata);

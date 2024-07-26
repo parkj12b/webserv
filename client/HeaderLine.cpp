@@ -74,14 +74,14 @@ int HeaderLine::pushValue()
         {
             eraseSpace(str);
             if (str.empty())
-                continue ;  //error check rfc check
+                return (-1);  //400
             header[key].push_back(str);
         }
     }
     else
     {
         if (!header[key].empty())
-            return (-1);
+            return (-2);  //400
         header[key].push_back(value);
     }
     return (0);
@@ -165,7 +165,7 @@ int HeaderLine::checkTrailer(std::string &temp)
 
     eraseSpace(temp);
     if (temp.empty())
-        return (-1);  //공백만 들어온 상황
+        return (-1);  //400
     //pop_front(): 앞쪽에서 요소를 제거합니다.
     //front(): 앞쪽 요소를 반환합니다.
     colon = temp.find(':');
@@ -174,22 +174,22 @@ int HeaderLine::checkTrailer(std::string &temp)
         key = temp.substr(0, colon);
         eraseSpace(key);
         if (key.empty())
-            return (-2);
+            return (-2);  //400
         if (key != header["Trailer"].front())
-            return (-3);
+            return (-3);  //400
         header["Trailer"].pop_front();
         value = temp.substr(colon + 1);
         eraseSpace(value);
         if (value.empty())
-            return (-2);
+            return (-2);  //400
         // std::cout<<"key: "<<key;
         if (pushValue() < 0)
-            return (-3);
+            return (-3);  //400
         // header[key].push_back(str);
     }
     else
     {
-        return (-2);
+        return (-2);  //400
         // if (key.size() == 0 && !checkMime(temp))
         //     return (-2);  //message/htpp타입이 아닌데 obs-fold를 사용한 상황
         // value = temp;
@@ -217,19 +217,19 @@ int HeaderLine::plus(std::string& temp)
         key = temp.substr(0, colon);
         eraseSpace(key);
         if (key.empty())
-            return (-2);
+            return (-2);  //400
         value = temp.substr(colon + 1);
         eraseSpace(value);
         if (value.empty())
-            return (-3);  //(ingu check)
+            return (-3);  //400
         // std::cout<<"key: "<<key;
         if (pushValue() < 0)
-            return (-4);
+            return (-4);  //400
         // header[key].push_back(str);
     }
     else
     {
-        return (-5);
+        return (-5);  //400
         // if (key.size() == 0 && !checkMime(temp))
         //     return (-2);  //message/htpp타입이 아닌데 obs-fold를 사용한 상황
         // value = temp;
@@ -248,7 +248,7 @@ int HeaderLine::headerError()
     {
         itm = header.find(*itv);
         if (itm == header.end())
-            return (-1);
+            return (-1);  //400
     }
     itm = header.find("Content-Length");
     if (itm != header.end())
@@ -260,7 +260,7 @@ int HeaderLine::headerError()
             entitytype = CONTENT;
         }
         else
-            return (-2);
+            return (-2);  //400
     }
     else
     {
