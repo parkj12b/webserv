@@ -155,11 +155,19 @@ EVENT Server::clientRead(int clientFd)
 {
     int     readSize;
 
+    if (client[clientFd].getRequestStatus() > 0)
+        return (ING);
     readSize = read(clientFd, buffer, BUFFER_SIZE);
     if (readSize < 0)
+    {
+        std::cout<<"read error\n";
         return (ERROR);  //client 연결 종료 시키기
+    }
     else if (readSize == 0)
-        return (ING);
+    {
+        // std::cout<<"parsing finish\n";
+        return (ERROR);
+    }
     buffer[readSize] = '\0';
     client[clientFd].setMessage(buffer);
     if (client[clientFd].getRequestFin() == true || client[clientFd].getRequestStatus() > 0)
@@ -208,9 +216,9 @@ EVENT Server::clientWrite(int clientFd)
             write(clientFd, buffer, strlen(buffer));
         }
         close(fd);
+        close(static_cast<int>(clientFd));
+        client.erase(clientFd);
     }
-    close(static_cast<int>(clientFd));
-    client.erase(clientFd);
     std::cout<<"read delete\n";
     return (FINISH);
 }
@@ -253,8 +261,8 @@ void    Server::errorHandler(Client& c)
         write(c.getFd(), buffer, strlen(buffer));
     }
     close(fd);
-    client.erase(c.getFd());
     close(c.getFd());
+    client.erase(c.getFd());
 }
 
 void    Server::clientError(int clientFd)

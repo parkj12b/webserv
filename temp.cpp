@@ -65,8 +65,13 @@ int main()
     while ((temp = 3) == 3)
     {
         std::cout<<"here\n";
-        return (0);
+        break ;
     }
+    std::cout<<"\n\n=========test8=========\n";
+    temp = 10;
+    std::string str1;
+    str1 = std::to_string(temp);
+    std::cout<<str1<<" "<<str1.size()<<std::endl;
     return 0;
 }
 

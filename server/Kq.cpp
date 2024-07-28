@@ -82,6 +82,7 @@ void    Kq::plusClient(int serverFd)
     int clientFd;
 
     clientFd = server[serverFd].plusClient();
+    std::cout<<"plus client"<<std::endl;
     plusEvent(clientFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     findServer[clientFd] = serverFd;
 }
@@ -91,22 +92,24 @@ void    Kq::eventRead(struct kevent& store)
     int     serverFd;
     EVENT   event;
 
-    if (store.ident != 0)
+    if (store.ident == 0)
+        return ;
+        // std::cout<<"event read"<<std::endl;
+    serverFd = findServer[store.ident];
+    event = server[serverFd].clientRead(store.ident);
+    switch (event)
     {
-        serverFd = findServer[store.ident];
-        event = server[serverFd].clientRead(store.ident);
-        switch (event)
-        {
-            case ERROR:
-                //연결 종료하기
-                break ;
-            case ING:
-                break ;
-            case FINISH:
-                EV_SET(&store, store.ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
-                plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
-                break ;
-        }
+        case ERROR:
+            clientError(store);
+            //연결 종료하기
+            break ;
+        case ING:
+            break ;
+        case FINISH:
+            std::cout<<"read event delete\n";
+            EV_SET(&store, store.ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+            plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
+            break ;
     }
 }
 
@@ -115,16 +118,21 @@ void    Kq::eventWrite(struct kevent& store)
     int     serverFd;
     EVENT   event;
 
+    if (store.ident == 0)
+        return ;
     serverFd = findServer[store.ident];
+    if (serverFd == 0)
+        return ;
     event = server[serverFd].clientWrite(store.ident);
     switch (event)
     {
         case ERROR:
-            //연결 종료하기
+            clientError(store);
             break ;
         case ING:
             break ;
         case FINISH:
+            std::cout<<"write delete\n";
             EV_SET(&store, store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
             break ;
     }
@@ -151,7 +159,9 @@ void    Kq::mainLoop()
             if (store[i].flags == EV_ERROR)
                 clientError(store[i]);  //client 종료
             else if (store[i].filter == EVFILT_READ)
+            {
                 eventRead(store[i]);
+            }
             else if (store[i].filter == EVFILT_WRITE)
                 eventWrite(store[i]);
         }
@@ -162,6 +172,7 @@ void    Kq::clientError(struct kevent& store)
 {
     int     serverFd;
 
+    std::cout<<"error"<<std::endl;
     serverFd = findServer[store.ident];
     server[serverFd].clientError(store.ident);
     EV_SET(&store, store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
