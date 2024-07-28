@@ -258,8 +258,10 @@ void    Client::setMessage(std::string str)
     write(logs, &str[0], str.size());
     if (!startline.getCompletion())
     {
+        std::cout<<"...startline parsing...\n";
         if (setStartLine() < 0)
         {
+            std::cout<<fd<<" "<<request.status<<" ";
             std::cout<<"Startline Error\n";
             return ;  //시작줄 에러 처리하기
         }
@@ -270,6 +272,14 @@ void    Client::setMessage(std::string str)
         {
             std::cout<<"Header Error\n";
             return ;  //여기서 에러 처리하기
+        }
+    }
+    if (headerline.getCompletion() && headerline.getEntitytype() == ENOT)
+    {
+        if (msg.empty())
+        {
+            request.fin = true;
+            return ;
         }
     }
     if (headerline.getCompletion() && !entityline.getCompletion())
@@ -298,7 +308,9 @@ void    Client::setMessage(std::string str)
         request.fin = true;
     }
     if (headerline.getCompletion() && headerline.getEntitytype() == ENOT && msg.empty())
+    {
         request.fin = true;
+    }
     //message 남아있을 경우에 에러 처리하기
 }
 
