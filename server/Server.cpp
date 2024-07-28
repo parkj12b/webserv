@@ -153,6 +153,7 @@ int Server::plusClient(void)
 
 EVENT Server::clientRead(int clientFd)
 {
+    //buffer 문제인지 생각해보기
     int     readSize;
 
     if (client[clientFd].getRequestStatus() > 0)
