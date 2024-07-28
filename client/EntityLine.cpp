@@ -136,11 +136,10 @@ int EntityLine::plus(std::string &str, ENTITYTYPE entitytype)
         {
             //chunked 크기 확인하기
             str = chunked.substr(flag + 5);
+            chunked = chunked.substr(0, flag);
             // str = str.substr(flag + 3);
             if (chunkedEntity() < 0)
-            {
                 return (-1);
-            }
         }
     }
     return (0);

@@ -188,6 +188,8 @@ int HeaderLine::checkTrailer(std::string &temp)
         if (pushValue() < 0)
             return (-3);  //400
         // header[key].push_back(str);
+        if (header["Trailer"].empty())
+            return (1);
     }
     else
     {

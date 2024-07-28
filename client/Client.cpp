@@ -102,6 +102,9 @@ int Client::setStartLine(void)
     size_t      flag;
 
     // std::cout<<"msg: "<<msg<<"\n";
+    if (startline.getCompletion())
+        return (0);
+    std::cout<<"...startline parsing...\n";
     flag = msg.find("\r\n");
     if (flag != std::string::npos)
     {
@@ -134,6 +137,9 @@ int Client::setHeader(void)
     size_t      flag;
     std::string str;
 
+    if (!startline.getCompletion() || headerline.getCompletion())
+        return (0);
+    std::cout<<"...headerline parsing...\n";
     while (1)
     {
         flag = msg.find("\r\n");
@@ -173,18 +179,41 @@ int Client::setHeader(void)
             break ;
         }
     }
+    if (headerline.getCompletion() && headerline.getEntitytype() == ENOT)
+    {
+        if (msg.empty())
+            request.fin = true;
+        else
+            request.status = 400;
+    }
     return (0);
 }
 
 int Client::setEntityLine(void)
 {
+    if (!headerline.getCompletion() || entityline.getCompletion() || request.fin == true || request.status > 0)
+        return (0);
+    std::cout<<"...setentityline parsing...\n";
     entityline.initContentLength(headerline.getContentLength());
     if (entityline.plus(msg, headerline.getEntitytype()) < 0)
     {
+        std::cout<<"dklsafljf\n"<<std::endl;
         request.status = 400;
         return (-1);    
     }
+    std::cout<<"dklsafljf\n"<<std::endl;
     request.entity = entityline.getEntity();
+    if (entityline.getCompletion() && headerline.getTe() == NOT)
+    {
+        if (!msg.empty())
+        {
+            std::cout<<"herer\n"<<std::endl;
+            request.status = 414;
+            return (-2);
+        }
+        else
+            request.fin = true;
+    }
     return (0);
 }
 
@@ -192,7 +221,10 @@ int Client::setTrailer(void)
 {
     size_t      flag;
     std::string str;
+    int         ans;
 
+    if (!entityline.getCompletion() || headerline.getTe() != YES || request.fin == true || request.status > 0)
+        return (0);
     while (1)
     {
         if (msg.empty())
@@ -201,12 +233,28 @@ int Client::setTrailer(void)
         if (flag != std::string::npos)
         {
             str = msg.substr(0, flag);
-            if (headerline.checkTrailer(str) < 0)
+            msg = msg.substr(flag + 2);
+            ans = headerline.checkTrailer(str);
+            if (ans < 0)
             {
                 request.status = 400;
                 return (-1);
             }
-            msg = msg.substr(flag + 2);
+            else if (ans != 0)
+            {
+                if (msg.empty())    
+                {
+                    headerline.setTrailer(NOT);
+                    request.fin = true;
+                    request.header = headerline.getHeader();
+                    break ;
+                }
+                else
+                {
+                    request.status = 414;
+                    return (-2);
+                }
+            }
         }
         else
         {
@@ -218,7 +266,6 @@ int Client::setTrailer(void)
             break ;
         }
     }
-    headerline.setTrailer(NOT);
     return (0);
 }
 
@@ -256,60 +303,26 @@ void    Client::setMessage(std::string str)
 {
     msg += str;
     write(logs, &str[0], str.size());
-    if (!startline.getCompletion())
+    if (setStartLine() < 0)
     {
-        std::cout<<"...startline parsing...\n";
-        if (setStartLine() < 0)
-        {
-            std::cout<<fd<<" "<<request.status<<" ";
-            std::cout<<"Startline Error\n";
-            return ;  //시작줄 에러 처리하기
-        }
+        std::cout<<fd<<" "<<request.status<<" ";  //debug
+        std::cout<<"Startline Error\n";  //debug
+        return ;  //시작줄 에러 처리하기
     }
-    if (startline.getCompletion() && !headerline.getCompletion())
+    if (setHeader() < 0)
     {
-        if (setHeader() < 0)
-        {
-            std::cout<<"Header Error\n";
-            return ;  //여기서 에러 처리하기
-        }
+        std::cout<<"Header Error\n";
+        return ;  //여기서 에러 처리하기
     }
-    if (headerline.getCompletion() && headerline.getEntitytype() == ENOT)
+    if (setEntityLine() < 0)
     {
-        if (msg.empty())
-        {
-            request.fin = true;
-            return ;
-        }
+        std::cout<<"Body Error\n";
+        return ;   //여기서 에러 처리하기
     }
-    if (headerline.getCompletion() && !entityline.getCompletion())
+    if (setTrailer() < 0)
     {
-        if (setEntityLine() < 0)
-        {
-            std::cout<<"Body Error\n";
-            return ;   //여기서 에러 처리하기
-        }
-    }
-    if (entityline.getCompletion() && headerline.getTe() == YES)
-    {
-        if (setTrailer() < 0)
-        {
-            std::cout<<"Trailer Error\n";
-            return ; 
-        }
-    }
-    if (entityline.getCompletion() && headerline.getTe() == NOT)
-    {
-        if (!msg.empty())
-        {
-            request.status = 414;
-            return ;
-        }
-        request.fin = true;
-    }
-    if (headerline.getCompletion() && headerline.getEntitytype() == ENOT && msg.empty())
-    {
-        request.fin = true;
+        std::cout<<"Trailer Error\n";
+        return ; 
     }
     //message 남아있을 경우에 에러 처리하기
 }
