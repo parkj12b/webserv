@@ -40,6 +40,7 @@ Kq::Kq(const Kq& src)
     kq = src.getKq();
     fdList = src.getFdList();
     server = src.getServer();
+    findServer = src.getFindServer();
 }
 
 Kq& Kq::operator=(const Kq& src)
@@ -47,6 +48,7 @@ Kq& Kq::operator=(const Kq& src)
     kq = src.getKq();
     fdList = src.getFdList();
     server = src.getServer();
+    findServer = src.getFindServer();
     return (*this);
 }
 
@@ -68,6 +70,10 @@ std::map<int, Server>   Kq::getServer() const
     return (server);
 }
 
+std::map<int, int>  Kq::getFindServer() const
+{
+    return (findServer);
+}
 
 void    Kq::plusEvent(uintptr_t fd, int16_t filter, uint16_t flags, uint32_t fflags, intptr_t data, void *udata)
 {
@@ -183,6 +189,10 @@ void    Kq::serverError(struct kevent& store)
 {
     //client 모두 닫기
     //server 닫기
+    Server  temp = server[store.ident];
+
+    //server file discriptor가 에러가 나왔을 때에 연결된 클라이언트의 모든 것을 에러 처리한다. 
+    temp.serverError();
     EV_SET(&store, store.ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
 }
 

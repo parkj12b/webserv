@@ -274,6 +274,16 @@ void    Server::clientError(int clientFd)
     client.erase(clientFd);
 }
 
+void    Server::serverError()
+{
+    //이벤트 해지는 하지 않고 socket만 닫기
+    std::map<int, Client>::iterator it;
+
+    for (it = client.begin(); it != client.end(); it++)
+        clientError(it->first);
+    close(serverFd);
+}
+
 
 
 

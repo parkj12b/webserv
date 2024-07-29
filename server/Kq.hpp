@@ -15,6 +15,10 @@
 
 # include "Server.hpp"
 
+# define PORT 8000
+# define CLIENT_CNT 10
+# define EVENTCNT 10
+
 class Kq
 {
     private:
@@ -28,9 +32,10 @@ class Kq
         Kq& operator=(const Kq& src);
         ~Kq();
         //get function
-        int getKq() const;
+        int                         getKq() const;
         std::vector<struct kevent>  getFdList() const;
-        std::map<int, Server>   getServer() const;
+        std::map<int, Server>       getServer() const;
+        std::map<int, int>          getFindServer() const;
         //logic
         void    plusEvent(uintptr_t fd, int16_t filter, uint16_t flags, uint32_t fflags, intptr_t data, void *udata);
         void    plusClient(int serverFd);
