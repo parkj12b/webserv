@@ -158,17 +158,14 @@ EVENT Server::clientRead(int clientFd)
 
     if (client[clientFd].getRequestStatus() > 0)
         return (ING);
+    std::cout<<"ddddddddread eventdddddddd"<<std::endl;
     readSize = read(clientFd, buffer, BUFFER_SIZE);
-    if (readSize < 0)
+    if (readSize <= 0)
     {
         std::cout<<"read error\n";
         return (ERROR);  //client 연결 종료 시키기
     }
-    else if (readSize == 0)
-    {
-        // std::cout<<"parsing finish\n";
-        return (FINISH);
-    }
+    std::cout<<readSize<<std::endl;
     buffer[readSize] = '\0';
     client[clientFd].setMessage(buffer);
     if (client[clientFd].getRequestFin() == true || client[clientFd].getRequestStatus() > 0)
@@ -178,6 +175,11 @@ EVENT Server::clientRead(int clientFd)
             client[clientFd].showMessage();
         return (FINISH);
     }
+    // if (readSize < BUFFER_SIZE)
+    // {
+    //     client[clientFd].setRequestStatus(400);
+    //     return (FINISH);
+    // }
     return (ING);
 }
 
