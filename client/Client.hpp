@@ -65,8 +65,8 @@ class Client
         int                         getRequestStatus() const;
         //set function
         void    setFd(uintptr_t fd);
+        void    setRequestStatus(int temp);
         int     setStartLine(void);
-        int     setHeaderUtil(std::string temp);
         int     setHeader(void);
         int     setEntityLine(void);
         int     setTrailer(void);

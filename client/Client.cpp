@@ -92,6 +92,11 @@ void    Client::setFd(uintptr_t fd)
     this->fd = fd;
 }
 
+void    Client::setRequestStatus(int temp)
+{
+    request.status = temp;
+}
+
 bool    Client::getRequestFin()
 {
     return (request.fin);

@@ -167,7 +167,7 @@ EVENT Server::clientRead(int clientFd)
     else if (readSize == 0)
     {
         // std::cout<<"parsing finish\n";
-        return (ERROR);
+        return (FINISH);
     }
     buffer[readSize] = '\0';
     client[clientFd].setMessage(buffer);
