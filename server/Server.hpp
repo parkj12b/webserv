@@ -60,7 +60,7 @@ class Server
         EVENT   clientWrite(int clientFd);
         //error
         void    errorHandler(Client& c);
-        void    clientError(int clientFd);
+        void    clientFin(int clientFd);
         void    serverError();
 };
 

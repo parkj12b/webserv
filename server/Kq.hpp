@@ -43,7 +43,7 @@ class Kq
         void    eventWrite(struct kevent& store);
         void    mainLoop();
         //error
-        void    clientError(struct kevent& store);
+        void    clientFin(struct kevent& store);
         void    serverError(struct kevent& store);
 };
 

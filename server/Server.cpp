@@ -156,30 +156,23 @@ EVENT Server::clientRead(int clientFd)
     //buffer 문제인지 생각해보기
     int     readSize;
 
-    if (client[clientFd].getRequestStatus() > 0)
+    if (client[clientFd].getRequestFin() || client[clientFd].getRequestStatus() > 0)
         return (ING);
-    std::cout<<"ddddddddread eventdddddddd"<<std::endl;
     readSize = read(clientFd, buffer, BUFFER_SIZE);
     if (readSize <= 0)
     {
-        std::cout<<"read error\n";
+        std::cout<<"read error or socket close\n";
         return (ERROR);  //client 연결 종료 시키기
     }
-    std::cout<<readSize<<std::endl;
     buffer[readSize] = '\0';
     client[clientFd].setMessage(buffer);
-    if (client[clientFd].getRequestFin() == true || client[clientFd].getRequestStatus() > 0)
+    if (client[clientFd].getRequestFin() || client[clientFd].getRequestStatus() > 0)
     {
         // request 완성 -> respond 만들면 되지 않나?
-        if (client[clientFd].getRequestFin() == true)
+        if (client[clientFd].getRequestFin())
             client[clientFd].showMessage();
         return (FINISH);
     }
-    // if (readSize < BUFFER_SIZE)
-    // {
-    //     client[clientFd].setRequestStatus(400);
-    //     return (FINISH);
-    // }
     return (ING);
 }
 
@@ -219,10 +212,9 @@ EVENT Server::clientWrite(int clientFd)
             write(clientFd, buffer, strlen(buffer));
         }
         close(fd);
-        close(static_cast<int>(clientFd));
-        client.erase(clientFd);
     }
-    std::cout<<"read delete\n";
+    // close(static_cast<int>(clientFd));
+    // client.erase(clientFd);
     return (FINISH);
 }
 
@@ -264,11 +256,9 @@ void    Server::errorHandler(Client& c)
         write(c.getFd(), buffer, strlen(buffer));
     }
     close(fd);
-    close(c.getFd());
-    client.erase(c.getFd());
 }
 
-void    Server::clientError(int clientFd)
+void    Server::clientFin(int clientFd)
 {
     close(clientFd);
     client.erase(clientFd);
@@ -280,16 +270,6 @@ void    Server::serverError()
     std::map<int, Client>::iterator it;
 
     for (it = client.begin(); it != client.end(); it++)
-        clientError(it->first);
+        clientFin(it->first);
     close(serverFd);
 }
-
-
-
-
-
-
-
-
-
-

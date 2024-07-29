@@ -102,11 +102,13 @@ void    Kq::eventRead(struct kevent& store)
         return ;
         // std::cout<<"event read"<<std::endl;
     serverFd = findServer[store.ident];
+    if (serverFd == 0)
+        return ;
     event = server[serverFd].clientRead(store.ident);
     switch (event)
     {
         case ERROR:
-            clientError(store);
+            clientFin(store);
             //연결 종료하기
             break ;
         case ING:
@@ -133,13 +135,13 @@ void    Kq::eventWrite(struct kevent& store)
     switch (event)
     {
         case ERROR:
-            clientError(store);
+            clientFin(store);
             break ;
         case ING:
             break ;
         case FINISH:
             std::cout<<"write delete\n";
-            EV_SET(&store, store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
+            clientFin(store);
             break ;
     }
 }
@@ -163,26 +165,24 @@ void    Kq::mainLoop()
         else
         {
             if (store[i].flags == EV_ERROR)
-                clientError(store[i]);  //client 종료
+                clientFin(store[i]);  //client 종료
             else if (store[i].filter == EVFILT_READ)
-            {
                 eventRead(store[i]);
-            }
             else if (store[i].filter == EVFILT_WRITE)
                 eventWrite(store[i]);
         }
     }
 }
 
-void    Kq::clientError(struct kevent& store)
+void    Kq::clientFin(struct kevent& store)
 {
     int     serverFd;
 
-    std::cout<<"error"<<std::endl;
-    serverFd = findServer[store.ident];
-    server[serverFd].clientError(store.ident);
+    // std::cout<<"error"<<std::endl;
     EV_SET(&store, store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
     EV_SET(&store, store.ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+    serverFd = findServer[store.ident];
+    server[serverFd].clientFin(store.ident);
 }
 
 void    Kq::serverError(struct kevent& store)
@@ -192,11 +192,6 @@ void    Kq::serverError(struct kevent& store)
     Server  temp = server[store.ident];
 
     //server file discriptor가 에러가 나왔을 때에 연결된 클라이언트의 모든 것을 에러 처리한다. 
-    temp.serverError();
     EV_SET(&store, store.ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+    temp.serverError();
 }
-
-
-
-
-
