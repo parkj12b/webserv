@@ -153,6 +153,7 @@ int Server::plusClient(void)
 
 EVENT Server::clientRead(int clientFd)
 {
+    //buffer 문제인지 생각해보기
     int     readSize;
 
     if (client[clientFd].getRequestStatus() > 0)
@@ -166,7 +167,7 @@ EVENT Server::clientRead(int clientFd)
     else if (readSize == 0)
     {
         // std::cout<<"parsing finish\n";
-        return (ERROR);
+        return (FINISH);
     }
     buffer[readSize] = '\0';
     client[clientFd].setMessage(buffer);
