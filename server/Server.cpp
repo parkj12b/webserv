@@ -178,11 +178,11 @@ EVENT Server::clientRead(struct kevent& store)
             client[store.ident].showMessage();
         return (FINISH);
     }
-    if (readSize < BUFFER_SIZE && buffer[readSize - 1] != '\n')
-    {
-        client[store.ident].setRequestStatus(400);
-        return (FINISH);
-    }
+    // if (readSize < BUFFER_SIZE && buffer[readSize - 1] != '\n')
+    // {
+    //     client[store.ident].setRequestStatus(400);
+    //     return (FINISH);
+    // }
     return (ING);
 }
 
