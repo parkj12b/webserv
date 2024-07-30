@@ -56,8 +56,8 @@ class Server
         std::map<int, Client>  getClient(void) const;
         //logic
         int     plusClient(void);
-        EVENT   clientRead(int clientFd);
-        EVENT   clientWrite(int clientFd);
+        EVENT   clientRead(struct kevent& store);
+        EVENT   clientWrite(struct kevent& store);
         //error
         void    errorHandler(Client& c);
         void    clientFin(int clientFd);

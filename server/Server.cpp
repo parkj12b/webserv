@@ -151,32 +151,42 @@ int Server::plusClient(void)
     //나갈 때 소멸자가 호출됨
 }
 
-EVENT Server::clientRead(int clientFd)
+EVENT Server::clientRead(struct kevent& store)
 {
     //buffer 문제인지 생각해보기
     int     readSize;
 
-    if (client[clientFd].getRequestFin() || client[clientFd].getRequestStatus() > 0)
+    // if (store.flags != 5)
+    // {
+    //     client[store.ident].setRequestStatus(400);
+    //     return (FINISH);
+    // }
+    if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
         return (ING);
-    readSize = read(clientFd, buffer, BUFFER_SIZE);
+    readSize = read(store.ident, buffer, BUFFER_SIZE);
     if (readSize <= 0)
     {
         std::cout<<"read error or socket close\n";
-        return (ERROR);  //client 연결 종료 시키기
+        return (ERROR);
     }
     buffer[readSize] = '\0';
-    client[clientFd].setMessage(buffer);
-    if (client[clientFd].getRequestFin() || client[clientFd].getRequestStatus() > 0)
+    client[store.ident].setMessage(buffer);
+    if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
     {
         // request 완성 -> respond 만들면 되지 않나?
-        if (client[clientFd].getRequestFin())
-            client[clientFd].showMessage();
+        if (client[store.ident].getRequestFin())
+            client[store.ident].showMessage();
+        return (FINISH);
+    }
+    if (readSize < BUFFER_SIZE && buffer[readSize - 1] != '\n')
+    {
+        client[store.ident].setRequestStatus(400);
         return (FINISH);
     }
     return (ING);
 }
 
-EVENT Server::clientWrite(int clientFd)
+EVENT Server::clientWrite(struct kevent& store)
 {
     int     sum;
     int     readSize;
@@ -185,8 +195,8 @@ EVENT Server::clientWrite(int clientFd)
     std::string str;
     const char  *temp = "HTTP/1.1 200 OK\nContent-Type: text/html;charset=UTF-8\nContent-Length: ";
 
-    if (client[clientFd].getRequestStatus() > 0)
-        errorHandler(client[clientFd]);
+    if (client[store.ident].getRequestStatus() > 0)
+        errorHandler(client[store.ident]);
     else
     {
         fd = open("./index.html", O_RDONLY);
@@ -199,17 +209,17 @@ EVENT Server::clientWrite(int clientFd)
             sum += readSize;
         }
         close(fd);
-        write(clientFd, temp, strlen(temp));
+        write(store.ident, temp, strlen(temp));
         str = std::to_string(sum);
-        write(clientFd, str.c_str(), str.size());
-        write(clientFd, "\n\n", 2);
+        write(store.ident, str.c_str(), str.size());
+        write(store.ident, "\n\n", 2);
         fd = open("./index.html", O_RDONLY);
         while (1)
         {
             readSize = read(fd, buffer, BUFFER_SIZE);
             if (readSize <= 0)
                 break;
-            write(clientFd, buffer, strlen(buffer));
+            write(store.ident, buffer, strlen(buffer));
         }
         close(fd);
     }
@@ -270,6 +280,10 @@ void    Server::serverError()
     std::map<int, Client>::iterator it;
 
     for (it = client.begin(); it != client.end(); it++)
+    {
+        if (it->first == 0)
+            continue ;
         clientFin(it->first);
+    }
     close(serverFd);
 }
