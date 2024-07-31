@@ -26,9 +26,6 @@
 #include <arpa/inet.h>
 
 # define BUFFER_SIZE 4096
-# define PORT 8000
-# define CLIENT_CNT 10
-# define EVENTCNT 10
 
 //server를 여러 개 만들 경우에는 kq클래스 만들기
 //kq 클래스에서 서버 클래스를 관리하기
@@ -59,11 +56,12 @@ class Server
         std::map<int, Client>  getClient(void) const;
         //logic
         int     plusClient(void);
-        EVENT   clientRead(int clientFd);
-        EVENT   clientWrite(int clientFd);
+        EVENT   clientRead(struct kevent& store);
+        EVENT   clientWrite(struct kevent& store);
         //error
         void    errorHandler(Client& c);
-        void    clientError(int clientFd);
+        void    clientFin(int clientFd);
+        void    serverError();
 };
 
 #endif

@@ -116,7 +116,7 @@ int Client::setStartLine(void)
         if (startline.plus(msg.substr(0, flag)) < 0)  //ingu test
         {
             request.status = 400;
-            return (-1);  //400
+            return (1);  //400
         }
         msg = msg.substr(flag + 2);
         // std::cout<<"msg: "<<msg<<"\n";
@@ -131,7 +131,7 @@ int Client::setStartLine(void)
         if (msg.size() > 8192)
         {
             request.status = 414;
-            return (-2);  //414
+            return (2);  //414
         }
     }
     return (0);
@@ -142,7 +142,7 @@ int Client::setHeader(void)
     size_t      flag;
     std::string str;
 
-    if (!startline.getCompletion() || headerline.getCompletion())
+    if (!startline.getCompletion() || headerline.getCompletion() || request.fin || request.status)
         return (0);
     std::cout<<"...headerline parsing...\n";
     while (1)
@@ -155,7 +155,7 @@ int Client::setHeader(void)
                 if (headerline.headerError() < 0)
                 {
                     request.status = 400;
-                    return (-2);  //vital header not or header double
+                    return (2);  //vital header not or header double
                 }
                 request.header = headerline.getHeader();
                 msg = msg.substr(flag + 2);  //(ingu check)
@@ -165,13 +165,13 @@ int Client::setHeader(void)
             if (headerline.plus(str) < 0)
             {
                 request.status = 400;
-                return (-1);  //400
+                return (1);  //400
             }
             msg = msg.substr(flag + 2);
             if (headerline.getHeader().size() > 24576)
             {
                 request.status = 400;
-                return (-2);  //400
+                return (2);  //400
             }
         }
         else
@@ -179,13 +179,15 @@ int Client::setHeader(void)
             if (msg.size() > 8192)
             {
                 request.status = 414;
-                return (-3);  //414
+                return (3);  //414
             }
             break ;
         }
     }
     if (headerline.getCompletion() && headerline.getEntitytype() == ENOT)
     {
+        //아직 다 들어오지 않은 데이터가 있을 수도 있잔녀 이건 우선 생각하지 않음
+        //데이터가 후에 들어온다고 가정한다면 그때 가서 처리를 해주면 됨 하지만 들어오지 않고 eof가 들어오면 맞는 데이터임에도 error로 처리하기 때문에 여기서 이렇게 처리하는 것이 맡다. 
         if (msg.empty())
             request.fin = true;
         else
@@ -194,19 +196,17 @@ int Client::setHeader(void)
     return (0);
 }
 
-int Client::setEntityLine(void)
+int Client::setBodyLine(void)
 {
-    if (!headerline.getCompletion() || entityline.getCompletion() || request.fin == true || request.status > 0)
+    if (!headerline.getCompletion() || entityline.getCompletion() || request.fin || request.status)
         return (0);
-    std::cout<<"...setentityline parsing...\n";
+    std::cout<<"...setBodyLine parsing...\n";
     entityline.initContentLength(headerline.getContentLength());
     if (entityline.plus(msg, headerline.getEntitytype()) < 0)
     {
-        std::cout<<"dklsafljf\n"<<std::endl;
         request.status = 400;
-        return (-1);    
+        return (1);
     }
-    std::cout<<"dklsafljf\n"<<std::endl;
     request.entity = entityline.getEntity();
     if (entityline.getCompletion() && headerline.getTe() == NOT)
     {
@@ -214,7 +214,7 @@ int Client::setEntityLine(void)
         {
             std::cout<<"herer\n"<<std::endl;
             request.status = 414;
-            return (-2);
+            return (2);
         }
         else
             request.fin = true;
@@ -243,7 +243,7 @@ int Client::setTrailer(void)
             if (ans < 0)
             {
                 request.status = 400;
-                return (-1);
+                return (1);
             }
             else if (ans != 0)
             {
@@ -257,7 +257,7 @@ int Client::setTrailer(void)
                 else
                 {
                     request.status = 414;
-                    return (-2);
+                    return (2);
                 }
             }
         }
@@ -266,7 +266,7 @@ int Client::setTrailer(void)
             if (msg.size() > 8192)
             {
                 request.status = 414;
-                return (-2);  //414
+                return (2);  //414
             }
             break ;
         }
@@ -308,23 +308,23 @@ void    Client::setMessage(std::string str)
 {
     msg += str;
     write(logs, &str[0], str.size());
-    if (setStartLine() < 0)
+    if (setStartLine())  //max size literal
     {
         std::cout<<fd<<" "<<request.status<<" ";  //debug
         std::cout<<"Startline Error\n";  //debug
         return ;  //시작줄 에러 처리하기
     }
-    if (setHeader() < 0)
+    if (setHeader())  //max size literal
     {
         std::cout<<"Header Error\n";
         return ;  //여기서 에러 처리하기
     }
-    if (setEntityLine() < 0)
+    if (setBodyLine())
     {
         std::cout<<"Body Error\n";
         return ;   //여기서 에러 처리하기
     }
-    if (setTrailer() < 0)
+    if (setTrailer())
     {
         std::cout<<"Trailer Error\n";
         return ; 

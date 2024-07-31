@@ -68,7 +68,7 @@ class Client
         void    setRequestStatus(int temp);
         int     setStartLine(void);
         int     setHeader(void);
-        int     setEntityLine(void);
+        int     setBodyLine(void);
         int     setTrailer(void);
         //logic
         void    setMessage(std::string str);
