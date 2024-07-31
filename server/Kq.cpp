@@ -104,7 +104,6 @@ void    Kq::eventRead(struct kevent& store)
     serverFd = findServer[store.ident];
     if (serverFd == 0)
         return ;
-    std::cout<<"store.flag: "<<store.flags<<std::endl;
     event = server[serverFd].clientRead(store);
     // std::cout<<"EV_EOF"<<std::endl;
     switch (event)

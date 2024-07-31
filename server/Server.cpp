@@ -156,11 +156,6 @@ EVENT Server::clientRead(struct kevent& store)
     //buffer 문제인지 생각해보기
     int     readSize;
 
-    // if (store.flags != 5)
-    // {
-    //     client[store.ident].setRequestStatus(400);
-    //     return (FINISH);
-    // }
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
         return (ING);
     readSize = read(store.ident, buffer, BUFFER_SIZE);
@@ -178,11 +173,6 @@ EVENT Server::clientRead(struct kevent& store)
             client[store.ident].showMessage();
         return (FINISH);
     }
-    // if (readSize < BUFFER_SIZE && buffer[readSize - 1] != '\n')
-    // {
-    //     client[store.ident].setRequestStatus(400);
-    //     return (FINISH);
-    // }
     return (ING);
 }
 
