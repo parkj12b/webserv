@@ -19,6 +19,7 @@
 # include <map>
 # include <sstream>
 # include <algorithm>
+# include <cctype>
 
 enum    ENTITYTYPE 
 {

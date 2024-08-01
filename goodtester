@@ -1,7 +1,10 @@
 GET / HTTP/1.1
 Host: localhost
 Transfer-Encoding: chunked
+Trailer: Hi, Good
 
 4
 HIHI
 0
+
+hi: Hi

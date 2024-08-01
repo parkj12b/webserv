@@ -2,6 +2,8 @@
 #include <map>
 #include <sstream>
 #include <vector>
+#include <algorithm>
+#include <cctype>
 
 enum    NUM
 {
@@ -72,6 +74,12 @@ int main()
     std::string str1;
     str1 = std::to_string(temp);
     std::cout<<str1<<" "<<str1.size()<<std::endl;
+    std::cout<<"\n\n=========test9=========\n";
+    std::string str9 = "hI, My naMe is HwanG inGyUU. s";
+    std::cout<<str9<<std::endl;
+    for (std::string::iterator it = str9.begin(); it != str9.end(); it++)
+        *it = std::tolower(*it);
+    std::cout<<str9<<std::endl;
     return 0;
 }
 
