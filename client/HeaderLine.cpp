@@ -220,7 +220,7 @@ int HeaderLine::plus(std::string& temp)
     // std::cout<<temp<<std::endl;
     eraseSpace(temp, false);
     if (temp.empty())
-        return (-1);  //공백만 들어온 상황
+        return (-1);  //400
     // if (temp[temp.size() - 1] == ',')
     //     temp.erase(temp.size() - 1);
     // std::cout<<temp<<std::endl;
