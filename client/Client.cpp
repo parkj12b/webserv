@@ -154,6 +154,7 @@ int Client::setHeader(void)
             {
                 if (headerline.headerError() < 0)
                 {
+                    std::cout<<"good\n\n"<<std::endl;
                     request.status = 400;
                     return (2);  //vital header not or header double
                 }

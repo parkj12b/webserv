@@ -16,6 +16,7 @@ extern int logs;
 
 std::map<std::string, Method> originMethodInit()
 {
+    //config 파일에서 정해주기
     std::map<std::string, Method> m;
 
     m["GET"] = GET;
@@ -29,10 +30,13 @@ std::map<std::string, Version> originVersionInit()
 {
     std::map<std::string, Version> m;
 
+    m["HTTP/1"] = HTTP10;
     m["HTTP/1.0"] = HTTP10;
     m["HTTP/1.1"] = HTTP11;
     m["HTTP/1.2"] = HTTP12;
+    m["HTTP/2"] = HTTP20;
     m["HTTP/2.0"] = HTTP20;
+    m["HTTP/3"] = HTTP30;
     m["HTTP/3.0"] = HTTP30;
     return (m);
 }

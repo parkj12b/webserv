@@ -19,11 +19,11 @@ std::vector<std::string>    manyHeaderInit()
 {
     std::vector<std::string>    v;
 
-    v.push_back("Accept");
-    v.push_back("Accept-Encoding");
-    v.push_back("Accept-Language");
+    v.push_back("accept");
+    v.push_back("accept-encoding");
+    v.push_back("accept-language");
     v.push_back("sec-ch-ua");
-    v.push_back("Trailer");
+    v.push_back("trailer");
     return (v);
 }
 
@@ -32,7 +32,7 @@ std::vector<std::string>    vitalHeaderInit()
 {
     std::vector<std::string>    v;
 
-    v.push_back("Host");
+    v.push_back("host");
     return (v);
 }
 
@@ -163,7 +163,8 @@ void    HeaderLine::setTrailer(TE temp)
 
 int HeaderLine::checkTrailer(std::string &temp)
 {
-    size_t  colon;
+    size_t      colon;
+    std::string trailerHeader;
 
     eraseSpace(temp);
     if (temp.empty())
@@ -175,11 +176,16 @@ int HeaderLine::checkTrailer(std::string &temp)
     {
         key = temp.substr(0, colon);
         eraseSpace(key);
+        for (std::string::iterator it = key.begin(); it != key.end(); it++)
+            *it = std::tolower(*it);
         if (key.empty())
             return (-2);  //400
-        if (key != header["Trailer"].front())
+        trailerHeader = header["trailer"].front();
+        for (std::string::iterator it = trailerHeader.begin(); it != trailerHeader.end(); it++)
+            *it = std::tolower(*it);
+        if (key != trailerHeader)
             return (-3);  //400
-        header["Trailer"].pop_front();
+        header["trailer"].pop_front();
         value = temp.substr(colon + 1);
         eraseSpace(value);
         if (value.empty())
@@ -188,7 +194,7 @@ int HeaderLine::checkTrailer(std::string &temp)
         if (pushValue() < 0)
             return (-3);  //400
         // header[key].push_back(str);
-        if (header["Trailer"].empty())
+        if (header["trailer"].empty())
             return (1);
     }
     else
@@ -220,6 +226,8 @@ int HeaderLine::plus(std::string& temp)
     {
         key = temp.substr(0, colon);
         eraseSpace(key);
+        for (std::string::iterator it = key.begin(); it != key.end(); it++)
+            *it = std::tolower(*it);
         if (key.empty())
             return (-2);  //400
         value = temp.substr(colon + 1);
@@ -252,33 +260,42 @@ int HeaderLine::headerError()
     {
         itm = header.find(*itv);
         if (itm == header.end())
+        {
             return (-1);  //400
+        }
     }
-    itm = header.find("Content-Length");
+    itm = header.find("content-length");
     if (itm != header.end())
     {
-        itm = header.find("Transfer-Encoding");
+        itm = header.find("transfer-encoding");
         if (itm == header.end())
         {
-            contentLength = std::stoi(header["Content-Length"].front());
+            contentLength = std::stoi(header["content-length"].front());
             if (contentLength < 0)
+            {
                 return (-2);
+            }
             entitytype = CONTENT;
         }
         else
+        {
             return (-2);  //400
+        }
     }
     else
     {
-        itm = header.find("Transfer-Encoding");
+        itm = header.find("transfer-encoding");
         if (itm != header.end())
         {
-            if (header["Transfer-Encoding"].front() != "chunked")
+            if (header["transfer-encoding"].front() != "chunked")
+            {
+                std::cout<<"good\n"<<std::endl;
                 return (-2);
+            }
             entitytype = TRANSFER;
         }
     }
-    itm = header.find("Trailer");
+    itm = header.find("trailer");
     if (itm != header.end())
         te = YES;
     completion = true;
