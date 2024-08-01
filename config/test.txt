@@ -1,0 +1,44 @@
+events {
+    worker_connections 1;
+}
+
+error_log log/error.log error;
+
+http {
+    
+    include /etc/nginx/mime.types;
+
+    error_page 500 502 503 504 /50x.html;
+    keepalive_timeout 75s;
+    client_max_body_size 1m;
+    autoindex on;
+
+    server {
+        listen 80;
+        server_name "";
+
+        limit_except method 
+
+        location / {
+            limit_except GET HEAD POST DELETE;
+            root /usr/share/nginx/html;
+            index index.html;
+        }
+
+        # maybe use either rewrite or return? rewrite not needed use return
+        location /moved {
+            rewrite old_page new_page last;
+        }
+
+        location /new-page {
+            return 301 https://example.com/new-page;   
+        }
+    }
+
+    server {
+        listen 8080;
+
+
+    }
+
+}
