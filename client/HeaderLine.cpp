@@ -39,7 +39,7 @@ std::vector<std::string>    vitalHeaderInit()
 std::vector<std::string> HeaderLine::manyHeader = manyHeaderInit();
 std::vector<std::string> HeaderLine::vitalHeader = vitalHeaderInit();
 
-void    HeaderLine::eraseSpace(std::string& str)
+void    HeaderLine::eraseSpace(std::string& str, bool space)
 {
     size_t  pos;
 
@@ -47,6 +47,11 @@ void    HeaderLine::eraseSpace(std::string& str)
     str.erase(0, pos);
     pos = str.find_last_not_of(' ');
     str.erase(pos + 1);
+    if (space)
+    {
+        for (std::string::iterator it = str.begin(); it != str.end(); it++)
+            *it = std::tolower(*it);
+    }
 }
 
 // bool    HeaderLine::checkMime(std::string temp)
@@ -74,7 +79,7 @@ int HeaderLine::pushValue()
     {
         while (std::getline(strStream, str, ','))
         {
-            eraseSpace(str);
+            eraseSpace(str, false);
             if (str.empty())
                 return (-1);  //400
             header[key].push_back(str);
@@ -166,7 +171,7 @@ int HeaderLine::checkTrailer(std::string &temp)
     size_t      colon;
     std::string trailerHeader;
 
-    eraseSpace(temp);
+    eraseSpace(temp, false);
     if (temp.empty())
         return (-1);  //400
     //pop_front(): 앞쪽에서 요소를 제거합니다.
@@ -175,9 +180,7 @@ int HeaderLine::checkTrailer(std::string &temp)
     if (colon != std::string::npos)
     {
         key = temp.substr(0, colon);
-        eraseSpace(key);
-        for (std::string::iterator it = key.begin(); it != key.end(); it++)
-            *it = std::tolower(*it);
+        eraseSpace(key, true);
         if (key.empty())
             return (-2);  //400
         trailerHeader = header["trailer"].front();
@@ -187,7 +190,7 @@ int HeaderLine::checkTrailer(std::string &temp)
             return (-3);  //400
         header["trailer"].pop_front();
         value = temp.substr(colon + 1);
-        eraseSpace(value);
+        eraseSpace(value, false);
         if (value.empty())
             return (-2);  //400
         // std::cout<<"key: "<<key;
@@ -215,7 +218,7 @@ int HeaderLine::plus(std::string& temp)
     size_t      colon;
 
     // std::cout<<temp<<std::endl;
-    eraseSpace(temp);
+    eraseSpace(temp, false);
     if (temp.empty())
         return (-1);  //공백만 들어온 상황
     // if (temp[temp.size() - 1] == ',')
@@ -225,13 +228,11 @@ int HeaderLine::plus(std::string& temp)
     if (colon != std::string::npos)
     {
         key = temp.substr(0, colon);
-        eraseSpace(key);
-        for (std::string::iterator it = key.begin(); it != key.end(); it++)
-            *it = std::tolower(*it);
+        eraseSpace(key, true);
         if (key.empty())
             return (-2);  //400
         value = temp.substr(colon + 1);
-        eraseSpace(value);
+        eraseSpace(value, false);
         if (value.empty())
             return (-3);  //400
         // std::cout<<"key: "<<key;
