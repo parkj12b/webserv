@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexer.hpp                                          :+:      :+:    :+:   */
+/*   Lexer.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 11:57:52 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/01 19:55:19 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/02 17:20:30 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,15 +55,17 @@ std::string intToUtf8(int codePoint) {
 class Tag {
 public:
     static const int
-        AND = 256, BASIC = 257, BREAK = 258, DO = 259, ELSE = 260, EQ = 261,
-        FALSE = 262, GE = 263, ID = 264, IF = 265, INDEX = 266, LE = 267,
-        MINUS = 268, NE = 269, NUM = 270, OR = 271, REAL = 272, TEMP = 273,
-        TRUE = 274, WHILE = 275;
+        AND = 256, BASIC = 257, BREAK = 258, DO = 259, ELSE = 260,
+        FALSE = 262, ID = 264, IF = 265, INDEX = 266,
+        MINUS = 268, NUM = 270, REAL = 272, TEMP = 273,
+        TRUE = 274, WHILE = 275, DIRECTIVE = 277,
+        CONTEXT = 278;
 };
 
 class Token {
 public:
     const int tag;
+    virtual ~Token() {}
     Token(int t) : tag(t) {}
     Token(const Token &t) : tag(t.tag) {}
     Token operator=(const Token &t) { (void) t; return *this; }
@@ -93,19 +95,8 @@ public:
     Word(string s, int tag) : Token(tag), lexeme(s) {}
     string toString() { return lexeme; }
     const static Word
-        And, Or, eq, ne, le, ge, minus, True, False, temp;
+        minus, True, False, temp;
 };
-
-const Word Word::And = Word("&&", Tag::AND);
-const Word Word::Or = Word("||", Tag::OR);
-const Word Word::eq = Word("==", Tag::EQ);
-const Word Word::ne = Word("!=", Tag::NE);
-const Word Word::le = Word("<=", Tag::LE);
-const Word Word::ge = Word(">=", Tag::GE);
-const Word Word::minus = Word("minus", Tag::MINUS);
-const Word Word::True = Word("true", Tag::TRUE);
-const Word Word::False = Word("false", Tag::FALSE);
-const Word Word::temp = Word("t", Tag::TEMP);
 
 class Real : public Token {
 public:
@@ -117,11 +108,27 @@ public:
 class Lexer {
 private:
     void init() {
-        reserve(Word("if", Tag::IF));
-        reserve(Word("else", Tag::ELSE));
-        reserve(Word("while", Tag::WHILE));
-        reserve(Word("do", Tag::DO));
-        reserve(Word("break", Tag::BREAK));
+        reserve(Word("events", Tag::CONTEXT));
+        reserve(Word("http", Tag::CONTEXT));
+        reserve(Word("server", Tag::CONTEXT));
+        reserve(Word("location", Tag::CONTEXT));
+        reserve(Word("limit_except", Tag::CONTEXT));
+        reserve(Word("error_log", Tag::DIRECTIVE));
+        reserve(Word("include", Tag::DIRECTIVE));
+        reserve(Word("worker_connection", Tag::DIRECTIVE));
+        reserve(Word("default_type", Tag::DIRECTIVE));
+        reserve(Word("keepalive_timeout", Tag::DIRECTIVE));
+        reserve(Word("listen", Tag::DIRECTIVE));
+        reserve(Word("server_name", Tag::DIRECTIVE));
+        reserve(Word("root", Tag::DIRECTIVE));
+        reserve(Word("error_page", Tag::DIRECTIVE));
+        reserve(Word("client_max_body_size", Tag::DIRECTIVE));
+        reserve(Word("fastcgi_pass", Tag::DIRECTIVE));
+        reserve(Word("fastcgi_index", Tag::DIRECTIVE));
+        reserve(Word("fastcgi_param", Tag::DIRECTIVE));
+        reserve(Word("index", Tag::DIRECTIVE));
+        reserve(Word("autoindex", Tag::DIRECTIVE));
+        reserve(Word("log_format", Tag::DIRECTIVE));
         reserve(Word::True);
         reserve(Word::False);
         reserve(Word::temp);
@@ -144,6 +151,7 @@ public:
         // reserve(Type::Bool);
         // reserve(Type::Float);
     }
+    Lexer(const Lexer &l) : words(l.words) {}
     Lexer(string fileName)
     {
         init();
@@ -158,31 +166,15 @@ public:
         peek = ' ';
         return true;
     }
-    Token scan() {
+    Token *scan() {
         for (;; readch()) {
             if (peek == ' ' || peek == '\t') continue;
             else if (peek == '\n') line = line + 1;
+            else if (peek == '#') {
+                while (peek != '\n') 
+                    readch();
+            }
             else break;
-        }
-        switch (peek) {
-            case '&':
-                if (readch('&')) return Word::And;
-                else return Token('&');
-            case '|':
-                if (readch('|')) return Word::Or;
-                else return Token('|');
-            case '=':
-                if (readch('=')) return Word::eq;
-                else return Token('=');
-            case '!':
-                if (readch('=')) return Word::ne;
-                else return Token('!');
-            case '<':
-                if (readch('=')) return Word::le;
-                else return Token('<');
-            case '>':
-                if (readch('=')) return Word::ge;
-                else return Token('>');
         }
         if ( isdigit(peek) ) {
             int v = 0;
@@ -192,10 +184,7 @@ public:
             } while ( isdigit(peek) );
             
             if (peek != '.')
-            {
-                cout << "string: " << v << endl;
-                return Num(v);  
-            }
+                return new Num(v);  
             float x = v, d = 10;
             for(;;) {
                 readch();
@@ -203,8 +192,7 @@ public:
                 x = x + (peek - '0') / d;
                 d = d * 10;
             }
-            cout << "string: " << x << endl;
-            return Real(x);
+            return new Real(x);
         }
         if (isalpha(peek)) {
             string b = "";
@@ -212,34 +200,31 @@ public:
                 b = b + peek;
                 readch();
             } while (isalnum(peek) || peek == '_' || peek == '.' || peek == '-'
-                || peek == '/' || peek == ':');
+                || peek == '/' || peek == ':' || peek == '=');
             map<string, Word>::iterator w = words.find(b);
-            cout << "string: " << b << endl;
             if (w != words.end()){
                 // cout << "str: " << b << endl;
                 // cout << "found: " << w->second.lexeme << endl;
-                return w->second;  
+                return new Word(w->second);  
             }
             Word word = Word(b, Tag::ID);
             words.insert(make_pair(b, word));
             // words[b] = word;
-            return word;
+            return new Word(word);
         }
-        if (peek == "\"") {
+        if (peek == '\"') {
             string b = "";
+            readch();
             do {
                 b = b + peek;
                 readch();
             } while (peek != '\"');
-            b = b + peek;
-            readch();
-            cout << "string: " << b << endl;
-            return Word(b, Tag::BASIC);
+            return new Word(b, Tag::ID);
         }
+        
         Token tok = Token(peek);
-        cout << "string: " << peek << endl;
         peek = ' ';
-        return tok;
+        return new Token(tok);
     }
 };
 

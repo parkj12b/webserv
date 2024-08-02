@@ -11,6 +11,8 @@ http {
     error_page 500 502 503 504 /50x.html;
     keepalive_timeout 75s;
     client_max_body_size 1m;
+    # client header client
+    # 
     autoindex on;
 
     server {
@@ -38,7 +40,11 @@ http {
     server {
         listen 8080;
 
-
+        "abc def ikkklllk";
     }
+
+    fast_cgi_param a 1
+    fast_cgi_param b 2
+    fast_cgi_param c 3
 
 }

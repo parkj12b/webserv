@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 14:29:44 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/01 14:56:25 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/02 16:52:45 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,64 +14,128 @@
 # define __ENV_HPP__
 
 #include <map>
+#include <unordered_map>
+#include <set>
 #include <string>
-#include <lexer.hpp>
+#include <vector>
+#include "Lexer.hpp"
+
+set<string> createSet(const char *str[]);
 
 class Env {
 private:
-    map<Token, Id> table;
+    vector<string> headDirective;
+    map<string, vector<vector<string> > > table;
 protected:
-    Env &prev;
+    Env *prev;
 public:
-    Env(Env &n) : prev(n) {}
-    void put(Token w, Id i) { table[w] = i; }
-    Id get(Token w) {
-        for (Env e = this; e != NULL; e = e.prev) {
-            Id found = e.table[w];
-            if (found != NULL) return found;
+    Env(Env *n) : prev(n) {}
+    vector<string> &getHeadDirective() { return headDirective; }
+    void put(string key, vector<string> args) {
+        map<string, vector<vector<string> > >::iterator v;
+        
+        v = table.find(key);
+        if (v == table.end()) {
+            vector<vector<string> > vec;
+            vec.push_back(args);
+            table.insert(pair<string, vector<vector<string> > >(key, vec));
+        } else {
+            v->second.push_back(args);
         }
-        return NULL;
+    }
+    vector<vector<string> > *get(string key) {
+        map<string, vector<vector<string> > >::iterator v;
+
+        v = table.find(key);
+        if (v == table.end()) {
+            return NULL;
+        }
+        return (&v->second);
     }
 };
 
-class Type : public Word {
+class Directives {
+private:
+    static unordered_map<string, set<string> > _directive;
+    static unordered_map<string, set<string> > _context;
 public:
-    int width;
-    Type(string s, int tag, int w) : Word(s, tag), width(w) {}
-    bool operator==(const Type &t) 
-        { return lexeme == t.lexeme && tag == t.tag && width == t.width; }
-    const static Type
-        Int, Float, Char, Bool;
-    static bool numeric(Type p) {
-        return p == Type::Char || p == Type::Int || p == Type::Float;
-    }
-    static Type *max(Type p1, Type p2) {
-        if (!numeric(p1) || !numeric(p2)) return NULL;
-        else if (p1 == Type::Float || p2 == Type::Float) return new Type(Type::Float);
-        else if (p1 == Type::Int || p2 == Type::Int) return new Type(Type::Int);
-        else return new Type(Type::Char);
-    }
+    static void init();
+    Directives() {}
 };
 
-const Type Type::Int = Type("int", Tag::BASIC, 4);
-const Type Type::Float = Type("float", Tag::BASIC, 8);
-const Type Type::Char = Type("char", Tag::BASIC, 1);
-const Type Type::Bool = Type("bool", Tag::BASIC, 1);
+unordered_map<string, set<string> > Directives::_directive = unordered_map<string, set<string> >();
+unordered_map<string, set<string> > Directives::_context = unordered_map<string, set<string> >();
 
-class Array : public Type {
-public:
-    Type of;
-    int size = 1;
-    Array(int sz, Type p) : Type("[]", Tag::INDEX, sz * p.width), size(sz), of(p) {}
-    string toString() { return string("[") + to_string(size) + "] " + of.toString(); }
-};
+void Directives::init()
+{
+    const char *error_log[] = {"main", "http", "mail", "stream", "server", "location"};
+    const char *worker_connection[] = {"events"};
+    const char *default_type[] = {"http", "server", "location"};
+    const char *keepalive_timeout[] = {"http", "server", "location"};
+    const char *listen[] = {"server"};
+    const char *server_name[] = {"server"};
+    const char *root[] = {"http", "server", "location"};
+    const char *error_page[] = {"http", "server", "location"};
+    const char *client_max_body_size[] = {"http", "server", "location"};
+    const char *fastcgi_pass[] = {"location"};
+    const char *fastcgi_index[] = {"http", "server", "location"};
+    const char *fastcgi_param[] = {"http", "server", "location"};
+    const char *index[] = {"http", "server", "location"};
+    const char *autoindex[] = {"http", "server", "location"};
+    const char *log_format[] = {"http"};
+    _directive.insert(make_pair("error_log", createSet(error_log)));
+    _directive.insert(make_pair("worker_connection", createSet(worker_connection)));
+    _directive.insert(make_pair("default_type", createSet(default_type)));
+    _directive.insert(make_pair("keepalive_timeout", createSet(keepalive_timeout)));
+    _directive.insert(make_pair("listen", createSet(listen)));
+    _directive.insert(make_pair("server_name", createSet(server_name)));
+    _directive.insert(make_pair("root", createSet(root)));
+    _directive.insert(make_pair("error_page", createSet(error_page)));
+    _directive.insert(make_pair("client_max_body_size", createSet(client_max_body_size)));
+    _directive.insert(make_pair("fastcgi_pass", createSet(fastcgi_pass)));
+    _directive.insert(make_pair("fastcgi_index", createSet(fastcgi_index)));
+    _directive.insert(make_pair("fastcgi_param", createSet(fastcgi_param)));
+    _directive.insert(make_pair("index", createSet(index)));
+    _directive.insert(make_pair("autoindex", createSet(autoindex)));
+    _directive.insert(make_pair("log_format", createSet(log_format)));
 
-class Node {
-public:
-    int lexline = 0;
-    Node() { lexline = Lexer::line; }
-    void error(string s) { throw runtime_error("near line " + to_string(lexline) + ": " + s); }
-    
-};
+    const char *events[] = {"main"};
+    const char *http[] = {"main"};
+    const char *server[] = {"http"};
+    const char *location[] = {"server", "location"};
+    const char *limit_except[] = {"location"};
+    _context.insert(make_pair("events", createSet(events)));
+    _context.insert(make_pair("http", createSet(http)));
+    _context.insert(make_pair("server", createSet(server)));
+    _context.insert(make_pair("location", createSet(location)));
+    _context.insert(make_pair("limit_except", createSet(limit_except)));
+}
+
+// unordered_map<string, set<string> > Directives::_directive = {
+//     {"error_log", {"main", "http", "mail", "stream", "server", "location"}},
+//     {"worker_connection", {"events"}},
+//     {"default_type", {"http", "server", "location"}},
+//     {"keepalive_timeout", {"http", "server", "location"}},
+//     {"listen", {"server"}},
+//     {"server_name", {"server"}},
+//     {"root", {"http", "server", "location"}},
+//     {"error_page", {"http", "server", "location"}},
+//     {"client_max_body_size", {"http", "server", "location"}},
+//     {"fastcgi_pass", {"location"}},
+//     {"fastcgi_index", {"http", "server", "location"}},
+//     {"fastcgi_param", {"http", "server", "location"}},
+//     {"index", {"http", "server", "location"}},
+//     {"autoindex", {"http", "server", "location"}},
+//     {"log_format", {"http"}}
+// };
+
+// unordered_map<string, set<string> > Directives::_context = {
+//     {"events", {"main"}},
+//     {"http", {"main"}},
+//     {"server", {"http"}},
+//     {"location", {"server", "location"}},
+//     {"limit_except", {"location"}},
+// };
+
 
 #endif
