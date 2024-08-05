@@ -35,6 +35,7 @@ typedef struct Request
     Version version;
     std::string url;
     std::map<std::string, std::deque<std::string> >  header;
+    std::map<std::string, std::deque<std::string> >  trailer;
     std::vector<std::string>    entity;
 }   Request;
 

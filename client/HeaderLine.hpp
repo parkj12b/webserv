@@ -47,10 +47,13 @@ class HeaderLine
         void    eraseSpace(std::string& str, bool space);
         // bool    checkMime(std::string temp);
         int     pushValue();
+        int     commentDelete();
     public:
         //static variable
         static std::vector<std::string> manyHeader;
         static std::vector<std::string> vitalHeader;
+        static std::vector<std::string> commentHeader;
+        //Server, User-Agent, Via, comment
         //occf
         HeaderLine();
         HeaderLine(const HeaderLine& src);

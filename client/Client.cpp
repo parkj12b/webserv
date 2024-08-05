@@ -113,11 +113,8 @@ int Client::setStartLine(void)
     flag = msg.find("\r\n");
     if (flag != std::string::npos)
     {
-        if (startline.plus(msg.substr(0, flag)) < 0)  //ingu test
-        {
-            request.status = 400;
-            return (1);  //400
-        }
+        if ((request.status = startline.plus(msg.substr(0, flag))))  //ingu test
+            return (1);
         msg = msg.substr(flag + 2);
         // std::cout<<"msg: "<<msg<<"\n";
         request.method = startline.getMethod();
@@ -154,7 +151,6 @@ int Client::setHeader(void)
             {
                 if (headerline.headerError() < 0)
                 {
-                    std::cout<<"good\n\n"<<std::endl;
                     request.status = 400;
                     return (2);  //vital header not or header double
                 }
@@ -209,16 +205,20 @@ int Client::setBodyLine(void)
         return (1);
     }
     request.entity = entityline.getEntity();
-    if (entityline.getCompletion() && headerline.getTe() == NOT)
+    if (entityline.getCompletion())
     {
-        if (!msg.empty())
+        if (headerline.getEntitytype() != TRANSFER && headerline.getTe() == YES)
+            return (414);
+        if (headerline.getTe() == NOT)
         {
-            std::cout<<"herer\n"<<std::endl;
-            request.status = 414;
-            return (2);
+            if (!msg.empty())
+            {
+                request.status = 414;
+                return (2);
+            }
+            else
+                request.fin = true;
         }
-        else
-            request.fin = true;
     }
     return (0);
 }
