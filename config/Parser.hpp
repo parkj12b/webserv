@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/01 23:12:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/06 17:04:24 by minsepar         ###   ########.fr       */
+/*   Created: 2024/08/0 23:12:20 by minsepar          #+#    #+#             */
+/*   Updated: 2024/08/06 20:36:27 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,33 +15,66 @@
 
 #include "Lexer.hpp"
 #include "Env.hpp"
+#include "ServerConfig.hpp"
+
+class Syntax {
+public:
+    vector<int> tag;
+    int required; // 0 = false, 1 = true, 2 = ...  
+    Syntax(vector<int> t, int r) : tag(t), required(r) {}
+};
 
 class Parser {
 private:
-    Lexer _lex;
+    Lexer &_lex;
     Token *_look;
     Env *_top;
-    int _used = 0;
-    string _context;
-    // static map<string, vector<
+    vector<ServerConfig *> _serverConfig;
+    static map<string, int> _directiveNum;
+    static map<string, vector<Syntax> > _directiveSyntax;
 public:
-    Parser(Lexer l, string context)
-        : _lex(l), _context(context) { move(); }
-    void move() { _look = _lex.scan(); }
+    enum DirectiveNum {
+        ERROR_LOG = 1,
+        WORKER_CONNECTION,
+        DEFAULT_TYPE,
+        KEEPALIVE_TIMEOUT,
+        LISTEN,
+        SERVER_NAME,
+        ROOT,
+        ERROR_PAGE,
+        CLIENT_MAX_BODY_SIZE,
+        FASTCGI_PASS,
+        FASTCGI_INDEX,
+        FASTCGI_PARAM,
+        INDEX,
+        AUTOINDEX,
+        LOG_FORMAT,
+        EVENTS,
+        HTTP,
+        SERVER,
+        LOCATION,
+        LIMIT_EXCEPT,
+        ALLOW,
+        DENY,
+        INCLUDE
+    };
+    ServerConfig *curServer;
+    Parser(Lexer &l, string context)
+        : _lex(l), _top(new Env(NULL, context)) { move(); }
+    int getDirectiveNum(string s) { return _directiveNum[s]; }
+    vector<ServerConfig *> getServerConfig() { return _serverConfig; }
+    void move() {
+        cout << "move called\n";
+        _look = _lex.scan(); 
+        cout << _look->tag << endl;
+    }
     void error(string s) { throw runtime_error("near line " + to_string(_lex.line) + ": " + s); }
     void match(int t) {
         if (_look->tag == t) move();
         else error("syntax error");
     }
     void program() {
-        switch (_look->tag) {
-            case Tag::DIRECTIVE:
-                directives();
-                break;
-            case Tag::CONTEXT:
-                context();
-                break;
-        }
+        directives();
     }
 
     void directives() {
@@ -56,44 +89,157 @@ public:
     }
 
     void directive() {
-        head(); args(); match(';');
+        Word *w = dynamic_cast<Word *>(_look);
+        string context = w->lexeme;
+        move();
+        vector<Syntax> syntaxList = _directiveSyntax[context];
+        vector<Token *> v;
+        int i = 0;
+        while (_look->tag != ';' || _look->tag == -1) {
+            Syntax s = syntaxList[i];
+            vector<int> tag = s.tag;
+            bool isMatched = false;
+            for (size_t j = 0; j < tag.size(); j++)
+            {
+                if (_look->tag == tag[j]) {
+                    isMatched = true;
+                    v.push_back(_look);
+                    move();
+                    break;
+                }
+            }
+            if (!isMatched) {
+                if (s.required == 1) error("syntax error");
+            }
+            else {
+                if (s.required == 2) i--;
+            }
+            i++;
+        }
+        _top->put(context, v);
+        match(';');
+    }
+
+    void server() {
+        curServer = new ServerConfig(_top);
+        cout << "in server" << endl;
+        _serverConfig.push_back(curServer);
     }
 
     void context() {
+        cout << "in context" << endl;
         Word *w = dynamic_cast<Word *>(_look);
-        Env *newEnv = new Env(_top, w->lexeme);
+        cout << _top->getContext() << endl;
+        if (!Directives::containsContext(_top->getContext(), w->lexeme))
+            error("invalid context");
+        Env *temp = _top;
+        _top = new Env(_top, w->lexeme);
+        switch(_directiveNum[w->lexeme]) {
+            case SERVER:
+                server();
+                break;
+            case LOCATION:
+                curServer->location.push_back(_top);
+                break;
+            case LIMIT_EXCEPT:
+                curServer->limitExcept.push_back(_top);
+                break;
+        }
         match(Tag::CONTEXT);
-        headDirective(newEnv); match('{');
+        headDirective(); match('{');
         directives();
         match('}');
+        _top = temp;
     }
 
-    void headDirective(Env *env) {
-        vector<string> v = _top->getHeadDirective();
+    void headDirective() {
+        cout << "in headDirective" << endl;
+        vector<Token *> v = _top->getHeadDirective();
         string context = _top->getContext();
-        int i;
-        while (true) {
-            i = 0;
-            switch (_look->tag){
-                //do type check here and add to vector
-                case Tag::ID:
-                case Tag::NUM:
+        vector<Syntax> syntaxList = _directiveSyntax[context];
+        int i = 0;
+        while (_look->tag != '{') {
+            Syntax s = syntaxList[i];
+            vector<int> tag = s.tag;
+            bool isMatched = false;
+            for (size_t j = 0; j < tag.size(); j++)
+            {
+                if (_look->tag == tag[j]) {
+                    isMatched = true;
+                    v.push_back(_look);
+                    move();
+                    break;
+                }
             }
-            Word *w = dynamic_cast<Word *>(_look);
-            v.push_back(w->lexeme);
-            match(Tag::ID);
+            if (!isMatched) {
+                if (s.required == 1) error("syntax error");
+            }
+            else {
+                if (s.required == 2) i--;
+            }
             i++;
         }
-        //args();
     }
 
     void head() {
         
     }
 
-    void args() {
-        
-    }
 };
+
+map<string, int> Parser::_directiveNum = {
+    {"error_log", 1},
+    {"worker_connections", 2},
+    {"default_type", 3},
+    {"keepalive_timeout", 4},
+    {"listen", 5},
+    {"server_name", 6},
+    {"root", 7},
+    {"error_page", 8},
+    {"client_max_body_size", 9},
+    {"fastcgi_pass", 10},
+    {"fastcgi_index", 11},
+    {"fastcgi_param", 12},
+    {"index", 13},
+    {"autoindex", 14},
+    {"log_format", 15},
+    {"events", 16},
+    {"http", 17},
+    {"server", 18},
+    {"location", 19},
+    {"limit_except", 20},
+    {"allow", 21},
+    {"deny", 22},
+    {"include", 23},
+    {"return", 24}
+};
+
+map<string, vector<Syntax> > Parser::_directiveSyntax = {
+    {"error_log", {{{Tag::ID}, 1}, {{Tag::ID}, 0}}},
+    {"worker_connections", {{{Tag::NUM}, 1}}},
+    {"default_type", {{{Tag::ID}, 1}}},
+    {"keepalive_timeout", {{{Tag::TIME}, 1}, {{Tag::TIME}, 0}}},
+    {"listen", {{{Tag::NUM, Tag::IPV4}, 1}}},
+    {"server_name", {{{Tag::ID}, 1}, {{Tag::ID}, 2}}},
+    {"root", {{{Tag::ID}, 1}}},
+    {"error_page", {{{Tag::HTTPCODE}, 1}, {{Tag::HTTPCODE}, 2}, {{Tag::ID}, 0}}},
+    {"client_max_body_size", {{{Tag::BYTES}, 1}}},
+    {"fastcgi_pass", {{{Tag::ID}, 1}}},
+    {"fastcgi_index", {{{Tag::ID}, 1}}},
+    {"fastcgi_param", {{{Tag::ID}, 1}, {{Tag::ID}, 1}}},
+    {"index", {{{Tag::ID}, 1}, {{Tag::ID}, 2}}},
+    {"autoindex", {{{Tag::ID}, 1}}},
+    {"log_format", {{{Tag::ID}, 1}, {{Tag::ID}, 0}, {{Tag::ID}, 1}, {{Tag::ID}, 2}}},
+    {"events", {}},
+    {"http", {}},
+    {"server", {}},
+    {"location", {{{'=', '~', Tag::ID}, 1}, {{Tag::ID}, 1}}},
+    {"limit_except", {{{Tag::METHOD}, 1}, {{Tag::METHOD}, 2}}},
+    {"allow", {{{Tag::ID, Tag::IPV4}, 1}}},
+    {"deny", {{{Tag::ID, Tag::IPV4}, 1}}},
+    {"include", {{{Tag::ID}, 1}}},
+    {"return", {{{Tag::HTTPCODE}, 1}, {{Tag::ID}, 0}}}
+};
+
 
 #endif

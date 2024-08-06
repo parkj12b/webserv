@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 11:57:52 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/06 17:03:27 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/07 02:07:50 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,9 +129,10 @@ private:
         reserve(Word("server", Tag::CONTEXT));
         reserve(Word("location", Tag::CONTEXT));
         reserve(Word("limit_except", Tag::CONTEXT));
+        reserve(Word("return", Tag::DIRECTIVE));
         reserve(Word("error_log", Tag::DIRECTIVE));
         reserve(Word("include", Tag::DIRECTIVE));
-        reserve(Word("worker_connection", Tag::DIRECTIVE));
+        reserve(Word("worker_connections", Tag::DIRECTIVE));
         reserve(Word("default_type", Tag::DIRECTIVE));
         reserve(Word("keepalive_timeout", Tag::DIRECTIVE));
         reserve(Word("listen", Tag::DIRECTIVE));
@@ -145,6 +146,8 @@ private:
         reserve(Word("index", Tag::DIRECTIVE));
         reserve(Word("autoindex", Tag::DIRECTIVE));
         reserve(Word("log_format", Tag::DIRECTIVE));
+        reserve(Word("allow", Tag::DIRECTIVE));
+        reserve(Word("deny", Tag::DIRECTIVE));
         reserve(Word("GET", Tag::METHOD));
         reserve(Word("HEAD", Tag::METHOD));
         reserve(Word("POST", Tag::METHOD));
@@ -302,14 +305,15 @@ public:
                         return new Word(b, Tag::HTTPCODE);
                 }
             }
-            if (isspace(peek))
+            if (isspace(peek) || peek == ';')
                 return new Num(stoi(b));
+            cout << lookahead << endl;
             if (lookahead == "client_max_body_size" && isByteUnit(peek))
             {
                 b += peek;
                 readch();
-                if (isspace(peek))
-                    return new Num(stoi(b));
+                if (isspace(peek) || peek == ';')
+                    return new Word(b, Tag::BYTES);
             }
             if (lookahead == "keepalive_timeout" && isTimeUnit(peek))
             {
@@ -320,7 +324,7 @@ public:
                     b += peek;
                     readch();
                 }
-                if (isspace(peek))
+                if (isspace(peek) || peek == ';')
                     return new Word(b, Tag::TIME);
             }
             if (lookahead == "listen" && peek == '.' && stoi(b) >= 0 && stoi(b) <= 255)
@@ -346,7 +350,7 @@ public:
                         break;
                     b += peek;
                     readch();
-                    if (curSegment == 4 && isspace(peek))
+                    if (curSegment == 4 && (isspace(peek) || peek == ';'))
                         return new Word(b, Tag::IPV4);
                     curSegment++;
                 }
