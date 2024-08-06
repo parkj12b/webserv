@@ -6,12 +6,13 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 15:26:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/02 15:41:03 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/04 19:38:41 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <string>
 #include <set>
+#include <fstream>
 
 using namespace std;
 
@@ -21,4 +22,23 @@ set<string> createSet(const char *str[])
     for (int i = 0; str[i]; i++)
         s.insert(str[i]);
     return s;
+}
+
+bool isString(char peek)
+{
+    if (isalnum(peek))
+        return true;
+    switch(peek)
+    {
+        case '_':
+        case '.':
+        case '-':
+        case '/':
+        case ':':
+        case '=':
+        case '?':
+        case '[':
+            return true;
+    }
+    return false;
 }

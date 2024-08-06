@@ -19,7 +19,7 @@ http {
         listen 80;
         server_name "";
 
-        limit_except method 
+        limit_except GET;
 
         location / {
             limit_except GET HEAD POST DELETE;
@@ -43,8 +43,16 @@ http {
         "abc def ikkklllk";
     }
 
-    fast_cgi_param a 1
-    fast_cgi_param b 2
-    fast_cgi_param c 3
+    fastcgi_param a 1;
+    fastcgi_param b 2;
+    fastcgi_param c 3;
 
+    listen 255.255.255.255;
+    10ms
+    10s
+    10m
+    1h
+    1d
+
+    
 }

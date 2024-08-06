@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 23:12:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/02 17:20:43 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/06 17:04:24 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ private:
     Env *_top;
     int _used = 0;
     string _context;
+    // static map<string, vector<
 public:
     Parser(Lexer l, string context)
         : _lex(l), _context(context) { move(); }
@@ -59,7 +60,9 @@ public:
     }
 
     void context() {
-        Env *newEnv = new Env(_top);
+        Word *w = dynamic_cast<Word *>(_look);
+        Env *newEnv = new Env(_top, w->lexeme);
+        match(Tag::CONTEXT);
         headDirective(newEnv); match('{');
         directives();
         match('}');
@@ -67,20 +70,21 @@ public:
 
     void headDirective(Env *env) {
         vector<string> v = _top->getHeadDirective();
-        Word *w = dynamic_cast<Word *>(_look);
-        string context = w->lexeme;
-        match(Tag::CONTEXT);
+        string context = _top->getContext();
+        int i;
         while (true) {
+            i = 0;
             switch (_look->tag){
+                //do type check here and add to vector
                 case Tag::ID:
                 case Tag::NUM:
-                case Tag::REAL:
             }
             Word *w = dynamic_cast<Word *>(_look);
             v.push_back(w->lexeme);
             match(Tag::ID);
+            i++;
         }
-        args();
+        //args();
     }
 
     void head() {

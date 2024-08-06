@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 14:29:44 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/02 16:52:45 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/04 16:48:32 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,21 +24,23 @@ set<string> createSet(const char *str[]);
 
 class Env {
 private:
-    vector<string> headDirective;
-    map<string, vector<vector<string> > > table;
+    string _context;
+    vector<string> _headDirective;
+    map<string, vector<vector<string> > > _table;
 protected:
     Env *prev;
 public:
-    Env(Env *n) : prev(n) {}
-    vector<string> &getHeadDirective() { return headDirective; }
+    Env(Env *n, string context) : _context(context), prev(n) {}
+    string getContext() { return _context; }
+    vector<string> &getHeadDirective() { return _headDirective; }
     void put(string key, vector<string> args) {
         map<string, vector<vector<string> > >::iterator v;
-        
-        v = table.find(key);
-        if (v == table.end()) {
+
+        v = _table.find(key);
+        if (v == _table.end()) {
             vector<vector<string> > vec;
             vec.push_back(args);
-            table.insert(pair<string, vector<vector<string> > >(key, vec));
+            _table.insert(pair<string, vector<vector<string> > >(key, vec));
         } else {
             v->second.push_back(args);
         }
@@ -46,8 +48,8 @@ public:
     vector<vector<string> > *get(string key) {
         map<string, vector<vector<string> > >::iterator v;
 
-        v = table.find(key);
-        if (v == table.end()) {
+        v = _table.find(key);
+        if (v == _table.end()) {
             return NULL;
         }
         return (&v->second);

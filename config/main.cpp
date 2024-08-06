@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <cwchar>
+#include <exception>
 
 #include "Lexer.hpp"
 #include "Env.hpp"
@@ -21,7 +22,13 @@ int main()
     // cout << "test: " << c << endl;
     while (true)
     {
-        Token *t = lex.scan();
+        Token *t = NULL;
+        try {
+            t = lex.scan();
+        } catch (exception &e) {
+            cout << e.what() << endl;
+            break;
+        }
         if (t->tag == -1)
             break;
         cout << t->toString() << endl;
@@ -29,15 +36,7 @@ int main()
             cout << "lexeme: " << dynamic_cast<Word *>(t)->lexeme << endl;
         else if (dynamic_cast<Num *>(t))
             cout << "value: " << dynamic_cast<Num *>(t)->value << endl;
-        else if (dynamic_cast<Real *>(t))
-            cout << "value: " << dynamic_cast<Real *>(t)->value << endl;
         cout << "tag: " << t->tag << endl;
     }
-
-    Env env(NULL);
-    Directives::init();
-    vector<string> args;
-
-    env.put("cgi_param", args);
     
 }
