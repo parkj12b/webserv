@@ -19,20 +19,25 @@ Kq::Kq()
     struct sockaddr_in  serverAdr;
     int                 option;
     int                 serverFd;
+    //temp
+    int                 portNum[4] = {80, 800, 8000, 8080};
 
     while ((kq = kqueue()) < 0);
     option = 1;
     //여기서 루프 돌면서 server socket전부다 만들기
-    while ((serverFd = socket(AF_INET, SOCK_STREAM, 0)) <= 0);
-    while (setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)) < 0);
-    memset(&serverAdr, 0, sizeof(serverAdr));
-    serverAdr.sin_family = AF_INET;
-    serverAdr.sin_addr.s_addr = htonl(INADDR_ANY);  //ip를 어떻게 가져오는 방향에 대해 고민하기
-    serverAdr.sin_port = htons(PORT);   //port도 마찬가지로 어떻게 가져오는지
-    while (bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0);
-    while (listen(serverFd, CLIENT_CNT) < 0);
-    plusEvent(serverFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
-    server[serverFd] = Server(serverFd);
+    for (int i = 0; i < 4; i++)
+    {
+        while ((serverFd = socket(AF_INET, SOCK_STREAM, 0)) <= 0);
+        while (setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)) < 0);
+        memset(&serverAdr, 0, sizeof(serverAdr));
+        serverAdr.sin_family = AF_INET;
+        serverAdr.sin_addr.s_addr = htonl(INADDR_ANY);  //ip를 어떻게 가져오는 방향에 대해 고민하기
+        serverAdr.sin_port = htons(portNum[i]);   //port도 마찬가지로 어떻게 가져오는지
+        while (bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0);
+        while (listen(serverFd, CLIENT_CNT) < 0);
+        plusEvent(serverFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
+        server[serverFd] = Server(serverFd);
+    }
 }
 
 Kq::Kq(const Kq& src)
