@@ -319,15 +319,19 @@ int HeaderLine::headerError()
     {
         itm = header.find(*itv);
         if (itm == header.end())
-        {
             return (-1);  //400
-        }
     }
     itm = header.find("content-type");
     if (itm != header.end())
     {
         while (itm->second.size() > 1)
             itm->second.pop_front();
+    }
+    itm = header.find("expect");
+    if (itm != header.end())
+    {
+        if (itm->second.front() != "100-continue")
+            return (-2);  //417
     }
     itm = header.find("content-length");
     if (itm != header.end())
@@ -337,9 +341,7 @@ int HeaderLine::headerError()
         {
             contentLength = std::stoi(header["content-length"].front());
             if (contentLength < 0)
-            {
                 return (-2);
-            }
             entitytype = CONTENT;
         }
         else
@@ -354,7 +356,6 @@ int HeaderLine::headerError()
         {
             if (header["transfer-encoding"].front() != "chunked")
             {
-                std::cout<<"good\n"<<std::endl;
                 return (-2);
             }
             entitytype = TRANSFER;
