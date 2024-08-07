@@ -17,14 +17,14 @@ http {
 
     server {
         listen 80;
-        server_name "";
+        server_name "minsepar";
 
         #limit_except GET;
 
         location / {
             limit_except GET HEAD POST DELETE {
-                allow ...;
-                deny ...;
+                allow 1.1.1.1;
+                deny all;
             }
             root /usr/share/nginx/html;
             index index.html;
@@ -32,12 +32,21 @@ http {
 
         # maybe use either rewrite or return? rewrite not needed use return
         location /moved {
+            fastcgi_pass abc;
         }
 
         location /new-page {
             return 301 https://example.com/new-page;   
         }
     }
+
+    server {
+        server_name "abc";
+    }
+
+    fastcgi_param ... ...;
+    fastcgi_param ... ...;
+    fastcgi_param ... ...;
 
     server {
         listen 8080;

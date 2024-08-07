@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 14:29:44 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/07 02:03:10 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/07 19:34:37 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,29 +25,36 @@ set<string> createSet(const char *str[]);
 class Env {
 private:
     string _context;
-    vector<Token *> _headDirective;
-    map<string, vector<vector<Token *> > > _table;
+    vector<vector< Token *> > _headDirective;
+    map<string, vector< vector<vector< Token *> > > > _table;
 protected:
     Env *prev;
 public:
     Env(Env *n, string context) : _context(context), prev(n) {}
     string getContext() { return _context; }
     Env *getPrev() { return prev; }
-    vector<Token *> &getHeadDirective() { return _headDirective; }
-    void put(string key, vector<Token *> &args) {
-        map<string, vector<vector<Token *> > >::iterator v;
+    vector< Token *> &getHeadDirectiveByIndex(size_t index)
+    {
+        while (_headDirective.size() <= index)
+        {
+            _headDirective.push_back(vector< Token *>());
+        }
+        return _headDirective[index];
+    }
+    void put(string key, vector<vector< Token *> > &args) {
+        map<string, vector<vector<vector< Token *> > > >::iterator v;
 
         v = _table.find(key);
         if (v == _table.end()) {
-            vector<vector<Token *> > vec;
+            vector<vector<vector< Token *> > > vec;
             vec.push_back(args);
             _table.insert(make_pair(key, vec));
         } else {
             v->second.push_back(args);
         }
     }
-    vector<vector<Token *> > *get(string key) {
-        map<string, vector<vector<Token *> > >::iterator v;
+    vector<vector<vector< Token *> > > *get(string key) {
+        map<string, vector<vector<vector< Token *> > > >::iterator v;
 
         v = _table.find(key);
         if (v == _table.end()) {

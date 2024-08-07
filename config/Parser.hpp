@@ -93,9 +93,12 @@ public:
         string context = w->lexeme;
         move();
         vector<Syntax> syntaxList = _directiveSyntax[context];
-        vector<Token *> v;
-        int i = 0;
+        vector<vector< Token *> > v;
+        size_t i = 0;
         while (_look->tag != ';' || _look->tag == -1) {
+            vector< Token *> subV;
+            if (i < v.size())
+                subV = v[i];
             Syntax s = syntaxList[i];
             vector<int> tag = s.tag;
             bool isMatched = false;
@@ -103,7 +106,9 @@ public:
             {
                 if (_look->tag == tag[j]) {
                     isMatched = true;
-                    v.push_back(_look);
+                    while (i >= v.size())
+                        v.push_back(vector<Token *>());
+                    v[i].push_back(_look);
                     move();
                     break;
                 }
@@ -134,32 +139,44 @@ public:
             error("invalid context");
         Env *temp = _top;
         _top = new Env(_top, w->lexeme);
-        switch(_directiveNum[w->lexeme]) {
-            case SERVER:
-                server();
-                break;
-            case LOCATION:
-                curServer->location.push_back(_top);
-                break;
-            case LIMIT_EXCEPT:
-                curServer->limitExcept.push_back(_top);
-                break;
-        }
+        if (_directiveNum[w->lexeme] == SERVER)
+            server();
         match(Tag::CONTEXT);
         headDirective(); match('{');
         directives();
         match('}');
+        Token *t = NULL;
+        string path;
+        switch(_directiveNum[w->lexeme]) {
+            case LOCATION:
+                t = _top->getHeadDirectiveByIndex(1)[0];
+                path = dynamic_cast<Word *>(t)->lexeme;
+                cout << path << endl;
+                if (curServer->location.find(path) == curServer->location.end())
+                    curServer->location.insert(make_pair(path, LocationConfig(_top)));
+                break;
+            case LIMIT_EXCEPT:
+                cout << "size: " << _top->getPrev()->getHeadDirectiveByIndex(1).size() << endl;
+                t = _top->getPrev()->getHeadDirectiveByIndex(1)[0];
+                path = dynamic_cast<Word *>(t)->lexeme;
+                if (curServer->location.find(path) != curServer->location.end()
+                    && curServer->location.find(path)->second.getLimitExcept() != NULL)
+                    error("multiple limit_except");
+                curServer->location.insert(make_pair(path, LocationConfig(_top->getPrev(), _top)));
+                curServer->location[path].setLimitExcept(_top);
+                break;
+        }
         _top = temp;
     }
 
     void headDirective() {
         cout << "in headDirective" << endl;
-        vector<Token *> v = _top->getHeadDirective();
         string context = _top->getContext();
         vector<Syntax> syntaxList = _directiveSyntax[context];
         int i = 0;
         while (_look->tag != '{') {
             Syntax s = syntaxList[i];
+            vector<Token *> &v = _top->getHeadDirectiveByIndex(i);
             vector<int> tag = s.tag;
             bool isMatched = false;
             for (size_t j = 0; j < tag.size(); j++)
@@ -179,10 +196,6 @@ public:
             }
             i++;
         }
-    }
-
-    void head() {
-        
     }
 
 };
@@ -233,7 +246,7 @@ map<string, vector<Syntax> > Parser::_directiveSyntax = {
     {"events", {}},
     {"http", {}},
     {"server", {}},
-    {"location", {{{'=', '~', Tag::ID}, 1}, {{Tag::ID}, 1}}},
+    {"location", {{{'=', '~', Tag::SYMBOL}, 0}, {{Tag::ID}, 1}}},
     {"limit_except", {{{Tag::METHOD}, 1}, {{Tag::METHOD}, 2}}},
     {"allow", {{{Tag::ID, Tag::IPV4}, 1}}},
     {"deny", {{{Tag::ID, Tag::IPV4}, 1}}},

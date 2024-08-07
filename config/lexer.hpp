@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 11:57:52 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/07 02:07:50 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/07 18:34:50 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,9 @@ std::string intToUtf8(int codePoint) {
 class Tag {
 public:
     static const int
-        ID = 256, IF = 257, IPV4 = 258, NUM = 259, DIRECTIVE = 260,
-        CONTEXT = 261, VAARG = 263, MASK = 263, HTTPCODE = 264,
-        BYTES = 265, TIME = 266, METHOD = 267;
+        ID = 256, IPV4 = 257, NUM = 258, DIRECTIVE = 259,
+        CONTEXT = 260, MASK = 261, HTTPCODE = 262,
+        BYTES = 263, TIME = 264, METHOD = 265, SYMBOL = 266;
 };
 
 class Token {
@@ -156,6 +156,9 @@ private:
         reserve(Word("CONNECT", Tag::METHOD));
         reserve(Word("OPTIONS", Tag::METHOD));
         reserve(Word("TRACE", Tag::METHOD));
+        reserve(Word("~*", Tag::SYMBOL));
+        reserve(Word("^~", Tag::SYMBOL));
+        
     }
 public:
     static int line;
