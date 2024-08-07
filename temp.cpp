@@ -13,6 +13,20 @@ enum    NUM
     FOUR
 };
 
+class Test
+{
+    private:
+        int *a;
+    public:
+        Test() {
+            a = new int[2];
+        }
+        ~Test()
+        {
+            delete[] a;
+        }
+};
+
 int main()
 {
     std::istringstream test("ONE   TWO  THREE  hi  THREE");
@@ -80,6 +94,40 @@ int main()
     for (std::string::iterator it = str9.begin(); it != str9.end(); it++)
         *it = std::tolower(*it);
     std::cout<<str9<<std::endl;
+
+    std::cout<<"\n\n=========test9=========\n";
+    Test    *TTT = new Test();
+    delete TTT;
+
+    std::cout<<"\n\n=========test10=========\n";
+    std::string test10 = "\"Good,,,,\", \"Hi\", good, ";
+    std::string ans;
+    int comma = true;
+
+    for (std::string::iterator it = test10.begin(); it != test10.end(); it++)
+    {
+        if (*it == '"')
+            comma = !comma;
+        else if (comma && *it == ',')
+            ans += '\0';
+        else
+            ans += *it;
+    }
+    if (!comma)
+        std::cout<<"ERROR\n";
+    for (std::string::iterator it = ans.begin(); it != ans.end(); it++)
+    {
+        if (*it != '\0')
+            std::cout<<*it;
+        else
+            std::cout<<"EOF"<<std::endl;
+    }
+    std::cout<<"\ncomma parsing"<<std::endl;
+    std::istringstream  strStream(ans);
+    while (std::getline(strStream, str, '\0'))
+    {
+        std::cout<<str<<std::endl;
+    }
     return 0;
 }
 

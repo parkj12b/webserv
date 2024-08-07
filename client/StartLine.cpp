@@ -30,14 +30,7 @@ std::map<std::string, Version> originVersionInit()
 {
     std::map<std::string, Version> m;
 
-    m["HTTP/1"] = HTTP10;
-    m["HTTP/1.0"] = HTTP10;
     m["HTTP/1.1"] = HTTP11;
-    m["HTTP/1.2"] = HTTP12;
-    m["HTTP/2"] = HTTP20;
-    m["HTTP/2.0"] = HTTP20;
-    m["HTTP/3"] = HTTP30;
-    m["HTTP/3.0"] = HTTP30;
     return (m);
 }
 
@@ -98,12 +91,12 @@ int     StartLine::plus(std::string temp)
             case 0:
                 method = originMethod[str];
                 if (method == 0)
-                    return (-1);
+                    return (400);
                 // std::cout<<str<<": "<<method<<"\n";
                 break ;
             case 1:
                 if (str.empty())
-                    return (-2);
+                    return (400);
                 url = str;
                 // std::cout<<str<<": "<<url<<"\n";
                 break ;
@@ -111,11 +104,11 @@ int     StartLine::plus(std::string temp)
                 version = originVersion[str];
                 // std::cout<<str<<": "<<version<<std::endl;
                 if (version == 0)
-                    return (-3);
+                    return (505);  //505
                 // std::cout<<str<<": "<<version<<std::endl;
                 break ;
             default:
-                return (-4);
+                return (400);
         }
         answer++;
     }
