@@ -23,7 +23,6 @@ http {
 
         location / {
             limit_except GET HEAD POST DELETE {
-                allow 1.1.1.1;
                 deny all;
             }
             root /usr/share/nginx/html;

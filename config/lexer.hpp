@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 11:57:52 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/07 18:34:50 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/08 15:20:48 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ private:
         reserve(Word("index", Tag::DIRECTIVE));
         reserve(Word("autoindex", Tag::DIRECTIVE));
         reserve(Word("log_format", Tag::DIRECTIVE));
-        reserve(Word("allow", Tag::DIRECTIVE));
+        // reserve(Word("allow", Tag::DIRECTIVE));
         reserve(Word("deny", Tag::DIRECTIVE));
         reserve(Word("GET", Tag::METHOD));
         reserve(Word("HEAD", Tag::METHOD));

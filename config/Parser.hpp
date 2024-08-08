@@ -29,6 +29,7 @@ private:
     Lexer &_lex;
     Token *_look;
     Env *_top;
+    Env *_event;
     vector<ServerConfig *> _serverConfig;
     static map<string, int> _directiveNum;
     static map<string, vector<Syntax> > _directiveSyntax;
@@ -54,13 +55,14 @@ public:
         SERVER,
         LOCATION,
         LIMIT_EXCEPT,
-        ALLOW,
+        // ALLOW,
         DENY,
         INCLUDE
     };
     ServerConfig *curServer;
     Parser(Lexer &l, string context)
-        : _lex(l), _top(new Env(NULL, context)) { move(); }
+        : _lex(l), _top(new Env(NULL, context)), _event(NULL) { move(); }
+    Env *getEvent() { return _event; }
     int getDirectiveNum(string s) { return _directiveNum[s]; }
     vector<ServerConfig *> getServerConfig() { return _serverConfig; }
     void move() {
@@ -148,6 +150,11 @@ public:
         Token *t = NULL;
         string path;
         switch(_directiveNum[w->lexeme]) {
+            case EVENTS:
+                if (_event != NULL)
+                    error("multiple events");
+                _event = _top;
+                break;
             case LOCATION:
                 t = _top->getHeadDirectiveByIndex(1)[0];
                 path = dynamic_cast<Word *>(t)->lexeme;
@@ -221,10 +228,10 @@ map<string, int> Parser::_directiveNum = {
     {"server", 18},
     {"location", 19},
     {"limit_except", 20},
-    {"allow", 21},
-    {"deny", 22},
-    {"include", 23},
-    {"return", 24}
+    // {"allow", 21},
+    {"deny", 21},
+    {"include", 22},
+    {"return", 23}
 };
 
 map<string, vector<Syntax> > Parser::_directiveSyntax = {
@@ -233,7 +240,7 @@ map<string, vector<Syntax> > Parser::_directiveSyntax = {
     {"default_type", {{{Tag::ID}, 1}}},
     {"keepalive_timeout", {{{Tag::TIME}, 1}, {{Tag::TIME}, 0}}},
     {"listen", {{{Tag::NUM, Tag::IPV4}, 1}}},
-    {"server_name", {{{Tag::ID}, 1}, {{Tag::ID}, 2}}},
+    {"server_name", {{{Tag::ID}, 1}}},
     {"root", {{{Tag::ID}, 1}}},
     {"error_page", {{{Tag::HTTPCODE}, 1}, {{Tag::HTTPCODE}, 2}, {{Tag::ID}, 0}}},
     {"client_max_body_size", {{{Tag::BYTES}, 1}}},
@@ -248,8 +255,8 @@ map<string, vector<Syntax> > Parser::_directiveSyntax = {
     {"server", {}},
     {"location", {{{'=', '~', Tag::SYMBOL}, 0}, {{Tag::ID}, 1}}},
     {"limit_except", {{{Tag::METHOD}, 1}, {{Tag::METHOD}, 2}}},
-    {"allow", {{{Tag::ID, Tag::IPV4}, 1}}},
-    {"deny", {{{Tag::ID, Tag::IPV4}, 1}}},
+    // {"allow", {{{Tag::ID, Tag::IPV4}, 1}}},
+    {"deny", {{{Tag::ID}, 1}}},
     {"include", {{{Tag::ID}, 1}}},
     {"return", {{{Tag::HTTPCODE}, 1}, {{Tag::ID}, 0}}}
 };

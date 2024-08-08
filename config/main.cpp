@@ -26,24 +26,24 @@ int main()
     
     
     // testing lexer module
-    while (true)
-    {
-        Token *t = NULL;
-        try {
-            t = lex.scan();
-        } catch (exception &e) {
-            cout << e.what() << endl;
-            break;
-        }
-        if (t->tag == -1)
-            break;
-        cout << t->toString() << endl;
-        if (dynamic_cast<Word *>(t))
-            cout << "lexeme: " << dynamic_cast<Word *>(t)->lexeme << endl;
-        else if (dynamic_cast<Num *>(t))
-            cout << "value: " << dynamic_cast<Num *>(t)->value << endl;
-        cout << "tag: " << t->tag << endl;
-    }
+    // while (true)
+    // {
+    //     Token *t = NULL;
+    //     try {
+    //         t = lex.scan();
+    //     } catch (exception &e) {
+    //         cout << e.what() << endl;
+    //         break;
+    //     }
+    //     if (t->tag == -1)
+    //         break;
+    //     cout << t->toString() << endl;
+    //     if (dynamic_cast<Word *>(t))
+    //         cout << "lexeme: " << dynamic_cast<Word *>(t)->lexeme << endl;
+    //     else if (dynamic_cast<Num *>(t))
+    //         cout << "value: " << dynamic_cast<Num *>(t)->value << endl;
+    //     cout << "tag: " << t->tag << endl;
+    // }
 
     //testing parser module with lexer
     // try {
@@ -54,9 +54,9 @@ int main()
     //     cout << e.what() << endl;
     // }
 
-    // parser.program();
+    parser.program();
     
-    // vector<ServerConfig *> v = parser.getServerConfig();
+    vector<ServerConfig *> v = parser.getServerConfig();
     // for (size_t i = 0; i < v.size(); i++)
     // {
     //     ServerConfig *s = v[i];
@@ -64,6 +64,7 @@ int main()
 
     //     cout << "server_name: " << dynamic_cast<Word *>((*(s->getConfig("server_name")))[0][0][0])->lexeme << endl;
     // }
+    
     // vector<ServerConfig *> v = parser.getServerConfig();
     // for (size_t i = 0; i < v.size(); i++)
     // {
@@ -76,5 +77,5 @@ int main()
     //         cout << dynamic_cast<Word *>(v[j])->lexeme << endl;
     //     }
     // }
-
+ 
 }

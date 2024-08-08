@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 14:29:44 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/07 19:34:37 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/08 18:31:04 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ class Env {
 private:
     string _context;
     vector<vector< Token *> > _headDirective;
-    map<string, vector< vector<vector< Token *> > > > _table;
+    //"key", [num of occurence][argument number][multiple arguments]
+    map<string, vector< vector< vector< Token *> > > > _table;
 protected:
     Env *prev;
 public:
