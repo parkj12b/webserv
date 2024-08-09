@@ -114,6 +114,8 @@ int     StartLine::plus(std::string temp)
         }
         answer++;
     }
+    if (answer != 2)
+        return (400);
     completion = true;
     return (0);
 }
