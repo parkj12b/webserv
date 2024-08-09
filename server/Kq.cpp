@@ -33,7 +33,11 @@ Kq::Kq()
         serverAdr.sin_family = AF_INET;
         serverAdr.sin_addr.s_addr = htonl(INADDR_ANY);  //ip를 어떻게 가져오는 방향에 대해 고민하기
         serverAdr.sin_port = htons(portNum[i]);   //port도 마찬가지로 어떻게 가져오는지
-        while (bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0);
+        while (bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0)
+        {
+            if (errno == EADDRINUSE)
+                std::exit(1);
+        }
         while (listen(serverFd, CLIENT_CNT) < 0);
         plusEvent(serverFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
         server[serverFd] = Server(serverFd);
@@ -105,12 +109,10 @@ void    Kq::eventRead(struct kevent& store)
 
     if (store.ident == 0)
         return ;
-        // std::cout<<"event read"<<std::endl;
     serverFd = findServer[store.ident];
     if (serverFd == 0)
         return ;
     event = server[serverFd].clientRead(store);
-    // std::cout<<"EV_EOF"<<std::endl;
     switch (event)
     {
         case ERROR:
@@ -119,9 +121,11 @@ void    Kq::eventRead(struct kevent& store)
             break ;
         case ING:
             break ;
+        case EXPECT:
+            plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
+            break ;
         case FINISH:
             // std::cout<<"read event delete\n";
-            EV_SET(&store, store.ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
             plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
             break ;
     }
@@ -149,6 +153,9 @@ void    Kq::eventWrite(struct kevent& store)
             std::cout<<"write delete\n";
             clientFin(store);
             break ;
+        case EXPECT:
+            EV_SET(&store, store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
+            break ;
     }
 }
 
@@ -166,23 +173,14 @@ void    Kq::mainLoop()
             if (store[i].flags == EV_ERROR)
                 serverError(store[i]);  //연결된 모든 client 종료
             else if (store[i].filter == EVFILT_READ)
-            {
                 plusClient(static_cast<int>(store[i].ident));
-            }
         }
         else
         {
-            if (store[i].flags & EV_CLEAR)
-            {
-                std::cout<<"herehe\n"<<std::endl;
-                eventWrite(store[i]);            
-            }
             if (store[i].flags == EV_ERROR)
                 clientFin(store[i]);  //client 종료
             else if (store[i].filter == EVFILT_READ)
             {
-                if (store[i].flags == EV_EOF)
-                    std::cout<<"EV_EOF"<<std::endl;
                 // else if (store[i].flags == EOF)
                 //     std::cout<<"EOF"<<std::endl;
                 eventRead(store[i]);

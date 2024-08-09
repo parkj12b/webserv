@@ -40,17 +40,18 @@ class HeaderLine
         bool        completion;
         TE          te;
         ENTITYTYPE  entitytype;
-        int         contentLength;
+        size_t      contentLength;
         std::string key;
         std::string value;
         std::map<std::string, std::deque<std::string> > header;
-        void    eraseSpace(std::string& str, bool space);
+        int     eraseSpace(std::string& str, bool space);
         // bool    checkMime(std::string temp);
         int     pushValue();
         int     commentDelete();
     public:
         //static variable
-        static std::vector<std::string> manyHeader;
+        static std::vector<std::string> singleHeader;
+        static std::vector<std::string> dateHeader;
         static std::vector<std::string> vitalHeader;
         static std::vector<std::string> commentHeader;
         //Server, User-Agent, Via, comment

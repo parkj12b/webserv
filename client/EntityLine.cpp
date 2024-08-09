@@ -109,6 +109,7 @@ int EntityLine::plus(std::string &str, ENTITYTYPE entitytype)
 
     if (entitytype == CONTENT)
     {
+        std::cout<<contentLength<<' '<<str.size()<<std::endl;
         if (contentLength >= static_cast<int>(str.size()))
         {
             contentLength -= static_cast<int>(str.size());

@@ -107,7 +107,7 @@ int Client::setStartLine(void)
     size_t      flag;
 
     // std::cout<<"msg: "<<msg<<"\n";
-    if (startline.getCompletion())
+    if (startline.getCompletion() || request.fin || request.status)
         return (0);
     std::cout<<"...startline parsing...\n";
     flag = msg.find("\r\n");
@@ -125,10 +125,11 @@ int Client::setStartLine(void)
     {
         // std::cout<<msg.size()<<"good"<<std::endl;
         // std::cout<<"herer\n";
+        //max size도 받아와야 한다. 
         if (msg.size() > 8192)
         {
             request.status = 414;
-            return (2);  //414
+            return (2);
         }
     }
     return (0);
@@ -149,21 +150,20 @@ int Client::setHeader(void)
         {
             if (flag == 0)
             {
-                if (headerline.headerError() < 0)
-                {
-                    request.status = 400;
-                    return (2);  //vital header not or header double
-                }
                 request.header = headerline.getHeader();
                 msg = msg.substr(flag + 2);  //(ingu check)
+                if ((request.status = headerline.headerError()) > 0)
+                {
+                    if (request.status == 100 && !msg.empty())
+                        request.status = 0;
+                    else
+                        return (2);
+                }
                 break ;
             }
             str = msg.substr(0, flag);
-            if (headerline.plus(str) < 0)
-            {
-                request.status = 400;
+            if ((request.status = headerline.plus(str)) > 0)
                 return (1);  //400
-            }
             msg = msg.substr(flag + 2);
             if (headerline.getHeader().size() > 24576)
             {
@@ -207,13 +207,11 @@ int Client::setBodyLine(void)
     request.entity = entityline.getEntity();
     if (entityline.getCompletion())
     {
-        if (headerline.getEntitytype() != TRANSFER && headerline.getTe() == YES)
-            return (414);
         if (headerline.getTe() == NOT)
         {
             if (!msg.empty())
             {
-                request.status = 414;
+                request.status = 400;
                 return (2);
             }
             else
@@ -227,10 +225,11 @@ int Client::setTrailer(void)
 {
     size_t      flag;
     std::string str;
-    int         ans;
+    // int         ans;
 
     if (!entityline.getCompletion() || headerline.getTe() != YES || request.fin == true || request.status > 0)
         return (0);
+    std::cout<<"...setTrailer parsing...\n";
     while (1)
     {
         if (msg.empty())
@@ -240,26 +239,31 @@ int Client::setTrailer(void)
         {
             str = msg.substr(0, flag);
             msg = msg.substr(flag + 2);
-            ans = headerline.checkTrailer(str);
-            if (ans < 0)
-            {
-                request.status = 400;
+            // ans = headerline.checkTrailer(str);
+            if ((request.status = headerline.checkTrailer(str)) > 0)
                 return (1);
-            }
-            else if (ans != 0)
+            else
             {
-                if (msg.empty())    
+                request.header = headerline.getHeader();
+                if (request.header["trailer"].empty())
                 {
+                    std::cout<<"good"<<std::endl;
                     headerline.setTrailer(NOT);
                     request.fin = true;
-                    request.header = headerline.getHeader();
-                    break ;
+                    return (0);
                 }
-                else
-                {
-                    request.status = 414;
-                    return (2);
-                }
+                // if (msg.empty())    
+                // {
+                //     headerline.setTrailer(NOT);
+                //     request.fin = true;
+                //     request.header = headerline.getHeader();
+                //     break ;
+                // }
+                // else
+                // {
+                //     request.status = 414;
+                //     return (2);
+                // }
             }
         }
         else

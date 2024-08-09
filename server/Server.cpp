@@ -103,6 +103,7 @@ Server::Server()
 
 Server::Server(int fd)
 {
+    //여기서 startline method설정해야 함
     serverFd = fd;
 }
 
@@ -156,7 +157,8 @@ EVENT Server::clientRead(struct kevent& store)
     //buffer 문제인지 생각해보기
     int     readSize;
 
-    if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
+    //eof신호를 못 받게 됨
+    if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 100)
         return (ING);
     readSize = read(store.ident, buffer, BUFFER_SIZE);
     if (readSize <= 0)
@@ -168,6 +170,8 @@ EVENT Server::clientRead(struct kevent& store)
     client[store.ident].setMessage(buffer);
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
     {
+        if (client[store.ident].getRequestStatus() == 100)
+            return (EXPECT);
         // request 완성 -> respond 만들면 되지 않나?
         if (client[store.ident].getRequestFin())
             client[store.ident].showMessage();
@@ -185,6 +189,12 @@ EVENT Server::clientWrite(struct kevent& store)
     std::string str;
     const char  *temp = "HTTP/1.1 200 OK\nContent-Type: text/html;charset=UTF-8\nContent-Length: ";
 
+    if (client[store.ident].getRequestStatus() == 100 && !client[store.ident].getRequestFin())
+    {
+        write(store.ident, "HTTP/1.1 100 Continue\n", 22);
+        client[store.ident].setRequestStatus(0);
+        return (EXPECT);
+    }
     if (client[store.ident].getRequestStatus() > 0)
         errorHandler(client[store.ident]);
     else
