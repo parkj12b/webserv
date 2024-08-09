@@ -6,6 +6,8 @@
 #include "Lexer.hpp"
 #include "Parser.hpp"
 #include "Env.hpp"
+#include "Validator.hpp"
+#include "Directives.hpp"
 
 using namespace std;
 
@@ -55,27 +57,6 @@ int main()
     // }
 
     parser.program();
-    
-    vector<ServerConfig *> v = parser.getServerConfig();
-    // for (size_t i = 0; i < v.size(); i++)
-    // {
-    //     ServerConfig *s = v[i];
-
-
-    //     cout << "server_name: " << dynamic_cast<Word *>((*(s->getConfig("server_name")))[0][0][0])->lexeme << endl;
-    // }
-    
-    // vector<ServerConfig *> v = parser.getServerConfig();
-    // for (size_t i = 0; i < v.size(); i++)
-    // {
-    //     ServerConfig *s = v[i];
-
-    //     vector<Token *> v = s->getLocationConfig("/").getLimitExcept()->getHeadDirectiveByIndex(0);
-
-    //     for (size_t j = 0; j < v.size(); j++)
-    //     {
-    //         cout << dynamic_cast<Word *>(v[j])->lexeme << endl;
-    //     }
-    // }
- 
+    Validator v(parser);
+    v.validate();
 }

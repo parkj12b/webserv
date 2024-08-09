@@ -1,90 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Env.hpp                                            :+:      :+:    :+:   */
+/*   Directives.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/01 14:29:44 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/08 22:08:20 by minsepar         ###   ########.fr       */
+/*   Created: 2024/08/09 17:40:11 by minsepar          #+#    #+#             */
+/*   Updated: 2024/08/09 21:44:39 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef __ENV_HPP__
-# define __ENV_HPP__
+#include "Directives.hpp"
+#include "UtilTemplate.hpp"
 
-#include <map>
-#include <unordered_map>
-#include <set>
-#include <string>
-#include <vector>
-#include "Lexer.hpp"
+Directives::Directives(){}
 
-set<string> createSet(const char *str[]);
+bool    Directives::containsDirective(string context, string directive)
+{
+    return _directive[directive].find(context)
+        != _directive[directive].end();
+}
 
-class Env {
-private:
-    string _context;
-    vector<vector< Token *> > _headDirective;
-    //"key", [num of occurence][argument number][multiple arguments]
-    map<string, vector< vector< vector< Token *> > > > _table;
-protected:
-    Env *prev;
-public:
-    Env(Env *n, string context) : _context(context), prev(n) {}
-    string getContext() { return _context; }
-    vector<vector< Token *> > &getHeadDirective() { return _headDirective; }
-    Env *getPrev() { return prev; }
-    vector< Token *> &getHeadDirectiveByIndex(size_t index)
-    {
-        while (_headDirective.size() <= index)
-        {
-            _headDirective.push_back(vector< Token *>());
-        }
-        return _headDirective[index];
-    }
-    void put(string key, vector<vector< Token *> > &args) {
-        map<string, vector<vector<vector< Token *> > > >::iterator v;
-
-        v = _table.find(key);
-        if (v == _table.end()) {
-            vector<vector<vector< Token *> > > vec;
-            vec.push_back(args);
-            _table.insert(make_pair(key, vec));
-        } else {
-            v->second.push_back(args);
-        }
-    }
-    vector<vector<vector< Token *> > > *get(string key) {
-        map<string, vector<vector<vector< Token *> > > >::iterator v;
-
-        v = _table.find(key);
-        if (v == _table.end()) {
-            return NULL;
-        }
-        return (&v->second);
-    }
-};
-
-class Directives {
-private:
-    static unordered_map<string, set<string> > _directive;
-    static unordered_map<string, set<string> > _context;
-public:
-    static void init();
-    static bool containsDirective(string context, string directive) {
-        // cout << _directive[directive].size() << endl;
-        return _directive[directive].find(context)
-            != _directive[directive].end(); }
-    static bool containsContext(string outerContext, string innerContext) { 
-        // cout << _context[innerContext].size() << endl;
-        return _context[innerContext].find(outerContext)
-            != _context[innerContext].end(); }
-    Directives() {}
-};
-
-unordered_map<string, set<string> > Directives::_directive = unordered_map<string, set<string> >();
-unordered_map<string, set<string> > Directives::_context = unordered_map<string, set<string> >();
+bool    Directives::containsContext(string outerContext, string innerContext)
+{ 
+    return _context[innerContext].find(outerContext)
+        != _context[innerContext].end();
+}
 
 void Directives::init()
 {
@@ -139,32 +80,3 @@ void Directives::init()
     _context.insert(make_pair("location", createSet(location)));
     _context.insert(make_pair("limit_except", createSet(limit_except)));
 }
-
-// unordered_map<string, set<string> > Directives::_directive = {
-//     {"error_log", {"main", "http", "mail", "stream", "server", "location"}},
-//     {"worker_connection", {"events"}},
-//     {"default_type", {"http", "server", "location"}},
-//     {"keepalive_timeout", {"http", "server", "location"}},
-//     {"listen", {"server"}},
-//     {"server_name", {"server"}},
-//     {"root", {"http", "server", "location"}},
-//     {"error_page", {"http", "server", "location"}},
-//     {"client_max_body_size", {"http", "server", "location"}},
-//     {"fastcgi_pass", {"location"}},
-//     {"fastcgi_index", {"http", "server", "location"}},
-//     {"fastcgi_param", {"http", "server", "location"}},
-//     {"index", {"http", "server", "location"}},
-//     {"autoindex", {"http", "server", "location"}},
-//     {"log_format", {"http"}}
-// };
-
-// unordered_map<string, set<string> > Directives::_context = {
-//     {"events", {"main"}},
-//     {"http", {"main"}},
-//     {"server", {"http"}},
-//     {"location", {"server", "location"}},
-//     {"limit_except", {"location"}},
-// };
-
-
-#endif

@@ -6,23 +6,30 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:30:28 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/09 14:04:47 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/09 22:12:13 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <vector>
 #include <cstdlib>
+#include "ServerConfigData.hpp"
+#include "Token.hpp"
 #include "Validator.hpp"
+#include "Parser.hpp"
 #include "Lexer.hpp"
 #include "UtilTemplate.cpp"
+#include "HTTPServer.hpp"
+#include "Env.hpp"
+#include "Num.hpp"
+#include "ServerConfig.hpp"
+#include "Word.hpp"
 
+using namespace std;
 
 HTTPServer    *Validator::validate()
 {
     vector<ServerConfig *> serverConfig = _parser.getServerConfig();
 
     checkWorkerConnections();
-
     vector<ServerConfigData> &serverConfigData = _httpServer->getServerConfigData();
     for (size_t i = 0, size = serverConfig.size(); i < size; i++) {
         serverConfigData.push_back(checkServer(serverConfig[i]));
@@ -33,9 +40,6 @@ HTTPServer    *Validator::validate()
 
 void    Validator::checkWorkerConnections()
 {
-    // check if worker_connections is set
-    // if not, set it to 1024
-
     Env *event = _parser.getEvent();
     vector<vector<vector< Token *> > > *v = event->get("worker_connections");
     if (v == NULL) {
@@ -55,7 +59,6 @@ ServerConfigData    Validator::checkServer(ServerConfig *serverConfig)
     
     checkServerName(serverData, serverConfig);
     checkPort(serverData, serverConfig);
-    checkIndex(serverData, serverConfig);
     map<string, LocationConfig> &location = serverConfig->location;
     map<string, LocationConfigData> &locationData = serverData.getLocationConfigData();
     
@@ -112,23 +115,6 @@ void    Validator::checkPort(ServerConfigData &serverData, ServerConfig *serverC
     }
 }
 
-void    Validator::checkIndex(ServerConfigData &serverData, ServerConfig *serverConfig)
-{
-    vector<vector<vector< Token *> > > *v = serverConfig->getConfig("index");
-
-    if (v == NULL) {
-        serverData.setIndex(DEFAULT_INDEX);
-        return ;
-    }
-    if (v->size() != 1) {
-        throw ValidatorException("index directive must be set only once");
-    }
-    string index = (dynamic_cast<Word *>((*v)[0][0][0]))->lexeme;
-    if (index == "") {
-        serverData.setIndex(DEFAULT_INDEX);
-    }
-}
-
 LocationConfigData    Validator::checkLocation(LocationConfig &locationConfig)
 {
     LocationConfigData locationData;
@@ -137,7 +123,17 @@ LocationConfigData    Validator::checkLocation(LocationConfig &locationConfig)
     checkAllowedMethod(locationData, locationConfig);
     checkDefaultType(locationData, locationConfig);
     checkKeepaliveTimeout(locationData, locationConfig);
-
+    checkErrorLog(locationData, locationConfig);
+    checkRoot(locationData, locationConfig);
+    checkErrorPage(locationData, locationConfig);
+    checkClientMaxBodySize(locationData, locationConfig);
+    checkFastcgiPass(locationData, locationConfig);
+    checkFastcgiIndex(locationData, locationConfig);
+    checkFastcgiParam(locationData, locationConfig);
+    checkAutoIndex(locationData, locationConfig);
+    checkAccessLog(locationData, locationConfig);
+    checkReturn(locationData, locationConfig);
+    checkIndex(locationData, locationConfig);
     return locationData;
 }
 
@@ -145,7 +141,18 @@ void    Validator::checkErrorLog(LocationConfigData &locationData, LocationConfi
 {
     vector<vector<vector< Token *> > > *v = locationConfig.getConfig("error_log");
 
-    
+    if (v == NULL) {
+        locationData.setErrorLog(DEFAULT_ERROR_LOG);
+        return ;
+    }
+    if (v->size() != 1) {
+        throw ValidatorException("error_log directive must be set only once");
+    }
+    string errorLog = (dynamic_cast<Word *>((*v)[0][0][0]))->lexeme;
+    if (errorLog == "") {
+        locationData.setErrorLog(DEFAULT_ERROR_LOG);
+    }
+    locationData.setErrorLog(errorLog);
 }
 
 void    Validator::checkAllowedMethod(LocationConfigData &locationData, LocationConfig &locationConfig)
@@ -194,7 +201,7 @@ void    Validator::checkKeepaliveTimeout(LocationConfigData &locationData, Locat
     vector<vector<vector< Token *> > > *v = locationConfig.getConfig("keepalive_timeout");
 
     if (v == NULL) {
-        locationData.setKeepaliveTimeout(KEEPALIVE_TIMEOUT);
+        locationData.setKeepaliveTimeout(DEFAULT_KEEPALIVE_TIMEOUT);
         return ;
     }
     if (v->size() != 1) {
@@ -234,15 +241,172 @@ void    Validator::checkErrorPage(LocationConfigData &locationData, LocationConf
 {
     vector<vector<vector< Token *> > > *v = locationConfig.getConfig("error_page");
 
+    map<int, string> &errorPage = locationData.getErrorPage();
+    if (v == NULL) { return ; }
+    for (size_t i = 0, size = (*v).size(); i < size; i++)
+    {
+        string errorURI = (dynamic_cast<Word *>((*v)[i][1][0]))->lexeme;
+        for (size_t j = 0, numArg = (*v)[i].size(); i < numArg; i++)
+        {
+            string errorNum = (dynamic_cast<Word *>((*v)[i][j][0]))->lexeme;
+            errorPage.insert(pair<int, string>(strtol(errorNum.c_str(), NULL, 10), errorURI));
+        }
+    }
+}
+
+void    Validator::checkClientMaxBodySize(LocationConfigData &locationData, LocationConfig &locationConfig)
+{
+    vector<vector<vector< Token *> > > *v = locationConfig.getConfig("client_max_body_size");
+
     if (v == NULL) {
-        locationData.setErrorPage(DEFAULT_ERROR_PAGE);
+        locationData.setClientMaxBodySize(DEFAULT_CLIENT_MAX_BODY_SIZE);
         return ;
     }
     if (v->size() != 1) {
-        throw ValidatorException("error_page directive must be set only once");
+        throw ValidatorException("client_max_body_size directive must be set only once");
     }
-    string errorPage = (dynamic_cast<Word *>((*v)[0][0][0]))->lexeme;
-    if (errorPage == "") {
-        locationData.setErrorPage(DEFAULT_ERROR_PAGE);
+    string clientMaxBodySize = (dynamic_cast<Word *>((*v)[0][0][0]))->lexeme;
+    ssize_t clientMaxBodySizeInt = strtol(clientMaxBodySize.c_str(), NULL, 10);
+    locationData.setClientMaxBodySize(clientMaxBodySizeInt);
+}
+
+void    Validator::checkFastcgiPass(LocationConfigData &locationData, LocationConfig &locationConfig)
+{
+    vector<vector<vector< Token *> > > *v = locationConfig.getConfig("fastcgi_pass");
+    if (v == NULL) {
+        return ;
+    }
+    if (v->size() != 1) {
+        throw ValidatorException("fastcgi_pass directive must be set only once");
+    }
+    string fastcgiPass = (dynamic_cast<Word *>((*v)[0][0][0]))->lexeme;
+    if (fastcgiPass == "") {
+        throw ValidatorException("fastcgi_pass directive must be set");
+    }
+    locationData.setFastcgiPass(fastcgiPass);
+}
+
+void    Validator::checkFastcgiIndex(LocationConfigData &locationData, LocationConfig &locationConfig)
+{
+    vector<vector<vector< Token *> > > *v = locationConfig.getConfig("fastcgi_index");
+
+    if (v == NULL) {
+        return ;
+    }
+    if (v->size() != 1) {
+        throw ValidatorException("fastcgi_index directive must be set only once");
+    }
+    string fastcgiIndex = (dynamic_cast<Word *>((*v)[0][0][0]))->lexeme;
+    if (fastcgiIndex == "") {
+        return ;
+    }
+    locationData.setFastcgiIndex(fastcgiIndex);
+}
+
+void    Validator::checkFastcgiParam(LocationConfigData &locationData, LocationConfig &locationConfig)
+{
+    vector<vector<vector< Token *> > > *v = locationConfig.getConfig("fastcgi_param");
+
+    if (v == NULL) {
+        return ;
+    }
+    map<string, string> &fastcgiParam = locationData.getFastcgiParam();
+    for (size_t i = 0, size = v->size(); i < size; i++)
+    {
+        string key = (dynamic_cast<Word *>((*v)[i][0][0]))->lexeme;
+        string value = (dynamic_cast<Word *>((*v)[i][1][0]))->lexeme;
+        fastcgiParam[key] = value;
     }
 }
+
+void    Validator::checkAutoIndex(LocationConfigData &locationData, LocationConfig &locationConfig)
+{
+    vector<vector<vector< Token *> > > *v = locationConfig.getConfig("index");
+
+    if (v == NULL) {
+        locationData.setAutoIndex(DEFAULT_AUTO_INDEX);
+        return ;
+    }
+    if (v->size() != 1) {
+        throw ValidatorException("index directive must be set only once");
+    }
+    string index = (dynamic_cast<Word *>((*v)[0][0][0]))->lexeme;
+    if (index == "off") {
+        locationData.setAutoIndex(false);
+    } else if (index == "on") {
+        locationData.setAutoIndex(true);
+    } else {
+        throw ValidatorException("invalid autoindex value");
+    }
+}
+
+void    Validator::checkAccessLog(LocationConfigData &locationData, LocationConfig &locationConfig)
+{
+    vector<vector<vector< Token *> > > *v = locationConfig.getConfig("access_log");
+
+    if (v == NULL) {
+        locationData.setAccessLog(DEFAULT_ACCESS_LOG);
+        return ;
+    }
+    if (v->size() != 1) {
+        throw ValidatorException("access_log directive must be set only once");
+    }
+    string accessLog = (dynamic_cast<Word *>((*v)[0][0][0]))->lexeme;
+    if (accessLog == "") {
+        locationData.setAccessLog(DEFAULT_ACCESS_LOG);
+    }
+}
+
+void    Validator::checkReturn(LocationConfigData &locationData, LocationConfig &locationConfig)
+{
+    vector<vector<vector< Token *> > > *v = locationConfig.getConfig("return");
+
+    if (v == NULL) {
+        return ;
+    }
+    if (v->size() != 1) {
+        throw ValidatorException("return directive must be set only once");
+    }
+    string  returnCode = (dynamic_cast<Word *>((*v)[0][0][0]))->lexeme;
+    int     returnCodeInt = strtol(returnCode.c_str(), NULL, 10);
+    if (returnCode == "") {
+        throw ValidatorException("invalid return code");
+    }
+    string returnURL = (dynamic_cast<Word *>((*v)[0][1][0]))->lexeme;
+    if ((*v)[0].size() == 2)
+    {
+        locationData.setReturn(pair<int, string>(returnCodeInt, returnURL));
+    }
+}
+
+void    Validator::checkIndex(LocationConfigData &locationData, LocationConfig &locationConfig)
+{
+    vector<vector<vector< Token *> > > *v = locationConfig.getConfig("index");
+
+    if (v == NULL) {
+        locationData.setIndex(DEFAULT_INDEX);
+        return ;
+    }
+    if (v->size() != 1) {
+        throw ValidatorException("index directive must be set only once");
+    }
+    string index = (dynamic_cast<Word *>((*v)[0][0][0]))->lexeme;
+    if (index == "") {
+        locationData.setIndex(DEFAULT_INDEX);
+    }
+}
+
+Validator::ValidatorException::ValidatorException(string error)
+{
+    err = "Error: " + error + "\n";
+}
+
+Validator::ValidatorException::~ValidatorException() throw() {}
+
+const char *Validator::ValidatorException::what() const throw()
+{
+    return err.c_str();
+}
+
+Validator::Validator(Parser &parser)
+    : _parser(parser), _httpServer(new HTTPServer()) {}

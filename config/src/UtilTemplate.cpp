@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 15:26:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/09 13:42:26 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/09 21:16:21 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <set>
 #include <fstream>
 #include <iostream>
+#include "UtilTemplate.hpp"
 
 using namespace std;
 
@@ -46,7 +47,7 @@ bool isString(char peek)
     return false;
 }
 
-std::string toString(int value) {
+string toString(int value) {
     char buffer[50]; // Ensure the buffer is large enough
     std::sprintf(buffer, "%d", value);
     return std::string(buffer);
@@ -75,3 +76,50 @@ ssize_t timeToSeconds(string time)
     return timeInt;
 }
 
+string intToUtf8(int codePoint) {
+    string utf8String;
+
+    if (codePoint < 0 || codePoint > 0x10FFFF) {
+        throw out_of_range("Code point out of range for Unicode");
+    }
+
+    if (codePoint <= 0x7F) {
+        // 1-byte UTF-8
+        utf8String += static_cast<char>(codePoint);
+    } else if (codePoint <= 0x7FF) {
+        // 2-byte UTF-8
+        utf8String += static_cast<char>(0xC0 | (codePoint >> 6));
+        utf8String += static_cast<char>(0x80 | (codePoint & 0x3F));
+    } else if (codePoint <= 0xFFFF) {
+        // 3-byte UTF-8
+        utf8String += static_cast<char>(0xE0 | (codePoint >> 12));
+        utf8String += static_cast<char>(0x80 | ((codePoint >> 6) & 0x3F));
+        utf8String += static_cast<char>(0x80 | (codePoint & 0x3F));
+    } else {
+        // 4-byte UTF-8
+        utf8String += static_cast<char>(0xF0 | (codePoint >> 18));
+        utf8String += static_cast<char>(0x80 | ((codePoint >> 12) & 0x3F));
+        utf8String += static_cast<char>(0x80 | ((codePoint >> 6) & 0x3F));
+        utf8String += static_cast<char>(0x80 | (codePoint & 0x3F));
+    }
+
+    return utf8String;
+}
+
+string getLineFromFile(string filename, int lineNum)
+{
+    ifstream file(filename);
+    string line;
+    for (int i = 0; i < lineNum; i++)
+        getline(file, line);
+    return line;
+}
+
+string getErrorAngle(int column)
+{
+    string angle = "";
+    for (int i = 1; i < column; i++)
+        angle += " ";
+    angle += "^";
+    return angle;
+}
