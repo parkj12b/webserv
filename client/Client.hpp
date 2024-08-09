@@ -15,7 +15,7 @@
 
 # include "StartLine.hpp"
 # include "HeaderLine.hpp"
-# include "EntityLine.hpp"
+# include "ContentLine.hpp"
 # include <unistd.h>
 // # include <iostream> 
 // # include <map>
@@ -34,9 +34,8 @@ typedef struct Request
     Method  method;
     Version version;
     std::string url;
-    std::map<std::string, std::deque<std::string> >  header;
-    std::map<std::string, std::deque<std::string> >  trailer;
-    std::vector<std::string>    entity;
+    std::map<std::string, std::deque<std::string> > header;
+    std::vector<std::string>                        content;
 }   Request;
 
 class Client
@@ -45,9 +44,9 @@ class Client
         int         fd;
         std::string msg;
         Request     request;
-        StartLine   startline;
-        HeaderLine  headerline;
-        EntityLine  entityline;
+        StartLine   startLine;
+        HeaderLine  headerLine;
+        ContentLine contentLine;
         //temp(must delete)
     public:
         Client();
@@ -61,15 +60,15 @@ class Client
         Request                     getRequest() const;
         StartLine                   getStartLine() const;
         HeaderLine                  getHeaderline() const;
-        EntityLine                  getEntity() const;
+        ContentLine                 getContentLine() const;
         bool                        getRequestFin() const;
         int                         getRequestStatus() const;
         //set function
         void    setFd(uintptr_t fd);
         void    setRequestStatus(int temp);
-        int     setStartLine(void);
+        int     setStart(void);
         int     setHeader(void);
-        int     setBodyLine(void);
+        int     setContent(void);
         int     setTrailer(void);
         //logic
         void    setMessage(std::string str);

@@ -35,7 +35,8 @@ enum EVENT
 {
     ERROR = 1,
     FINISH,
-    ING
+    ING,
+    EXPECT
 };
 
 class Server
@@ -44,10 +45,11 @@ class Server
         int                     serverFd;
         char                    buffer[BUFFER_SIZE];
         std::map<int, Client>   client;  //client을 선언할때에 default 생성자가 필요한듯
+        //여기에 파싱된 data가 들어가 있을 것
     public:
         static std::map<int, std::string>   statusContent;
         Server();
-        Server(int fd);
+        Server(int fd);  //파싱된 데이터도 인자로 추가할 것
         Server(const Server& src);
         Server &operator=(const Server& src);
         ~Server();
@@ -56,6 +58,7 @@ class Server
         std::map<int, Client>  getClient(void) const;
         //logic
         int     plusClient(void);
+        int     requestExceptFlag(int fd);
         EVENT   clientRead(struct kevent& store);
         EVENT   clientWrite(struct kevent& store);
         //error
