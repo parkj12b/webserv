@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:35:58 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/08 19:14:27 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/08 23:16:16 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,12 @@ using namespace std;
 #include <vector>
 
 class LocationConfigData {
+private:
     string              _errorLog;
     vector<string>      _allowedMethods;
     string              _defaultType;
     ssize_t             _keepaliveTimeout; // in seconds
+    ssize_t             _headerTimeout; // in seconds
     string              _root;
     map<int, string>    _errorPage;
     ssize_t             _clientMaxBodySize; // in bytes
@@ -36,6 +38,40 @@ class LocationConfigData {
     bool                _autoindex;
     string              _accessLog;
     map<int, string>    _return; // used to redirect
+public:
+    void setErrorLog(string errorLog) {
+        _errorLog = errorLog;
+    }
+    string getErrorLog() {
+        return _errorLog;
+    }
+    vector<string>  &getAllowedMethods() {
+        return _allowedMethods;
+    }
+    void setDefaultType(string defaultType) {
+        _defaultType = defaultType;
+    }
+    string getDefaultType() {
+        return _defaultType;
+    }
+    void setKeepaliveTimeout(ssize_t keepaliveTimeout) {
+        _keepaliveTimeout = keepaliveTimeout;
+    }
+    ssize_t getKeepaliveTimeout() {
+        return _keepaliveTimeout;
+    }
+    void setHeaderTimeout(ssize_t headerTimeout) {
+        _headerTimeout = headerTimeout;
+    }
+    ssize_t getHeaderTimeout() {
+        return _headerTimeout;
+    }
+    void setRoot(string root) {
+        _root = root;
+    }
+    string getRoot() {
+        return _root;
+    }
 };
 
 class ServerConfigData { 
@@ -50,6 +86,18 @@ public:
     }
     string getServerName() {
         return _serverName;
+    }
+    vector<int> &getPort() {
+        return _port;
+    }
+    string getIndex() {
+        return _index;
+    }
+    void setIndex(string index) {
+        _index = index;
+    }
+    map<string, LocationConfigData> &getLocationConfigData() {
+        return _locationConfigData;
     }
     ServerConfigData() {}
 };

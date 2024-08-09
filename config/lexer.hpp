@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 11:57:52 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/08 15:20:48 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/08 21:35:28 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,10 +100,6 @@ public:
     const static Word
         eq, minus, True, False, temp;
 };
-
-// = 
-
-// const Word Word::eq = Word("=", Tag::EQ);
 
 class Lexer {
 private:

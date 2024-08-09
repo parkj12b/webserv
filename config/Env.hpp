@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 14:29:44 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/08 18:31:04 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/08 22:08:20 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ protected:
 public:
     Env(Env *n, string context) : _context(context), prev(n) {}
     string getContext() { return _context; }
+    vector<vector< Token *> > &getHeadDirective() { return _headDirective; }
     Env *getPrev() { return prev; }
     vector< Token *> &getHeadDirectiveByIndex(size_t index)
     {
