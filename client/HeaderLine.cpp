@@ -438,6 +438,8 @@ int HeaderLine::headerError()
             }
             if (contentLength > 100000000)  //serverConfig에서 받아올 것
                 return (400);
+            if (contentLength < 10 * (header["content-length"].front().size() - 1))
+                return (400);
             contentType = CONTENT;
         }
         else

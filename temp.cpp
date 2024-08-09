@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <cctype>
+#include <fcntl.h>
 
 enum    NUM
 {
@@ -128,6 +129,7 @@ int main()
     {
         std::cout<<str<<std::endl;
     }
+    std::cout<<"\n\n=========test11=========\n";
     return 0;
 }
 

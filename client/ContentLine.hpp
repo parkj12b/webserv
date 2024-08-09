@@ -23,7 +23,7 @@ class ContentLine
         CONTENTTYPE                 contentType;
         int                         contentLength;
         std::string                 chunked;
-        std::vector<std::string>    entity;
+        std::vector<std::string>    content;
     public:
         //생성자 get고쳐야 함
         //occf
@@ -36,9 +36,9 @@ class ContentLine
         bool                        getSizeEqual() const;
         int                         getContentLength() const;
         std::string                 getChunked() const;
-        std::vector<std::string>    getEntity() const;
+        std::vector<std::string>    getContent() const;
         //logic
-        void    initContentLength(int initCl, CONTENTTYPE initC);
+        void    initContentLine(int initCl, CONTENTTYPE initC);
         void    minusContentLength(int minus);
         int     chunkedEntity();
         int     plus(std::string &str);

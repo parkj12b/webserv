@@ -26,7 +26,7 @@ ContentLine::ContentLine(const ContentLine& src)
     sizeEqual = src.getSizeEqual();
     contentLength = src.getContentLength();
     chunked = src.getChunked();
-    entity = src.getEntity();
+    content = src.getContent();
 }
 
 ContentLine::~ContentLine()
@@ -35,7 +35,7 @@ ContentLine::~ContentLine()
 ContentLine& ContentLine::operator=(const ContentLine& src)
 {
     completion = src.getCompletion();
-    entity = src.getEntity();
+    content = src.getContent();
     return (*this);
 }
 
@@ -59,12 +59,12 @@ std::string ContentLine::getChunked() const
     return (chunked);
 }
 
-std::vector<std::string>    ContentLine::getEntity() const
+std::vector<std::string>    ContentLine::getContent() const
 {
-    return (entity);
+    return (content);
 }
 
-void    ContentLine::initContentLength(int initCl, CONTENTTYPE initC)
+void    ContentLine::initContentLine(int initCl, CONTENTTYPE initC)
 {
     contentLength = initCl;
     contentType = initC;
@@ -79,7 +79,7 @@ int ContentLine::chunkedEntity()
 {
     std::istringstream  chunkedStream(chunked);
     std::string         temp;
-    int                 ans;
+    size_t              ans;
     int                 size;
 
     ans = 0;
@@ -100,12 +100,14 @@ int ContentLine::chunkedEntity()
             {
                 return (1);
             }
+            if (size < 0)
+                return (1);
         }
         else
         {
             if (size != static_cast<int>(temp.size()))
                 return (2);
-            entity.push_back(temp);
+            content.push_back(temp);
         }
         ans++;
     }
@@ -126,12 +128,12 @@ int ContentLine::plus(std::string &str)
             // minusContentLength(str.size());
             if (contentLength == 0)
                 completion = true;
-            entity.push_back(str);
+            content.push_back(str);
             str.clear();
         }
         else
         {
-            entity.push_back(str.substr(0, contentLength));
+            content.push_back(str.substr(0, contentLength));
             str = str.substr(contentLength);
             completion = true;
         }

@@ -157,14 +157,18 @@ int Client::setHeader(void)
                 }
                 request.header = headerLine.getHeader();
                 msg = msg.substr(flag + 2);  //(ingu check)
-                contentLine.initContentLength(headerLine.getContentLength(), headerLine.getContentType());
+                contentLine.initContentLine(headerLine.getContentLength(), headerLine.getContentType());
                 if (request.status > 0)
                     return (2);
                 break ;
             }
             str = msg.substr(0, flag);
             if ((request.status = headerLine.plus(str)) > 0)
+            {
+                std::cout<<str<<std::endl;
+                std::cout<<"here\n"<<std::endl;
                 return (1);  //400
+            }
             msg = msg.substr(flag + 2);
             if (headerLine.getHeader().size() > 24576)
             {
@@ -207,7 +211,7 @@ int Client::setContent(void)
         request.status = 400;
         return (1);
     }
-    request.entity = contentLine.getEntity();
+    request.content = contentLine.getContent();
     if (contentLine.getCompletion())
     {
         if (headerLine.getTe() == NOT)
@@ -305,7 +309,7 @@ void    Client::showMessage(void)
         std::cout<<"\n";
     }
     std::cout<<"=====entity line=====\n";
-    for (std::vector<std::string>::iterator it = request.entity.begin(); it != request.entity.end(); it++)
+    for (std::vector<std::string>::iterator it = request.content.begin(); it != request.content.end(); it++)
     {
         std::cout<<*it;
     }

@@ -34,9 +34,8 @@ typedef struct Request
     Method  method;
     Version version;
     std::string url;
-    std::map<std::string, std::deque<std::string> >  header;
-    std::map<std::string, std::deque<std::string> >  trailer;
-    std::vector<std::string>    entity;
+    std::map<std::string, std::deque<std::string> > header;
+    std::vector<std::string>                        content;
 }   Request;
 
 class Client
