@@ -57,8 +57,9 @@ int main()
     std::cout<<test3<<"here"<<std::endl;
     std::cout<<"\n\n=======test4=======\n";
     std::string test4 = "HI Hello World";
-    std::cout<<test4.substr(0, 4)<<std::endl;
-    std::cout<<test4.substr(4)<<std::endl;
+    size_t  pos = test4.find('e');
+    std::cout<<test4.substr(0, pos)<<std::endl;
+    std::cout<<test4.substr(pos)<<std::endl;
     while (test>>str)
     {
         std::cout<<str<<std::endl;

@@ -213,7 +213,7 @@ EVENT Server::clientWrite(struct kevent& store)
         str = std::to_string(sum);
         write(store.ident, str.c_str(), str.size());
         write(store.ident, "\n\n", 2);
-        fd = open("./index.html", O_RDONLY);
+        fd = open("./html/index.html", O_RDONLY);
         while (1)
         {
             readSize = read(fd, buffer, BUFFER_SIZE);
@@ -244,7 +244,7 @@ void    Server::errorHandler(Client& c)
     //헤더줄
     write(c.getFd(), "\nContent-Type: text/html;charset=UTF-8\nContent-Length: ", 55);
     sum = 0;
-    fd = open("./error.html", O_RDONLY);
+    fd = open("./html/error.html", O_RDONLY);
     while (1)
     {
         readSize = read(fd, buffer, BUFFER_SIZE);

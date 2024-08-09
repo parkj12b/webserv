@@ -83,7 +83,6 @@ int     StartLine::plus(std::string temp)
     int                 answer;
 
     answer = 0;
-    // std::cout<<temp<<std::endl;
     while (getline(strStream, str, ' '))
     {
         switch (answer)
@@ -92,29 +91,25 @@ int     StartLine::plus(std::string temp)
                 method = originMethod[str];
                 if (method == 0)
                     return (400);
-                // std::cout<<str<<": "<<method<<"\n";
                 break ;
             case 1:
                 if (str.empty())
                     return (400);
                 url = str;
-                //url이 잘못된 형식이면 400 형식은 맞지만 존재하지 않는다면 404
+                // url이 잘못된 형식이면 400 형식은 맞지만 존재하지 않는다면 404
                 // 여기서 url검사와 allow검사 같이 진행하는 것이 좋을듯
-                // std::cout<<str<<": "<<url<<"\n";
                 break ;
             case 2:
                 version = originVersion[str];
-                // std::cout<<str<<": "<<version<<std::endl;
                 if (version == 0)
-                    return (505);  //505
-                // std::cout<<str<<": "<<version<<std::endl;
+                    return (505);
                 break ;
             default:
                 return (400);
         }
         answer++;
     }
-    if (answer != 2)
+    if (answer != 3)
         return (400);
     completion = true;
     return (0);

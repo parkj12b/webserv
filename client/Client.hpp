@@ -20,6 +20,7 @@
 // # include <iostream> 
 // # include <map>
 # include <queue>
+# include <fstream>
 
 //delete
 # include <ctime>
@@ -34,6 +35,7 @@ typedef struct Request
     Method  method;
     Version version;
     std::string url;
+    std::vector<std::string>                        query;
     std::map<std::string, std::deque<std::string> > header;
     std::vector<std::string>                        content;
 }   Request;
@@ -56,7 +58,9 @@ class Client
         ~Client();
         //get function
         int                         getFd() const;
+        size_t                      getRespondIndex() const;
         std::string                 getMsg() const;
+        std::string                 getRespond() const;
         Request                     getRequest() const;
         StartLine                   getStartLine() const;
         HeaderLine                  getHeaderline() const;
@@ -71,8 +75,9 @@ class Client
         int     setContent(void);
         int     setTrailer(void);
         //logic
-        void    setMessage(std::string str);
         bool    getRequestFin();
+        void    setMessage(std::string str);
+        void    makeRespond();
         //temp(must delete)
         void    showMessage(void);
 };
