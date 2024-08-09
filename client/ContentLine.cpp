@@ -70,11 +70,6 @@ void    ContentLine::initContentLine(int initCl, CONTENTTYPE initC)
     contentType = initC;
 }
 
-void    ContentLine::minusContentLength(int minus)
-{
-    contentLength -= minus;
-}
-
 int ContentLine::chunkedEntity()
 {
     std::istringstream  chunkedStream(chunked);
@@ -125,7 +120,6 @@ int ContentLine::plus(std::string &str)
         if (contentLength >= static_cast<int>(str.size()))
         {
             contentLength -= static_cast<int>(str.size());
-            // minusContentLength(str.size());
             if (contentLength == 0)
                 completion = true;
             content.push_back(str);

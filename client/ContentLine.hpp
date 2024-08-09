@@ -39,7 +39,6 @@ class ContentLine
         std::vector<std::string>    getContent() const;
         //logic
         void    initContentLine(int initCl, CONTENTTYPE initC);
-        void    minusContentLength(int minus);
         int     chunkedEntity();
         int     plus(std::string &str);
 };
