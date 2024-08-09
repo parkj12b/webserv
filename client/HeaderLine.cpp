@@ -428,17 +428,12 @@ int HeaderLine::headerError()
         itm = header.find("transfer-encoding");
         if (itm == header.end())
         {
-            try
-            {
-                contentLength = std::stoul(header["content-length"].front());
-            }
-            catch(const std::exception& e)
-            {
+            std::stringstream   ss(header["content-length"].front());
+
+            ss>>contentLength;
+            if (ss.fail() || !ss.eof())
                 return (400);
-            }
             if (contentLength > 100000000)  //serverConfig에서 받아올 것
-                return (400);
-            if (contentLength < 10 * (header["content-length"].front().size() - 1))
                 return (400);
             contentType = CONTENT;
         }
