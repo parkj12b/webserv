@@ -21,7 +21,7 @@
 # include <algorithm>
 # include <cctype>
 
-enum    ENTITYTYPE 
+enum    CONTENTTYPE 
 {
     CONTENT = 1,
     TRANSFER,
@@ -39,7 +39,7 @@ class HeaderLine
     private:
         bool        completion;
         TE          te;
-        ENTITYTYPE  entitytype;
+        CONTENTTYPE contentType;
         size_t      contentLength;
         std::string key;
         std::string value;
@@ -63,7 +63,7 @@ class HeaderLine
         //get function
         bool        getCompletion() const;
         TE          getTe() const;
-        ENTITYTYPE  getEntitytype() const;
+        CONTENTTYPE getContentType() const;
         int         getContentLength() const;
         std::string getKey() const;
         std::string getValue() const;

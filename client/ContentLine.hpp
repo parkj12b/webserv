@@ -10,26 +10,27 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ENTITYLINE_HPP
-# define ENTITYLINE_HPP
+#ifndef CONTENTLINE_HPP
+# define CONTENTLINE_HPP
 
 # include "HeaderLine.hpp"
 
-class EntityLine
+class ContentLine
 {
     private:
         bool                        completion;
         bool                        sizeEqual;
+        CONTENTTYPE                 contentType;
         int                         contentLength;
         std::string                 chunked;
         std::vector<std::string>    entity;
     public:
         //생성자 get고쳐야 함
         //occf
-        EntityLine();
-        EntityLine(const EntityLine& src);
-        ~EntityLine();
-        EntityLine& operator=(const EntityLine& src);
+        ContentLine();
+        ContentLine(const ContentLine& src);
+        ~ContentLine();
+        ContentLine& operator=(const ContentLine& src);
         //get function
         bool                        getCompletion() const;
         bool                        getSizeEqual() const;
@@ -37,10 +38,10 @@ class EntityLine
         std::string                 getChunked() const;
         std::vector<std::string>    getEntity() const;
         //logic
-        void    initContentLength(int init);
+        void    initContentLength(int initCl, CONTENTTYPE initC);
         void    minusContentLength(int minus);
         int     chunkedEntity();
-        int     plus(std::string &str, ENTITYTYPE entitytype);
+        int     plus(std::string &str);
 };
 
 #endif

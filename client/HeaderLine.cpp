@@ -257,14 +257,14 @@ int HeaderLine::commentDelete()
     return (0);
 }
 
-HeaderLine::HeaderLine() : completion(false), te(NOT), entitytype(ENOT)
+HeaderLine::HeaderLine() : completion(false), te(NOT), contentType(ENOT)
 {}
 
 HeaderLine::HeaderLine(const HeaderLine& src)
 {
     completion = src.getCompletion();
     te = src.getTe();
-    entitytype = src.getEntitytype();
+    contentType = src.getContentType();
     contentLength = src.getContentLength();
     key = src.getKey();
     value = src.getValue();
@@ -275,7 +275,7 @@ HeaderLine::~HeaderLine() {}
 
 HeaderLine& HeaderLine::operator=(const HeaderLine& src)
 {
-    entitytype = src.getEntitytype();
+    contentType = src.getContentType();
     te = src.getTe();
     completion = src.getCompletion();
     contentLength = src.getContentLength();
@@ -295,9 +295,9 @@ TE  HeaderLine::getTe() const
     return (te);
 }
 
-ENTITYTYPE  HeaderLine::getEntitytype() const
+CONTENTTYPE HeaderLine::getContentType() const
 {
-    return (entitytype);
+    return (contentType);
 }
 
 int HeaderLine::getContentLength() const
@@ -438,7 +438,7 @@ int HeaderLine::headerError()
             }
             if (contentLength > 100000000)  //serverConfig에서 받아올 것
                 return (400);
-            entitytype = CONTENT;
+            contentType = CONTENT;
         }
         else
             return (400);  //400
@@ -450,13 +450,13 @@ int HeaderLine::headerError()
         {
             if (header["transfer-encoding"].front() != "chunked")
                 return (400);
-            entitytype = TRANSFER;
+            contentType = TRANSFER;
         }
     }
     itm = header.find("trailer");
     if (itm != header.end())
     {
-        if (entitytype != TRANSFER)
+        if (contentType != TRANSFER)
             return (400);
         te = YES;
     }
@@ -465,7 +465,7 @@ int HeaderLine::headerError()
     {
         if (itm->second.front() != "100-continue")
             return (417);
-        else if (entitytype == ENOT)
+        else if (contentType == ENOT)
             return (408);
         completion = true;
         return (100);

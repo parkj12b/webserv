@@ -27,7 +27,7 @@ Client::Client(int fd)
     request.status = 0;
 }
 
-Client::Client(const Client& src) : fd(src.getFd()), msg(src.getMsg()), request(src.getRequest()), startline(src.getStartLine()), headerline(src.getHeaderline()), entityline(src.getEntity())
+Client::Client(const Client& src) : fd(src.getFd()), msg(src.getMsg()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine())
 {}
 
 Client& Client::operator=(const Client& src)
@@ -35,9 +35,9 @@ Client& Client::operator=(const Client& src)
     fd = src.getFd();
     msg = src.getMsg();
     request = src.getRequest();
-    startline = src.getStartLine();
-    headerline = src.getHeaderline();
-    entityline = src.getEntity();
+    startLine = src.getStartLine();
+    headerLine = src.getHeaderline();
+    contentLine = src.getContentLine();
     return (*this);
 }
 
@@ -64,17 +64,17 @@ Request Client::getRequest() const
 
 StartLine   Client::getStartLine() const
 {
-    return (startline);
+    return (startLine);
 }
 
 HeaderLine  Client::getHeaderline() const
 {
-    return (headerline);
+    return (headerLine);
 }
 
-EntityLine    Client::getEntity() const
+ContentLine    Client::getContentLine() const
 {
-    return (entityline);
+    return (contentLine);
 }
 
 bool    Client::getRequestFin() const
@@ -102,24 +102,24 @@ bool    Client::getRequestFin()
     return (request.fin);
 }
 
-int Client::setStartLine(void)
+int Client::setStart(void)
 {
     size_t      flag;
 
     // std::cout<<"msg: "<<msg<<"\n";
-    if (startline.getCompletion() || request.fin || request.status)
+    if (startLine.getCompletion() || request.fin || request.status)
         return (0);
     std::cout<<"...startline parsing...\n";
     flag = msg.find("\r\n");
     if (flag != std::string::npos)
     {
-        if ((request.status = startline.plus(msg.substr(0, flag))))  //ingu test
+        if ((request.status = startLine.plus(msg.substr(0, flag))))  //ingu test
             return (1);
         msg = msg.substr(flag + 2);
         // std::cout<<"msg: "<<msg<<"\n";
-        request.method = startline.getMethod();
-        request.url = startline.getUrl();
-        request.version = startline.getVersion();
+        request.method = startLine.getMethod();
+        request.url = startLine.getUrl();
+        request.version = startLine.getVersion();
     }
     else
     {
@@ -140,7 +140,7 @@ int Client::setHeader(void)
     size_t      flag;
     std::string str;
 
-    if (!startline.getCompletion() || headerline.getCompletion() || request.fin || request.status)
+    if (!startLine.getCompletion() || headerLine.getCompletion() || request.fin || request.status)
         return (0);
     std::cout<<"...headerline parsing...\n";
     while (1)
@@ -150,22 +150,23 @@ int Client::setHeader(void)
         {
             if (flag == 0)
             {
-                request.header = headerline.getHeader();
-                msg = msg.substr(flag + 2);  //(ingu check)
-                if ((request.status = headerline.headerError()) > 0)
+                if ((request.status = headerLine.headerError()) > 0)
                 {
                     if (request.status == 100 && !msg.empty())
                         request.status = 0;
-                    else
-                        return (2);
                 }
+                request.header = headerLine.getHeader();
+                msg = msg.substr(flag + 2);  //(ingu check)
+                contentLine.initContentLength(headerLine.getContentLength(), headerLine.getContentType());
+                if (request.status > 0)
+                    return (2);
                 break ;
             }
             str = msg.substr(0, flag);
-            if ((request.status = headerline.plus(str)) > 0)
+            if ((request.status = headerLine.plus(str)) > 0)
                 return (1);  //400
             msg = msg.substr(flag + 2);
-            if (headerline.getHeader().size() > 24576)
+            if (headerLine.getHeader().size() > 24576)
             {
                 request.status = 400;
                 return (2);  //400
@@ -181,33 +182,35 @@ int Client::setHeader(void)
             break ;
         }
     }
-    if (headerline.getCompletion() && headerline.getEntitytype() == ENOT)
+    if (headerLine.getCompletion() && headerLine.getContentType() == ENOT)
     {
         //아직 다 들어오지 않은 데이터가 있을 수도 있잔녀 이건 우선 생각하지 않음
         //데이터가 후에 들어온다고 가정한다면 그때 가서 처리를 해주면 됨 하지만 들어오지 않고 eof가 들어오면 맞는 데이터임에도 error로 처리하기 때문에 여기서 이렇게 처리하는 것이 맡다. 
         if (msg.empty())
             request.fin = true;
         else
+        {
             request.status = 400;
+            return (1);
+        }
     }
     return (0);
 }
 
-int Client::setBodyLine(void)
+int Client::setContent(void)
 {
-    if (!headerline.getCompletion() || entityline.getCompletion() || request.fin || request.status)
+    if (!headerLine.getCompletion() || contentLine.getCompletion() || request.fin || request.status)
         return (0);
     std::cout<<"...setBodyLine parsing...\n";
-    entityline.initContentLength(headerline.getContentLength());
-    if (entityline.plus(msg, headerline.getEntitytype()) < 0)
+    if (contentLine.plus(msg) < 0)
     {
         request.status = 400;
         return (1);
     }
-    request.entity = entityline.getEntity();
-    if (entityline.getCompletion())
+    request.entity = contentLine.getEntity();
+    if (contentLine.getCompletion())
     {
-        if (headerline.getTe() == NOT)
+        if (headerLine.getTe() == NOT)
         {
             if (!msg.empty())
             {
@@ -227,7 +230,7 @@ int Client::setTrailer(void)
     std::string str;
     // int         ans;
 
-    if (!entityline.getCompletion() || headerline.getTe() != YES || request.fin == true || request.status > 0)
+    if (!contentLine.getCompletion() || headerLine.getTe() != YES || request.fin == true || request.status > 0)
         return (0);
     std::cout<<"...setTrailer parsing...\n";
     while (1)
@@ -240,15 +243,15 @@ int Client::setTrailer(void)
             str = msg.substr(0, flag);
             msg = msg.substr(flag + 2);
             // ans = headerline.checkTrailer(str);
-            if ((request.status = headerline.checkTrailer(str)) > 0)
+            if ((request.status = headerLine.checkTrailer(str)) > 0)
                 return (1);
             else
             {
-                request.header = headerline.getHeader();
+                request.header = headerLine.getHeader();
                 if (request.header["trailer"].empty())
                 {
                     std::cout<<"good"<<std::endl;
-                    headerline.setTrailer(NOT);
+                    headerLine.setTrailer(NOT);
                     request.fin = true;
                     return (0);
                 }
@@ -313,7 +316,7 @@ void    Client::setMessage(std::string str)
 {
     msg += str;
     write(logs, &str[0], str.size());
-    if (setStartLine())  //max size literal
+    if (setStart())  //max size literal
     {
         std::cout<<fd<<" "<<request.status<<" ";  //debug
         std::cout<<"Startline Error\n";  //debug
@@ -324,7 +327,7 @@ void    Client::setMessage(std::string str)
         std::cout<<"Header Error\n";
         return ;  //여기서 에러 처리하기
     }
-    if (setBodyLine())
+    if (setContent())
     {
         std::cout<<"Body Error\n";
         return ;   //여기서 에러 처리하기
