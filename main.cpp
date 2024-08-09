@@ -18,6 +18,7 @@ int main(void)
 {
     Kq  kq;
 
+    //cgi실행할 fork
     std::ios::sync_with_stdio(false);
     while (1)
         kq.mainLoop();

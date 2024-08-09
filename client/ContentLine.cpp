@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   EntityLine.cpp                                     :+:      :+:    :+:   */
+/*   ContentLine.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: inghwang <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,75 +10,76 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "EntityLine.hpp"
+#include "ContentLine.hpp"
 
 extern int logs;
 
-EntityLine::EntityLine()
+ContentLine::ContentLine()
 {
     completion = false;
     sizeEqual = false;
 }
 
-EntityLine::EntityLine(const EntityLine& src)
+ContentLine::ContentLine(const ContentLine& src)
 {
     completion = src.getCompletion();
     sizeEqual = src.getSizeEqual();
     contentLength = src.getContentLength();
     chunked = src.getChunked();
-    entity = src.getEntity();
+    content = src.getContent();
 }
 
-EntityLine::~EntityLine()
+ContentLine::~ContentLine()
 {}
 
-EntityLine& EntityLine::operator=(const EntityLine& src)
+ContentLine& ContentLine::operator=(const ContentLine& src)
 {
     completion = src.getCompletion();
-    entity = src.getEntity();
+    content = src.getContent();
     return (*this);
 }
 
-bool    EntityLine::getCompletion() const
+bool    ContentLine::getCompletion() const
 {
     return (completion);
 }
 
-bool    EntityLine::getSizeEqual() const
+bool    ContentLine::getSizeEqual() const
 {
     return (sizeEqual);
 }
 
-int EntityLine::getContentLength() const
+int ContentLine::getContentLength() const
 {
     return (contentLength);
 }
 
-std::string EntityLine::getChunked() const
+std::string ContentLine::getChunked() const
 {
     return (chunked);
 }
 
-std::vector<std::string>    EntityLine::getEntity() const
+std::vector<std::string>    ContentLine::getContent() const
 {
-    return (entity);
+    return (content);
 }
 
-void    EntityLine::initContentLength(int init)
+void    ContentLine::initContentLine(int initCl, CONTENTTYPE initC)
 {
-    contentLength = init;
+    contentLength = initCl;
+    contentType = initC;
 }
 
-void    EntityLine::minusContentLength(int minus)
+void    ContentLine::minusContentLength(int minus)
 {
     contentLength -= minus;
 }
 
-int EntityLine::chunkedEntity()
+int ContentLine::chunkedEntity()
 {
     std::istringstream  chunkedStream(chunked);
     std::string         temp;
-    int                 ans;
+    size_t              ans;
     int                 size;
 
     ans = 0;
@@ -90,12 +91,23 @@ int EntityLine::chunkedEntity()
         if (temp[temp.size() - 1] == '\r') //temp[temp.size() - 1] == '\r'
             temp.erase(temp.size() - 1);
         if (ans % 2 == 0)
-            size = std::stoi(temp, nullptr, 16);
+        {
+            try
+            {
+                size = std::stoi(temp, nullptr, 16);
+            }
+            catch(const std::exception& e)
+            {
+                return (1);
+            }
+            if (size < 0)
+                return (1);
+        }
         else
         {
             if (size != static_cast<int>(temp.size()))
-                return (-2);
-            entity.push_back(temp);
+                return (2);
+            content.push_back(temp);
         }
         ans++;
     }
@@ -103,29 +115,30 @@ int EntityLine::chunkedEntity()
     return (0);
 }
 
-int EntityLine::plus(std::string &str, ENTITYTYPE entitytype)
+int ContentLine::plus(std::string &str)
 {
     size_t  flag;
 
-    if (entitytype == CONTENT)
+    if (contentType == CONTENT)
     {
+        std::cout<<contentLength<<' '<<str.size()<<std::endl;
         if (contentLength >= static_cast<int>(str.size()))
         {
             contentLength -= static_cast<int>(str.size());
             // minusContentLength(str.size());
             if (contentLength == 0)
                 completion = true;
-            entity.push_back(str);
+            content.push_back(str);
             str.clear();
         }
         else
         {
-            entity.push_back(str.substr(0, contentLength));
+            content.push_back(str.substr(0, contentLength));
             str = str.substr(contentLength);
             completion = true;
         }
     }
-    else if (entitytype == TRANSFER)
+    else if (contentType == TRANSFER)
     {
         chunked += str;
         str.clear();

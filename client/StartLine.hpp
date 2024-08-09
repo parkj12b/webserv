@@ -27,11 +27,7 @@ enum Method
 
 enum Version
 {
-    HTTP10 = 1,
-    HTTP11,
-    HTTP12,
-    HTTP20,
-    HTTP30
+    HTTP11 = 1
 };
 
 class StartLine

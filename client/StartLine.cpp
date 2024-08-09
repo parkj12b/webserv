@@ -16,10 +16,11 @@ extern int logs;
 
 std::map<std::string, Method> originMethodInit()
 {
+    //config 파일에서 정해주기
     std::map<std::string, Method> m;
 
     m["GET"] = GET;
-    m["HEAD"] = HEAD;
+    // m["HEAD"] = HEAD;
     m["POST"] = POST;
     m["DELETE"] = DELETE;
     return (m);
@@ -29,11 +30,7 @@ std::map<std::string, Version> originVersionInit()
 {
     std::map<std::string, Version> m;
 
-    m["HTTP/1.0"] = HTTP10;
     m["HTTP/1.1"] = HTTP11;
-    m["HTTP/1.2"] = HTTP12;
-    m["HTTP/2.0"] = HTTP20;
-    m["HTTP/3.0"] = HTTP30;
     return (m);
 }
 
@@ -94,24 +91,26 @@ int     StartLine::plus(std::string temp)
             case 0:
                 method = originMethod[str];
                 if (method == 0)
-                    return (-1);
+                    return (400);
                 // std::cout<<str<<": "<<method<<"\n";
                 break ;
             case 1:
                 if (str.empty())
-                    return (-2);
+                    return (400);
                 url = str;
+                //url이 잘못된 형식이면 400 형식은 맞지만 존재하지 않는다면 404
+                // 여기서 url검사와 allow검사 같이 진행하는 것이 좋을듯
                 // std::cout<<str<<": "<<url<<"\n";
                 break ;
             case 2:
                 version = originVersion[str];
                 // std::cout<<str<<": "<<version<<std::endl;
                 if (version == 0)
-                    return (-3);
+                    return (505);  //505
                 // std::cout<<str<<": "<<version<<std::endl;
                 break ;
             default:
-                return (-4);
+                return (400);
         }
         answer++;
     }

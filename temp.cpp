@@ -2,6 +2,9 @@
 #include <map>
 #include <sstream>
 #include <vector>
+#include <algorithm>
+#include <cctype>
+#include <fcntl.h>
 
 enum    NUM
 {
@@ -9,6 +12,20 @@ enum    NUM
     TWO,
     THREE,
     FOUR
+};
+
+class Test
+{
+    private:
+        int *a;
+    public:
+        Test() {
+            a = new int[2];
+        }
+        ~Test()
+        {
+            delete[] a;
+        }
 };
 
 int main()
@@ -72,6 +89,47 @@ int main()
     std::string str1;
     str1 = std::to_string(temp);
     std::cout<<str1<<" "<<str1.size()<<std::endl;
+    std::cout<<"\n\n=========test9=========\n";
+    std::string str9 = "hI, My naMe is HwanG inGyUU. s";
+    std::cout<<str9<<std::endl;
+    for (std::string::iterator it = str9.begin(); it != str9.end(); it++)
+        *it = std::tolower(*it);
+    std::cout<<str9<<std::endl;
+
+    std::cout<<"\n\n=========test9=========\n";
+    Test    *TTT = new Test();
+    delete TTT;
+
+    std::cout<<"\n\n=========test10=========\n";
+    std::string test10 = "\"Good,,,,\", \"Hi\", good, ";
+    std::string ans;
+    int comma = true;
+
+    for (std::string::iterator it = test10.begin(); it != test10.end(); it++)
+    {
+        if (*it == '"')
+            comma = !comma;
+        else if (comma && *it == ',')
+            ans += '\0';
+        else
+            ans += *it;
+    }
+    if (!comma)
+        std::cout<<"ERROR\n";
+    for (std::string::iterator it = ans.begin(); it != ans.end(); it++)
+    {
+        if (*it != '\0')
+            std::cout<<*it;
+        else
+            std::cout<<"EOF"<<std::endl;
+    }
+    std::cout<<"\ncomma parsing"<<std::endl;
+    std::istringstream  strStream(ans);
+    while (std::getline(strStream, str, '\0'))
+    {
+        std::cout<<str<<std::endl;
+    }
+    std::cout<<"\n\n=========test11=========\n";
     return 0;
 }
 

@@ -14,7 +14,7 @@ LINE_CLEAR  =   "\x1b[1A\x1b[M"
 #-------------------------------------------
 
 SOURCE = ./client/Client.cpp \
-		./client/EntityLine.cpp \
+		./client/ContentLine.cpp \
 		./client/HeaderLine.cpp \
 		./client/StartLine.cpp \
 		./server/Server.cpp \

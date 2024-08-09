@@ -19,8 +19,9 @@
 # include <map>
 # include <sstream>
 # include <algorithm>
+# include <cctype>
 
-enum    ENTITYTYPE 
+enum    CONTENTTYPE 
 {
     CONTENT = 1,
     TRANSFER,
@@ -38,18 +39,22 @@ class HeaderLine
     private:
         bool        completion;
         TE          te;
-        ENTITYTYPE  entitytype;
-        int         contentLength;
+        CONTENTTYPE contentType;
+        size_t      contentLength;
         std::string key;
         std::string value;
         std::map<std::string, std::deque<std::string> > header;
-        void    eraseSpace(std::string& str);
+        int     eraseSpace(std::string& str, bool space);
         // bool    checkMime(std::string temp);
         int     pushValue();
+        int     commentDelete();
     public:
         //static variable
-        static std::vector<std::string> manyHeader;
+        static std::vector<std::string> singleHeader;
+        static std::vector<std::string> dateHeader;
         static std::vector<std::string> vitalHeader;
+        static std::vector<std::string> commentHeader;
+        //Server, User-Agent, Via, comment
         //occf
         HeaderLine();
         HeaderLine(const HeaderLine& src);
@@ -58,7 +63,7 @@ class HeaderLine
         //get function
         bool        getCompletion() const;
         TE          getTe() const;
-        ENTITYTYPE  getEntitytype() const;
+        CONTENTTYPE getContentType() const;
         int         getContentLength() const;
         std::string getKey() const;
         std::string getValue() const;
