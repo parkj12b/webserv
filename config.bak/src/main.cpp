@@ -21,6 +21,7 @@ void    test(HTTPServer *httpServer)
     cout << "worker connections: " << httpServer->getWorkerConnections() << endl;
     vector<ServerConfigData> &serverConfigData = httpServer->getServerConfigData();
 
+    cout << "server config size: " << serverConfigData.size() << endl;
     for (size_t i = 0; i < serverConfigData.size(); i++)
     {
         ServerConfigData &serverData = serverConfigData[i];

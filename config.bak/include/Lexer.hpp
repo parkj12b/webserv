@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 11:57:52 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 22:58:33 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/11 00:21:04 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,17 +36,17 @@ private:
         private:
             string err;
         public:
-            LexerException(string error, string fileName);
+            LexerException(string error, Lexer *lex);
             ~LexerException() throw();
             const char *what() const throw();
     };
     void init();
 public:
-    static int line;
-    static int column;
-    static int startLine;
-    static int startColumn;
-    static char peek;
+    int line;
+    int column;
+    int startLine;
+    int startColumn;
+    char peek;
     string lookahead;
     ifstream file;
     map<string, Word> words;

@@ -32,7 +32,7 @@ private:
     Token *_look;
     Env *_top;
     Env *_event;
-    stack<Lexer *> _lexStack;
+    stack<pair<Lexer *, Token *> > _lexStack;
     unordered_set<Env *> _envList;
     vector<ServerConfig *> _serverConfig;
     static map<string, int> _directiveNum;
@@ -68,6 +68,7 @@ public:
     int getDirectiveNum(string s);
     vector<ServerConfig *> getServerConfig();
     void move();
+    void recover();
     void error(string s);
     void match(int t);
     void program();

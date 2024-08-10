@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 18:48:59 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 23:08:12 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/11 00:10:11 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,18 +32,23 @@ void Parser::move() {
     cout << "tag: " << _look->tag << endl;
 }
 
-void Parser::match(int t) {
-    cout << _look->tag << endl;
+void    Parser::recover()
+{
+    delete _lex;
+    delete _look;
+    _lex = _lexStack.top().first;
+    _look = _lexStack.top().second;
+    _lexStack.pop();
+}
+
+void Parser::match(int t)
+{
     if (_look->tag == t)
         move();
-    else if (_lexStack.size() > 0) {
-        delete _lex;
-        _lex = _lexStack.top();
-        _lexStack.pop();
-        match(t);
-    }
     else
         error("syntax error");
+    if (_look->tag == -1 && _lexStack.size() > 0)
+        recover();
 }
 
 void Parser::error(string s)
@@ -121,9 +126,10 @@ void    Parser::include(string &path)
     if (!file.good())
         error("file not found: " + path);
     Lexer *lex = new Lexer(path);
-    _lexStack.push(_lex);
+    lex->line = 1;
+    _lexStack.push(make_pair(_lex, _look->clone()));
     _lex = lex;
-    // move();
+    move();
 }
 
 void    Parser::server()
@@ -229,8 +235,6 @@ Parser::~Parser()
 {
     delete _top;
     _top = NULL;
-    // delete _event;
-    // _event = NULL;
     delete _look;
     _look = NULL;
     for (size_t i = 0; i < _serverConfig.size(); i++)
@@ -242,6 +246,7 @@ Parser::~Parser()
     {
         delete *it;
     }
+    delete _lex;
 }
 
 map<string, int> Parser::_directiveNum = {

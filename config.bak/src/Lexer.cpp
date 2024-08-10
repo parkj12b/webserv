@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 20:03:36 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 23:00:55 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/11 00:36:26 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ bool    Lexer::isHTTPCode(int num)
 
 void    Lexer::lexerError(string error)
 {
-    throw LexerException(error, _fileName);
+    throw LexerException(error, this);
 }
 
 void    Lexer::reserve(Word w)
@@ -130,7 +130,9 @@ Lexer::Lexer(const Lexer &l) : words(l.words) {
     *this = l;
 }
 
-Lexer::Lexer(string fileName) : _fileName(fileName)
+Lexer::Lexer(string fileName)
+    : _fileName(fileName), line(1), column(0), startLine(1), startColumn(0),
+        peek(' ')
 {
     init();
     file.open(fileName);
@@ -326,24 +328,25 @@ Lexer &Lexer::operator=(const Lexer &l) {
         file.close();
         file.open(l._fileName);
         _fileName = l._fileName;
+        line = l.line;
+        column = l.column;
+        startLine = l.startLine;
+        startColumn = l.startColumn;
+        peek = l.peek;
+        lookahead = l.lookahead;
     }
     return *this;
 }
 
-Lexer::LexerException::LexerException(string error, string fileName)
+Lexer::LexerException::LexerException(string error, Lexer *lex)
 {
-    err = fileName + ":" + to_string(startLine) + ":"
-        + to_string(startColumn) + ": error: " + error + " [Lexer]\n"
-        + getLineFromFile(fileName, startLine) + "\n"
-        + getErrorAngle(startColumn);
+    err = lex->getFileName() + ":" + to_string(lex->startLine) + ":"
+        + to_string(lex->startColumn) + ": error: " + error + " [Lexer]\n"
+        + getLineFromFile(lex->getFileName(), lex->startLine) + "\n"
+        + getErrorAngle(lex->startColumn);
 }
 
 Lexer::LexerException::~LexerException() throw() {}
 
 const char *Lexer::LexerException::what() const throw() { return err.c_str(); }
 
-char Lexer::peek = ' ';
-int Lexer::line = 1;
-int Lexer::column = 0;
-int Lexer::startLine = 1;
-int Lexer::startColumn = 0;
