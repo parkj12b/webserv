@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 19:21:41 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 15:27:12 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 19:11:15 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ public:
     vector<vector<vector< Token *> > > *getConfig(string key);
 
     LocationConfig();
+    ~LocationConfig();
     LocationConfig(Env *env);
     LocationConfig(Env *env, Env *limitExcept);
 };

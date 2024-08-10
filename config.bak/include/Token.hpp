@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 19:30:17 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/09 21:46:35 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 20:35:59 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ public:
     virtual ~Token();
     Token(int t);
     Token(const Token &t);
+    virtual Token *clone();
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 19:52:40 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/09 21:53:16 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 20:36:43 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ public:
     string toString();
     const static Word
         eq, minus, True, False, temp;
+    Token *clone();
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 14:29:44 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 15:11:42 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 20:12:27 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ public:
     void                        put(string key, vector<vector< Token *> > &args);
     vector<vector<vector< Token *> > > *get(string key);
     Env(Env *n, string context);
+    ~Env();
 };
 
 

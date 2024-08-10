@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 19:30:53 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 15:31:03 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 20:35:47 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,3 +26,8 @@ Token::~Token() {}
 Token::Token(int t) : tag(t) {}
 
 Token::Token(const Token &t) : tag(t.tag) {}
+
+Token *Token::clone()
+{
+    return new Token(*this);
+}

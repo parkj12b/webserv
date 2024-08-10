@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:30:28 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 18:52:23 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 21:10:00 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,16 +208,30 @@ void    Validator::checkKeepaliveTimeout(LocationConfigData &locationData, Locat
     if (v->size() != 1) {
         throw ValidatorException("keepalive_timeout directive must be set only once");
     }
-    string keepaliveTimeout = (dynamic_cast<Word *>((*v)[0][0][0]))->lexeme;
-    ssize_t keepaliveTimeoutInt = timeToSeconds(keepaliveTimeout);
+    Num *num;
+    if ((num = dynamic_cast<Num *>((*v)[0][0][0])))
+        locationData.setKeepaliveTimeout(num->value);
+    else
+    {
+        string keepaliveTimeout = (dynamic_cast<Word *>((*v)[0][0][0]))->lexeme;
+        ssize_t keepaliveTimeoutInt = timeToSeconds(keepaliveTimeout);        
+        locationData.setKeepaliveTimeout(keepaliveTimeoutInt);
+    }
 
-    locationData.setKeepaliveTimeout(keepaliveTimeoutInt);
     if ((*v)[0].size() == 2)
     {
-        string keepaliveTimeoutHeader = (dynamic_cast<Word *>((*v)[0][1][0]))->lexeme;
-        keepaliveTimeoutInt = timeToSeconds(keepaliveTimeoutHeader);
-        locationData.setHeaderTimeout(keepaliveTimeoutInt);
+        Num *num;
+        if ((num = dynamic_cast<Num *>((*v)[0][1][0])))
+            locationData.setHeaderTimeout(num->value);
+        else
+        {
+            string keepaliveTimeoutHeader = (dynamic_cast<Word *>((*v)[0][1][0]))->lexeme;
+            ssize_t keepaliveTimeoutInt = timeToSeconds(keepaliveTimeoutHeader);
+            locationData.setHeaderTimeout(keepaliveTimeoutInt);
+        }
     }
+    else
+        locationData.setHeaderTimeout(0);
 }
 
 void    Validator::checkRoot(LocationConfigData &locationData, LocationConfig &locationConfig)
@@ -431,3 +445,8 @@ const char *Validator::ValidatorException::what() const throw()
 
 Validator::Validator(Parser &parser)
     : _parser(parser), _httpServer(new HTTPServer()) {}
+
+Validator::~Validator()
+{
+    delete _httpServer;
+}

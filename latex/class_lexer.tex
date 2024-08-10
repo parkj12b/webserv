@@ -1,0 +1,74 @@
+\doxysection{Lexer Class Reference}
+\hypertarget{class_lexer}{}\label{class_lexer}\index{Lexer@{Lexer}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_lexer_a1c19663ef989c7875de6d1d30b5257d9}\label{class_lexer_a1c19663ef989c7875de6d1d30b5257d9} 
+bool {\bfseries is\+Time\+Unit} (int c)
+\item 
+\Hypertarget{class_lexer_a82960137260195524a33c5ef9a7fe404}\label{class_lexer_a82960137260195524a33c5ef9a7fe404} 
+bool {\bfseries is\+Byte\+Unit} (int c)
+\item 
+\Hypertarget{class_lexer_a83f679c594039f3418cf15e330afce14}\label{class_lexer_a83f679c594039f3418cf15e330afce14} 
+bool {\bfseries is\+HTTPCode} (int num)
+\item 
+\Hypertarget{class_lexer_ae7f039da07014bb3373c7450879e8041}\label{class_lexer_ae7f039da07014bb3373c7450879e8041} 
+void {\bfseries lexer\+Error} (string error)
+\item 
+\Hypertarget{class_lexer_ab68273eb02c50360eea7b9a95e56225a}\label{class_lexer_ab68273eb02c50360eea7b9a95e56225a} 
+void {\bfseries reserve} (\mbox{\hyperlink{class_word}{Word}} w)
+\item 
+\Hypertarget{class_lexer_a50f687c3249c97d6f7327cf7fcb294fc}\label{class_lexer_a50f687c3249c97d6f7327cf7fcb294fc} 
+void {\bfseries check\+New\+Line} ()
+\item 
+\Hypertarget{class_lexer_a5c91a26ad6b4294bf7bb8d4c46ea529b}\label{class_lexer_a5c91a26ad6b4294bf7bb8d4c46ea529b} 
+void {\bfseries readch} ()
+\item 
+\Hypertarget{class_lexer_acbe68a5d98ebc3b3a87fd27f000030a5}\label{class_lexer_acbe68a5d98ebc3b3a87fd27f000030a5} 
+bool {\bfseries readch} (char c)
+\item 
+\Hypertarget{class_lexer_ae12198bb494e4ce0629487a308fcf525}\label{class_lexer_ae12198bb494e4ce0629487a308fcf525} 
+{\bfseries Lexer} (const \mbox{\hyperlink{class_lexer}{Lexer}} \&l)
+\item 
+\Hypertarget{class_lexer_a0b8a89d9f7747e248274c618fa908ef0}\label{class_lexer_a0b8a89d9f7747e248274c618fa908ef0} 
+{\bfseries Lexer} (string file\+Name)
+\item 
+\Hypertarget{class_lexer_a2085b8262f6237de60583375ee2731f4}\label{class_lexer_a2085b8262f6237de60583375ee2731f4} 
+\mbox{\hyperlink{class_token}{Token}} \texorpdfstring{$\ast$}{*} {\bfseries scan} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_lexer_a5d4d181cf23afab2af71bd5cbc7f1116}\label{class_lexer_a5d4d181cf23afab2af71bd5cbc7f1116} 
+string {\bfseries lookahead}
+\item 
+\Hypertarget{class_lexer_a57e9c7b346eddecd46d05fb2e8bd1423}\label{class_lexer_a57e9c7b346eddecd46d05fb2e8bd1423} 
+ifstream {\bfseries file}
+\item 
+\Hypertarget{class_lexer_af93ea841fd216e2119ef5fa8d2170ea8}\label{class_lexer_af93ea841fd216e2119ef5fa8d2170ea8} 
+map$<$ string, \mbox{\hyperlink{class_word}{Word}} $>$ {\bfseries words}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_lexer_a35d0802ee5cced4c5294fb6dc77ad2f4}\label{class_lexer_a35d0802ee5cced4c5294fb6dc77ad2f4} 
+static int {\bfseries line} = 1
+\item 
+\Hypertarget{class_lexer_a0acefb0df8461b689d0dba576b1a3470}\label{class_lexer_a0acefb0df8461b689d0dba576b1a3470} 
+static int {\bfseries column} = 0
+\item 
+\Hypertarget{class_lexer_a76160beb20a2f575def491c1cec8f186}\label{class_lexer_a76160beb20a2f575def491c1cec8f186} 
+static int {\bfseries start\+Line} = 1
+\item 
+\Hypertarget{class_lexer_ab87f242cd25934592b910c353cb829ba}\label{class_lexer_ab87f242cd25934592b910c353cb829ba} 
+static int {\bfseries start\+Column} = 0
+\item 
+\Hypertarget{class_lexer_a1c13ae056a34e7ec483c561152bb8d49}\label{class_lexer_a1c13ae056a34e7ec483c561152bb8d49} 
+static char {\bfseries peek} = \textquotesingle{} \textquotesingle{}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+config.\+bak/include/Lexer.\+hpp\item 
+config.\+bak/src/Lexer.\+cpp\end{DoxyCompactItemize}

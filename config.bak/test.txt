@@ -9,7 +9,10 @@ http {
     include /etc/nginx/mime.types;
 
     error_page 500 502 503 504 /50x.html;
+    error_page 404 /404.html;
+
     keepalive_timeout 75s;
+
     client_max_body_size 1m;
     # client header client
     # 
@@ -26,6 +29,7 @@ http {
             limit_except GET HEAD {
                 deny all;
             }
+            keepalive_timeout 10s 10;
             root /usr/share/nginx/html;
             index index.html;
         }
@@ -45,10 +49,9 @@ http {
         server_name "abc";
     }
 
-    fastcgi_param ... ...;
+    fastcgi_param abc def; # length error when more argument than 2
 
-    server {
+    server {#
         listen 8080;
     }
-    
 }

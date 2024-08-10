@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 19:22:56 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 16:09:58 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 19:56:00 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,3 +36,11 @@ LocationConfig::LocationConfig() : _env(NULL), _limitExcept(NULL) {}
 LocationConfig::LocationConfig(Env *env) : _env(env), _limitExcept(NULL) {}
 
 LocationConfig::LocationConfig(Env *env, Env *limitExcept) : _env(env), _limitExcept(limitExcept) {}
+
+LocationConfig::~LocationConfig()
+{
+    // delete _env;
+    // _env = NULL;
+    // delete _limitExcept;
+    // _limitExcept = NULL;
+}

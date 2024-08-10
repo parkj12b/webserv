@@ -69,7 +69,7 @@ void    test(HTTPServer *httpServer)
 int main()
 {
     Directives::init();
-    // atexit(check);
+    atexit(check);
     Lexer lex("test.txt");
     Parser parser(lex, "main");
     // std::cin.rdbuf(file.rdbuf());

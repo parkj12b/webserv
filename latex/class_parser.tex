@@ -1,0 +1,90 @@
+\doxysection{Parser Class Reference}
+\hypertarget{class_parser}{}\label{class_parser}\index{Parser@{Parser}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_parser_ac955997a2c61a9e9e76f291492f74ecf}\label{class_parser_ac955997a2c61a9e9e76f291492f74ecf} 
+enum {\bfseries Directive\+Num} \{ \newline
+{\bfseries ERROR\+\_\+\+LOG} = 1
+, {\bfseries WORKER\+\_\+\+CONNECTION}
+, {\bfseries DEFAULT\+\_\+\+TYPE}
+, {\bfseries KEEPALIVE\+\_\+\+TIMEOUT}
+, \newline
+{\bfseries LISTEN}
+, {\bfseries SERVER\+\_\+\+NAME}
+, {\bfseries ROOT}
+, {\bfseries ERROR\+\_\+\+PAGE}
+, \newline
+{\bfseries CLIENT\+\_\+\+MAX\+\_\+\+BODY\+\_\+\+SIZE}
+, {\bfseries FASTCGI\+\_\+\+PASS}
+, {\bfseries FASTCGI\+\_\+\+INDEX}
+, {\bfseries FASTCGI\+\_\+\+PARAM}
+, \newline
+{\bfseries INDEX}
+, {\bfseries AUTOINDEX}
+, {\bfseries LOG\+\_\+\+FORMAT}
+, {\bfseries EVENTS}
+, \newline
+{\bfseries HTTP}
+, {\bfseries SERVER}
+, {\bfseries LOCATION}
+, {\bfseries LIMIT\+\_\+\+EXCEPT}
+, \newline
+{\bfseries DENY}
+, {\bfseries INCLUDE}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_parser_a74484a71a4faeef8ee35ec7933c13727}\label{class_parser_a74484a71a4faeef8ee35ec7933c13727} 
+{\bfseries Parser} (\mbox{\hyperlink{class_lexer}{Lexer}} \&l, string context)
+\item 
+\Hypertarget{class_parser_aee046e39fe3a085dd85a1df19752a966}\label{class_parser_aee046e39fe3a085dd85a1df19752a966} 
+\mbox{\hyperlink{class_env}{Env}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Event} ()
+\item 
+\Hypertarget{class_parser_a2380e34523d6249e6f756d81024e0fb6}\label{class_parser_a2380e34523d6249e6f756d81024e0fb6} 
+int {\bfseries get\+Directive\+Num} (string s)
+\item 
+\Hypertarget{class_parser_afad830592403474c0f6531dc19468e67}\label{class_parser_afad830592403474c0f6531dc19468e67} 
+vector$<$ \mbox{\hyperlink{class_server_config}{Server\+Config}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries get\+Server\+Config} ()
+\item 
+\Hypertarget{class_parser_ae6cc5bf3ee250c954a36bd16f7559d79}\label{class_parser_ae6cc5bf3ee250c954a36bd16f7559d79} 
+void {\bfseries move} ()
+\item 
+\Hypertarget{class_parser_ab809c6de1605cc1ac44c5473ef519edd}\label{class_parser_ab809c6de1605cc1ac44c5473ef519edd} 
+void {\bfseries error} (string s)
+\item 
+\Hypertarget{class_parser_aef3c6517b87762fa24623ee4f616ddb3}\label{class_parser_aef3c6517b87762fa24623ee4f616ddb3} 
+void {\bfseries match} (int t)
+\item 
+\Hypertarget{class_parser_af213985eb12738d0dbf7d505a8795ea2}\label{class_parser_af213985eb12738d0dbf7d505a8795ea2} 
+void {\bfseries program} ()
+\item 
+\Hypertarget{class_parser_ad80a6c9df72e1b071b710ab314e9308f}\label{class_parser_ad80a6c9df72e1b071b710ab314e9308f} 
+void {\bfseries directives} ()
+\item 
+\Hypertarget{class_parser_a3980347da09a61d97fcff9397d32b219}\label{class_parser_a3980347da09a61d97fcff9397d32b219} 
+void {\bfseries directive} ()
+\item 
+\Hypertarget{class_parser_a72a18ed64d0f03e1ffcc6f541d51b7c9}\label{class_parser_a72a18ed64d0f03e1ffcc6f541d51b7c9} 
+void {\bfseries server} ()
+\item 
+\Hypertarget{class_parser_a97225226eb0343851c61d1ac9801d099}\label{class_parser_a97225226eb0343851c61d1ac9801d099} 
+void {\bfseries context} ()
+\item 
+\Hypertarget{class_parser_a09bf00905cf32699e421d456344a5dbf}\label{class_parser_a09bf00905cf32699e421d456344a5dbf} 
+void {\bfseries head\+Directive} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_parser_a6ec0b2307c8ab94bfd7199604c4bd51a}\label{class_parser_a6ec0b2307c8ab94bfd7199604c4bd51a} 
+\mbox{\hyperlink{class_server_config}{Server\+Config}} \texorpdfstring{$\ast$}{*} {\bfseries cur\+Server}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+config.\+bak/include/Parser.\+hpp\item 
+config.\+bak/src/Parser.\+cpp\end{DoxyCompactItemize}

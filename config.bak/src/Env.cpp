@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 17:32:33 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 15:19:19 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 20:12:13 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 #include <vector>
 #include <map>
 #include "Env.hpp"
+#include "Token.hpp"
 
 using namespace std;
 
-Env::Env(Env *n, string context) : _context(context), prev(n) {}
 
 string Env::getContext() { return _context; }
 
@@ -58,3 +58,33 @@ vector<vector<vector< Token *> > > *Env::get(string key)
     }
     return (&v->second);
 }
+
+Env::Env(Env *n, string context) : _context(context), prev(n) {}
+
+Env::~Env()
+{
+    for (map<string, vector<vector<vector< Token *> > > >::iterator it = _table.begin(); it != _table.end(); it++)
+    {
+        for (vector<vector<vector< Token *> > >::iterator it2 = it->second.begin(); it2 != it->second.end(); it2++)
+        {
+            for (vector<vector< Token *> >::iterator it3 = it2->begin(); it3 != it2->end(); it3++)
+            {
+                for (vector< Token *>::iterator it4 = it3->begin(); it4 != it3->end(); it4++)
+                {
+                    delete *it4;
+                    *it4 = NULL;
+                }
+            }
+        }
+    }
+
+    for (vector<vector< Token *> >::iterator it = _headDirective.begin(); it != _headDirective.end(); it++)
+    {
+        for (vector< Token *>::iterator it2 = it->begin(); it2 != it->end(); it2++)
+        {
+            delete *it2;
+            *it2 = NULL;
+        }
+    }
+}
+

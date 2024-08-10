@@ -1,0 +1,85 @@
+\doxysection{Parser.\+hpp}
+\hypertarget{_parser_8hpp_source}{}\label{_parser_8hpp_source}\index{config.bak/include/Parser.hpp@{config.bak/include/Parser.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*\ **************************************************************************\ */}}
+\DoxyCodeLine{00002\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00003\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :::\ \ \ \ \ \ ::::::::\ \ \ */}}
+\DoxyCodeLine{00004\ \textcolor{comment}{/*\ \ \ Parser.hpp\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :+:\ \ \ \ \ \ :+:\ \ \ \ :+:\ \ \ */}}
+\DoxyCodeLine{00005\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +:+\ +:+\ \ \ \ \ \ \ \ \ +:+\ \ \ \ \ */}}
+\DoxyCodeLine{00006\ \textcolor{comment}{/*\ \ \ By:\ minsepar\ <minsepar@student.42.fr>\ \ \ \ \ \ \ \ \ \ +\#+\ \ +:+\ \ \ \ \ \ \ +\#+\ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00007\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +\#+\#+\#+\#+\#+\ \ \ +\#+\ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00008\ \textcolor{comment}{/*\ \ \ Created:\ 2024/08/0\ 23:12:20\ by\ minsepar\ \ \ \ \ \ \ \ \ \ \#+\#\ \ \ \ \#+\#\ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00009\ \textcolor{comment}{/*\ \ \ Updated:\ 2024/08/06\ 20:36:27\ by\ minsepar\ \ \ \ \ \ \ \ \ \#\#\#\ \ \ \#\#\#\#\#\#\#\#.fr\ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00010\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00011\ \textcolor{comment}{/*\ **************************************************************************\ */}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#ifndef\ \_\_PARSER\_HPP\_\_}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#\ define\ \_\_PARSER\_HPP\_\_}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ "{}Lexer.hpp"{}}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ "{}Syntax.hpp"{}}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{keyword}{using\ namespace\ }std;}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_token}{Token}};}
+\DoxyCodeLine{00025\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_env}{Env}};}
+\DoxyCodeLine{00026\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_server_config}{ServerConfig}};}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_parser}{Parser}}\ \{}
+\DoxyCodeLine{00029\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00030\ \ \ \ \ \mbox{\hyperlink{class_lexer}{Lexer}}\ \&\_lex;}
+\DoxyCodeLine{00031\ \ \ \ \ \mbox{\hyperlink{class_token}{Token}}\ *\_look;}
+\DoxyCodeLine{00032\ \ \ \ \ \mbox{\hyperlink{class_env}{Env}}\ *\_top;}
+\DoxyCodeLine{00033\ \ \ \ \ \mbox{\hyperlink{class_env}{Env}}\ *\_event;}
+\DoxyCodeLine{00034\ \ \ \ \ vector<ServerConfig\ *>\ \_serverConfig;}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keyword}{static}\ map<string,\ int>\ \_directiveNum;}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keyword}{static}\ map<string,\ vector<Syntax>\ >\ \_directiveSyntax;}
+\DoxyCodeLine{00037\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keyword}{enum}\ DirectiveNum\ \{}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ ERROR\_LOG\ =\ 1,}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ WORKER\_CONNECTION,}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ DEFAULT\_TYPE,}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ KEEPALIVE\_TIMEOUT,}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ LISTEN,}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ SERVER\_NAME,}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ ROOT,}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ ERROR\_PAGE,}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ CLIENT\_MAX\_BODY\_SIZE,}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ FASTCGI\_PASS,}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ FASTCGI\_INDEX,}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ FASTCGI\_PARAM,}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ INDEX,}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ AUTOINDEX,}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ LOG\_FORMAT,}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ EVENTS,}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ HTTP,}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ SERVER,}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ LOCATION,}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ LIMIT\_EXCEPT,}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ ALLOW,}}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ DENY,}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ INCLUDE}
+\DoxyCodeLine{00062\ \ \ \ \ \};}
+\DoxyCodeLine{00063\ \ \ \ \ \mbox{\hyperlink{class_server_config}{ServerConfig}}\ *curServer;}
+\DoxyCodeLine{00064\ \ \ \ \ \mbox{\hyperlink{class_parser}{Parser}}(\mbox{\hyperlink{class_lexer}{Lexer}}\ \&l,\ \textcolor{keywordtype}{string}\ context);}
+\DoxyCodeLine{00065\ \ \ \ \ \mbox{\hyperlink{class_env}{Env}}\ *getEvent();}
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keywordtype}{int}\ getDirectiveNum(\textcolor{keywordtype}{string}\ s);}
+\DoxyCodeLine{00067\ \ \ \ \ vector<ServerConfig\ *>\ getServerConfig();}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keywordtype}{void}\ move();}
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keywordtype}{void}\ error(\textcolor{keywordtype}{string}\ s)\ \{\ \textcolor{keywordflow}{throw}\ runtime\_error(\textcolor{stringliteral}{"{}near\ line\ "{}}\ +\ to\_string(\_lex.line)\ +\ \textcolor{stringliteral}{"{}:\ "{}}\ +\ s);\ \}}
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keywordtype}{void}\ match(\textcolor{keywordtype}{int}\ t);}
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keywordtype}{void}\ program();}
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keywordtype}{void}\ directives();}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keywordtype}{void}\ directive();}
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keywordtype}{void}\ server();}
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keywordtype}{void}\ context();}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordtype}{void}\ headDirective();}
+\DoxyCodeLine{00077\ \};}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

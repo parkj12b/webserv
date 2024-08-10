@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:26:25 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 15:18:00 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 20:17:53 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ public:
         const char *what() const throw();
     };
     Validator(Parser &parser);
+    ~Validator();
 };
 
 

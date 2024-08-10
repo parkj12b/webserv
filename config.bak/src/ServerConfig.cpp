@@ -6,15 +6,13 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 19:19:23 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 15:20:18 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 20:13:16 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <vector>
 #include <string>
 #include "ServerConfig.hpp"
-
-ServerConfig::ServerConfig(Env *env) : _env(env) {}
 
 vector<vector<vector< Token *> > > *ServerConfig::getConfig(string key) {
     Env *cur = _env;
@@ -30,4 +28,12 @@ vector<vector<vector< Token *> > > *ServerConfig::getConfig(string key) {
 
 LocationConfig &ServerConfig::getLocationConfig(string key) {
     return location[key];
+}
+
+ServerConfig::ServerConfig(Env *env) : _env(env) {}
+
+ServerConfig::~ServerConfig()
+{
+    // delete _env;
+    // _env = NULL;
 }

@@ -1,0 +1,108 @@
+\doxysection{Validator.\+hpp}
+\hypertarget{_validator_8hpp_source}{}\label{_validator_8hpp_source}\index{config.bak/include/Validator.hpp@{config.bak/include/Validator.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*\ **************************************************************************\ */}}
+\DoxyCodeLine{00002\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00003\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :::\ \ \ \ \ \ ::::::::\ \ \ */}}
+\DoxyCodeLine{00004\ \textcolor{comment}{/*\ \ \ Validator.hpp\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :+:\ \ \ \ \ \ :+:\ \ \ \ :+:\ \ \ */}}
+\DoxyCodeLine{00005\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +:+\ +:+\ \ \ \ \ \ \ \ \ +:+\ \ \ \ \ */}}
+\DoxyCodeLine{00006\ \textcolor{comment}{/*\ \ \ By:\ minsepar\ <minsepar@student.42.fr>\ \ \ \ \ \ \ \ \ \ +\#+\ \ +:+\ \ \ \ \ \ \ +\#+\ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00007\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +\#+\#+\#+\#+\#+\ \ \ +\#+\ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00008\ \textcolor{comment}{/*\ \ \ Created:\ 2024/08/08\ 16:26:25\ by\ minsepar\ \ \ \ \ \ \ \ \ \ \#+\#\ \ \ \ \#+\#\ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00009\ \textcolor{comment}{/*\ \ \ Updated:\ 2024/08/10\ 15:18:00\ by\ minsepar\ \ \ \ \ \ \ \ \ \#\#\#\ \ \ \#\#\#\#\#\#\#\#.fr\ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00010\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00011\ \textcolor{comment}{/*\ **************************************************************************\ */}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#ifndef\ \_\_VALIDATOR\_HPP\_\_}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#\ define\ \_\_VALIDATOR\_HPP\_\_}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <unordered\_set>}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <exception>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ "{}ServerConfigData.hpp"{}}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ "{}LocationConfigData.hpp"{}}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{keyword}{using\ namespace\ }std;}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_parser}{Parser}};}
+\DoxyCodeLine{00025\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_h_t_t_p_server}{HTTPServer}};}
+\DoxyCodeLine{00026\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_server_config}{ServerConfig}};}
+\DoxyCodeLine{00027\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_location_config}{LocationConfig}};}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#define\ DEFAULT\_WORKER\_CONNECTIONS\ 1024}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#define\ DEFAULT\_PORT\ 80}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#define\ DEFAULT\_KEEPALIVE\_TIMEOUT\ 75}}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#define\ DEFAULT\_SERVER\_NAME\ "{}localhost"{}}}
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#define\ DEFAULT\_INDEX\ "{}index.html"{}}}
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#define\ DEFAULT\_ERROR\_LOG\ "{}logs/error.log"{}}}
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#define\ DEFAULT\_ERROR\_PAGE\ "{}error\_page"{}}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#define\ DEFAULT\_DEFAULT\_TYPE\ "{}text/plain"{}}}
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#define\ DEFAULT\_ROOT\ "{}/var/www/html"{}}}
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#define\ DEFAULT\_400\_ERROR\_PAGE\ "{}error\_page/40x.html"{}}}
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#define\ DEFAULT\_500\_ERROR\_PAGE\ "{}error\_page/40x.html"{}}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#define\ DEFAULT\_CLIENT\_MAX\_BODY\_SIZE\ (1\ *\ 1024\ *\ 1024)}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#define\ DEFAULT\_FASTCGI\_INDEX\ "{}index.php"{}}}
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#define\ DEFAULT\_AUTO\_INDEX\ false}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#define\ DEFAULT\_ACCESS\_LOG\ "{}logs/access.log"{}}}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_validator}{Validator}}\ \{}
+\DoxyCodeLine{00046\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00047\ \ \ \ \ \mbox{\hyperlink{class_parser}{Parser}}\ \&\_parser;}
+\DoxyCodeLine{00048\ \ \ \ \ \mbox{\hyperlink{class_h_t_t_p_server}{HTTPServer}}\ *\_httpServer;}
+\DoxyCodeLine{00049\ \ \ \ \ unordered\_set<int>\ \_ports;}
+\DoxyCodeLine{00050\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00051\ \ \ \ \ \mbox{\hyperlink{class_h_t_t_p_server}{HTTPServer}}\ \ \ \ \ \ \ \ \ \ *validate();}
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ checkWorkerConnections();}
+\DoxyCodeLine{00053\ \ \ \ \ \mbox{\hyperlink{class_server_config_data}{ServerConfigData}}\ \ \ \ checkServer(\mbox{\hyperlink{class_server_config}{ServerConfig}}\ *serverConfig);}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ checkServerName(\mbox{\hyperlink{class_server_config_data}{ServerConfigData}}\ \&serverData,}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_server_config}{ServerConfig}}\ *serverConfig);}
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ checkPort(\mbox{\hyperlink{class_server_config_data}{ServerConfigData}}\ \&serverData,}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_server_config}{ServerConfig}}\ *serverConfig);}
+\DoxyCodeLine{00058\ \ \ \ \ \mbox{\hyperlink{class_location_config_data}{LocationConfigData}}\ \ checkLocation(\mbox{\hyperlink{class_location_config}{LocationConfig}}\ \&locationConfig);}
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ checkErrorLog(\mbox{\hyperlink{class_location_config_data}{LocationConfigData}}\ \&locationData,}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_location_config}{LocationConfig}}\ \&locationConfig);}
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ checkAllowedMethod(\mbox{\hyperlink{class_location_config_data}{LocationConfigData}}\ \&locationData,}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_location_config}{LocationConfig}}\ \&locationConfig);}
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ checkDefaultType(\mbox{\hyperlink{class_location_config_data}{LocationConfigData}}\ \&locationData,}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_location_config}{LocationConfig}}\ \&locationConfig);}
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ checkKeepaliveTimeout(\mbox{\hyperlink{class_location_config_data}{LocationConfigData}}\ \&locationData,}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_location_config}{LocationConfig}}\ \&locationConfig);}
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ checkRoot(\mbox{\hyperlink{class_location_config_data}{LocationConfigData}}\ \&locationData,}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_location_config}{LocationConfig}}\ \&locationConfig);}
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ checkErrorPage(\mbox{\hyperlink{class_location_config_data}{LocationConfigData}}\ \&locationData,}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_location_config}{LocationConfig}}\ \&locationConfig);}
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ checkClientMaxBodySize(\mbox{\hyperlink{class_location_config_data}{LocationConfigData}}\ \&locationData,}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_location_config}{LocationConfig}}\ \&locationConfig);}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ checkFastcgiPass(\mbox{\hyperlink{class_location_config_data}{LocationConfigData}}\ \&locationData,}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_location_config}{LocationConfig}}\ \&locationConfig);}
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ checkFastcgiParam(\mbox{\hyperlink{class_location_config_data}{LocationConfigData}}\ \&locationData,}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_location_config}{LocationConfig}}\ \&locationConfig);}
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ checkFastcgiIndex(\mbox{\hyperlink{class_location_config_data}{LocationConfigData}}\ \&locationData,}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_location_config}{LocationConfig}}\ \&locationConfig);}
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ checkAutoIndex(\mbox{\hyperlink{class_location_config_data}{LocationConfigData}}\ \&locationData,}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_location_config}{LocationConfig}}\ \&locationConfig);}
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ checkAccessLog(\mbox{\hyperlink{class_location_config_data}{LocationConfigData}}\ \&locationData,}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_location_config}{LocationConfig}}\ \&locationConfig);}
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ checkReturn(\mbox{\hyperlink{class_location_config_data}{LocationConfigData}}\ \&locationData,}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_location_config}{LocationConfig}}\ \&locationConfig);}
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ checkIndex(\mbox{\hyperlink{class_location_config_data}{LocationConfigData}}\ \&locationData,}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_location_config}{LocationConfig}}\ \&locationConfig);}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00088\ \ \ \ \ unordered\_set<int>\ \ \&getPorts()\ \{\ \textcolor{keywordflow}{return}\ \_ports;\ \}}
+\DoxyCodeLine{00089\ \ \ \ \ }
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_validator_1_1_validator_exception}{ValidatorException}}\ :\ \textcolor{keyword}{public}\ exception\ \{}
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{string}\ err;}
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_validator_1_1_validator_exception}{ValidatorException}}(\textcolor{keywordtype}{string}\ error);}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_validator_1_1_validator_exception}{\string~ValidatorException}}()\ \textcolor{keywordflow}{throw}();}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *what()\ \textcolor{keyword}{const}\ \textcolor{keywordflow}{throw}();}
+\DoxyCodeLine{00097\ \ \ \ \ \};}
+\DoxyCodeLine{00098\ \ \ \ \ \mbox{\hyperlink{class_validator}{Validator}}(\mbox{\hyperlink{class_parser}{Parser}}\ \&parser);}
+\DoxyCodeLine{00099\ \};}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

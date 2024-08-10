@@ -1,0 +1,69 @@
+\doxysection{Header\+Line Class Reference}
+\hypertarget{class_header_line}{}\label{class_header_line}\index{HeaderLine@{HeaderLine}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_header_line_aea8bce6880b314fa2c07c72c8000f704}\label{class_header_line_aea8bce6880b314fa2c07c72c8000f704} 
+{\bfseries Header\+Line} (const \mbox{\hyperlink{class_header_line}{Header\+Line}} \&src)
+\item 
+\Hypertarget{class_header_line_a9391223c2df63cf6deb3195c1550b619}\label{class_header_line_a9391223c2df63cf6deb3195c1550b619} 
+\mbox{\hyperlink{class_header_line}{Header\+Line}} \& {\bfseries operator=} (const \mbox{\hyperlink{class_header_line}{Header\+Line}} \&src)
+\item 
+\Hypertarget{class_header_line_a7cf7658317cf3ef8bbbcc4455f08eea4}\label{class_header_line_a7cf7658317cf3ef8bbbcc4455f08eea4} 
+bool {\bfseries get\+Completion} () const
+\item 
+\Hypertarget{class_header_line_a043ccbc1fcad6f6d1c47fad87aec9156}\label{class_header_line_a043ccbc1fcad6f6d1c47fad87aec9156} 
+TE {\bfseries get\+Te} () const
+\item 
+\Hypertarget{class_header_line_a6a9d2f21a2211d63164e21a11313bbb3}\label{class_header_line_a6a9d2f21a2211d63164e21a11313bbb3} 
+CONTENTTYPE {\bfseries get\+Content\+Type} () const
+\item 
+\Hypertarget{class_header_line_a3514aa83f7489146c76cfb0b8855ce45}\label{class_header_line_a3514aa83f7489146c76cfb0b8855ce45} 
+int {\bfseries get\+Content\+Length} () const
+\item 
+\Hypertarget{class_header_line_a91f5131161de86a599e0afd56bcb9c55}\label{class_header_line_a91f5131161de86a599e0afd56bcb9c55} 
+std\+::string {\bfseries get\+Key} () const
+\item 
+\Hypertarget{class_header_line_abaafc54c70197becf2dd023f2d178498}\label{class_header_line_abaafc54c70197becf2dd023f2d178498} 
+std\+::string {\bfseries get\+Value} () const
+\item 
+\Hypertarget{class_header_line_a74e81532268fbc73f22023c0e27152c3}\label{class_header_line_a74e81532268fbc73f22023c0e27152c3} 
+std\+::map$<$ std\+::string, std\+::deque$<$ std\+::string $>$ $>$ {\bfseries get\+Header} () const
+\item 
+\Hypertarget{class_header_line_a06e1feef1b2260d160e1654b4e2c1127}\label{class_header_line_a06e1feef1b2260d160e1654b4e2c1127} 
+void {\bfseries set\+Content\+Length} (int minus)
+\item 
+\Hypertarget{class_header_line_adaf98e1444dd4a8f7cb0e3f973b0895b}\label{class_header_line_adaf98e1444dd4a8f7cb0e3f973b0895b} 
+void {\bfseries set\+Trailer} (TE temp)
+\item 
+\Hypertarget{class_header_line_a8e8efcde2b410fbb2a2c09f48cea35eb}\label{class_header_line_a8e8efcde2b410fbb2a2c09f48cea35eb} 
+int {\bfseries check\+Trailer} (std\+::string \&temp)
+\item 
+\Hypertarget{class_header_line_a1683813a4d7536f9bffcf8b565b005df}\label{class_header_line_a1683813a4d7536f9bffcf8b565b005df} 
+int {\bfseries plus} (std\+::string \&temp)
+\item 
+\Hypertarget{class_header_line_a2fdeca712878f146a5a37ad8b3066dc5}\label{class_header_line_a2fdeca712878f146a5a37ad8b3066dc5} 
+int {\bfseries header\+Error} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_header_line_a90e9f9dd1a43daf0b991de3eb4e76a20}\label{class_header_line_a90e9f9dd1a43daf0b991de3eb4e76a20} 
+static std\+::vector$<$ std\+::string $>$ {\bfseries single\+Header} = single\+Header\+Init()
+\item 
+\Hypertarget{class_header_line_a7c2903f1b2047538b560824249bdf444}\label{class_header_line_a7c2903f1b2047538b560824249bdf444} 
+static std\+::vector$<$ std\+::string $>$ {\bfseries date\+Header} = date\+Header\+Init()
+\item 
+\Hypertarget{class_header_line_a15265e48e8ddb47f85b1861c1fd29979}\label{class_header_line_a15265e48e8ddb47f85b1861c1fd29979} 
+static std\+::vector$<$ std\+::string $>$ {\bfseries vital\+Header} = vital\+Header\+Init()
+\item 
+\Hypertarget{class_header_line_a134f5d84eea8fc1d0491a15556e70015}\label{class_header_line_a134f5d84eea8fc1d0491a15556e70015} 
+static std\+::vector$<$ std\+::string $>$ {\bfseries comment\+Header} = comment\+Header\+Init()
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+client/Header\+Line.\+hpp\item 
+client/Header\+Line.\+cpp\item 
+string\+Test.\+cpp\end{DoxyCompactItemize}

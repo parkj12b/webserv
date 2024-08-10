@@ -16,6 +16,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <unordered_set>
 #include "Lexer.hpp"
 #include "Syntax.hpp"
 
@@ -31,6 +32,7 @@ private:
     Token *_look;
     Env *_top;
     Env *_event;
+    unordered_set<Env *> _envList;
     vector<ServerConfig *> _serverConfig;
     static map<string, int> _directiveNum;
     static map<string, vector<Syntax> > _directiveSyntax;
@@ -61,7 +63,6 @@ public:
         INCLUDE
     };
     ServerConfig *curServer;
-    Parser(Lexer &l, string context);
     Env *getEvent();
     int getDirectiveNum(string s);
     vector<ServerConfig *> getServerConfig();
@@ -74,6 +75,9 @@ public:
     void server();
     void context();
     void headDirective();
+    void saveEnv(Env *env);
+    Parser(Lexer &l, string context);
+    ~Parser();
 };
 
 #endif
