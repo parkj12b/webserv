@@ -239,7 +239,7 @@ int HeaderLine::commentDelete()
         bracket2 = value.find(')');
         if (bracket2 == std::string::npos)
             return (1);
-        if (bracket2 > bracket1)
+        if (bracket2 < bracket1)
             return (1);
         value = value.substr(0, bracket1) + value.substr(bracket2 + 1);
     }
@@ -303,7 +303,7 @@ std::string HeaderLine::getValue() const
 {
     return (value);
 }
-std::map<std::string, std::deque<std::string> > HeaderLine::getHeader() const
+std::unordered_map<std::string, std::deque<std::string> > HeaderLine::getHeader() const
 {
     return (header);
 }
@@ -371,8 +371,8 @@ int HeaderLine::plus(std::string& temp)
 
 int HeaderLine::headerError()
 {
-    std::vector<std::string>::iterator                          itv;
-    std::map<std::string, std::deque<std::string> >::iterator   itm;
+    std::vector<std::string>::iterator                                  itv;
+    std::unordered_map<std::string, std::deque<std::string> >::iterator itm;
 
     for (itv = vitalHeader.begin(); itv != vitalHeader.end(); itv++)
     {

@@ -2,7 +2,6 @@ GET / HTTP/1.1
 Host: google.com
 accept: "goo,,d""HI", "GG", "JJ", "HH", , HIHIHIHI    HIHIHI
 content-type: hi
-content-length: 10
-expect: 100-continue
+content-length: 4
 
 hihi

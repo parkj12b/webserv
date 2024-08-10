@@ -56,8 +56,9 @@ int main()
     test3.clear();
     std::cout<<test3<<"here"<<std::endl;
     std::cout<<"\n\n=======test4=======\n";
-    std::string test4 = "HI Hello World";
-    size_t  pos = test4.find('e');
+    std::string test4 = "HI HellPo World";
+    size_t  pos = test4.find('P');
+    std::cout<<"find: P"<<std::endl;
     std::cout<<test4.substr(0, pos)<<std::endl;
     std::cout<<test4.substr(pos)<<std::endl;
     while (test>>str)

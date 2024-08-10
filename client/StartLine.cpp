@@ -76,6 +76,36 @@ std::string  StartLine::getUrl() const
     return (url);
 }
 
+std::unordered_map<std::string, std::string>    StartLine::getQuery() const
+{
+    return (query);
+}
+
+int StartLine::urlQuery()
+{
+    size_t      pos;
+    std::string queryTemp;
+    std::string str;
+
+    pos = url.find('#');
+    if (pos != std::string::npos)
+        url.substr(0, pos);
+    pos = url.find('?');
+    if (pos != std::string::npos)
+    {
+        queryTemp = url.substr(pos + 1);
+        url = url.substr(0, pos);
+        std::istringstream  strStream(queryTemp);
+        while (getline(strStream, str, '&'))
+        {
+            pos = str.find('=');
+            if (pos != std::string::npos)
+                query[str.substr(0, pos)] = str.substr(pos + 1);
+        }
+    }
+    return (0);
+}
+
 int     StartLine::plus(std::string temp)
 {
     std::istringstream  strStream(temp);
@@ -96,6 +126,7 @@ int     StartLine::plus(std::string temp)
                 if (str.empty())
                     return (400);
                 url = str;
+                urlQuery();
                 // url이 잘못된 형식이면 400 형식은 맞지만 존재하지 않는다면 404
                 // 여기서 url검사와 allow검사 같이 진행하는 것이 좋을듯
                 break ;

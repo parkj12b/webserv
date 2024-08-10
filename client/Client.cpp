@@ -52,19 +52,9 @@ int Client::getFd(void) const
     return (fd);
 }
 
-size_t  Client::getRespondIndex() const
-{
-    return (respondIndex);
-}
-
 std::string Client::getMsg() const
 {
     return (msg);
-}
-
-std::string Client::getRespond() const
-{
-    return (respond);
 }
 
 Request Client::getRequest() const
@@ -127,6 +117,7 @@ int Client::setStart(void)
         msg = msg.substr(flag + 2);
         request.method = startLine.getMethod();
         request.url = startLine.getUrl();
+        request.query = startLine.getQuery();
         request.version = startLine.getVersion();
     }
     else
@@ -162,7 +153,9 @@ int Client::setHeader(void)
                         request.status = 0;
                 }
                 if (request.status > 0)
+                {
                     return (2);
+                }
                 request.header = headerLine.getHeader();
                 msg = msg.substr(flag + 2);
                 contentLine.initContentLine(headerLine.getContentLength(), headerLine.getContentType());
@@ -170,7 +163,10 @@ int Client::setHeader(void)
             }
             str = msg.substr(0, flag);
             if ((request.status = headerLine.plus(str)) > 0)
+            {
+                std::cout<<str<<std::endl;
                 return (1);  //400
+            }
             msg = msg.substr(flag + 2);
             if (headerLine.getHeader().size() > 24576)
             {
@@ -289,8 +285,12 @@ void    Client::showMessage(void)
     std::cout<<"=====strat line=====\n";
     std::cout<<"fd : "<<fd<<std::endl;
     std::cout<<request.method<<" "<<request.version<<" "<<request.url<<std::endl;
+    for (std::unordered_map<std::string, std::string>::iterator it = request.query.begin(); it != request.query.end(); it++)
+    {
+        std::cout<<it->first<<"="<<it->second<<std::endl;
+    }
     std::cout<<"=====header line=====\n";
-    for (std::map<std::string, std::deque<std::string> >::iterator it = request.header.begin(); it != request.header.end(); it++)
+    for (std::unordered_map<std::string, std::deque<std::string> >::iterator it = request.header.begin(); it != request.header.end(); it++)
     {
         std::cout<<it->first<<": ";
         for (itd = request.header[it->first].begin(); itd != request.header[it->first].end(); itd++)
@@ -333,20 +333,20 @@ void    Client::setMessage(std::string str)
     //message 남아있을 경우에 에러 처리하기
 }
 
-void    Client::makeRespond()
-{
-    std::string temp;
-    size_t      pos;
+// void    Client::makeResponse()
+// {
+//     std::string temp;
+//     size_t      pos;
 
-    pos = request.url.find('?');
-    if (pos != std::string::npos)
-    {
-        temp = request.url.substr(pos);
-    }
-    if (request.url == "/")
-        request.url = "./index.html" + request.url;
-    else
-        request.url = "./resource" + request.url;
-    std::ifstream file(request.url);
-    return ;
-}
+//     pos = request.url.find('?');
+//     if (pos != std::string::npos)
+//     {
+//         temp = request.url.substr(pos);
+//     }
+//     if (request.url == "/")
+//         request.url = "./index.html" + request.url;
+//     else
+//         request.url = "./resource" + request.url;
+//     std::ifstream file(request.url);
+//     return ;
+// }

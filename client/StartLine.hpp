@@ -16,6 +16,7 @@
 # include <iostream>
 # include <sstream>
 # include <map>
+# include <unordered_map>
 
 enum Method
 {
@@ -37,6 +38,8 @@ class StartLine
         Method      method;
         Version     version;
         std::string url;
+        std::unordered_map<std::string, std::string>    query;
+        int urlQuery();
     public:
         //static variable
         static std::map<std::string, Method>    originMethod;
@@ -47,10 +50,11 @@ class StartLine
         StartLine&  operator=(const StartLine& src);
         ~StartLine();
         //get function
-        bool        getCompletion() const;
-        Method      getMethod() const;
-        Version     getVersion() const;
-        std::string getUrl() const;
+        bool                                            getCompletion() const;
+        Method                                          getMethod() const;
+        Version                                         getVersion() const;
+        std::string                                     getUrl() const;
+        std::unordered_map<std::string, std::string>    getQuery() const;
         //logic
         int plus(std::string tmp);
 };

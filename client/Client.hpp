@@ -16,6 +16,7 @@
 # include "StartLine.hpp"
 # include "HeaderLine.hpp"
 # include "ContentLine.hpp"
+// # include "Response.hpp"
 # include <unistd.h>
 // # include <iostream> 
 // # include <map>
@@ -35,9 +36,9 @@ typedef struct Request
     Method  method;
     Version version;
     std::string url;
-    std::vector<std::string>                        query;
-    std::map<std::string, std::deque<std::string> > header;
-    std::vector<std::string>                        content;
+    std::unordered_map<std::string, std::string>                query;
+    std::unordered_map<std::string, std::deque<std::string> >   header;
+    std::vector<std::string>                                    content;
 }   Request;
 
 class Client
@@ -49,6 +50,7 @@ class Client
         StartLine   startLine;
         HeaderLine  headerLine;
         ContentLine contentLine;
+        // Response     response;
         //temp(must delete)
     public:
         Client();
@@ -58,9 +60,7 @@ class Client
         ~Client();
         //get function
         int                         getFd() const;
-        size_t                      getRespondIndex() const;
         std::string                 getMsg() const;
-        std::string                 getRespond() const;
         Request                     getRequest() const;
         StartLine                   getStartLine() const;
         HeaderLine                  getHeaderline() const;
@@ -77,7 +77,7 @@ class Client
         //logic
         bool    getRequestFin();
         void    setMessage(std::string str);
-        void    makeRespond();
+        // void    makeResponse();
         //temp(must delete)
         void    showMessage(void);
 };
