@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 11:57:52 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 19:45:21 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 22:58:33 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,12 @@ public:
     void checkNewLine();
     void readch();
     bool readch(char c);
+    Lexer &operator=(const Lexer &l);
+    Token *scan();
+    string getFileName();
     Lexer();
     Lexer(const Lexer &l);
     Lexer(string fileName);
-    Token *scan();
 };
 
 #endif

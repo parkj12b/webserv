@@ -28,10 +28,11 @@ class ServerConfig;
 
 class Parser {
 private:
-    Lexer &_lex;
+    Lexer *_lex;
     Token *_look;
     Env *_top;
     Env *_event;
+    stack<Lexer *> _lexStack;
     unordered_set<Env *> _envList;
     vector<ServerConfig *> _serverConfig;
     static map<string, int> _directiveNum;
@@ -67,7 +68,7 @@ public:
     int getDirectiveNum(string s);
     vector<ServerConfig *> getServerConfig();
     void move();
-    void error(string s) { throw runtime_error("near line " + to_string(_lex.line) + ": " + s); }
+    void error(string s);
     void match(int t);
     void program();
     void directives();
@@ -76,6 +77,7 @@ public:
     void context();
     void headDirective();
     void saveEnv(Env *env);
+    void include(string &path);
     Parser(Lexer &l, string context);
     ~Parser();
 };

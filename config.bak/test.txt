@@ -6,7 +6,7 @@ error_log log/error.log error;
 
 http {
 
-    include /etc/nginx/mime.types;
+    include test1.txt;
 
     error_page 500 502 503 504 /50x.html;
     error_page 404 /404.html;

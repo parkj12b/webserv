@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 20:03:36 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 16:27:35 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 23:00:55 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,9 @@ void    Lexer::reserve(Word w)
 
 Lexer::Lexer() { init(); }
 
-Lexer::Lexer(const Lexer &l) : words(l.words) {}
+Lexer::Lexer(const Lexer &l) : words(l.words) {
+    *this = l;
+}
 
 Lexer::Lexer(string fileName) : _fileName(fileName)
 {
@@ -142,6 +144,11 @@ void    Lexer::checkNewLine()
         line++;
         column = 0;
     }
+}
+
+string  Lexer::getFileName()
+{
+    return _fileName;
 }
 
 void    Lexer::readch()
@@ -311,6 +318,16 @@ Token *Lexer::scan() {
     Token tok = Token(peek);
     peek = ' ';
     return new Token(tok);
+}
+
+Lexer &Lexer::operator=(const Lexer &l) {
+    if (this != &l) {
+        init();
+        file.close();
+        file.open(l._fileName);
+        _fileName = l._fileName;
+    }
+    return *this;
 }
 
 Lexer::LexerException::LexerException(string error, string fileName)

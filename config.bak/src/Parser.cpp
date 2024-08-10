@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 18:48:59 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 21:05:14 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 23:08:12 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,30 @@ vector<ServerConfig *> Parser::getServerConfig() { return _serverConfig; }
 
 void Parser::move() {
     delete _look;
-    _look = _lex.scan();
+    _look = _lex->scan();
+    Word *w;
+    if ((w = dynamic_cast<Word *>(_look)))
+        cout << "lexeme: " << w->lexeme << endl;
+    cout << "tag: " << _look->tag << endl;
 }
 
 void Parser::match(int t) {
-    if (_look->tag == t) move();
-    else error("syntax error");
+    cout << _look->tag << endl;
+    if (_look->tag == t)
+        move();
+    else if (_lexStack.size() > 0) {
+        delete _lex;
+        _lex = _lexStack.top();
+        _lexStack.pop();
+        match(t);
+    }
+    else
+        error("syntax error");
+}
+
+void Parser::error(string s)
+{
+    throw runtime_error("near line " + to_string(_lex->line) + ": " + s + ": " + _lex->getFileName());
 }
 
 void Parser::program() {
@@ -86,9 +104,26 @@ void Parser::directive()
         }
         i++;
     }
+    string path;
+    if (context == "include")
+        path = dynamic_cast<Word *>(v[0][0])->lexeme;
     _top->put(context, v);
     free(w);
     match(';');
+    if (context == "include")
+        include(path);
+}
+
+void    Parser::include(string &path)
+{
+    ifstream file(path);
+
+    if (!file.good())
+        error("file not found: " + path);
+    Lexer *lex = new Lexer(path);
+    _lexStack.push(_lex);
+    _lex = lex;
+    // move();
 }
 
 void    Parser::server()
@@ -184,7 +219,7 @@ void    Parser::saveEnv(Env *env)
 }
 
 Parser::Parser(Lexer &l, string context)
-    : _lex(l), _top(new Env(NULL, context)), _event(NULL)
+    : _lex(new Lexer(l)), _top(new Env(NULL, context)), _event(NULL)
 { 
     _look = NULL;
     move();

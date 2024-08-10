@@ -24,6 +24,9 @@ all:
 high: $(OBJS)
 	c++ $(CPPFLAGS) -I./include $(OBJS)
 
+noflag: $(OBJS)
+	c++ -g -I./include $(OBJS)
+
 clean:
 	rm -f $(OBJS)
 
