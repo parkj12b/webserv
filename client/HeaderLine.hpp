@@ -16,7 +16,7 @@
 # include <iostream>
 # include <vector>
 # include <deque>
-# include <map>
+# include <unordered_map>
 # include <sstream>
 # include <algorithm>
 # include <cctype>
@@ -43,7 +43,7 @@ class HeaderLine
         size_t      contentLength;
         std::string key;
         std::string value;
-        std::map<std::string, std::deque<std::string> > header;
+        std::unordered_map<std::string, std::deque<std::string> > header;
         int     eraseSpace(std::string& str, bool space);
         // bool    checkMime(std::string temp);
         int     pushValue();
@@ -67,7 +67,7 @@ class HeaderLine
         int         getContentLength() const;
         std::string getKey() const;
         std::string getValue() const;
-        std::map<std::string, std::deque<std::string> > getHeader() const;
+        std::unordered_map<std::string, std::deque<std::string> > getHeader() const;
         //set function
         void    setContentLength(int minus);
         void    setTrailer(TE temp);
