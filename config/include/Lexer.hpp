@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 11:57:52 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/09 22:12:46 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 15:22:51 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@
 #include <algorithm>
 #include <sstream>
 #include "Word.hpp"
+#include "Tag.hpp"
+#include "Num.hpp"
+#include "UtilTemplate.hpp"
 
 using namespace std;
 

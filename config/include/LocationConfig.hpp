@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 19:21:41 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/09 21:48:16 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 15:27:12 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 
 #include <vector>
 #include <string>
+#include "Env.hpp"
 
 using namespace std;
 
-class Env;
 class Token;
 
 class LocationConfig {

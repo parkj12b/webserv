@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 19:49:13 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/09 21:50:43 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 15:27:53 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <string>
 #include "Token.hpp"
+#include "UtilTemplate.hpp"
 
 using namespace std;
 

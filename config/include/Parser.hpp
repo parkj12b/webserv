@@ -17,14 +17,13 @@
 #include <map>
 #include <string>
 #include "Lexer.hpp"
+#include "Syntax.hpp"
 
 using namespace std;
 
 class Token;
 class Env;
 class ServerConfig;
-class Syntax;
-
 
 class Parser {
 private:

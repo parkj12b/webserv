@@ -6,14 +6,12 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 14:29:44 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/09 21:47:07 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 15:11:42 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef __ENV_HPP__
 # define __ENV_HPP__
-
-class Lexer;
 
 #include <map>
 #include <unordered_map>

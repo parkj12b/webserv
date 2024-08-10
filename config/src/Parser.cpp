@@ -6,20 +6,17 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 18:48:59 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/09 22:04:50 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 15:37:32 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Parser.hpp"
-#include "Token.hpp"
 #include "Env.hpp"
-#include "Syntax.hpp"
-#include "Tag.hpp"
-#include "Word.hpp"
 #include "ServerConfig.hpp"
-#include "LocationConfig.hpp"
-#include "Directives.hpp"
-#include "Word.hpp"
+#include "Tag.hpp"
+// #include "Directives.hpp"
+
+class Directives;
 
 Parser::Parser(Lexer &l, string context)
     : _lex(l), _top(new Env(NULL, context)), _event(NULL) { move(); }

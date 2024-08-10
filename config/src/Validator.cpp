@@ -6,22 +6,18 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:30:28 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/09 22:12:13 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 15:33:11 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <cstdlib>
-#include "ServerConfigData.hpp"
-#include "Token.hpp"
 #include "Validator.hpp"
 #include "Parser.hpp"
-#include "Lexer.hpp"
-#include "UtilTemplate.cpp"
 #include "HTTPServer.hpp"
 #include "Env.hpp"
 #include "Num.hpp"
-#include "ServerConfig.hpp"
 #include "Word.hpp"
+#include "UtilTemplate.hpp"
+#include "ServerConfig.hpp"
 
 using namespace std;
 

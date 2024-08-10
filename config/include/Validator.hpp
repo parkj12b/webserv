@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:26:25 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/09 22:11:12 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 15:18:00 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,15 @@
 #include <string>
 #include <unordered_set>
 #include <exception>
-#include "LocationConfig.hpp"
+#include "ServerConfigData.hpp"
+#include "LocationConfigData.hpp"
 
 using namespace std;
 
 class Parser;
 class HTTPServer;
-class ServerConfigData;
 class ServerConfig;
-class LocationConfigData;
+class LocationConfig;
 
 #define DEFAULT_WORKER_CONNECTIONS 1024
 #define DEFAULT_PORT 80

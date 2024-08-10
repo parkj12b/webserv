@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:35:58 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/09 21:47:27 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 15:12:09 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,9 @@
 #include <map>
 #include <string>
 #include <vector>
+#include "ServerConfigData.hpp"
 
 using namespace std;
-
-class ServerConfigData;
 
 class HTTPServer {
 private:

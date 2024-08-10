@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 20:08:10 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/09 21:51:02 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 15:15:06 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 
 #include <vector>
 #include <map>
+#include "LocationConfig.hpp"
 
 using namespace std;
 
 class Env;
-class LocationConfig;
 class Token;
 
 class ServerConfig {

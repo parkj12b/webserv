@@ -6,21 +6,11 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 20:03:36 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/09 21:56:13 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/10 15:21:38 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <string>
-#include <iostream>
-#include <map>
-#include <fstream>
-#include "Token.hpp"
 #include "Lexer.hpp"
-#include "Tag.hpp"
-#include "Word.hpp"
-#include "Num.hpp"
-#include "UtilTemplate.cpp"
-
 
 void    Lexer::init()
 {
