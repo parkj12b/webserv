@@ -54,7 +54,12 @@ int Client::getFd(void) const
 
 std::string Client::getMsg() const
 {
-    return (msg);
+    return (msg.c_str() + index);
+}
+
+const char* Client::getMsg()
+{
+    return (msg.c_str() + index);
 }
 
 Request Client::getRequest() const
@@ -286,9 +291,7 @@ void    Client::showMessage(void)
     std::cout<<"fd : "<<fd<<std::endl;
     std::cout<<request.method<<" "<<request.version<<" "<<request.url<<std::endl;
     for (std::unordered_map<std::string, std::string>::iterator it = request.query.begin(); it != request.query.end(); it++)
-    {
         std::cout<<it->first<<"="<<it->second<<std::endl;
-    }
     std::cout<<"=====header line=====\n";
     for (std::unordered_map<std::string, std::deque<std::string> >::iterator it = request.header.begin(); it != request.header.end(); it++)
     {
@@ -331,6 +334,19 @@ void    Client::setMessage(std::string str)
         return ; 
     }
     //message 남아있을 경우에 에러 처리하기
+}
+
+void    Client::getResponseMessage()
+{
+    index = 0;
+    response.initRequest(request);
+    response.mainloop();
+    msg = response.getEntity();
+}
+
+void    Client::plusIndex(size_t temp)
+{
+    index += temp;
 }
 
 // void    Client::makeResponse()
