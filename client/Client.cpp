@@ -18,6 +18,7 @@ Client::Client() : fd(0)
 {
     request.fin = false;
     request.status = 0;
+    index = 0;
 }
 
 Client::Client(int fd)
@@ -25,6 +26,7 @@ Client::Client(int fd)
     this->fd = fd;
     request.fin = false;
     request.status = 0;
+    index = 0;
 }
 
 Client::Client(const Client& src) : fd(src.getFd()), msg(src.getMsg()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine())
@@ -54,7 +56,12 @@ int Client::getFd(void) const
 
 std::string Client::getMsg() const
 {
-    return (msg);
+    return (msg.c_str() + index);
+}
+
+const char* Client::getMsg()
+{
+    return (msg.c_str() + index);
 }
 
 Request Client::getRequest() const
@@ -154,6 +161,7 @@ int Client::setHeader(void)
                 }
                 if (request.status > 0)
                 {
+                    std::cout<<"default error"<<std::endl;
                     return (2);
                 }
                 request.header = headerLine.getHeader();
@@ -171,6 +179,7 @@ int Client::setHeader(void)
             if (headerLine.getHeader().size() > 24576)
             {
                 request.status = 400;
+                std::cout<<"header size error"<<std::endl;
                 return (2);  //400
             }
         }
@@ -192,7 +201,7 @@ int Client::setHeader(void)
             request.fin = true;
         else if (msg.empty() && headerLine.getContentType() == ENOT)
             request.fin = true;
-        else if (headerLine.getContentType() != ENOT)
+        else if (!msg.empty() && headerLine.getContentType() == ENOT)
         {
             request.status = 400;
             return (1);
@@ -286,9 +295,7 @@ void    Client::showMessage(void)
     std::cout<<"fd : "<<fd<<std::endl;
     std::cout<<request.method<<" "<<request.version<<" "<<request.url<<std::endl;
     for (std::unordered_map<std::string, std::string>::iterator it = request.query.begin(); it != request.query.end(); it++)
-    {
         std::cout<<it->first<<"="<<it->second<<std::endl;
-    }
     std::cout<<"=====header line=====\n";
     for (std::unordered_map<std::string, std::deque<std::string> >::iterator it = request.header.begin(); it != request.header.end(); it++)
     {
@@ -331,6 +338,19 @@ void    Client::setMessage(std::string str)
         return ; 
     }
     //message 남아있을 경우에 에러 처리하기
+}
+
+void    Client::getResponseMessage()
+{
+    index = 0;
+    response.initRequest(request);
+    response.mainloop();
+    msg = response.getEntity();
+}
+
+void    Client::plusIndex(size_t temp)
+{
+    index += temp;
 }
 
 // void    Client::makeResponse()

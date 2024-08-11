@@ -36,6 +36,7 @@ SERVER_OBJS = $(addprefix $(BIN_DIR)/, $(SERVER_OBJ))
 BIN_DIR = ./bin
 
 CPP = c++
+
 FLAGS = -Wall -Wextra -Werror -std=c++98 -c
 name = webserv
 

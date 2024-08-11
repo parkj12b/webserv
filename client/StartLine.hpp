@@ -22,7 +22,6 @@ enum Method
 {
     GET = 1,
     POST,
-    HEAD,
     DELETE
 };
 
