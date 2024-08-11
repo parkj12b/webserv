@@ -29,6 +29,24 @@ class Test
         }
 };
 
+class Client
+{
+    private:
+        std::string msg;
+    public:
+        Client()
+        {
+            msg = "Hi everyone.\n";
+        }
+        const char* getMsg()
+        {
+            int index = 5;
+
+            return (msg.c_str() + index);
+        }
+};
+
+
 int main()
 {
     std::istringstream test("ONE   TWO  THREE  hi  THREE");
@@ -145,6 +163,10 @@ int main()
         std::cout << line << std::endl;
     }
     goodTester.close();
+    std::cout<<"\n\n=========test12=========\n";
+    Client  test12;
+    const char* strstr = test12.getMsg();
+    std::cout<<strstr;
     return 0;
 }
 

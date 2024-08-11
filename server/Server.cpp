@@ -62,7 +62,7 @@ int Server::plusClient(void)
     // if (clntFd < 0)
     //     errorHandler("accept error.");
     client[clntFd] = Client(clntFd);
-    std::cout<<"temp delete\n";
+    std::cout<<"temp delete"<<std::endl;
     return (clntFd);
     // plusEvent(clntFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     //나갈 때 소멸자가 호출됨

@@ -18,6 +18,7 @@ Client::Client() : fd(0)
 {
     request.fin = false;
     request.status = 0;
+    index = 0;
 }
 
 Client::Client(int fd)
@@ -25,6 +26,7 @@ Client::Client(int fd)
     this->fd = fd;
     request.fin = false;
     request.status = 0;
+    index = 0;
 }
 
 Client::Client(const Client& src) : fd(src.getFd()), msg(src.getMsg()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine())
@@ -159,6 +161,7 @@ int Client::setHeader(void)
                 }
                 if (request.status > 0)
                 {
+                    std::cout<<"default error"<<std::endl;
                     return (2);
                 }
                 request.header = headerLine.getHeader();
@@ -176,6 +179,7 @@ int Client::setHeader(void)
             if (headerLine.getHeader().size() > 24576)
             {
                 request.status = 400;
+                std::cout<<"header size error"<<std::endl;
                 return (2);  //400
             }
         }
@@ -197,7 +201,7 @@ int Client::setHeader(void)
             request.fin = true;
         else if (msg.empty() && headerLine.getContentType() == ENOT)
             request.fin = true;
-        else if (headerLine.getContentType() != ENOT)
+        else if (!msg.empty() && headerLine.getContentType() == ENOT)
         {
             request.status = 400;
             return (1);

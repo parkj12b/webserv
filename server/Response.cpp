@@ -108,7 +108,7 @@ void    Response::makeFilePath(std::string& str)
         str = str.substr(pos);
     }
     if (str[0] == '/')
-        str = ".." + str;
+        str = "." + str;
     else
         str = "./" + str;
 }
@@ -180,14 +180,17 @@ void    Response::makeError()
 {
     int fd;
 
-    start = "HTTP/1.1" + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+    if (request.status >= 300 && request.status < 400)
+        return ;
+    start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
     if (request.status == 100)
         return ;
-    makeHeader("content-type", "text/html");
-    fd = open("../resource/html/40x.html", O_RDONLY);  //config
+    fd = open("./resource/html/40x.html", O_RDONLY);  //config
     if (fd < 0)
         return ;
+    makeHeader("content-type", "text/html");
     makeContent(fd);
+    close(fd);
 }
 
 void    Response::initRequest(Request temp)
@@ -207,9 +210,10 @@ void    Response::makeContent(int fd)
 
     while (1)
     {
-        readSize = read(fd, buffer, 40);
+        readSize = read(fd, buffer, 39);
         if (readSize <= 0)
             break ;
+        buffer[readSize] = '\0';
         content += buffer;
     }
     makeHeader("content-length", std::to_string(content.size()));
@@ -228,20 +232,26 @@ void    Response::makeGet()
 {
     int fd;
 
+    std::cout<<"Method: GET"<<std::endl;
+    std::cout<<request.url.c_str()<<std::endl;
     fd = open(request.url.c_str(), O_RDONLY);
     if (fd < 0)
     {
         request.status = 404;
         start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
-        makeHeader("Content-Type", "text/html");
-        fd = open("../resource/html/40x.html", O_RDONLY);
+        fd = open("./resource/html/40x.html", O_RDONLY);
         if (fd < 0)
             return ;
         //거기에 맞는 content만들기
+        makeHeader("Content-Type", "text/html");
         makeContent(fd);
+        close(fd);
         return ;
     }
     makeContent(fd);
+    request.status = 200;
+    start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+    close(fd);
 }
 
 
@@ -255,6 +265,7 @@ void    Response::makePost()
     {
         request.status = 404;
         makeError();
+        return ;
     }
     for (std::vector<std::string>::iterator it = request.content.begin(); it != request.content.end(); it++)
     {

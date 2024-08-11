@@ -1,4 +1,4 @@
-GET / HTTP/1.1
+POST resource/data/text.txt HTTP/1.1
 Host: google.com
 accept: "goo,,d""HI", "GG", "JJ", "HH", , HIHIHIHI    HIHIHI
 content-type: hi
