@@ -104,15 +104,6 @@ std::vector<std::string>    singleHeaderInit()
     v.push_back("upgrade-insecure-requests");
     v.push_back("x-content-type-options");
     v.push_back("content-type");
-    /*
-    content-type은 논란이 많다. content가 들어오는 형식이 어떠한지를 결정해주는 헤더이다. 
-    다만 이 헤더가 여러개 들어올 경우에 가장 마지막의 헤더를 받아야 한다는 말이 rfc에 존재한다.
-    또 rfc에서 이를 서로 다른 구현 방식 때문에 오류 처리 방식이 다를 수도 있다고 나와있다. 
-    현재로써는 물론 여기서 마지막의 것을 처리해주는 방식이 더 적절할 수도 있다. 
-    하지만 후에 프록시와 게이트웨이에서 잘못 처리할 수도 있고(물론 이런 경우는 극히 드믈거나 없을 것이다.),
-    클라이언트에 따라 처리하는 content-type을 처리하는 방식이 다를 수 있을 것이라고 생각이 들기도 한다. 
-    따라서 우리는 이것이 여러 개 들어올 경우 에러를 처리하기로 했다. 
-    */
     v.push_back("x-dns-prefetch-control");
     v.push_back("x-forwarded-host");
     v.push_back("x-forwarded-proto");
@@ -125,16 +116,15 @@ std::vector<std::string>    dateHeaderInit()
 {
     std::vector<std::string>    v;
 
-    v.push_back("last-modified");  //,(쉼표)처리를 어떻게 진행하면 좋을지 생각해야 할듯
-    v.push_back("if-unmodified-since");  //,(쉼표)처리를 어떻게 진행하면 좋을지 생각해야 할듯
-    v.push_back("expires");  //date와 같은 날짜를 받음
-    v.push_back("date");  //,(쉼표)처리를 어떻게 진행하면 좋을지 생각해야 할듯
-    v.push_back("user-agent");  //괄호 밖에 쉼표가 올수도 있다. 그경우는 보지 못하고 chatgpt도 생성 못함
+    v.push_back("last-modified");
+    v.push_back("if-unmodified-since");
+    v.push_back("expires");
+    v.push_back("date");
+    v.push_back("user-agent");
     v.push_back("retry-after");
     return (v);
 }
 
-//꼭 필요한 헤더들
 std::vector<std::string>    vitalHeaderInit()
 {
     std::vector<std::string>    v;
@@ -143,7 +133,6 @@ std::vector<std::string>    vitalHeaderInit()
     return (v);
 }
 
-//comment가 있을 수 있는 헤더들
 std::vector<std::string>    commentHeaderInit()
 {
     std::vector<std::string>    v;
@@ -217,7 +206,7 @@ int HeaderLine::pushValue()
         comma = false;
     }
     if (comma) //, , ,
-        return (1);  //400
+        return (1);
     it = std::find(singleHeader.begin(), singleHeader.end(), key);
     if (it != singleHeader.end())
     {
@@ -250,7 +239,7 @@ int HeaderLine::commentDelete()
         bracket2 = value.find(')');
         if (bracket2 == std::string::npos)
             return (1);
-        if (bracket2 > bracket1)
+        if (bracket2 < bracket1)
             return (1);
         value = value.substr(0, bracket1) + value.substr(bracket2 + 1);
     }
@@ -314,7 +303,7 @@ std::string HeaderLine::getValue() const
 {
     return (value);
 }
-std::map<std::string, std::deque<std::string> > HeaderLine::getHeader() const
+std::unordered_map<std::string, std::deque<std::string> > HeaderLine::getHeader() const
 {
     return (header);
 }
@@ -335,34 +324,24 @@ int HeaderLine::checkTrailer(std::string &temp)
     std::string trailerHeader;
 
     if (eraseSpace(temp, false))
-        return (400);  //400
-    //pop_front(): 앞쪽에서 요소를 제거합니다.
-    //front(): 앞쪽 요소를 반환합니다.
+        return (400);
     colon = temp.find(':');
     if (colon != std::string::npos)
     {
         key = temp.substr(0, colon);
         if (eraseSpace(key, true))
-            return (400);  //400
+            return (400);
         trailerHeader = header["trailer"].front();
         eraseSpace(trailerHeader, true);
         if (key != trailerHeader)
-            return (400);  //400
+            return (400);
         header["trailer"].pop_front();
         value = temp.substr(colon + 1);
-        if (eraseSpace(value, false))
-            return (400);  //400
-        if (commentDelete())
-            return (400);  //400
-        // std::cout<<"key: "<<key;
-        if (pushValue())
-            return (400);  //400
-        // header[key].push_back(str);
+        if (eraseSpace(value, false) || commentDelete() || pushValue())
+            return (400);
     }
     else
-    {
-        return (400);  //400
-    }
+        return (400);
     return (0);
 }
 
@@ -371,12 +350,8 @@ int HeaderLine::plus(std::string& temp)
     std::string str;
     size_t      colon;
 
-    // std::cout<<temp<<std::endl;
     if (eraseSpace(temp, false))
         return (400);
-    // if (temp[temp.size() - 1] == ',')
-    //     temp.erase(temp.size() - 1);
-    // std::cout<<temp<<std::endl;
     colon = temp.find(':');
     if (colon != std::string::npos)
     {
@@ -384,44 +359,27 @@ int HeaderLine::plus(std::string& temp)
         if (eraseSpace(key, true))
             return (400);
         value = temp.substr(colon + 1);
-        if (eraseSpace(value, false))
+        if (eraseSpace(value, false) || commentDelete() || pushValue())
             return (400);
-        // std::cout<<"key: "<<key;
-        if (commentDelete())
-            return (400);
-        if (pushValue())
-            return (400);
-        // header[key].push_back(str);
     }
     else
     {
         return (400);
-        // if (key.size() == 0 && !checkMime(temp))
-        //     return (-2);  //message/htpp타입이 아닌데 obs-fold를 사용한 상황
-        // value = temp;
-        // if (pushValue() < 0)
-        //     return (-2);
     }
     return (0);
 }
 
 int HeaderLine::headerError()
 {
-    std::vector<std::string>::iterator                          itv;
-    std::map<std::string, std::deque<std::string> >::iterator   itm;
+    std::vector<std::string>::iterator                                  itv;
+    std::unordered_map<std::string, std::deque<std::string> >::iterator itm;
 
     for (itv = vitalHeader.begin(); itv != vitalHeader.end(); itv++)
     {
         itm = header.find(*itv);
         if (itm == header.end())
-            return (400);  //400
+            return (400);
     }
-    // itm = header.find("content-type");
-    // if (itm != header.end())
-    // {
-    //     while (itm->second.size() > 1)
-    //         itm->second.pop_front();
-    // }
     itm = header.find("content-length");
     if (itm != header.end())
     {

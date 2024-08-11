@@ -16,10 +16,12 @@
 # include "StartLine.hpp"
 # include "HeaderLine.hpp"
 # include "ContentLine.hpp"
+// # include "Response.hpp"
 # include <unistd.h>
 // # include <iostream> 
 // # include <map>
 # include <queue>
+# include <fstream>
 
 //delete
 # include <ctime>
@@ -34,8 +36,9 @@ typedef struct Request
     Method  method;
     Version version;
     std::string url;
-    std::map<std::string, std::deque<std::string> > header;
-    std::vector<std::string>                        content;
+    std::unordered_map<std::string, std::string>                query;
+    std::unordered_map<std::string, std::deque<std::string> >   header;
+    std::vector<std::string>                                    content;
 }   Request;
 
 class Client
@@ -47,6 +50,7 @@ class Client
         StartLine   startLine;
         HeaderLine  headerLine;
         ContentLine contentLine;
+        // Response     response;
         //temp(must delete)
     public:
         Client();
@@ -71,8 +75,9 @@ class Client
         int     setContent(void);
         int     setTrailer(void);
         //logic
-        void    setMessage(std::string str);
         bool    getRequestFin();
+        void    setMessage(std::string str);
+        // void    makeResponse();
         //temp(must delete)
         void    showMessage(void);
 };
