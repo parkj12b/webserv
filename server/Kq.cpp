@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   kq.cpp                                             :+:      :+:    :+:   */
+/*   Kq.cpp                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: inghwang <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/07/26 11:09:00 by inghwang         ###   ########.fr       */
+/*   Updated: 2024/08/11 21:27:06 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ Kq::Kq()
         serverAdr.sin_family = AF_INET;
         serverAdr.sin_addr.s_addr = htonl(INADDR_ANY);  //ip를 어떻게 가져오는 방향에 대해 고민하기
         serverAdr.sin_port = htons(portNum[i]);   //port도 마찬가지로 어떻게 가져오는지
-        while (bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0)
+        while (::bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0)
         {
             if (errno == EADDRINUSE)
                 std::exit(1);
@@ -43,6 +43,8 @@ Kq::Kq()
         server[serverFd] = Server(serverFd);
     }
 }
+
+HTTPServer *Kq::serverConfig = NULL;
 
 Kq::Kq(const Kq& src)
 {

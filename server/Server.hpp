@@ -1,19 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.hpp                                         :+:      :+:    :+:   */
+/*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: inghwang <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:55 by inghwang          #+#    #+#             */
-/*   Updated: 2024/07/08 10:56:56 by inghwang         ###   ########.fr       */
+/*   Updated: 2024/08/11 21:04:07 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-#include "../client/Client.hpp"
 #include <sys/event.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -24,6 +23,7 @@
 #include <cstdlib>
 #include <string>
 #include <arpa/inet.h>
+#include "Client.hpp"
 
 # define BUFFER_SIZE 4096
 

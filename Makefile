@@ -33,43 +33,62 @@ CLIENT_OBJS = $(addprefix $(BIN_DIR)/, $(CLIENT_OBJ))
 
 SERVER_OBJS = $(addprefix $(BIN_DIR)/, $(SERVER_OBJ))
 
-BIN_DIR = ./bin
-
-CPP = c++
-
-FLAGS = -Wall -Wextra -Werror -std=c++98 -c
-name = webserv
-
 MAIN_SRC = ./main.cpp
 
 MAIN_OBJ = $(BIN_DIR)/main.o
 
-all : $(name)
+CONFIG_SRC_DIR = ./config/src
 
-$(name) : $(SERVER_OBJS) $(CLIENT_OBJS)
-	$(CPP) $(SERVER_OBJS) $(CLIENT_OBJS) -I./server -I./client ./main.o -o $(name)
+CONFIG_SRC = 	Directives.cpp Env.cpp HTTPServer.cpp Lexer.cpp LocationConfig.cpp \
+				LocationConfigData.cpp Parser.cpp ServerConfig.cpp \
+				ServerConfigData.cpp Syntax.cpp Token.cpp UtilTemplate.cpp \
+				Validator.cpp Word.cpp Num.cpp
+
+CONFIG_SRCS = $(addprefix $(CONFIG_SRC_DIR)/, $(CONFIG_SRC))
+
+CONFIG_OBJ = $(CONFIG_SRC:.cpp=.o)
+
+CONFIG_OBJS = $(addprefix $(BIN_DIR)/, $(CONFIG_OBJ))
+
+INC = -I./config/include -I./server -I./client
+
+BIN_DIR = ./bin
+
+CPP = c++
+
+FLAGS = -Wall -Wextra -Werror -std=c++11 -g
+
+NAME = webserv
+
+
+all : $(NAME)
+
+$(NAME) : $(SERVER_OBJS) $(CLIENT_OBJS) $(MAIN_OBJ) $(CONFIG_OBJS)
+	$(CPP) $(SERVER_OBJS) $(CLIENT_OBJS) $(MAIN_OBJ) $(CONFIG_OBJS) $(INC) -o $(NAME)
 	@echo $(GREEN)"\n==========================================================\n"$(EOC)
-	@echo $(YELLOW)"                    Webserv $(name) is ready"$(EOC)
+	@echo $(YELLOW)"                    Webserv $(NAME) is ready"$(EOC)
 	@echo $(GREEN)"\n==========================================================\n"$(EOC)
 
 $(BIN_DIR) :
 	@mkdir -p $(BIN_DIR)
 
 $(BIN_DIR)/%.o: $(CLIENT_SRC_DIR)/%.cpp | $(BIN_DIR)
-	@$(CPP) $(FLAGS) $< -o $@
+	$(CPP) $(FLAGS) $(INC) -c $< -o $@
 
 $(BIN_DIR)/%.o: $(SERVER_SRC_DIR)/%.cpp | $(BIN_DIR)
-	@$(CPP) $(FLAGS) $< -o $@
+	$(CPP) $(FLAGS) $(INC) -c $< -o $@
 
-$(BIN_DIR)/%.o: $(MAIN_SRC) | $(BIN_DIR)
-	@$(CPP) $(FLAGS) $< -o $@
+$(BIN_DIR)/%.o : $(CONFIG_SRC_DIR)/%.cpp | $(BIN_DIR)
+	$(CPP) $(FLAGS) $(INC) -c $< -o $@
+
+$(BIN_DIR)/main.o : $(MAIN_SRC) | $(BIN_DIR)
+	$(CPP) $(FLAGS) $(INC) -c $(MAIN_SRC) -o $(BIN_DIR)/main.o
 
 clean :
-	rm -f $(SERVER_OBJS) $(CLIENT_OBJS)
+	rm -rf $(SERVER_OBJS) $(CLIENT_OBJS) $(MAIN_OBJ) $(CONFIG_OBJS)
 
-fclean :
-	rm -f $(SERVER_OBJS) $(CLIENT_OBJS)
-	rm -f $(name)
+fclean : clean
+	rm -rf $(name)
 
 re :
 	@make fclean
