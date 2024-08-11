@@ -18,19 +18,29 @@ void check()
 
 void    test(HTTPServer *httpServer)
 {
+    cout << "starting test: @@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl << endl; 
     cout << "worker connections: " << httpServer->getWorkerConnections() << endl;
-    vector<ServerConfigData> &serverConfigData = httpServer->getServerConfigData();
+    map<int, ServerConfigData *>    &serverConfigData = httpServer->getServerConfigData();
 
     cout << "server config size: " << serverConfigData.size() << endl;
-    for (size_t i = 0; i < serverConfigData.size(); i++)
+    map<int, ServerConfigData *>::iterator it = serverConfigData.begin();
+    while (it != serverConfigData.end())
     {
-        ServerConfigData &serverData = serverConfigData[i];
-        cout << "server name: " << serverData.getServerName() << endl;
-        vector<int> &port = serverData.getPort();
+        cout << "server name: " << it->second->getServerName() << endl;
+        cout << "port : " << it->first << endl;
+        it++;
+    }
+    unordered_set<ServerConfigData *>::iterator   it2 = httpServer->getServerSet().begin();
+
+    while (it2 != httpServer->getServerSet().end())
+    {
+        ServerConfigData *serverData = *it2;
+        cout << "server name: " << serverData->getServerName() << endl;
+        vector<int> &port = serverData->getPort();
         cout << "port size: " << port.size() << endl;
         for (size_t j = 0; j < port.size(); j++)
             cout << "port: " << port[j] << endl;
-        map<string, LocationConfigData> &locationConfigData = serverData.getLocationConfigData();
+        map<string, LocationConfigData> &locationConfigData = serverData->getLocationConfigData();
         for (size_t j = 0; j < locationConfigData.size(); j++)
         {
             LocationConfigData locationData;
@@ -64,6 +74,7 @@ void    test(HTTPServer *httpServer)
             
             cout << "---------------------------------" << endl << endl;
         }
+        it2++;
     }
 }
 

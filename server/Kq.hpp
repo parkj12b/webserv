@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   kq.hpp                                             :+:      :+:    :+:   */
+/*   Kq.hpp                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: inghwang <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:09:01 by inghwang          #+#    #+#             */
-/*   Updated: 2024/07/26 11:09:02 by inghwang         ###   ########.fr       */
+/*   Updated: 2024/08/11 21:26:13 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,10 @@
 # include "Server.hpp"
 # include <cstdlib>
 # include <cerrno>
-// # include <map>
+# include <map>
+# include <vector>
+
+class HTTPServer;
 
 # define PORT 8000
 # define CLIENT_CNT 10
@@ -34,6 +37,7 @@ class Kq
         Kq(const Kq& src);
         Kq& operator=(const Kq& src);
         ~Kq();
+        static HTTPServer           *serverConfig;
         //get function
         int                         getKq() const;
         std::vector<struct kevent>  getFdList() const;

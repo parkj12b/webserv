@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:26:25 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 20:17:53 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/11 15:49:52 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,10 @@ private:
 public:
     HTTPServer          *validate();
     void                checkWorkerConnections();
-    ServerConfigData    checkServer(ServerConfig *serverConfig);
-    void                checkServerName(ServerConfigData &serverData,
+    ServerConfigData    *checkServer(ServerConfig *serverConfig);
+    void                checkServerName(ServerConfigData *serverData,
                             ServerConfig *serverConfig);
-    void                checkPort(ServerConfigData &serverData,
+    void                checkPort(ServerConfigData *serverData,
                             ServerConfig *serverConfig);
     LocationConfigData  checkLocation(LocationConfig &locationConfig);
     void                checkErrorLog(LocationConfigData &locationData,

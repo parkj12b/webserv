@@ -13,36 +13,82 @@ LINE_CLEAR  =   "\x1b[1A\x1b[M"
 
 #-------------------------------------------
 
-SOURCE = ./client/Client.cpp \
-		./client/ContentLine.cpp \
-		./client/HeaderLine.cpp \
-		./client/StartLine.cpp \
-		./server/Kq.cpp \
-		./server/Response.cpp \
-		./server/Server.cpp \
-		./main.cpp
-OBJS = $(SOURCE:.cpp=.o)
-CC = c++
-FLAGS = -Wall -Wextra -Werror -std=c++98 -c
-name = webserv
+CLIENT_SRC_DIR = ./client
 
-all : $(name)
+SERVER_SRC_DIR = ./server
 
-$(name) : $(OBJS)
-	@$(CC) $(OBJS) -o $(name)
+CLIENT_SRC = Client.cpp ContentLine.cpp HeaderLine.cpp StartLine.cpp
+
+CLIENT_SRCS = $(addprefix $(CLIENT_SRC_DIR)/, $(CLIENT_SRC))
+
+SERVER_SRC = Server.cpp Kq.cpp Response.cpp
+
+SERVER_SRCS = $(addprefix $(SERVER_SRC_DIR)/, $(SERVER_SRC))
+
+CLIENT_OBJ = $(CLIENT_SRC:.cpp=.o)
+
+SERVER_OBJ = $(SERVER_SRC:.cpp=.o)
+
+CLIENT_OBJS = $(addprefix $(BIN_DIR)/, $(CLIENT_OBJ))
+
+SERVER_OBJS = $(addprefix $(BIN_DIR)/, $(SERVER_OBJ))
+
+MAIN_SRC = ./main.cpp
+
+MAIN_OBJ = $(BIN_DIR)/main.o
+
+CONFIG_SRC_DIR = ./config/src
+
+CONFIG_SRC = 	Directives.cpp Env.cpp HTTPServer.cpp Lexer.cpp LocationConfig.cpp \
+				LocationConfigData.cpp Parser.cpp ServerConfig.cpp \
+				ServerConfigData.cpp Syntax.cpp Token.cpp UtilTemplate.cpp \
+				Validator.cpp Word.cpp Num.cpp
+
+CONFIG_SRCS = $(addprefix $(CONFIG_SRC_DIR)/, $(CONFIG_SRC))
+
+CONFIG_OBJ = $(CONFIG_SRC:.cpp=.o)
+
+CONFIG_OBJS = $(addprefix $(BIN_DIR)/, $(CONFIG_OBJ))
+
+INC = -I./config/include -I./server -I./client
+
+BIN_DIR = ./bin
+
+CPP = c++
+
+FLAGS = -Wall -Wextra -Werror -std=c++11 -g
+
+NAME = webserv
+
+
+all : $(NAME)
+
+$(NAME) : $(SERVER_OBJS) $(CLIENT_OBJS) $(MAIN_OBJ) $(CONFIG_OBJS)
+	$(CPP) $(SERVER_OBJS) $(CLIENT_OBJS) $(MAIN_OBJ) $(CONFIG_OBJS) $(INC) -o $(NAME)
 	@echo $(GREEN)"\n==========================================================\n"$(EOC)
-	@echo $(YELLOW)"                    Webserv $(name) is ready"$(EOC)
+	@echo $(YELLOW)"                    Webserv $(NAME) is ready"$(EOC)
 	@echo $(GREEN)"\n==========================================================\n"$(EOC)
 
-%.o : %.cpp
-	@$(CC) $(FLAGS) $< -o $@
+$(BIN_DIR) :
+	@mkdir -p $(BIN_DIR)
+
+$(BIN_DIR)/%.o: $(CLIENT_SRC_DIR)/%.cpp | $(BIN_DIR)
+	$(CPP) $(FLAGS) $(INC) -c $< -o $@
+
+$(BIN_DIR)/%.o: $(SERVER_SRC_DIR)/%.cpp | $(BIN_DIR)
+	$(CPP) $(FLAGS) $(INC) -c $< -o $@
+
+$(BIN_DIR)/%.o : $(CONFIG_SRC_DIR)/%.cpp | $(BIN_DIR)
+	$(CPP) $(FLAGS) $(INC) -c $< -o $@
+
+$(BIN_DIR)/main.o : $(MAIN_SRC) | $(BIN_DIR)
+	$(CPP) $(FLAGS) $(INC) -c $(MAIN_SRC) -o $(BIN_DIR)/main.o
 
 clean :
-	rm -f $(OBJS)
+	rm -rf $(SERVER_OBJS) $(CLIENT_OBJS) $(MAIN_OBJ) $(CONFIG_OBJS)
 
-fclean :
-	rm -f $(OBJS)
-	rm -f $(name)
+fclean : clean
+	rm -rf $(name)
 
 re :
 	@make fclean

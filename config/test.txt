@@ -6,7 +6,7 @@
 #    By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/11 14:01:38 by minsepar          #+#    #+#              #
-#    Updated: 2024/08/11 14:01:39 by minsepar         ###   ########.fr        #
+#    Updated: 2024/08/11 21:30:19 by minsepar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ error_log log/error.log error;
 
 http {
 
-    include test1.txt;
+    include ./config/test1.txt;
     error_page 500 502 503 504 /50x.html;
     error_page 404 /404.html;
 
