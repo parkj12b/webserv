@@ -33,7 +33,7 @@ Kq::Kq()
         serverAdr.sin_family = AF_INET;
         serverAdr.sin_addr.s_addr = htonl(INADDR_ANY);  //ip를 어떻게 가져오는 방향에 대해 고민하기
         serverAdr.sin_port = htons(portNum[i]);   //port도 마찬가지로 어떻게 가져오는지
-        while (::bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0)
+        while (bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0)
         {
             if (errno == EADDRINUSE)
                 std::exit(1);
