@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    test.txt                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/08/11 14:01:38 by minsepar          #+#    #+#              #
+#    Updated: 2024/08/11 14:01:39 by minsepar         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 events {
     worker_connections 1;
 }
@@ -11,6 +23,7 @@ http {
     error_page 404 /404.html;
 
     keepalive_timeout 75s;
+
 
     client_max_body_size 1m;
     # client header client
