@@ -13,34 +13,61 @@ LINE_CLEAR  =   "\x1b[1A\x1b[M"
 
 #-------------------------------------------
 
-SOURCE = ./client/Client.cpp \
-		./client/ContentLine.cpp \
-		./client/HeaderLine.cpp \
-		./client/StartLine.cpp \
-		./server/Server.cpp \
-		./server/Kq.cpp \
-		./main.cpp
-OBJS = $(SOURCE:.cpp=.o)
-CC = c++
+CLIENT_SRC_DIR = ./client
+
+SERVER_SRC_DIR = ./server
+
+CLIENT_SRC = Client.cpp ContentLine.cpp HeaderLine.cpp StartLine.cpp
+
+CLIENT_SRCS = $(addprefix $(CLIENT_SRC_DIR)/, $(CLIENT_SRC))
+
+SERVER_SRC = Server.cpp Kq.cpp Response.cpp
+
+SERVER_SRCS = $(addprefix $(SERVER_SRC_DIR)/, $(SERVER_SRC))
+
+CLIENT_OBJ = $(CLIENT_SRC:.cpp=.o)
+
+SERVER_OBJ = $(SERVER_SRC:.cpp=.o)
+
+CLIENT_OBJS = $(addprefix $(BIN_DIR)/, $(CLIENT_OBJ))
+
+SERVER_OBJS = $(addprefix $(BIN_DIR)/, $(SERVER_OBJ))
+
+BIN_DIR = ./bin
+
+CPP = c++
 FLAGS = -Wall -Wextra -Werror -std=c++98 -c
 name = webserv
 
+MAIN_SRC = ./main.cpp
+
+MAIN_OBJ = $(BIN_DIR)/main.o
+
 all : $(name)
 
-$(name) : $(OBJS)
-	@$(CC) $(OBJS) -o $(name)
+$(name) : $(SERVER_OBJS) $(CLIENT_OBJS)
+	$(CPP) $(SERVER_OBJS) $(CLIENT_OBJS) -I./server -I./client ./main.o -o $(name)
 	@echo $(GREEN)"\n==========================================================\n"$(EOC)
 	@echo $(YELLOW)"                    Webserv $(name) is ready"$(EOC)
 	@echo $(GREEN)"\n==========================================================\n"$(EOC)
 
-%.o : %.cpp
-	@$(CC) $(FLAGS) $< -o $@
+$(BIN_DIR) :
+	@mkdir -p $(BIN_DIR)
+
+$(BIN_DIR)/%.o: $(CLIENT_SRC_DIR)/%.cpp | $(BIN_DIR)
+	@$(CPP) $(FLAGS) $< -o $@
+
+$(BIN_DIR)/%.o: $(SERVER_SRC_DIR)/%.cpp | $(BIN_DIR)
+	@$(CPP) $(FLAGS) $< -o $@
+
+$(BIN_DIR)/%.o: $(MAIN_SRC) | $(BIN_DIR)
+	@$(CPP) $(FLAGS) $< -o $@
 
 clean :
-	rm -f $(OBJS)
+	rm -f $(SERVER_OBJS) $(CLIENT_OBJS)
 
 fclean :
-	rm -f $(OBJS)
+	rm -f $(SERVER_OBJS) $(CLIENT_OBJS)
 	rm -f $(name)
 
 re :

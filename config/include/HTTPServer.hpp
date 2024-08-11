@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:35:58 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 15:12:09 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/11 18:47:55 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,22 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <unordered_set>
 #include "ServerConfigData.hpp"
 
 using namespace std;
 
 class HTTPServer {
 private:
-    int                         _workerConnections;
-    vector<ServerConfigData>    _serverConfigData;
+    int                                 _workerConnections;
+    map<int, ServerConfigData *>        _serverConfigData;
+    unordered_set<ServerConfigData *>   _serverSet;
 public:
-    int                         getWorkerConnections();
-    void                        setWorkerConnections(int workerConnections);
-    vector<ServerConfigData>    &getServerConfigData();
+    int                                 getWorkerConnections();
+    void                                setWorkerConnections(int workerConnections);
+    map<int, ServerConfigData *>        &getServerConfigData();
+    unordered_set<ServerConfigData *>   &getServerSet();
+    ~HTTPServer();
 };
 
 #endif

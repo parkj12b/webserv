@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:30:28 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 21:10:00 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/11 18:56:30 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,16 @@ HTTPServer    *Validator::validate()
     vector<ServerConfig *> serverConfig = _parser.getServerConfig();
 
     checkWorkerConnections();
-    vector<ServerConfigData> &serverConfigData = _httpServer->getServerConfigData();
+    map<int, ServerConfigData *> &serverConfigData = _httpServer->getServerConfigData();
     cout << "num server: " << serverConfig.size() << endl;
+    unordered_set<ServerConfigData *> &serverSet = _httpServer->getServerSet();
     for (size_t i = 0, size = serverConfig.size(); i < size; i++) {
-        serverConfigData.push_back(checkServer(serverConfig[i]));
+        ServerConfigData *server = checkServer(serverConfig[i]);
+        serverSet.insert(server);
+        vector<int> &port = server->getPort();
+        for (size_t j = 0, size = port.size(); j < size; j++) {
+            serverConfigData.insert(make_pair(port[j], server));
+        }
     }
 
     return _httpServer;
@@ -50,14 +56,14 @@ void    Validator::checkWorkerConnections()
     _httpServer->setWorkerConnections(workerConnection);
 }
 
-ServerConfigData    Validator::checkServer(ServerConfig *serverConfig)
+ServerConfigData    *Validator::checkServer(ServerConfig *serverConfig)
 {
-    ServerConfigData serverData;
+    ServerConfigData *serverData = new ServerConfigData();
     
     checkServerName(serverData, serverConfig);
     checkPort(serverData, serverConfig);
     map<string, LocationConfig> &location = serverConfig->location;
-    map<string, LocationConfigData> &locationData = serverData.getLocationConfigData();
+    map<string, LocationConfigData> &locationData = serverData->getLocationConfigData();
     
     for (map<string, LocationConfig>::iterator it = location.begin(); it != location.end(); it++)
     {
@@ -68,12 +74,12 @@ ServerConfigData    Validator::checkServer(ServerConfig *serverConfig)
     }
     return serverData;
 }
-void    Validator::checkServerName(ServerConfigData &serverData, ServerConfig *serverConfig)
+void    Validator::checkServerName(ServerConfigData *serverData, ServerConfig *serverConfig)
 {
     vector<vector<vector< Token *> > > *v = serverConfig->getConfig("server_name");
 
     if (v == NULL) {
-        serverData.setServerName(DEFAULT_SERVER_NAME);
+        serverData->setServerName(DEFAULT_SERVER_NAME);
         return ;
     }
     if (v->size() != 1) {
@@ -81,16 +87,16 @@ void    Validator::checkServerName(ServerConfigData &serverData, ServerConfig *s
     }
     string serverName = (dynamic_cast<Word *>((*v)[0][0][0]))->lexeme;
     if (serverName == "") {
-        serverData.setServerName(DEFAULT_SERVER_NAME);
+        serverData->setServerName(DEFAULT_SERVER_NAME);
     }
-    serverData.setServerName(serverName);
+    serverData->setServerName(serverName);
 }
 
-void    Validator::checkPort(ServerConfigData &serverData, ServerConfig *serverConfig)
+void    Validator::checkPort(ServerConfigData *serverData, ServerConfig *serverConfig)
 {
     vector<vector<vector< Token *> > > *v = serverConfig->getConfig("listen");
     unordered_set<int> &ports = getPorts();
-    vector<int> &_port = serverData.getPort();
+    vector<int> &_port = serverData->getPort();
 
     if (v == NULL) {
         if (ports.find(DEFAULT_PORT) != ports.end()) {

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.cpp                                         :+:      :+:    :+:   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: inghwang <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/07/08 10:56:53 by inghwang         ###   ########.fr       */
+/*   Updated: 2024/08/11 14:29:33 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,6 @@ std::map<int, Client>  Server::getClient(void) const
 {
     return (client);
 }
-
 
 int Server::plusClient(void)
 {
