@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 18:48:59 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/11 00:10:11 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/11 13:53:33 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,14 @@ void Parser::directive()
 {
     Word *w = dynamic_cast<Word *>(_look->clone());
     string context = w->lexeme;
+    if (!Directives::containsDirective(_top->getContext(), context))
+        error("invalid context");
     move();
     vector<Syntax> syntaxList = _directiveSyntax[context];
     vector<vector< Token *> > v;
     size_t i = 0;
-    while (_look->tag != ';' || _look->tag == -1) {
+    size_t numChecks = syntaxList.size();
+    while (i < numChecks) {
         vector< Token *> subV;
         if (i < v.size())
             subV = v[i];
@@ -193,7 +196,8 @@ void    Parser::headDirective()
     string context = _top->getContext();
     vector<Syntax> syntaxList = _directiveSyntax[context];
     size_t i = 0;
-    while (_look->tag != '{') {
+    size_t numChecks = syntaxList.size();
+    while (i < numChecks) {
         if (i >= syntaxList.size())
             error("syntax error: too many arguments");
         Syntax s = syntaxList[i];
@@ -201,7 +205,7 @@ void    Parser::headDirective()
         vector<int> tag = s.tag;
         bool isMatched = false;
         for (size_t j = 0; j < tag.size(); j++)
-        {
+        {        
             if (_look->tag == tag[j]) {
                 isMatched = true;
                 v.push_back(_look->clone());

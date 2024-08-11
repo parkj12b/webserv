@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 20:03:36 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/11 00:36:26 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/11 13:25:14 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -341,7 +341,7 @@ Lexer &Lexer::operator=(const Lexer &l) {
 Lexer::LexerException::LexerException(string error, Lexer *lex)
 {
     err = lex->getFileName() + ":" + to_string(lex->startLine) + ":"
-        + to_string(lex->startColumn) + ": error: " + error + " [Lexer]\n"
+        + to_string(lex->startColumn) + ": error: " + error
         + getLineFromFile(lex->getFileName(), lex->startLine) + "\n"
         + getErrorAngle(lex->startColumn);
 }

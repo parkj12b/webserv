@@ -2,7 +2,6 @@ server {
     listen 85;
 }
 
-fastcgi_param thisistest1.txt yesyesitis;
 server {
     listen 84;
 }
