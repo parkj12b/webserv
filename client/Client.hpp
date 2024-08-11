@@ -16,7 +16,7 @@
 # include "StartLine.hpp"
 # include "HeaderLine.hpp"
 # include "ContentLine.hpp"
-// # include "Response.hpp"
+# include "../server/Response.hpp"
 # include <unistd.h>
 // # include <iostream> 
 // # include <map>
@@ -28,29 +28,17 @@
 
 //뭔가 생성이 될 때에 소멸자가 생성이 되는 느낌?? 왜 일까??
 
-
-typedef struct Request
-{
-    bool    fin;
-    int     status;
-    Method  method;
-    Version version;
-    std::string url;
-    std::unordered_map<std::string, std::string>                query;
-    std::unordered_map<std::string, std::deque<std::string> >   header;
-    std::vector<std::string>                                    content;
-}   Request;
-
 class Client
 {
     private:
         int         fd;
+        size_t      index;
         std::string msg;
         Request     request;
         StartLine   startLine;
         HeaderLine  headerLine;
         ContentLine contentLine;
-        // Response     response;
+        Response    response;
         //temp(must delete)
     public:
         Client();
@@ -61,6 +49,7 @@ class Client
         //get function
         int                         getFd() const;
         std::string                 getMsg() const;
+        const char*                 getMsg();
         Request                     getRequest() const;
         StartLine                   getStartLine() const;
         HeaderLine                  getHeaderline() const;
@@ -77,6 +66,8 @@ class Client
         //logic
         bool    getRequestFin();
         void    setMessage(std::string str);
+        void    getResponseMessage();
+        void    plusIndex(size_t temp);
         // void    makeResponse();
         //temp(must delete)
         void    showMessage(void);
