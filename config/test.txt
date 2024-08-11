@@ -1,0 +1,69 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    test.txt                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/08/11 14:01:38 by minsepar          #+#    #+#              #
+#    Updated: 2024/08/11 14:01:39 by minsepar         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+events {
+    worker_connections 1;
+}
+
+error_log log/error.log error;
+
+http {
+
+    include test1.txt;
+    error_page 500 502 503 504 /50x.html;
+    error_page 404 /404.html;
+
+    keepalive_timeout 75s;
+
+
+    client_max_body_size 1m;
+    # client header client
+    # 
+    autoindex on;
+
+    default_type html/text;
+    server {
+        listen 80;
+        server_name "minsepar";
+
+        #limit_except GET;
+
+        location / {
+            limit_except GET HEAD {
+                #deny all;
+            }
+            keepalive_timeout 10s 10;
+            root /usr/share/nginx/html;
+            index index.html;
+        }
+
+        # maybe use either rewrite or return? rewrite not needed use return
+        location /moved {
+            fastcgi_pass abc;
+        }
+
+        location /new-page {
+            return 301 https://example.com/new-page;   
+        }
+    }
+
+    server {
+        listen 81;
+        server_name "abc";
+    }
+
+    fastcgi_param abc def; # length error when more argument than 2
+
+    server {#
+        listen 8080;
+    }
+}
