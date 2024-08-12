@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:33:06 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/12 13:56:17 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/12 14:00:59 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,17 @@ int logs = open("./log", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 
 int main(void)
 {
+    std::cout<<"========parser========"<<std::endl;
     Directives::init();
     Lexer lex("./config/test.txt");
     Parser parser(lex, "main");
-    Kq  kq;
 
     parser.program();
     Validator v(parser);
     Server::serverConfig = v.validate();
-    //cgi실행할 fork
+    //fd를 닫지 않았을 가능성이 존재함
+    std::cout<<"========http message========"<<std::endl;
+    Kq  kq;
     std::ios::sync_with_stdio(false);
     while (1)
         kq.mainLoop();

@@ -65,7 +65,7 @@ all :
 	make -j6 $(NAME)
 
 $(NAME) : $(SERVER_OBJS) $(CLIENT_OBJS) $(MAIN_OBJ) $(CONFIG_OBJS)
-	$(CPP) $(SERVER_OBJS) $(CLIENT_OBJS) $(MAIN_OBJ) $(CONFIG_OBJS) $(INC) -o $(NAME)
+	@$(CPP) $(SERVER_OBJS) $(CLIENT_OBJS) $(MAIN_OBJ) $(CONFIG_OBJS) $(INC) -o $(NAME)
 	@echo $(GREEN)"\n==========================================================\n"$(EOC)
 	@echo $(YELLOW)"                    Webserv $(NAME) is ready"$(EOC)
 	@echo $(GREEN)"\n==========================================================\n"$(EOC)
@@ -74,16 +74,16 @@ $(BIN_DIR) :
 	@mkdir -p $(BIN_DIR)
 
 $(BIN_DIR)/%.o: $(CLIENT_SRC_DIR)/%.cpp | $(BIN_DIR)
-	$(CPP) $(FLAGS) $(INC) -c $< -o $@
+	@$(CPP) $(FLAGS) $(INC) -c $< -o $@
 
 $(BIN_DIR)/%.o: $(SERVER_SRC_DIR)/%.cpp | $(BIN_DIR)
-	$(CPP) $(FLAGS) $(INC) -c $< -o $@
+	@$(CPP) $(FLAGS) $(INC) -c $< -o $@
 
 $(BIN_DIR)/%.o : $(CONFIG_SRC_DIR)/%.cpp | $(BIN_DIR)
-	$(CPP) $(FLAGS) $(INC) -c $< -o $@
+	@$(CPP) $(FLAGS) $(INC) -c $< -o $@
 
 $(BIN_DIR)/main.o : $(MAIN_SRC) | $(BIN_DIR)
-	$(CPP) $(FLAGS) $(INC) -c $(MAIN_SRC) -o $(BIN_DIR)/main.o
+	@$(CPP) $(FLAGS) $(INC) -c $(MAIN_SRC) -o $(BIN_DIR)/main.o
 
 clean :
 	rm -rf $(SERVER_OBJS) $(CLIENT_OBJS) $(MAIN_OBJ) $(CONFIG_OBJS)

@@ -26,9 +26,9 @@ typedef struct Request
 {
     bool    fin;
     int     status;
-    Method  method;
-    Version version;
-    std::string url;
+    Method                                                      method;
+    std::string                                                 url;
+    Version                                                     version;
     std::unordered_map<std::string, std::string>                query;
     std::unordered_map<std::string, std::deque<std::string> >   header;
     std::vector<std::string>                                    content;
@@ -59,6 +59,7 @@ class Response
         void    setRequest(Request &temp);
         //logic
         void    init();
+        void    makeDate();
         void    makeError();
         void    makeHeader(std::string key, std::string value);
         void    makeContent(int fd);

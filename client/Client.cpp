@@ -124,13 +124,12 @@ int Client::setStart(void)
         msg = msg.substr(flag + 2);
         request.method = startLine.getMethod();
         request.url = startLine.getUrl();
-        request.query = startLine.getQuery();
         request.version = startLine.getVersion();
+        request.query = startLine.getQuery();
     }
     else
     {
-        // max size도 받아와야 한다. 
-        if (msg.size() > 8192)
+        if (msg.size() > 8192)  //config parser
         {
             request.status = 414;
             return (2);
@@ -316,28 +315,30 @@ void    Client::setMessage(std::string str)
 {
     msg += str;
     write(logs, &str[0], str.size());
+    // if (setStart() || setHeader() || setContent() || setTrailer())
+    //     return ;
+    //나중에 최종적으로는 위의 내용처럼 바꿀것
     if (setStart())  //max size literal
     {
-        std::cout<<fd<<" "<<request.status<<" ";  //debug
-        std::cout<<"Startline Error\n";  //debug
-        return ;  //시작줄 에러 처리하기
+        std::cout<<fd<<" "<<request.status<<" ";
+        std::cout<<"Startline Error\n";
+        return ;
     }
     if (setHeader())  //max size literal
     {
         std::cout<<"Header Error\n";
-        return ;  //여기서 에러 처리하기
+        return ;
     }
     if (setContent())
     {
         std::cout<<"Body Error\n";
-        return ;   //여기서 에러 처리하기
+        return ;
     }
     if (setTrailer())
     {
         std::cout<<"Trailer Error\n";
         return ; 
     }
-    //message 남아있을 경우에 에러 처리하기
 }
 
 void    Client::getResponseMessage()
