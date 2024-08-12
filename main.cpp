@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:33:06 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/11 21:23:45 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/12 14:00:59 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "Parser.hpp"
 #include "Validator.hpp"
 #include "Directives.hpp"
+#include "Server.hpp"
 
 int logs = open("./log", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 
@@ -28,7 +29,7 @@ int main(void)
 
     parser.program();
     Validator v(parser);
-    Kq::serverConfig = v.validate();
+    Server::serverConfig = v.validate();
     //fd를 닫지 않았을 가능성이 존재함
     std::cout<<"========http message========"<<std::endl;
     Kq  kq;

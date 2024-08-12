@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:09:01 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/11 21:26:13 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/12 13:31:17 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ class Kq
         Kq(const Kq& src);
         Kq& operator=(const Kq& src);
         ~Kq();
-        static HTTPServer           *serverConfig;
         //get function
         int                         getKq() const;
         std::vector<struct kevent>  getFdList() const;

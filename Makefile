@@ -61,7 +61,8 @@ FLAGS = -Wall -Wextra -Werror -std=c++11 -g
 NAME = webserv
 
 
-all : $(NAME)
+all :
+	make -j6 $(NAME)
 
 $(NAME) : $(SERVER_OBJS) $(CLIENT_OBJS) $(MAIN_OBJ) $(CONFIG_OBJS)
 	@$(CPP) $(SERVER_OBJS) $(CLIENT_OBJS) $(MAIN_OBJ) $(CONFIG_OBJS) $(INC) -o $(NAME)

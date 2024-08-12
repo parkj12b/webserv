@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/11 21:27:06 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/12 14:01:15 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,6 @@ Kq::Kq()
         server[serverFd] = Server(serverFd);  //config parser
     }
 }
-
-HTTPServer *Kq::serverConfig = NULL;  //질문!!! 이건 왜 넣으신 거죠??
 
 Kq::Kq(const Kq& src)
 {
