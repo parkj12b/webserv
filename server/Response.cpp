@@ -326,7 +326,7 @@ void    Response::makeDelete()
 void    Response::mainloop()
 {
     init();
-    makeHeader("Server", "IK");
+    makeHeader("Server", "IK/0.0");
     makeDate();
     if (request.status > 0)
         makeError();
