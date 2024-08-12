@@ -237,6 +237,7 @@ void    Response::makeContent(int fd)
     if (request.url == "./favicon.ico")
     {
         makeHeader("Content-Type", "image/x-icon");
+        makeHeader("Accept-Ranges", "bytes");
         makeHeader("Cache-Control", "public, max-age=31536000");
     }
     else
