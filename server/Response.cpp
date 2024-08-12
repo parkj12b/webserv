@@ -100,6 +100,8 @@ void    Response::makeFilePath(std::string& str)
 {
     size_t  pos;
 
+    if (str == "/")
+        str = "index.html";
     pos = str.find("http");
     if (pos == 0)
     {
