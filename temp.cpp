@@ -6,6 +6,7 @@
 #include <cctype>
 #include <fcntl.h>
 #include <fstream> 
+#include <unistd.h>
 
 enum    NUM
 {
@@ -175,6 +176,16 @@ int main()
     pos = test13Str.find_last_not_of(' ');
     test13Str.erase(pos + 1);
     std::cout<<"test13Str: "<<test13Str;
+    std::cout<<"\n\n=========test14=========\n";
+    int test14Fd = open("./favico.ico", O_RDONLY);
+    char    test14Buffer[4096];
+    std::cout<<test14Fd<<std::endl;
+    read(test14Fd, test14Buffer, sizeof(test14Buffer));
+    std::cout<<test14Buffer<<std::endl;
+    std::cout<<"\n\n=========test15=========\n";
+    int test15Fd = open("./testerCase", O_WRONLY);
+    std::string test15Str = "HIHI";
+    write(test15Fd, test15Str, sizeof(test14Buffer));
     return 0;
 }
 
