@@ -51,15 +51,13 @@ std::map<int, Client>  Server::getClient(void) const
 
 int Server::plusClient(void)
 {
-    int           clntFd;
+    int                 clntFd;
     struct sockaddr_in  clntAdr;
     socklen_t           adrSize;
 
     adrSize = sizeof(clntAdr);
     //accept 무한 루프
     while ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0);
-    // if (clntFd < 0)
-    //     errorHandler("accept error.");
     client[clntFd] = Client(clntFd);
     std::cout<<"temp delete"<<std::endl;
     return (clntFd);
@@ -70,6 +68,7 @@ int Server::plusClient(void)
 EVENT Server::clientRead(struct kevent& store)
 {
     //buffer 문제인지 생각해보기
+    char    buffer[BUFFER_SIZE];
     int     readSize;
 
     //eof신호를 못 받게 됨

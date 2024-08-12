@@ -16,7 +16,7 @@ extern int logs;
 
 //header 줄에서 여러 개의 value를 받을 수 있는 key들을 모음
 /*
-무시해야 하는 헤더가 있다. 파싱은 진행하나 respond message를 만들 때에는 적용을 하지 않는다. 
+무시해야 하는 헤더가 있다. 파싱은 진행하나 respond message를 만들 때에는 적용을 하지 않는다. 가끔 브라우저가 사용하기도 한다. 
 accept-charset
 Content-DPR
 Digest
@@ -34,6 +34,7 @@ Width
 /*
 Content-Disposition헤더를 보니 큰 따옴표를 넣어주고 나중에 respond할 때에 처리해주는 방향으로 가는 것이 조금더 좋을 것 같다는 느낌이 살짝듬
 */
+
 /*
 날짜 value field
 date, expires, last-modified, if-modified-since, retry-after
@@ -177,9 +178,7 @@ int HeaderLine::pushValue()
     it = std::find(dateHeader.begin(), dateHeader.end(), key);
     if (it != dateHeader.end())
     {
-        if (header[key].size())
-            return (1);
-        if (eraseSpace(value, false))
+        if (header[key].size() || eraseSpace(value, false))
             return (1);
         header[key].push_back(value);
         return (0);
@@ -232,9 +231,8 @@ int HeaderLine::commentDelete()
         {
             bracket2 = value.find(')');
             if (bracket2 == std::string::npos)
-                return (0);
-            else
-                return (1);
+                break ;
+            return (1);
         }
         bracket2 = value.find(')');
         if (bracket2 == std::string::npos)
@@ -249,16 +247,8 @@ int HeaderLine::commentDelete()
 HeaderLine::HeaderLine() : completion(false), te(NOT), contentType(ENOT)
 {}
 
-HeaderLine::HeaderLine(const HeaderLine& src)
-{
-    completion = src.getCompletion();
-    te = src.getTe();
-    contentType = src.getContentType();
-    contentLength = src.getContentLength();
-    key = src.getKey();
-    value = src.getValue();
-    header = src.getHeader();
-}
+HeaderLine::HeaderLine(const HeaderLine& src) : completion(src.getCompletion()), te(src.getTe()), contentType(src.getContentType()), contentLength(src.getContentLength()), key(src.getKey()), value(src.getValue()), header(src.getHeader())
+{}
 
 HeaderLine::~HeaderLine() {}
 
@@ -363,9 +353,7 @@ int HeaderLine::plus(std::string& temp)
             return (400);
     }
     else
-    {
         return (400);
-    }
     return (0);
 }
 
@@ -391,12 +379,10 @@ int HeaderLine::headerError()
             ss>>contentLength;
             if (ss.fail() || !ss.eof())
                 return (400);
-            if (contentLength > 100000000)  //serverConfig에서 받아올 것
-                return (400);
             contentType = CONTENT;
         }
         else
-            return (400);  //400
+            return (400);
     }
     else
     {

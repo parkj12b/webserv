@@ -59,11 +59,11 @@ class Client
         //set function
         void    setFd(uintptr_t fd);
         void    setRequestStatus(int temp);
+        //logic
         int     setStart(void);
         int     setHeader(void);
         int     setContent(void);
         int     setTrailer(void);
-        //logic
         bool    getRequestFin();
         void    setMessage(std::string str);
         void    getResponseMessage();

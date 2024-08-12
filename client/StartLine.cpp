@@ -41,7 +41,7 @@ std::map<std::string, Version> StartLine::originVersion = originVersionInit();
 StartLine::StartLine() : completion(false)
 {}
 
-StartLine::StartLine(const StartLine& src) : completion(src.getCompletion()), method(src.getMethod()), version(src.getVersion()), url(src.getUrl())
+StartLine::StartLine(const StartLine& src) : completion(src.getCompletion()), method(src.getMethod()), version(src.getVersion()), url(src.getUrl()), query(src.getQuery())
 {}
 
 StartLine&  StartLine::operator=(const StartLine& src)
@@ -50,6 +50,7 @@ StartLine&  StartLine::operator=(const StartLine& src)
     method = src.getMethod();
     version = src.getVersion();
     url = src.getUrl();
+    query = src.getQuery();
     return (*this);
 }
 
@@ -95,6 +96,8 @@ int StartLine::urlQuery()
     {
         queryTemp = url.substr(pos + 1);
         url = url.substr(0, pos);
+        //config parser
+        //여기서 url검사: method를 사용할 수 있는지 등등, get은 존재하는지
         std::istringstream  strStream(queryTemp);
         while (getline(strStream, str, '&'))
         {
@@ -126,8 +129,9 @@ int     StartLine::plus(std::string temp)
                 if (str.empty())
                     return (400);
                 url = str;
-                urlQuery();
-                // url이 잘못된 형식이면 400 형식은 맞지만 존재하지 않는다면 404
+                if (urlQuery())
+                    return (400);
+                // url이 잘못된 형식이면 400 형식은 맞지만 존재하지 않는다면 404(Not Found)
                 // 여기서 url검사와 allow검사 같이 진행하는 것이 좋을듯
                 break ;
             case 2:

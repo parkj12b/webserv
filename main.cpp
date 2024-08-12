@@ -21,15 +21,17 @@ int logs = open("./log", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 
 int main(void)
 {
+    std::cout<<"========parser========"<<std::endl;
     Directives::init();
     Lexer lex("./config/test.txt");
     Parser parser(lex, "main");
-    Kq  kq;
 
     parser.program();
     Validator v(parser);
     Kq::serverConfig = v.validate();
-    //cgi실행할 fork
+    //fd를 닫지 않았을 가능성이 존재함
+    std::cout<<"========http message========"<<std::endl;
+    Kq  kq;
     std::ios::sync_with_stdio(false);
     while (1)
         kq.mainLoop();

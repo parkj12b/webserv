@@ -176,6 +176,32 @@ void    Response::init()
     entity.clear();
 }
 
+void    Response::makeDate()
+{
+    time_t      now;
+    char*       dt;
+
+    now = time(0);
+    dt = ctime(&now);
+    std::string         date;
+    std::string         str(dt);
+    std::istringstream  strStream(str);
+    std::string         temp;
+    std::string         day[5];
+    size_t              pos;
+    int                 order;
+
+    order = 0;
+    while (std::getline(strStream, temp, ' '))
+    {
+        pos = temp.find_last_not_of('\n');
+        temp.erase(pos + 1);
+        day[order++] = temp;
+    }
+    date = day[0] + ", " + day[2] + " " + day[1] + " " + day[4] + " " + day[3] + " GMT";
+    makeHeader("Date", date);
+}
+
 void    Response::makeError()
 {
     int fd;
@@ -200,7 +226,7 @@ void    Response::initRequest(Request temp)
 
 void    Response::makeHeader(std::string key, std::string value)
 {
-    header += key + ":" + value + "\r\n";
+    header += key + ": " + value + "\r\n";
 }
 
 void    Response::makeContent(int fd)
@@ -208,6 +234,7 @@ void    Response::makeContent(int fd)
     int     readSize;
     char    buffer[40];
 
+    makeHeader("Content-Type", "text/html");
     while (1)
     {
         readSize = read(fd, buffer, 39);
@@ -299,6 +326,8 @@ void    Response::makeDelete()
 void    Response::mainloop()
 {
     init();
+    makeHeader("Server", "IK/0.0");
+    makeDate();
     if (request.status > 0)
         makeError();
     else

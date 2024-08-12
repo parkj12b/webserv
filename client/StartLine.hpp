@@ -33,10 +33,10 @@ enum Version
 class StartLine
 {
     private:
-        bool        completion;
-        Method      method;
-        Version     version;
-        std::string url;
+        bool                                            completion;
+        Method                                          method;
+        Version                                         version;
+        std::string                                     url;
         std::unordered_map<std::string, std::string>    query;
         int urlQuery();
     public:

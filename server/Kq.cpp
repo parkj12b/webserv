@@ -25,26 +25,26 @@ Kq::Kq()
     while ((kq = kqueue()) < 0);
     option = 1;
     //여기서 루프 돌면서 server socket전부다 만들기
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)  //config parser
     {
         while ((serverFd = socket(AF_INET, SOCK_STREAM, 0)) <= 0);
         while (setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)) < 0);
         memset(&serverAdr, 0, sizeof(serverAdr));
         serverAdr.sin_family = AF_INET;
-        serverAdr.sin_addr.s_addr = htonl(INADDR_ANY);  //ip를 어떻게 가져오는 방향에 대해 고민하기
-        serverAdr.sin_port = htons(portNum[i]);   //port도 마찬가지로 어떻게 가져오는지
-        while (::bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0)
+        serverAdr.sin_addr.s_addr = htonl(INADDR_ANY);  //ip는 무조건 localhost로. config에서 에러 처리
+        serverAdr.sin_port = htons(portNum[i]);   //config parser
+        while (bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0)
         {
-            if (errno == EADDRINUSE)
+            if (errno == EADDRINUSE)  //ip 에러를 여기서 처리할 수도...
                 std::exit(1);
         }
         while (listen(serverFd, CLIENT_CNT) < 0);
         plusEvent(serverFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
-        server[serverFd] = Server(serverFd);
+        server[serverFd] = Server(serverFd);  //config parser
     }
 }
 
-HTTPServer *Kq::serverConfig = NULL;
+HTTPServer *Kq::serverConfig = NULL;  //질문!!! 이건 왜 넣으신 거죠??
 
 Kq::Kq(const Kq& src)
 {
@@ -119,7 +119,6 @@ void    Kq::eventRead(struct kevent& store)
     {
         case ERROR:
             clientFin(store);
-            //연결 종료하기
             break ;
         case ING:
             break ;
@@ -173,7 +172,7 @@ void    Kq::mainLoop()
         if (server.find(static_cast<int>(store[i].ident)) != server.end())
         {
             if (store[i].flags == EV_ERROR)
-                serverError(store[i]);  //연결된 모든 client 종료
+                serverError(store[i]);  //server에 연결된 모든 client 종료
             else if (store[i].filter == EVFILT_READ)
                 plusClient(static_cast<int>(store[i].ident));
         }
@@ -182,11 +181,7 @@ void    Kq::mainLoop()
             if (store[i].flags == EV_ERROR)
                 clientFin(store[i]);  //client 종료
             else if (store[i].filter == EVFILT_READ)
-            {
-                // else if (store[i].flags == EOF)
-                //     std::cout<<"EOF"<<std::endl;
                 eventRead(store[i]);
-            }
             else if (store[i].filter == EVFILT_WRITE)
                 eventWrite(store[i]);
         }
