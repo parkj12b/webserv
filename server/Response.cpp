@@ -176,8 +176,13 @@ void    Response::init()
     entity.clear();
 }
 
-void    Response::makeDate(const char* dt)
+void    Response::makeDate()
 {
+    time_t      now;
+    char*       dt;
+
+    now = time(0);
+    dt = ctime(&now);
     std::string         date;
     std::string         str(dt);
     std::istringstream  strStream(str);
@@ -194,7 +199,6 @@ void    Response::makeDate(const char* dt)
         day[order++] = temp;
     }
     date = day[0] + ", " + day[2] + " " + day[1] + " " + day[4] + " " + day[3] + " GMT";
-    std::cout<<date<<std::endl;
     makeHeader("Date", date);
 }
 
@@ -321,14 +325,9 @@ void    Response::makeDelete()
 
 void    Response::mainloop()
 {
-    time_t      now;
-    char*       dt;
-
-    now = time(0);
-    dt = ctime(&now);
     init();
     makeHeader("Server", "IK");
-    makeDate(dt);
+    makeDate();
     if (request.status > 0)
         makeError();
     else

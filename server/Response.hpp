@@ -59,7 +59,7 @@ class Response
         void    setRequest(Request &temp);
         //logic
         void    init();
-        void    makeDate(const char* dt);
+        void    makeDate();
         void    makeError();
         void    makeHeader(std::string key, std::string value);
         void    makeContent(int fd);
