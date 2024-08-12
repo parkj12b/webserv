@@ -234,7 +234,14 @@ void    Response::makeContent(int fd)
     int     readSize;
     char    buffer[40];
 
-    makeHeader("Content-Type", "text/html");
+    if (request.url == "./favicon.ico")
+    {
+        makeHeader("Content-Type", "image/x-icon");
+        makeHeader("Accept-Ranges", "bytes");
+        makeHeader("Cache-Control", "public, max-age=31536000");
+    }
+    else
+        makeHeader("Content-Type", "text/html");
     while (1)
     {
         readSize = read(fd, buffer, 39);
@@ -243,6 +250,7 @@ void    Response::makeContent(int fd)
         buffer[readSize] = '\0';
         content += buffer;
     }
+    // std::cout<<content;
     makeHeader("content-length", std::to_string(content.size()));
 }
 
