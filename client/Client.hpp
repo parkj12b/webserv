@@ -33,6 +33,7 @@ class Client
     private:
         int         fd;
         size_t      index;
+        size_t      amount;
         std::string msg;
         Request     request;
         StartLine   startLine;
@@ -49,6 +50,7 @@ class Client
         //get function
         int                         getFd() const;
         std::string                 getMsg() const;
+        size_t                      getAmount();
         const char*                 getMsg();
         Request                     getRequest() const;
         StartLine                   getStartLine() const;

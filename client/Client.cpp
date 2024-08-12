@@ -64,6 +64,8 @@ const char* Client::getMsg()
     return (msg.c_str() + index);
 }
 
+
+
 Request Client::getRequest() const
 {
     return (request);
@@ -347,6 +349,14 @@ void    Client::getResponseMessage()
     response.initRequest(request);
     response.mainloop();
     msg = response.getEntity();
+    amount = msg.size();
+}
+
+size_t  Client::getAmount()
+{
+    if (amount <= index)
+        amount = index;
+    return (amount - index);
 }
 
 void    Client::plusIndex(size_t temp)
