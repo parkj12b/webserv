@@ -29,7 +29,7 @@ int main(void)
     parser.program();
     Validator v(parser);
     Kq::serverConfig = v.validate();
-    //cgi실행할 fork
+    //fd를 닫지 않았을 가능성이 존재함
     std::cout<<"========http message========"<<std::endl;
     Kq  kq;
     std::ios::sync_with_stdio(false);

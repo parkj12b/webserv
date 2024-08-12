@@ -26,9 +26,9 @@ typedef struct Request
 {
     bool    fin;
     int     status;
-    Method  method;
-    Version version;
-    std::string url;
+    Method                                                      method;
+    std::string                                                 url;
+    Version                                                     version;
     std::unordered_map<std::string, std::string>                query;
     std::unordered_map<std::string, std::deque<std::string> >   header;
     std::vector<std::string>                                    content;

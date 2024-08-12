@@ -43,7 +43,6 @@ class Server
 {
     private:
         int                     serverFd;
-        char                    buffer[BUFFER_SIZE];
         std::map<int, Client>   client;  //client을 선언할때에 default 생성자가 필요한듯
         //여기에 파싱된 data가 들어가 있을 것
     public:
@@ -57,11 +56,9 @@ class Server
         std::map<int, Client>  getClient(void) const;
         //logic
         int     plusClient(void);
-        int     requestExceptFlag(int fd);
         EVENT   clientRead(struct kevent& store);
         EVENT   clientWrite(struct kevent& store);
         //error
-        void    errorHandler(Client& c);
         void    clientFin(int clientFd);
         void    serverError();
 };

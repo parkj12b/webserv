@@ -167,6 +167,14 @@ int main()
     Client  test12;
     const char* strstr = test12.getMsg();
     std::cout<<strstr;
+    std::cout<<"\n\n=========test13=========\n";
+    std::string test13Str = "       Hi        ";
+
+    pos = test13Str.find_first_not_of(' ');
+    test13Str.erase(0, pos);
+    pos = test13Str.find_last_not_of(' ');
+    test13Str.erase(pos + 1);
+    std::cout<<"test13Str: "<<test13Str;
     return 0;
 }
 

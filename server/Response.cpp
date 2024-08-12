@@ -208,6 +208,7 @@ void    Response::makeContent(int fd)
     int     readSize;
     char    buffer[40];
 
+    makeHeader("Content-Type", "text/html");
     while (1)
     {
         readSize = read(fd, buffer, 39);
