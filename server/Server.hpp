@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:55 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/11 21:04:07 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/12 13:59:12 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@
 //kq 클래스에서 서버 클래스를 관리하기
 //kq 클래스에서 클라이언트 fd마다 서버 fd를 map을 통해 갖고 있기 때문에 event 발생시 클라이언트 fd를 통해 server를 예측하고 server에서 다시 클라이언트 fd를 통해 클라이언트 소켓으로 접근
 
+class HTTPServer;
+
 enum EVENT
 {
     ERROR = 1,
@@ -52,6 +54,7 @@ class Server
         Server(const Server& src);
         Server &operator=(const Server& src);
         ~Server();
+        static HTTPServer *serverConfig;
         //get function
         int getServerFd(void) const;
         std::map<int, Client>  getClient(void) const;

@@ -6,13 +6,15 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/11 14:29:33 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/12 13:59:17 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
 extern int logs;
+
+HTTPServer *Server::serverConfig = NULL;
 
 Server::Server()
 {}

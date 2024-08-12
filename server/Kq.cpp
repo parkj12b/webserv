@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/11 21:27:06 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/12 13:30:18 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,6 @@ Kq::Kq()
         server[serverFd] = Server(serverFd);
     }
 }
-
-HTTPServer *Kq::serverConfig = NULL;
 
 Kq::Kq(const Kq& src)
 {
