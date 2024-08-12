@@ -102,10 +102,11 @@ EVENT   Server::clientWrite(struct kevent& store)
     size_t      index;
     const char* buffer = client[store.ident].getMsg();
 
-    std::cout<<"\n\nbuffer: "<<buffer;
+    if (store.ident == 0)
+        return (ING);
     index = write(store.ident, buffer, client[store.ident].getAmount());
     write(1, buffer, client[store.ident].getAmount());
-    // index = write(store.ident, buffer, 100);
+    index = write(store.ident, buffer, 100);
     // write(1, buffer, 100);
     // std::cout<<buffer;
     client[store.ident].plusIndex(index);
