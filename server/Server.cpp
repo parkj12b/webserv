@@ -101,6 +101,7 @@ EVENT   Server::clientWrite(struct kevent& store)
     const char* buffer = client[store.ident].getMsg();
 
     index = write(store.ident, buffer, std::strlen(buffer));
+    std::cout<<buffer;
     client[store.ident].plusIndex(index);
     if (index < std::strlen(buffer))
         return (ING);
