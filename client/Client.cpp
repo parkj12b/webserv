@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: inghwang <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/07/08 17:11:16 by inghwang         ###   ########.fr       */
+/*   Updated: 2024/08/12 22:01:15 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -340,17 +340,17 @@ void    Client::setMessage(std::string msgRequest)
         std::cout<<"Startline Error\n";
         return ;
     }
-    if (setHeader())  //max size literal
+    if (setHeader())  //max size literal, 헤더 파싱
     {
         std::cout<<"Header Error\n";
         return ;
     }
-    if (setContent())
+    if (setContent()) // 바디 파싱
     {
         std::cout<<"Body Error\n";
         return ;
     }
-    if (setTrailer())
+    if (setTrailer()) // 바디 마지막, 트레일러 파싱
     {
         std::cout<<"Trailer Error\n";
         return ; 

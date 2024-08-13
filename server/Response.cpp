@@ -245,6 +245,7 @@ void    Response::makeContent(int fd)
     if (request.url == "./favicon.ico")
     {
         makeHeader("Content-Type", "image/x-icon");
+        std::cout<<"here\n"<<std::endl;
     }
     else
         makeHeader("Content-Type", "text/html");
@@ -260,7 +261,6 @@ void    Response::makeContent(int fd)
         content.append(buffer, readSize);
         count += readSize;
     }
-    // std::cout<<content;
     std::cout<<content.size()<<std::endl;
     makeHeader("content-length", std::to_string(count));
 }

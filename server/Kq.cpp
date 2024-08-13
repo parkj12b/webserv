@@ -6,11 +6,12 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/12 14:01:15 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 15:21:34 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Kq.hpp"
+#include "HTTPServer.hpp"
 
 extern int logs;
 
@@ -19,33 +20,34 @@ Kq::Kq()
     struct sockaddr_in  serverAdr;
     int                 option;
     int                 serverFd;
+    //Changing portNum to config port
+    map<int, ServerConfigData *> &serverConfigData = Server::serverConfig->getServerConfigData();
+    map<int, ServerConfigData *>::iterator serverConfigIt = serverConfigData.begin();
     //temp
     // int                 portNum[4] = {80, 800, 8000, 8080};
 
     while ((kq = kqueue()) < 0);
     option = 1;
     //여기서 루프 돌면서 server socket전부다 만들기
-    // for (int i = 0; i < 4; i++)  //config parser
-    for (std::unordered_set<ServerConfigData *>::iterator itu = Server::serverConfig->getServerSet().begin(); itu != Server::serverConfig->getServerSet().end(); itu++)
+    while (serverConfigIt != serverConfigData.end())  //config parser
     {
-        for (std::vector<int>::iterator itv = (*itu)->getPort().begin(); itv != (*itu)->getPort().end(); itv++)
+        int port = serverConfigIt->first;
+        while ((serverFd = socket(AF_INET, SOCK_STREAM, 0)) <= 0);
+        while (setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)) < 0);
+        memset(&serverAdr, 0, sizeof(serverAdr));
+        serverAdr.sin_family = AF_INET;
+        serverAdr.sin_addr.s_addr = htonl(INADDR_ANY);  //ip는 무조건 localhost로. config에서 에러 처리
+        serverAdr.sin_port = htons(port);   //config parser
+        cout << "port: " << port << endl;
+        while (::bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0)
         {
-            while ((serverFd = socket(AF_INET, SOCK_STREAM, 0)) <= 0);
-            while (setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)) < 0);
-            memset(&serverAdr, 0, sizeof(serverAdr));
-            serverAdr.sin_family = AF_INET;
-            serverAdr.sin_addr.s_addr = htonl(INADDR_ANY);  //ip는 무조건 localhost로 config에서 에러 처리
-            std::cout<<*itv<<" ";
-            serverAdr.sin_port = htons(*itv);   //config parser
-            while (::bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0)
-            {
-                if (errno == EADDRINUSE)  //ip 에러를 여기서 처리할 수도...
-                    std::exit(1);
-            }
-            while (listen(serverFd, CLIENT_CNT) < 0);
-            plusEvent(serverFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
-            server[serverFd] = Server(serverFd, *itv);  //config parser
+            if (errno == EADDRINUSE)  //ip 에러를 여기서 처리할 수도...
+                std::exit(1);
         }
+        while (listen(serverFd, CLIENT_CNT) < 0);
+        plusEvent(serverFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
+        server[serverFd] = Server(serverFd);  //config parser
+        serverConfigIt++;
     }
     std::cout<<"\nserver port open.\n";
 }
@@ -115,7 +117,7 @@ void    Kq::eventRead(struct kevent& store)
 
     if (store.ident == 0)
         return ;
-    serverFd = findServer[store.ident];
+    serverFd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
     if (serverFd == 0)
         return ;
     event = server[serverFd].clientRead(store);
@@ -166,10 +168,13 @@ void    Kq::eventWrite(struct kevent& store)
 
 void    Kq::mainLoop()
 {
-    struct kevent   store[EVENTCNT];
+    //changing EVENTCNT to WORKER_CONNECTIONS
+    const int WORKER_CONNECTIONS = Server::serverConfig->getWorkerConnections();
+    struct kevent   store[WORKER_CONNECTIONS];
     int             count;
 
-    while ((count = kevent(kq, &fdList[0], fdList.size(), store, EVENTCNT, NULL)) < 0);
+    //changed EVENTCNT to WORKER_CONNECTIONS
+    while ((count = kevent(kq, &fdList[0], fdList.size(), store, WORKER_CONNECTIONS, NULL)) < 0);
     fdList.clear();
     for (int i = 0; i < count; i++)
     {
@@ -177,7 +182,7 @@ void    Kq::mainLoop()
         {
             if (store[i].flags == EV_ERROR)
                 serverError(store[i]);  //server에 연결된 모든 client 종료
-            else if (store[i].filter == EVFILT_READ)
+            else if (store[i].filter == EVFILT_READ) //read 발생시 client 추가
                 plusClient(static_cast<int>(store[i].ident));
         }
         else
