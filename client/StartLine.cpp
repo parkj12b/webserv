@@ -120,13 +120,14 @@ int StartLine::urlQuery()
     return (0);
 }
 
-int     StartLine::plus(std::string temp)
+int     StartLine::check(std::string firstLine)
 {
-    std::istringstream  strStream(temp);
+    std::istringstream  strStream(firstLine);
     std::string         str;
     int                 answer;
 
     answer = 0;
+    std::cout<<port<<std::endl;
     while (getline(strStream, str, ' '))
     {
         switch (answer)

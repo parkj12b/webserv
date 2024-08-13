@@ -27,5 +27,4 @@ public:
     Token *clone();
 };
 
-
 #endif
