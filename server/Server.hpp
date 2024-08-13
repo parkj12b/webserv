@@ -50,7 +50,6 @@ class Client;
  * @param port server port
  * @param client server manage clients map (client fd -> client class)
 */
-
 class Server
 {
     private:

@@ -42,7 +42,6 @@
  * @param contentLine request contentLine
  * @param response response msg
  */
-
 class Client
 {
     private:
