@@ -66,6 +66,7 @@ class Server
         ~Server();
         //get function
         int                     getServerFd(void) const;
+        int                     getPort(void) const;
         std::map<int, Client>   getClient(void) const;
         //logic
         int     plusClient(void);                   //client socket accept

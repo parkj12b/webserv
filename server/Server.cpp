@@ -24,7 +24,7 @@ Server::Server(int fd, int num) : serverFd(fd), port(num)
     std::cout<<"server fd, port: "<<serverFd<<", "<<port<<std::endl;
 }
 
-Server::Server(const Server& src)
+Server::Server(const Server& src) 
 {
     this->serverFd = src.getServerFd();
     this->client = src.getClient();
