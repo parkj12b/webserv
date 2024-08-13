@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 20:28:36 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/09 20:37:37 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 16:30:48 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,35 @@
 
 using namespace std;
 
+/**
+ * @brief                       class used for storing location config data.
+ *                              Passed to main logic
+ * @param   _errorLog           error log file path
+ * @param   _allowedMethods     allowed methods
+ * @param   _defaultType        default type
+ * @param   _keepaliveTimeout   keepalive timeout, in seconds
+ * @param   _headerTimeout      header timeout, in secods
+ * @param   _root               root directory
+ * @param   _errorPage          error page to show in case of error
+ * @param   _clientMaxBodySize  client max body size, in bytes
+ * @param   _fastcgiPass        fastcgi pass, path to fastcgi
+ * @param   _fastcgiIndex       fastcgi index
+ * @param   _index              index
+ * @param   _fastcgiParam       fastcgi param
+ * @param   _autoindex          autoindex on / off
+ * @param   _accessLog          access log file path
+ * @param   _return             return code, return path? or message?
+*/
 class LocationConfigData {
 private:
     string              _errorLog;
     vector<string>      _allowedMethods;
     string              _defaultType;
-    ssize_t             _keepaliveTimeout; // in seconds
-    ssize_t             _headerTimeout; // in seconds
+    ssize_t             _keepaliveTimeout;
+    ssize_t             _headerTimeout;
     string              _root;
     map<int, string>    _errorPage;
-    ssize_t             _clientMaxBodySize; // in bytes
+    ssize_t             _clientMaxBodySize;
     string              _fastcgiPass;
     string              _fastcgiIndex;
     string              _index;

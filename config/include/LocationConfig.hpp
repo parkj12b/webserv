@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 19:21:41 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 19:11:15 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 16:27:24 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,11 @@ using namespace std;
 
 class Token;
 
+/**
+ * @brief                       class used for parsing
+ * @param   _env                current location Env
+ * @param   _limitExcept        limit_except for current location
+*/
 class LocationConfig {
 private:
     Env *_env;

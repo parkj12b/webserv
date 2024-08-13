@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/12 21:30:17 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 15:34:06 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,10 @@ HTTPServer *Server::serverConfig = NULL;
 Server::Server()
 {}
 
-Server::Server(int fd, int port) : serverFd(fd), port(port)
-{}
+Server::Server(int fd, int num) : serverFd(fd), port(num)
+{
+    cout << num << endl;
+}
 
 Server::Server(const Server& src)
 {

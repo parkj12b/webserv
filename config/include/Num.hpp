@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 19:49:13 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 20:36:53 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 16:37:28 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,16 @@
 
 using namespace std;
 
+/**
+ * @brief                       class for number token
+ * @param   value               value of the number
+*/
 class Num : public Token {
 public:
     const int value;
-    Num(int v);
     string toString();
     Token *clone();
+    Num(int v);
 };
 
 #endif
