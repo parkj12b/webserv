@@ -188,7 +188,7 @@ int Client::setHeader(void)
                 break ;
             }
             str = msg.substr(0, flag);
-            if ((request.status = headerLine.plus(str)) > 0)
+            if ((request.status = headerLine.makeHeader(str)) > 0)
             {
                 std::cout<<str<<std::endl;
                 return (1);  //400
@@ -272,7 +272,7 @@ int Client::setTrailer(void)
         {
             str = msg.substr(0, flag);
             msg = msg.substr(flag + 2);
-            if ((request.status = headerLine.checkTrailer(str)) > 0)
+            if ((request.status = headerLine.parseTrailer(str)) > 0)
                 return (1);
             else
             {
