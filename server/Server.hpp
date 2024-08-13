@@ -44,6 +44,13 @@ enum EVENT
 
 class Client;
 
+/***
+ * @brief Server manage clients
+ * @param serverFd server fd
+ * @param port server port
+ * @param client server manage clients map (client fd -> client class)
+*/
+
 class Server
 {
     private:
@@ -62,12 +69,12 @@ class Server
         int getServerFd(void) const;
         std::map<int, Client>  getClient(void) const;
         //logic
-        int     plusClient(void);
-        EVENT   clientRead(struct kevent& store);
-        EVENT   clientWrite(struct kevent& store);
+        int     plusClient(void);                   //client socket accept
+        EVENT   clientRead(struct kevent& store);   //client read event manage
+        EVENT   clientWrite(struct kevent& store);  //client write event manage
         //error
-        void    clientFin(int clientFd);
-        void    serverError();
+        void    clientFin(int clientFd);    //one client close
+        void    serverError();              //clients connected server close
 };
 
 #endif

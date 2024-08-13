@@ -22,17 +22,28 @@
 # include <fcntl.h>
 # include <cstdio>
 
+
 typedef struct Request
 {
-    bool    fin;
-    int     status;
-    Method                                                      method;
-    std::string                                                 url;
-    Version                                                     version;
-    std::unordered_map<std::string, std::string>                query;
-    std::unordered_map<std::string, std::deque<std::string> >   header;
-    std::vector<std::string>                                    content;
+    bool    fin;    //request completion status
+    int     status; //request status code
+    Method                                                      method;     //http method
+    std::string                                                 url;        //http resource
+    Version                                                     version;    //http version
+    std::unordered_map<std::string, std::string>                query;      //resource query
+    std::unordered_map<std::string, std::deque<std::string> >   header;     //request header
+    std::vector<std::string>                                    content;    //request content
 }   Request;
+
+/**
+ * @brief request message
+ * @param port server port
+ * @param start response startline
+ * @param header response header
+ * @param content response content
+ * @param entity response messgae entity
+ * @param request request struct
+ */
 
 class Response
 {
@@ -61,17 +72,17 @@ class Response
         //set function
         void    setRequest(Request &temp);
         //logic
-        void    init();
-        void    makeDate();
-        void    makeError();
-        void    makeHeader(std::string key, std::string value);
-        void    makeContent(int fd);
-        void    makeEntity();
-        void    makeGet();
-        void    makePost();
-        void    makeDelete();
-        void    initRequest(Request temp);
-        void    responseMake();
+        void    init();         //start, header, content, entity init
+        void    makeDate();     //date header make
+        void    makeError();    //error message make
+        void    makeHeader(std::string key, std::string value); //key -> value
+        void    makeContent(int fd);        //make content
+        void    makeEntity();               //plus start, header, content
+        void    makeGet();                  //GET method make response
+        void    makePost();                 //POST method make response
+        void    makeDelete();               //DELETE method make response
+        void    initRequest(Request msg);   //request msg init
+        void    responseMake();             //request msg -> response msg
 };
 
 #endif
