@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/13 22:47:16 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 23:22:07 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -359,6 +359,7 @@ void    Client::setMessage(std::string msgRequest)
 void    Client::setResponseMessage()
 {
     index = 0;
+    response = Response(port);
     response.initRequest(request);
     response.responseMake();
     msg = response.getEntity();

@@ -46,7 +46,6 @@ typedef struct Request
  */
 class Response
 {
-    // 얘네들 다 언제설정됨???
     private:
         int         port;
         std::string location;
@@ -65,6 +64,7 @@ class Response
         ~Response();
         Response(int port);
         //get function
+        int         getPort() const;
         std::string getStart() const;
         std::string getHeader() const;
         std::string getContent() const;

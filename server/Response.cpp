@@ -132,15 +132,19 @@ Response::Response(const Response& src)
     content = src.getContent();
     entity = src.getEntity();
     request = src.getRequest();
+    port = src.getPort();
 }
 
 Response&    Response::operator=(const Response& src)
 {
+    if (this == &src)
+        return (*this);
     start = src.getStart();
     header = src.getHeader();
     content = src.getContent();
     entity = src.getEntity();
     request = src.getRequest();
+    port = src.getPort();
     return (*this);
 }
 
@@ -150,6 +154,11 @@ Response::~Response()
 
 Response::Response(int port) : port(port)
 {}
+
+int Response::getPort() const
+{
+    return (port);
+}
 
 std::string Response::getStart() const
 {
@@ -200,7 +209,7 @@ void    Response::init()
         pos = location.rfind('/');
         if (pos != std::string::npos)
         {
-            location = request.url.substr(0, pos);
+            location = request.url.substr(0, pos + 1);
             //location 찾으면 나오게
             if (location.size() == 0)
             {
@@ -208,8 +217,11 @@ void    Response::init()
                 break ;
             }
             map<string, LocationConfigData>::iterator it = locationMap.find(location);
-            if (it != locationMap.end())
+            if (it == locationMap.end())
+            {
+                location = location.substr(0, location.size() - 1);
                 continue;
+            }
             else
             {
                 cout << location << endl;
