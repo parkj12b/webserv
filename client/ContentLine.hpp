@@ -14,7 +14,15 @@
 # define CONTENTLINE_HPP
 
 # include "HeaderLine.hpp"
-
+/**
+ * @brief reqeust contentLine class
+ * @param completion request contentline 완료 상태
+ * @param contentType request contentType chunked OR length
+ * @param port server port
+ * @param contentLength contentType == length 길이 int값
+ * @param chunked chunked msg save space
+ * @param content length msg save space
+ */
 class ContentLine
 {
     private:
@@ -40,9 +48,9 @@ class ContentLine
         std::string                 getChunked() const;
         std::vector<std::string>    getContent() const;
         //logic
-        void    initContentLine(int initCl, CONTENTTYPE initC);
-        int     chunkedEntity();
-        int     plus(std::string &str);
+        void    initContentLine(int initLength, CONTENTTYPE initType);  //init
+        int     chunkedEntity();                    //chunked message parsing
+        int     makeContentLine(std::string &str);  //contentLine make
 };
 
 #endif

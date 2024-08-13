@@ -67,10 +67,10 @@ std::vector<std::string>    ContentLine::getContent() const
     return (content);
 }
 
-void    ContentLine::initContentLine(int initCl, CONTENTTYPE initC)
+void    ContentLine::initContentLine(int initLength, CONTENTTYPE initType)
 {
-    contentLength = initCl;
-    contentType = initC;
+    contentLength = initLength;
+    contentType = initType;
 }
 
 int ContentLine::chunkedEntity()
@@ -113,7 +113,7 @@ int ContentLine::chunkedEntity()
     return (0);
 }
 
-int ContentLine::plus(std::string &str)
+int ContentLine::makeContentLine(std::string &str)
 {
     size_t  flag;
 
