@@ -227,7 +227,7 @@ void    HeaderLine::setTrailer(TE temp)
     te = temp;
 }
 
-int HeaderLine::eraseSpace(std::string& str, bool space)
+int HeaderLine::eraseSpace(std::string& str, bool spel)
 {
     size_t  pos;
 
@@ -235,7 +235,7 @@ int HeaderLine::eraseSpace(std::string& str, bool space)
     str.erase(0, pos);
     pos = str.find_last_not_of(' ');
     str.erase(pos + 1);
-    if (!str.empty() && space)
+    if (!str.empty() && spel)
     {
         for (std::string::iterator it = str.begin(); it != str.end(); it++)
             *it = std::tolower(*it);
@@ -321,7 +321,7 @@ int HeaderLine::commentDelete()
     return (0);
 }
 
-int HeaderLine::checkTrailer(std::string &temp)
+int HeaderLine::parseTrailer(std::string &temp)
 {
     size_t      colon;
     std::string trailerHeader;
@@ -348,7 +348,7 @@ int HeaderLine::checkTrailer(std::string &temp)
     return (0);
 }
 
-int HeaderLine::plus(std::string& temp)
+int HeaderLine::makeHeader(std::string& temp)
 {
     std::string str;
     size_t      colon;

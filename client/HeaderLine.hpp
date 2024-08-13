@@ -34,6 +34,19 @@ enum    TE
     NOT
 };
 
+/**
+ * @brief request message header make
+ * @param completion HeaderLine completion status
+ * @param te trailer status 
+ * @param contentType content type(length or chunked)
+ * @param port server port
+ * @param contentLength content length size
+ * @param key header key
+ * @param value header value
+ * @param header header vector
+ * 
+ */
+
 class HeaderLine
 {
     private:
@@ -47,10 +60,10 @@ class HeaderLine
         std::unordered_map<std::string, std::deque<std::string> > header;
     public:
         //static variable
-        static std::vector<std::string> singleHeader;
-        static std::vector<std::string> dateHeader;
-        static std::vector<std::string> vitalHeader;
-        static std::vector<std::string> commentHeader;
+        static std::vector<std::string> singleHeader;   //only one header
+        static std::vector<std::string> dateHeader;     //date header
+        static std::vector<std::string> vitalHeader;    //vital header
+        static std::vector<std::string> commentHeader;  //comment possible header
         //Server, User-Agent, Via, comment
         //occf
         HeaderLine();
@@ -71,13 +84,13 @@ class HeaderLine
         void    setContentLength(int minus);
         void    setTrailer(TE temp);
         //sub logic
-        int     eraseSpace(std::string& str, bool space);
-        int     pushValue();
-        int     commentDelete();
+        int     eraseSpace(std::string& str, bool spel);    //front and back space delete spel do big changes small
+        int     pushValue();                                //key -> value
+        int     commentDelete();                            //comment delete
         //logic
-        int checkTrailer(std::string& temp);
-        int plus(std::string& temp);
-        int headerError();
+        int parseTrailer(std::string& temp);                //trailer parsing
+        int makeHeader(std::string& temp);                  //make header
+        int headerError();                                  //header error
 };
 
 #endif
