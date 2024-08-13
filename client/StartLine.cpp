@@ -59,7 +59,7 @@ StartLine::~StartLine()
     (void) port;
 }
 
-StartLine::StartLine(int port) : port(port)
+StartLine::StartLine(int port) : completion(false), port(port)
 {}
 
 bool        StartLine::getCompletion() const
