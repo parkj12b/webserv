@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:30:28 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/11 18:56:30 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/12 19:21:59 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ void    Validator::checkServerName(ServerConfigData *serverData, ServerConfig *s
 void    Validator::checkPort(ServerConfigData *serverData, ServerConfig *serverConfig)
 {
     vector<vector<vector< Token *> > > *v = serverConfig->getConfig("listen");
-    unordered_set<int> &ports = getPorts();
+    set<int> &ports = getPorts();
     vector<int> &_port = serverData->getPort();
 
     if (v == NULL) {
