@@ -183,9 +183,6 @@ int main()
     read(test14Fd, test14Buffer, sizeof(test14Buffer));
     std::cout<<test14Buffer<<std::endl;
     std::cout<<"\n\n=========test15=========\n";
-    int test15Fd = open("./testerCase", O_WRONLY);
-    std::string test15Str = "HIHI";
-    write(test15Fd, test15Str, sizeof(test14Buffer));
     return 0;
 }
 
