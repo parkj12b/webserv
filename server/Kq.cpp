@@ -20,28 +20,34 @@ Kq::Kq()
     int                 option;
     int                 serverFd;
     //temp
-    int                 portNum[4] = {80, 800, 8000, 8080};
+    // int                 portNum[4] = {80, 800, 8000, 8080};
 
     while ((kq = kqueue()) < 0);
     option = 1;
     //여기서 루프 돌면서 server socket전부다 만들기
-    for (int i = 0; i < 4; i++)  //config parser
+    // for (int i = 0; i < 4; i++)  //config parser
+    for (std::unordered_set<ServerConfigData *>::iterator itu = Server::serverConfig->getServerSet().begin(); itu != Server::serverConfig->getServerSet().end(); itu++)
     {
-        while ((serverFd = socket(AF_INET, SOCK_STREAM, 0)) <= 0);
-        while (setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)) < 0);
-        memset(&serverAdr, 0, sizeof(serverAdr));
-        serverAdr.sin_family = AF_INET;
-        serverAdr.sin_addr.s_addr = htonl(INADDR_ANY);  //ip는 무조건 localhost로. config에서 에러 처리
-        serverAdr.sin_port = htons(portNum[i]);   //config parser
-        while (bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0)
+        for (std::vector<int>::iterator itv = (*itu)->getPort().begin(); itv != (*itu)->getPort().end(); itv++)
         {
-            if (errno == EADDRINUSE)  //ip 에러를 여기서 처리할 수도...
-                std::exit(1);
+            while ((serverFd = socket(AF_INET, SOCK_STREAM, 0)) <= 0);
+            while (setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)) < 0);
+            memset(&serverAdr, 0, sizeof(serverAdr));
+            serverAdr.sin_family = AF_INET;
+            serverAdr.sin_addr.s_addr = htonl(INADDR_ANY);  //ip는 무조건 localhost로 config에서 에러 처리
+            std::cout<<*itv<<" ";
+            serverAdr.sin_port = htons(*itv);   //config parser
+            while (::bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0)
+            {
+                if (errno == EADDRINUSE)  //ip 에러를 여기서 처리할 수도...
+                    std::exit(1);
+            }
+            while (listen(serverFd, CLIENT_CNT) < 0);
+            plusEvent(serverFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
+            server[serverFd] = Server(serverFd, *itv);  //config parser
         }
-        while (listen(serverFd, CLIENT_CNT) < 0);
-        plusEvent(serverFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
-        server[serverFd] = Server(serverFd);  //config parser
     }
+    std::cout<<"\nserver socket perfect.\n";
 }
 
 Kq::Kq(const Kq& src)
