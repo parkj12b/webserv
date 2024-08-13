@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 17:27:22 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/09 21:20:42 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 18:04:25 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,11 @@ set<string> createSet(const char *str[]);
 bool        isString(char peek);
 string      toString(int value);
 ssize_t     timeToSeconds(string time);
+
+/* int to utf string */
 string      intToUtf8(int codePoint);
+
+/* used in lexer */ // need to be moved to lexer ?
 string      getLineFromFile(string filename, int line);
 string      getErrorAngle(int column);
 

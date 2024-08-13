@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 19:30:17 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 20:35:59 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 18:03:19 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,10 @@
 
 using namespace std;
 
+/**
+ * @brief                       base token class
+ * @param   tag                 tag of token
+*/
 class Token {
 public:
     const int tag;

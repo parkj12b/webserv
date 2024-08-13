@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 19:12:12 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/09 21:21:05 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 18:01:51 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,10 @@
 
 using namespace std;
 
+/**
+ * @brief                       class used for storing syntax definition
+ * @param   tag                 tag of syntax
+*/
 class Syntax {
 public:
     vector<int> tag;
