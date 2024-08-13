@@ -38,23 +38,29 @@ std::map<std::string, Version> originVersionInit()
 std::map<std::string, Method> StartLine::originMethod = originMethodInit();
 std::map<std::string, Version> StartLine::originVersion = originVersionInit();
 
-StartLine::StartLine() : completion(false)
+StartLine::StartLine() : completion(false), port(0)
 {}
 
-StartLine::StartLine(const StartLine& src) : completion(src.getCompletion()), method(src.getMethod()), version(src.getVersion()), url(src.getUrl()), query(src.getQuery())
+StartLine::StartLine(const StartLine& src) : completion(src.getCompletion()), version(src.getVersion()), method(src.getMethod()), port(src.getPort()), url(src.getUrl()), query(src.getQuery())
 {}
 
 StartLine&  StartLine::operator=(const StartLine& src)
 {
     completion = src.getCompletion();
-    method = src.getMethod();
     version = src.getVersion();
+    method = src.getMethod();
+    port = src.getPort();
     url = src.getUrl();
     query = src.getQuery();
     return (*this);
 }
 
 StartLine::~StartLine()
+{
+    (void) port;
+}
+
+StartLine::StartLine(int port) : completion(false), port(port)
 {}
 
 bool        StartLine::getCompletion() const
@@ -70,6 +76,11 @@ Method  StartLine::getMethod() const
 Version StartLine::getVersion() const
 {
     return (version);
+}
+
+int StartLine::getPort() const
+{
+    return (port);
 }
 
 std::string  StartLine::getUrl() const
@@ -139,8 +150,6 @@ int     StartLine::plus(std::string temp)
                 if (version == 0)
                     return (505);
                 break ;
-            default:
-                return (400);
         }
         answer++;
     }

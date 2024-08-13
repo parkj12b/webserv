@@ -34,11 +34,11 @@ class StartLine
 {
     private:
         bool                                            completion;
-        Method                                          method;
         Version                                         version;
+        Method                                          method;
+        int                                             port;
         std::string                                     url;
         std::unordered_map<std::string, std::string>    query;
-        int urlQuery();
     public:
         //static variable
         static std::map<std::string, Method>    originMethod;
@@ -48,12 +48,16 @@ class StartLine
         StartLine(const StartLine& src);
         StartLine&  operator=(const StartLine& src);
         ~StartLine();
+        StartLine(int port);
         //get function
         bool                                            getCompletion() const;
         Method                                          getMethod() const;
         Version                                         getVersion() const;
+        int                                             getPort() const;
         std::string                                     getUrl() const;
         std::unordered_map<std::string, std::string>    getQuery() const;
+        //sub logic
+        int urlQuery();
         //logic
         int plus(std::string tmp);
 };

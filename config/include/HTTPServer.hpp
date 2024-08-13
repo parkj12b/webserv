@@ -21,10 +21,11 @@
 
 using namespace std;
 
-class HTTPServer {
+class HTTPServer
+{
 private:
     int                                 _workerConnections;
-    map<int, ServerConfigData *>        _serverConfigData;
+    map<int, ServerConfigData *>        _serverConfigData;  //포트에 알맞는 서버 config _serverSet과의 차이는??
     unordered_set<ServerConfigData *>   _serverSet;
 public:
     int                                 getWorkerConnections();

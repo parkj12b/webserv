@@ -19,11 +19,8 @@ HTTPServer *Server::serverConfig = NULL;
 Server::Server()
 {}
 
-Server::Server(int fd)
-{
-    //여기서 startline method설정해야 함
-    serverFd = fd;
-}
+Server::Server(int fd, int num) : serverFd(fd), port(num)
+{}
 
 Server::Server(const Server& src)
 {
@@ -60,7 +57,7 @@ int Server::plusClient(void)
     adrSize = sizeof(clntAdr);
     //accept 무한 루프
     while ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0);
-    client[clntFd] = Client(clntFd);
+    client[clntFd] = Client(clntFd, port);
     std::cout<<"temp delete"<<std::endl;
     return (clntFd);
     // plusEvent(clntFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
@@ -102,104 +99,18 @@ EVENT   Server::clientWrite(struct kevent& store)
     size_t      index;
     const char* buffer = client[store.ident].getMsg();
 
-    index = write(store.ident, buffer, std::strlen(buffer));
-    std::cout<<buffer;
+    if (store.ident == 0)
+        return (ING);
+    (void) port;  //make 옵션 때문에
+    index = write(store.ident, buffer, client[store.ident].getAmount());
+    // write(1, buffer, client[store.ident].getAmount());
     client[store.ident].plusIndex(index);
-    if (index < std::strlen(buffer))
+    if (client[store.ident].getAmount())
         return (ING);
     if (client[store.ident].getRequestStatus() == 100)
         return (EXPECT);
     return (FINISH);
 }
-
-// EVENT Server::clientWrite(struct kevent& store)
-// {
-//     // write(store.ident, client[store.ident].getMsg().c_str(), client[store.ident].getMsg().size());
-//     int     sum;
-//     int     readSize;
-//     int     fd;
-//     char    buffer[BUFFER_SIZE];
-//     std::string str;
-//     const char  *temp = "HTTP/1.1 200 OK\nContent-Type: text/html;charset=UTF-8\nContent-Length: ";
-
-//     if (client[store.ident].getRequestStatus() == 100 && !client[store.ident].getRequestFin())
-//     {
-//         write(store.ident, "HTTP/1.1 100 Continue\n", 22);
-//         client[store.ident].setRequestStatus(0);
-//         return (EXPECT);
-//     }
-//     if (client[store.ident].getRequestStatus() > 0)
-//         errorHandler(client[store.ident]);
-//     else
-//     {
-//         fd = open("./resource/index.html", O_RDONLY);
-//         sum = 0;
-//         while (1)
-//         {
-//             readSize = read(fd, buffer, BUFFER_SIZE);
-//             if (readSize <= 0)
-//                 break;
-//             sum += readSize;
-//         }
-//         close(fd);
-//         write(store.ident, temp, strlen(temp));
-//         str = std::to_string(sum);
-//         write(store.ident, str.c_str(), str.size());
-//         write(store.ident, "\n\n", 2);
-//         fd = open("./resource/index.html", O_RDONLY);
-//         while (1)
-//         {
-//             readSize = read(fd, buffer, BUFFER_SIZE);
-//             if (readSize <= 0)
-//                 break;
-//             write(store.ident, buffer, strlen(buffer));
-//         }
-//         close(fd);
-//     }
-//     // close(static_cast<int>(clientFd));
-//     // client.erase(clientFd);
-//     return (FINISH);
-// }
-
-// void    Server::errorHandler(Client& c)
-// {
-//     std::string temp;
-//     int         readSize;
-//     char        buffer[BUFFER_SIZE];
-//     int         fd;
-//     int         sum;
-
-//     //시작줄
-//     write(c.getFd(), "HTTP/1.1 ", 9);
-//     temp = std::to_string(c.getRequestStatus());
-//     temp += " " + statusContent[c.getRequestStatus()];
-//     write(c.getFd(), temp.c_str(), temp.size());
-//     //헤더줄
-//     write(c.getFd(), "\nContent-Type: text/html;charset=UTF-8\nContent-Length: ", 55);
-//     sum = 0;
-//     fd = open("./resource/html/error.html", O_RDONLY);
-//     while (1)
-//     {
-//         readSize = read(fd, buffer, BUFFER_SIZE);
-//         if (readSize <= 0)
-//             break;
-//         sum += readSize;
-//     }
-//     close(fd);
-//     temp = std::to_string(sum);
-//     write(c.getFd(), temp.c_str(), temp.size());
-//     write(c.getFd(), "\n\n", 2);
-//     //본문
-//     fd = open("./resource/html/error.html", O_RDONLY);
-//     while (1)
-//     {
-//         readSize = read(fd, buffer, BUFFER_SIZE);
-//         if (readSize <= 0)
-//             break;
-//         write(c.getFd(), buffer, strlen(buffer));
-//     }
-//     close(fd);
-// }
 
 void    Server::clientFin(int clientFd)
 {

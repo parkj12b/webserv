@@ -19,8 +19,8 @@ class ContentLine
 {
     private:
         bool                        completion;
-        bool                        sizeEqual;
         CONTENTTYPE                 contentType;
+        int                         port;
         int                         contentLength;
         std::string                 chunked;
         std::vector<std::string>    content;
@@ -30,10 +30,12 @@ class ContentLine
         ContentLine();
         ContentLine(const ContentLine& src);
         ~ContentLine();
+        ContentLine(int port);
         ContentLine& operator=(const ContentLine& src);
         //get function
         bool                        getCompletion() const;
-        bool                        getSizeEqual() const;
+        CONTENTTYPE                 getContentType() const;
+        int                         getPort() const;
         int                         getContentLength() const;
         std::string                 getChunked() const;
         std::vector<std::string>    getContent() const;

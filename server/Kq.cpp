@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/12 21:17:15 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 15:21:34 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ Kq::Kq()
     //Changing portNum to config port
     map<int, ServerConfigData *> &serverConfigData = Server::serverConfig->getServerConfigData();
     map<int, ServerConfigData *>::iterator serverConfigIt = serverConfigData.begin();
+    //temp
+    // int                 portNum[4] = {80, 800, 8000, 8080};
 
     while ((kq = kqueue()) < 0);
     option = 1;
@@ -47,6 +49,7 @@ Kq::Kq()
         server[serverFd] = Server(serverFd);  //config parser
         serverConfigIt++;
     }
+    std::cout<<"\nserver port open.\n";
 }
 
 Kq::Kq(const Kq& src)
