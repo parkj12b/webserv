@@ -138,6 +138,11 @@ Response&    Response::operator=(const Response& src)
 }
 
 Response::~Response()
+{
+    (void) port;  //make 옵션
+}
+
+Response::Response(int port) : port(port)
 {}
 
 std::string Response::getStart() const
@@ -233,27 +238,31 @@ void    Response::makeHeader(std::string key, std::string value)
 
 void    Response::makeContent(int fd)
 {
+    int     count;
     int     readSize;
-    char    buffer[40];
+    char    buffer[4096];
 
     if (request.url == "./favicon.ico")
     {
         makeHeader("Content-Type", "image/x-icon");
-        makeHeader("Accept-Ranges", "bytes");
-        makeHeader("Cache-Control", "public, max-age=31536000");
     }
     else
         makeHeader("Content-Type", "text/html");
+    count = 0;
     while (1)
     {
-        readSize = read(fd, buffer, 39);
+        readSize = read(fd, buffer, 4095);
         if (readSize <= 0)
+        {
+            std::cout<<"readsize zero"<<std::endl;
             break ;
-        buffer[readSize] = '\0';
-        content += buffer;
+        }
+        content.append(buffer, readSize);
+        count += readSize;
     }
     // std::cout<<content;
-    makeHeader("content-length", std::to_string(content.size()));
+    std::cout<<content.size()<<std::endl;
+    makeHeader("content-length", std::to_string(count));
 }
 
 void    Response::makeEntity()
@@ -261,8 +270,10 @@ void    Response::makeEntity()
     entity = start;
     if (!header.empty())
         entity += header + "\r\n";
+    std::cout<<entity.size()<<std::endl;
     if (!content.empty())
-        entity += content;
+        entity.append(content);
+    std::cout<<entity.size()<<std::endl;
 }
 
 void    Response::makeGet()
@@ -333,7 +344,7 @@ void    Response::makeDelete()
     //접근 권한이 실패될 경우에는 403
 }
 
-void    Response::mainloop()
+void    Response::responseMake()
 {
     init();
     makeHeader("Server", "IK/0.0");

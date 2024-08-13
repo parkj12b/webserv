@@ -14,22 +14,19 @@
 
 extern int logs;
 
-Client::Client() : fd(0)
+Client::Client() : fd(0), port(0), index(0), startLine(0), headerLine(0), contentLine(0)
 {
     request.fin = false;
     request.status = 0;
-    index = 0;
 }
 
-Client::Client(int fd)
+Client::Client(int fd, int port) : fd(fd), port(port), index(0), startLine(port), headerLine(port), contentLine(port)
 {
-    this->fd = fd;
     request.fin = false;
     request.status = 0;
-    index = 0;
 }
 
-Client::Client(const Client& src) : fd(src.getFd()), msg(src.getMsg()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine())
+Client::Client(const Client& src) : fd(src.getFd()), port(src.getPort()), msg(src.getMsg()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine())
 {}
 
 Client& Client::operator=(const Client& src)
@@ -46,12 +43,18 @@ Client& Client::operator=(const Client& src)
 Client::~Client()
 {
     // close(static_cast<int>(fd));
+    (void) port;  //make 옵션
     std::cout<<fd<<" client close"<<std::endl;
 }
 
 int Client::getFd(void) const
 {
     return (fd);
+}
+
+int Client::getPort(void) const
+{
+    return (port);
 }
 
 std::string Client::getMsg() const
@@ -63,6 +66,8 @@ const char* Client::getMsg()
 {
     return (msg.c_str() + index);
 }
+
+
 
 Request Client::getRequest() const
 {
@@ -345,29 +350,19 @@ void    Client::getResponseMessage()
 {
     index = 0;
     response.initRequest(request);
-    response.mainloop();
+    response.responseMake();
     msg = response.getEntity();
+    amount = msg.size();
+}
+
+size_t  Client::getAmount()
+{
+    if (amount <= index)
+        amount = index;
+    return (amount - index);
 }
 
 void    Client::plusIndex(size_t temp)
 {
     index += temp;
 }
-
-// void    Client::makeResponse()
-// {
-//     std::string temp;
-//     size_t      pos;
-
-//     pos = request.url.find('?');
-//     if (pos != std::string::npos)
-//     {
-//         temp = request.url.substr(pos);
-//     }
-//     if (request.url == "/")
-//         request.url = "./index.html" + request.url;
-//     else
-//         request.url = "./resource" + request.url;
-//     std::ifstream file(request.url);
-//     return ;
-// }

@@ -40,6 +40,7 @@ class HeaderLine
         bool        completion;
         TE          te;
         CONTENTTYPE contentType;
+        int         port;
         size_t      contentLength;
         std::string key;
         std::string value;
@@ -60,6 +61,7 @@ class HeaderLine
         HeaderLine(const HeaderLine& src);
         ~HeaderLine();
         HeaderLine& operator=(const HeaderLine& src);
+        HeaderLine(int port);
         //get function
         bool        getCompletion() const;
         TE          getTe() const;

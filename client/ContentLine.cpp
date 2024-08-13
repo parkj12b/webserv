@@ -30,6 +30,11 @@ ContentLine::ContentLine(const ContentLine& src)
 }
 
 ContentLine::~ContentLine()
+{
+    (void) port;  //make 옵션
+}
+
+ContentLine::ContentLine(int port) : port(port)
 {}
 
 ContentLine& ContentLine::operator=(const ContentLine& src)
