@@ -21,19 +21,17 @@ Server::Server()
 
 Server::Server(int fd, int num) : serverFd(fd), port(num)
 {
-    cout << num << endl;
+    std::cout<<"server fd, port: "<<serverFd<<", "<<port<<std::endl;
 }
 
-Server::Server(const Server& src)
-{
-    this->serverFd = src.getServerFd();
-    this->client = src.getClient();
-}
+Server::Server(const Server& src) : serverFd(src.getServerFd()), port(src.getPort()), client(src.getClient())
+{}
 
 Server&  Server::operator=(const Server& src)
 {
-    this->serverFd = src.getServerFd();
-    this->client = src.getClient();
+    serverFd = src.getServerFd();
+    port = src.getPort();
+    client = src.getClient();
     return (*this);
 }
 
@@ -43,6 +41,11 @@ Server::~Server()
 int Server::getServerFd(void) const
 {
     return (serverFd);
+}
+
+int Server::getPort(void) const
+{
+    return (port);
 }
 
 std::map<int, Client>  Server::getClient(void) const
@@ -59,9 +62,8 @@ int Server::plusClient(void)
     adrSize = sizeof(clntAdr);
     //accept 무한 루프
     while ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0);
-    std::cout<<port<<std::endl;
+    std::cout<<"server fd, port: "<<serverFd<<", "<<port<<std::endl;
     client[clntFd] = Client(clntFd, port);
-    std::cout<<"server port: "<<port<<std::endl;
     std::cout<<"temp delete"<<std::endl;
     return (clntFd);
     // plusEvent(clntFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
@@ -105,7 +107,6 @@ EVENT   Server::clientWrite(struct kevent& store)
 
     if (store.ident == 0)
         return (ING);
-    (void) port;  //make 옵션 때문에
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     // write(1, buffer, client[store.ident].getAmount());
     client[store.ident].plusIndex(index);

@@ -46,7 +46,6 @@ enum    TE
  * @param header header vector
  * 
  */
-
 class HeaderLine
 {
     private:

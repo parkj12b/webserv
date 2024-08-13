@@ -22,7 +22,6 @@ Client::Client() : fd(0), port(0), index(0), responseAmount(0), startLine(0), he
 
 Client::Client(int fd, int port) : fd(fd), port(port), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port)
 {
-    std::cout<<port<<std::endl;
     request.fin = false;
     request.status = 0;
 }

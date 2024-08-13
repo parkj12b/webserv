@@ -50,7 +50,6 @@ class Client;
  * @param port server port
  * @param client server manage clients map (client fd -> client class)
 */
-
 class Server
 {
     private:
@@ -66,8 +65,9 @@ class Server
         Server &operator=(const Server& src);
         ~Server();
         //get function
-        int getServerFd(void) const;
-        std::map<int, Client>  getClient(void) const;
+        int                     getServerFd(void) const;
+        int                     getPort(void) const;
+        std::map<int, Client>   getClient(void) const;
         //logic
         int     plusClient(void);                   //client socket accept
         EVENT   clientRead(struct kevent& store);   //client read event manage

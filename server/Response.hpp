@@ -44,7 +44,6 @@ typedef struct Request
  * @param entity response messgae entity
  * @param request request struct
  */
-
 class Response
 {
     private:

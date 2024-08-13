@@ -32,7 +32,6 @@ class HTTPServer;
  * @param server server fd -> server class
  * @param findServer client fd -> server fd
 */
-
 class Kq
 {
     private:

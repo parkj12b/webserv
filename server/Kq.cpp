@@ -52,13 +52,8 @@ Kq::Kq()
     std::cout<<"\nserver port open.\n";
 }
 
-Kq::Kq(const Kq& src)
-{
-    kq = src.getKq();
-    fdList = src.getFdList();
-    server = src.getServer();
-    findServer = src.getFindServer();
-}
+Kq::Kq(const Kq& src) : kq(src.getKq()), fdList(src.getFdList()), server(src.getServer()), findServer(src.getFindServer())
+{}
 
 Kq& Kq::operator=(const Kq& src)
 {

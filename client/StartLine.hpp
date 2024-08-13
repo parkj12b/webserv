@@ -39,7 +39,6 @@ enum Version
  * @param url resource
  * @param query all query
  */
-
 class StartLine
 {
     private:
