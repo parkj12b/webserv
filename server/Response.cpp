@@ -138,9 +138,7 @@ Response&    Response::operator=(const Response& src)
 }
 
 Response::~Response()
-{
-    (void) port;  //make 옵션
-}
+{}
 
 Response::Response(int port) : port(port)
 {}
