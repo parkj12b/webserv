@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/12 22:01:15 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 18:20:13 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 extern int logs;
 
-Client::Client() : fd(0), port(0), index(0), responseAmount(0), startLine(0), headerLine(0), contentLine(0)
+Client::Client() : fd(0), port(0), index(0), responseAmount(0), responseAmount(0), startLine(0), headerLine(0), contentLine(0)
 {
     request.fin = false;
     request.status = 0;

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Startline.hpp                                      :+:      :+:    :+:   */
+/*   StartLine.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: inghwang <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 12:55:26 by inghwang          #+#    #+#             */
-/*   Updated: 2024/07/17 12:55:28 by inghwang         ###   ########.fr       */
+/*   Updated: 2024/08/13 18:23:32 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ class StartLine
         bool                                            getCompletion() const;
         Method                                          getMethod() const;
         Version                                         getVersion() const;
+        int                                             getPort() const;
         int                                             getPort() const;
         std::string                                     getUrl() const;
         std::unordered_map<std::string, std::string>    getQuery() const;

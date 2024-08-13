@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 18:56:57 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/13 16:51:08 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 18:22:57 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,83 @@ std::vector<std::string> HeaderLine::singleHeader = singleHeaderInit();
 std::vector<std::string> HeaderLine::dateHeader = dateHeaderInit();
 std::vector<std::string> HeaderLine::vitalHeader = vitalHeaderInit();
 std::vector<std::string> HeaderLine::commentHeader = commentHeaderInit();
+
+
+HeaderLine::HeaderLine() : completion(false), te(NOT), contentType(ENOT), port(0), contentLength(0)
+{}
+
+HeaderLine::HeaderLine(const HeaderLine& src) : completion(src.getCompletion()), te(src.getTe()), contentType(src.getContentType()), port(src.getPort()), contentLength(src.getContentLength()), key(src.getKey()), value(src.getValue()), header(src.getHeader())
+{}
+
+HeaderLine::~HeaderLine()
+{
+    (void) port;
+}
+
+HeaderLine::HeaderLine(int port) : completion(false), te(NOT), contentType(ENOT), port(port), contentLength(0)
+{}
+
+HeaderLine& HeaderLine::operator=(const HeaderLine& src)
+{
+    completion = src.getCompletion();
+    te = src.getTe();
+    contentType = src.getContentType();
+    port = src.getPort();
+    contentLength = src.getContentLength();
+    key = src.getKey();
+    value = src.getValue();
+    header = src.getHeader();
+    return (*this);
+}
+
+bool    HeaderLine::getCompletion() const
+{
+    return (completion);
+}
+
+TE  HeaderLine::getTe() const
+{
+    return (te);
+}
+
+CONTENTTYPE HeaderLine::getContentType() const
+{
+    return (contentType);
+}
+
+int HeaderLine::getPort() const
+{
+    return (port);
+}
+
+int HeaderLine::getContentLength() const
+{
+    return (contentLength);
+}
+
+std::string HeaderLine::getKey() const
+{
+    return (key);
+}
+
+std::string HeaderLine::getValue() const
+{
+    return (value);
+}
+std::unordered_map<std::string, std::deque<std::string> > HeaderLine::getHeader() const
+{
+    return (header);
+}
+
+void    HeaderLine::setContentLength(int minus)
+{
+    contentLength -= minus;
+}
+
+void    HeaderLine::setTrailer(TE temp)
+{
+    te = temp;
+}
 
 
 HeaderLine::HeaderLine() : completion(false), te(NOT), contentType(ENOT), port(0), contentLength(0)
