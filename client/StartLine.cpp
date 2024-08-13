@@ -59,7 +59,7 @@ StartLine::~StartLine()
     (void) port;
 }
 
-StartLine::StartLine(int port) : port(port)
+StartLine::StartLine(int port) : completion(false), port(port)
 {}
 
 bool        StartLine::getCompletion() const
@@ -144,8 +144,6 @@ int     StartLine::plus(std::string temp)
                 if (version == 0)
                     return (505);
                 break ;
-            default:
-                return (400);
         }
         answer++;
     }
