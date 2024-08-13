@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 18:57:00 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/13 18:23:19 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 18:24:35 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,6 @@ class HeaderLine
         bool        getCompletion() const;
         TE          getTe() const;
         CONTENTTYPE getContentType() const;
-        int         getPort() const;
         int         getPort() const;
         int         getContentLength() const;
         std::string getKey() const;
