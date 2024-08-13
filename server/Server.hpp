@@ -65,8 +65,8 @@ class Server
         Server &operator=(const Server& src);
         ~Server();
         //get function
-        int getServerFd(void) const;
-        std::map<int, Client>  getClient(void) const;
+        int                     getServerFd(void) const;
+        std::map<int, Client>   getClient(void) const;
         //logic
         int     plusClient(void);                   //client socket accept
         EVENT   clientRead(struct kevent& store);   //client read event manage
