@@ -138,7 +138,7 @@ int Client::setStart(void)
     flag = msg.find("\r\n");
     if (flag != std::string::npos)
     {
-        if ((request.status = startLine.plus(msg.substr(0, flag))))  //ingu test
+        if ((request.status = startLine.check(msg.substr(0, flag))))  //ingu test
             return (1);
         msg = msg.substr(flag + 2);
         request.method = startLine.getMethod();

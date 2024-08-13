@@ -28,10 +28,10 @@ class HTTPServer;
 class Kq
 {
     private:
-        int                         kq;
-        std::vector<struct kevent>  fdList;
-        std::map<int, Server>       server;
-        std::map<int, int>          findServer;
+        int                         kq;  //kq 저장 공간
+        std::vector<struct kevent>  fdList;  //kq 이벤트 등록 저장공간
+        std::map<int, Server>       server;  //server fd -> server class
+        std::map<int, int>          findServer;  //client fd -> server fd
     public:
         Kq();
         Kq(const Kq& src);
@@ -43,7 +43,7 @@ class Kq
         std::map<int, Server>       getServer() const;
         std::map<int, int>          getFindServer() const;
         //logic
-        void    plusEvent(uintptr_t fd, int16_t filter, uint16_t flags, uint32_t fflags, intptr_t data, void *udata);
+        void    plusEvent(uintptr_t fd, int16_t filter, uint16_t flags, uint32_t fflags, intptr_t data, void *udata); /* abc */
         void    plusClient(int serverFd);
         void    eventRead(struct kevent& store);
         void    eventWrite(struct kevent& store);
