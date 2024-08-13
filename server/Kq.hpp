@@ -25,20 +25,21 @@ class HTTPServer;
 # define CLIENT_CNT 10
 # define EVENTCNT 10
 
-/**
- * @brief kqueue를 사용하여 이벤트를 관리하는 클래스
- * @param kq kqueue fd
- * @param fdList 이벤트가 발생한 fd를 저장하는 리스트
- * @param server server fd를 통해 server를 찾기 위한 map
- * @param findServer client fd를 통해 server fd를 찾기 위한 map
+/***
+ * @brief Kq manages server and kq
+ * @param kq kq save space
+ * @param fdList kq 이벤트 등록 저장공간
+ * @param server server fd -> server class
+ * @param findServer client fd -> server fd
 */
+
 class Kq
 {
     private:
-        int                         kq;  //kq 저장 공간
-        std::vector<struct kevent>  fdList;  //kq 이벤트 등록 저장공간
-        std::map<int, Server>       server;  //server fd -> server class
-        std::map<int, int>          findServer;  //client fd -> server fd
+        int                         kq;
+        std::vector<struct kevent>  fdList;
+        std::map<int, Server>       server;
+        std::map<int, int>          findServer;
     public:
         Kq();
         Kq(const Kq& src);
@@ -50,15 +51,14 @@ class Kq
         std::map<int, Server>       getServer() const;
         std::map<int, int>          getFindServer() const;
         //logic
-        void    plusEvent(uintptr_t fd, int16_t filter, uint16_t flags,
-                    uint32_t fflags, intptr_t data, void *udata); //이벤트를 추가하는 함수
-        void    plusClient(int serverFd);
-        void    eventRead(struct kevent& store); 
-        void    eventWrite(struct kevent& store);
-        void    mainLoop();
+        void    plusEvent(uintptr_t fd, int16_t filter, uint16_t flags, uint32_t fflags, intptr_t data, void *udata);   //event enoll
+        void    plusClient(int serverFd);           //client and server connect
+        void    eventRead(struct kevent& store);    //kq event read
+        void    eventWrite(struct kevent& store);   //kq event write
+        void    mainLoop();                         //main logic
         //error
-        void    clientFin(struct kevent& store);
-        void    serverError(struct kevent& store);
+        void    clientFin(struct kevent& store);    //client error client socket close
+        void    serverError(struct kevent& store);  //server error clients connected server and server sockets close
 };
 
 #endif
