@@ -14,19 +14,20 @@
 
 extern int logs;
 
-Client::Client() : fd(0), port(0), index(0), amount(0), startLine(0), headerLine(0), contentLine(0)
+Client::Client() : fd(0), port(0), index(0), responseAmount(0), startLine(0), headerLine(0), contentLine(0)
 {
     request.fin = false;
     request.status = 0;
 }
 
-Client::Client(int fd, int port) : fd(fd), port(port), index(0), amount(0), startLine(port), headerLine(port), contentLine(port)
+Client::Client(int fd, int port) : fd(fd), port(port), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port)
 {
+    std::cout<<port<<std::endl;
     request.fin = false;
     request.status = 0;
 }
 
-Client::Client(const Client& src) : fd(src.getFd()), port(src.getPort()), index(src.getIndex()), amount(src.getAmount()), msg(src.getMsg()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse())
+Client::Client(const Client& src) : fd(src.getFd()), port(src.getPort()), index(src.getIndex()), responseAmount(src.getResponseAmount()), msg(src.getMsg()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse())
 {}
 
 Client& Client::operator=(const Client& src)
@@ -34,7 +35,7 @@ Client& Client::operator=(const Client& src)
     fd = src.getFd();
     port = src.getPort();
     index = src.getIndex();
-    amount = src.getAmount();
+    responseAmount = src.getResponseAmount();
     msg = src.getMsg();
     request = src.getRequest();
     startLine = src.getStartLine();
@@ -65,9 +66,9 @@ size_t  Client::getIndex() const
     return (index);
 }
 
-size_t  Client::getAmount() const
+size_t  Client::getResponseAmount() const
 {
-    return (amount);
+    return (responseAmount);
 }
 
 std::string Client::getMsg() const
@@ -75,10 +76,6 @@ std::string Client::getMsg() const
     return (msg.c_str() + index);
 }
 
-const char* Client::getMsg()
-{
-    return (msg.c_str() + index);
-}
 
 Request Client::getRequest() const
 {
@@ -125,9 +122,10 @@ void    Client::setRequestStatus(int temp)
     request.status = temp;
 }
 
-bool    Client::getRequestFin()
+
+const char* Client::respondMsgIndex()
 {
-    return (request.fin);
+    return (msg.c_str() + index);
 }
 
 int Client::setStart(void)
@@ -332,13 +330,10 @@ void    Client::showMessage(void)
     std::cout<<"\n\n";
 }
 
-void    Client::setMessage(std::string str)
+void    Client::setMessage(std::string msgRequest)
 {
-    msg += str;
-    write(logs, &str[0], str.size());
-    // if (setStart() || setHeader() || setContent() || setTrailer())
-    //     return ;
-    //나중에 최종적으로는 위의 내용처럼 바꿀것
+    msg += msgRequest;
+    write(logs, &msgRequest[0], msgRequest.size());
     if (setStart())  //max size literal
     {
         std::cout<<fd<<" "<<request.status<<" ";
@@ -362,23 +357,23 @@ void    Client::setMessage(std::string str)
     }
 }
 
-void    Client::getResponseMessage()
+void    Client::setResponseMessage()
 {
     index = 0;
     response.initRequest(request);
     response.responseMake();
     msg = response.getEntity();
-    amount = msg.size();
+    responseAmount = msg.size();
 }
 
-size_t  Client::getAmount()
+size_t  Client::responseIndex()
 {
-    if (amount <= index)
-        amount = index;
-    return (amount - index);
+    if (responseAmount <= index)
+        responseAmount = index;
+    return (responseAmount - index);
 }
 
-void    Client::plusIndex(size_t temp)
+void    Client::plusIndex(size_t plus)
 {
-    index += temp;
+    index += plus;
 }
