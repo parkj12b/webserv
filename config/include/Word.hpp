@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 19:52:40 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 20:36:43 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 18:05:55 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@
 
 using namespace std;
 
+/**
+ * @brief                       class used for storing word token
+ * @param   lexeme              word string
+ */
 class Word : public Token {
 public:
     string lexeme;
@@ -25,8 +29,6 @@ public:
     Word();
     Word(string s, int tag);
     string toString();
-    const static Word
-        eq, minus, True, False, temp;
     Token *clone();
 };
 
