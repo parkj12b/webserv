@@ -14,17 +14,14 @@
 
 extern int logs;
 
-ContentLine::ContentLine()
-{
-    completion = false;
-    sizeEqual = false;
-}
+ContentLine::ContentLine() : completion(false), port(0), contentLength(0)
+{}
 
 ContentLine::ContentLine(const ContentLine& src)
 {
     completion = src.getCompletion();
-    sizeEqual = src.getSizeEqual();
     contentLength = src.getContentLength();
+    port = src.getPort();
     chunked = src.getChunked();
     content = src.getContent();
 }
@@ -34,7 +31,7 @@ ContentLine::~ContentLine()
     (void) port;  //make 옵션
 }
 
-ContentLine::ContentLine(int port) : port(port)
+ContentLine::ContentLine(int port) : completion(false), port(port), contentLength(0)
 {}
 
 ContentLine& ContentLine::operator=(const ContentLine& src)
@@ -49,14 +46,14 @@ bool    ContentLine::getCompletion() const
     return (completion);
 }
 
-bool    ContentLine::getSizeEqual() const
-{
-    return (sizeEqual);
-}
-
 int ContentLine::getContentLength() const
 {
     return (contentLength);
+}
+
+int ContentLine::getPort() const
+{
+    return (port);
 }
 
 std::string ContentLine::getChunked() const

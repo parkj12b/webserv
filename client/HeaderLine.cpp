@@ -255,7 +255,7 @@ HeaderLine::~HeaderLine()
     (void) port;
 }
 
-HeaderLine::HeaderLine(int port) : port(port)
+HeaderLine::HeaderLine(int port) : completion(false), port(port), contentLength(0)
 {}
 
 HeaderLine& HeaderLine::operator=(const HeaderLine& src)
