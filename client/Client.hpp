@@ -16,7 +16,8 @@
 # include "StartLine.hpp"
 # include "HeaderLine.hpp"
 # include "ContentLine.hpp"
-# include "../server/Response.hpp"
+# include "Response.hpp"
+# include "Server.hpp"
 # include <unistd.h>
 // # include <iostream> 
 // # include <map>
@@ -32,6 +33,7 @@ class Client
 {
     private:
         int         fd;
+        int         port;
         size_t      index;
         size_t      amount;
         std::string msg;
@@ -43,12 +45,13 @@ class Client
         //temp(must delete)
     public:
         Client();
-        Client(int fd);
+        Client(int fd, int port);
         explicit Client(const Client& src);
         Client& operator=(const Client& src);
         ~Client();
         //get function
         int                         getFd() const;
+        int                         getPort() const;
         std::string                 getMsg() const;
         size_t                      getAmount();
         const char*                 getMsg();

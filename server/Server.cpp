@@ -57,7 +57,7 @@ int Server::plusClient(void)
     adrSize = sizeof(clntAdr);
     //accept 무한 루프
     while ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0);
-    client[clntFd] = Client(clntFd);
+    client[clntFd] = Client(clntFd, port);
     std::cout<<"temp delete"<<std::endl;
     return (clntFd);
     // plusEvent(clntFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
@@ -103,7 +103,7 @@ EVENT   Server::clientWrite(struct kevent& store)
         return (ING);
     (void) port;  //make 옵션 때문에
     index = write(store.ident, buffer, client[store.ident].getAmount());
-    write(1, buffer, client[store.ident].getAmount());
+    // write(1, buffer, client[store.ident].getAmount());
     client[store.ident].plusIndex(index);
     if (client[store.ident].getAmount())
         return (ING);

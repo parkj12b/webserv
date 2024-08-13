@@ -250,7 +250,13 @@ HeaderLine::HeaderLine() : completion(false), te(NOT), contentType(ENOT)
 HeaderLine::HeaderLine(const HeaderLine& src) : completion(src.getCompletion()), te(src.getTe()), contentType(src.getContentType()), contentLength(src.getContentLength()), key(src.getKey()), value(src.getValue()), header(src.getHeader())
 {}
 
-HeaderLine::~HeaderLine() {}
+HeaderLine::~HeaderLine()
+{
+    (void) port;
+}
+
+HeaderLine::HeaderLine(int port) : port(port)
+{}
 
 HeaderLine& HeaderLine::operator=(const HeaderLine& src)
 {

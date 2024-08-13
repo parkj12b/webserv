@@ -47,7 +47,7 @@ Kq::Kq()
             server[serverFd] = Server(serverFd, *itv);  //config parser
         }
     }
-    std::cout<<"\nserver socket perfect.\n";
+    std::cout<<"\nserver port open.\n";
 }
 
 Kq::Kq(const Kq& src)

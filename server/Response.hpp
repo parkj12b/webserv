@@ -37,6 +37,7 @@ typedef struct Request
 class Response
 {
     private:
+        int         port;
         std::string start;
         std::string header;
         std::string content;
@@ -45,10 +46,12 @@ class Response
         void        makeFilePath(std::string& str);
     public:
         static std::map<int, std::string>   statusContent;
+        //oocf
         Response();
         Response(const Response& src);
         Response&    operator=(const Response& src);
         ~Response();
+        Response(int port);
         //get function
         std::string getStart() const;
         std::string getHeader() const;
