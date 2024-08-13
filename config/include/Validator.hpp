@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:26:25 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/12 19:21:43 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 18:05:11 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,12 @@ class LocationConfig;
 #define DEFAULT_AUTO_INDEX false
 #define DEFAULT_ACCESS_LOG "logs/access.log"
 
+/**
+ * @brief                       class used for validating server config
+ * @param   _parser             parser object
+ * @param   _httpServer         http server made after validation
+ * @param   _ports              set of ports to check duplicates
+*/
 class Validator {
 private:
     Parser &_parser;
