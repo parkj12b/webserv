@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:55 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/12 13:59:12 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/12 20:36:39 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ class Server
         int                     serverFd;
         int                     port;
         std::map<int, Client>   client;  //client을 선언할때에 default 생성자가 필요한듯
-        //여기에 파싱된 data가 들어가 있을 것
+        //여기에 파싱된 data가 들어가 있을 것 - 아래 서버 스태틱으로 설정되어 있음
     public:
         static HTTPServer   *serverConfig;
         Server();

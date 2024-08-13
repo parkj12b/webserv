@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/12 13:59:17 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/12 21:30:17 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ EVENT Server::clientRead(struct kevent& store)
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 100)
         return (ING);
     readSize = read(store.ident, buffer, BUFFER_SIZE);
-    if (readSize <= 0)
+    if (readSize <= 0) // read가 발생했는데 읽은게 없다면 에러
     {
         std::cout<<"read error or socket close\n";
         return (ERROR);

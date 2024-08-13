@@ -151,8 +151,6 @@ int     StartLine::check(std::string firstLine)
                 if (version == 0)
                     return (505);
                 break ;
-            default:
-                return (400);
         }
         answer++;
     }

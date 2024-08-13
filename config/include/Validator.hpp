@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:26:25 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/11 15:49:52 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/12 19:21:43 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define __VALIDATOR_HPP__
 
 #include <string>
-#include <unordered_set>
+#include <set>
 #include <exception>
 #include "ServerConfigData.hpp"
 #include "LocationConfigData.hpp"
@@ -46,7 +46,7 @@ class Validator {
 private:
     Parser &_parser;
     HTTPServer *_httpServer;
-    unordered_set<int> _ports;
+    set<int> _ports;
 public:
     HTTPServer          *validate();
     void                checkWorkerConnections();
@@ -85,7 +85,7 @@ public:
     void                checkIndex(LocationConfigData &locationData,
                             LocationConfig &locationConfig);
                     
-    unordered_set<int>  &getPorts() { return _ports; }
+    set<int>  &getPorts() { return _ports; }
     
     class ValidatorException : public exception {
     private:
