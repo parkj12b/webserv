@@ -24,16 +24,14 @@ Server::Server(int fd, int num) : serverFd(fd), port(num)
     std::cout<<"server fd, port: "<<serverFd<<", "<<port<<std::endl;
 }
 
-Server::Server(const Server& src) 
-{
-    this->serverFd = src.getServerFd();
-    this->client = src.getClient();
-}
+Server::Server(const Server& src) : serverFd(src.getServerFd()), port(src.getPort()), client(src.getClient())
+{}
 
 Server&  Server::operator=(const Server& src)
 {
-    this->serverFd = src.getServerFd();
-    this->client = src.getClient();
+    serverFd = src.getServerFd();
+    port = src.getPort();
+    client = src.getClient();
     return (*this);
 }
 
@@ -43,6 +41,11 @@ Server::~Server()
 int Server::getServerFd(void) const
 {
     return (serverFd);
+}
+
+int Server::getPort(void) const
+{
+    return (port);
 }
 
 std::map<int, Client>  Server::getClient(void) const
