@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Startline.cpp                                      :+:      :+:    :+:   */
+/*   StartLine.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: inghwang <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 12:55:24 by inghwang          #+#    #+#             */
-/*   Updated: 2024/07/17 12:55:25 by inghwang         ###   ########.fr       */
+/*   Updated: 2024/08/13 19:58:37 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,10 +137,10 @@ int     StartLine::check(std::string firstLine)
                 if (method == 0)
                     return (400);
                 break ;
-            case 1:
+            case 1:  //allow checking and root checking (config parser)
                 if (str.empty())
                     return (400);
-                url = str;
+                url = str;  //.찾으면 지우기
                 if (urlQuery())
                     return (400);
                 // url이 잘못된 형식이면 400 형식은 맞지만 존재하지 않는다면 404(Not Found)

@@ -56,7 +56,7 @@ BIN_DIR = ./bin
 
 CPP = c++
 
-FLAGS = -Wall -Wextra -Werror -std=c++11 -g
+FLAGS = -Wall -Wextra -Werror -std=c++11 -g -fsanitize=address
 
 NAME = webserv
 
@@ -65,7 +65,7 @@ all :
 	make -j6 $(NAME)
 
 $(NAME) : $(SERVER_OBJS) $(CLIENT_OBJS) $(MAIN_OBJ) $(CONFIG_OBJS)
-	@$(CPP) $(SERVER_OBJS) $(CLIENT_OBJS) $(MAIN_OBJ) $(CONFIG_OBJS) $(INC) -o $(NAME)
+	@$(CPP) $(FLAGS) $(SERVER_OBJS) $(CLIENT_OBJS) $(MAIN_OBJ) $(CONFIG_OBJS) $(INC) -o $(NAME)
 	@echo $(GREEN)"\n==========================================================\n"$(EOC)
 	@echo $(YELLOW)"                    Webserv $(NAME) is ready"$(EOC)
 	@echo $(GREEN)"\n==========================================================\n"$(EOC)

@@ -1,18 +1,18 @@
-GET /favicon.ico HTTP/1.1
-sec-ch-ua-platform: macOS  
-accept-encoding: gzip  deflate  br  
-sec-fetch-site: same-origin  
-connection: keep-alive  
-sec-ch-ua: Chromium;v=116  Not)A;Brand;v=24  Google Chrome;v=116  
-sec-fetch-dest: image  
-referer: http://localhost:8000/index.html  
-user-agent: Mozilla/5.0  AppleWebKit/537.36  Chrome/116.0.0.0 Safari/537.36  
-pragma: no-cache  
-cache-control: no-cache  
-sec-ch-ua-mobile: ?0  
-host: localhost:8000  
-sec-fetch-mode: no-cors  
-accept: image/avif  image/webp  image/apng  image/svg+xml  image/*  */*;q=0.8  
-accept-language: ko-KR  ko;q=0.9  en-US;q=0.8  en;q=0.7 
+GET /play.google.com/log?hasfast=true&auth=SAPISIDHASH+25374ca85d3915cf5536719f7b0b9b3b47dded27&authuser=0&format=json HTTP/1.1
+Accept: */*
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9,ko;q=0.8 
+Content-Type: text/plain;charset=UTF-8
+Cookie: SEARCH_SAMESITE=CgQI35sB; OGPC=19036484-1:; SID=g.a000mgiDdDDfrLl8afGW_t-7qvfUY05r4YXW5W1XvuZAxjuF9nseVqpUzU83b5Jregn10obxfgACgYKAYkSARMSFQHGX2MiiPBXiLb30TkLzuOhW43-thoVAUF8yKoZIkj-gwq5W6BBfokVW4tl0076; __Secure-1PSID=g.a000mgiDdDDfrLl8afGW_t-7qvfUY05r4YXW5W1XvuZAxjuF9nseNn9aT3sEsOaNKT-viqP5CQACgYKAR8SARMSFQHGX2Mi7sVkYmfVRDm8Qmgt7rz2gBoVAUF8yKqqzIvJVBc1WebWGDAHHZIO0076; __Secure-3PSID=g.a000mgiDdDDfrLl8afGW_t-7qvfUY05r4YXW5W1XvuZAxjuF9nse-QmH5aZhH0NarPttDL9nhwACgYKAbESARMSFQHGX2MiJu-jbDodrxt0v-8kKrebeRoVAUF8yKon75MEkIm-n9MTCKaTdZy70076; HSID=AfJCghP4SghQ9iff_; SSID=AkFhnJaiJmp8MKyX7; APISID=UlwYfyCLOUYFjcwx/A1ANYowqq-TvzW3tB; SAPISID=OJz-UIez8tlR-sLT/AYkvd74Dht3V6csHB; __Secure-1PAPISID=OJz-UIez8tlR-sLT/AYkvd74Dht3V6csHB; __Secure-3PAPISID=OJz-UIez8tlR-sLT/AYkvd74Dht3V6csHB; OSID=g.a000mgiDdCDbApp-Sx7C0nhVNQXfymPFJsHC6DjpYi4uVT1Bt_6_-YSJyTXLwlPxknvwq-pRhgACgYKAbkSARMSFQHGX2Mi650vi5Ok2lXujp2l5_zDVRoVAUF8yKqImMAUY6YYtjxruK7m59tW0076; __Secure-OSID=g.a000mgiDdCDbApp-Sx7C0nhVNQXfymPFJsHC6DjpYi4uVT1Bt_6_PGZswGaozPeCSou1H3xG5wACgYKARESARMSFQHGX2MihWxL2SvUPs-bP6QowE5MHRoVAUF8yKo042OizYE3pv7TNJty86iG0076; _gcl_au=1.1.903010098.1722829888; _ga=GA1.1.638734430.1722829888; OTZ=7675431_20_20__20_; _ga_6VGGZHMLM2=GS1.1.1722829888.1.0.1722829893.0.0.0; AEC=AVYB7coCy81PVKUvVkCufTQYkb66kr8v79VvfbYXFiZ0FgxhLvj-pRc4NqI; NID=516=LKF8WMcR7F-t45e1qxV4qF72hBEXJzclQ5WMP5x9jZqvfxpZlXj3rGPL-o6AwGM76rWLXnMYK0WWy2bNptPIMZU1OzqExeaFPao64GWl1HTu_utevB46Lx5v5GeikLKUJ_7oq2XoUiAhbXL7UEaDUJ5h4jgOMT6gVlIohOJWqcmy7Fs80NbaiRERCbfHGuGsfIyL1n5axoMtbm4Wki9FARRu__u7obV5mD2oGlRLIli-kiLFVJ3OaPHgbERR35Ouzd1KfHhVBm2bqnSR4X_Sn5J-_ApF9vaFUGeiixyxw2AOxxejkSd9sSzSsa0COtMM4veySSsX7XSSdX-3liMTUOZEO81J6rvkAojQh68kWYcNm4kpfA6KbIMJlDoDmlihJxBeuE1ZLXLlf5WPO7k2N_9U1UugSdgyajhAPc4KHUq4K7-EAEe2CwF9ejeQUGMszICoQJi_V9pUWWs3Qfew-7UCPvMD_dUC4Y8SEc38Vzbqlx5nMFwF_AaofmYhP0m-ZPGC9tnS_CqhoSYoKrtIXRi-98owEGvEbFGzSGb435ja2fdd9okLBOxmoK9iMF35M5gY026JEjnfXm4koKq7xvoGqAcBUsT9pvDjYU8Pt-RT8aZnd84e5VZ_VHSBkmQ0DqXIXR5Wm8l2CHed5kOoFz7eWe1kyoZZmWWcEV4hGsR4WgwYO7gr-caXasXajABOoWvz5DH2Oz4lxKn0ZmC1PjNOTukEEhHVrNernAhsktNmtWLD6GJRI5uZJ6gjW-al8I_i5Uw8pULEKCWrcS93YzkIcvVhU6Pcqvq11l_pKcK4BIOO7HJE5CxPJqRAa7OeazOPoPo4vhAp17G-301xQzMiG8hAxqnvdDEyycjtRW4xm4FPaxRO7NgQhzvKb8sUppjRRyWFKxHgMVyzyZFXVVVTXFrG; __Secure-1PSIDTS=sidts-CjIBUFGoh9fiBj_ASJ6YSBFQepmyoGIyLt3XTeUyjapVyBGivy7_l4NbmB0Ptfj2jMxafhAA; __Secure-3PSIDTS=sidts-CjIBUFGoh9fiBj_ASJ6YSBFQepmyoGIyLt3XTeUyjapVyBGivy7_l4NbmB0Ptfj2jMxafhAA; SIDCC=AKEyXzWXgJ2xMO9KfJ7m6MkSEJO4u5fYnI8xf4wN9DyK66RdtVa2avrBVAcJU6uM4V87ePGyvng; __Secure-1PSIDCC=AKEyXzUuT1YX3S_myCypkTkvdhefY1KGCOtpHweSBpXGJjx_rJXqrli-EraN0MoUZuumYKPmPw; __Secure-3PSIDCC=AKEyXzUKKdrNOUmRhr0RZldrU1i-9jkR-tM6lLkNYDPRZg3D6ithGqr2gr_DrTVpR9q73RIVUg
+Dnt: 1
+Origin: https://ogs.google.com
+Referer: https://ogs.google.com/
+Sec-Ch-Ua: "Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"
+Sec-Ch-Ua-Mobile: ?0
+Sec-Ch-Ua-Platform: "macOS"
+Sec-Fetch-Dest: empty
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-site
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36
+X-Client-Data: CJS2yQEIpLbJAQipncoBCNCWywEIlKHLAQiGoM0BCLnIzQEIucrNARj2yc0B
 
- 

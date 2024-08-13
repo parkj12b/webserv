@@ -46,8 +46,10 @@ typedef struct Request
  */
 class Response
 {
+    // 얘네들 다 언제설정됨???
     private:
         int         port;
+        std::string location;
         std::string start;
         std::string header;
         std::string content;
