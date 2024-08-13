@@ -17,19 +17,11 @@ extern int logs;
 ContentLine::ContentLine() : completion(false), port(0), contentLength(0)
 {}
 
-ContentLine::ContentLine(const ContentLine& src)
-{
-    completion = src.getCompletion();
-    contentLength = src.getContentLength();
-    port = src.getPort();
-    chunked = src.getChunked();
-    content = src.getContent();
-}
+ContentLine::ContentLine(const ContentLine& src) : completion(src.getCompletion()), contentType(src.getContentType()), port(src.getPort()), contentLength(src.getContentLength()), chunked(src.getChunked()), content(src.getContent())
+{}
 
 ContentLine::~ContentLine()
-{
-    (void) port;  //make 옵션
-}
+{}
 
 ContentLine::ContentLine(int port) : completion(false), port(port), contentLength(0)
 {}
@@ -37,6 +29,10 @@ ContentLine::ContentLine(int port) : completion(false), port(port), contentLengt
 ContentLine& ContentLine::operator=(const ContentLine& src)
 {
     completion = src.getCompletion();
+    contentType = src.getContentType();
+    port = src.getPort();
+    contentLength = src.getContentLength();
+    chunked = src.getChunked();
     content = src.getContent();
     return (*this);
 }
@@ -44,6 +40,11 @@ ContentLine& ContentLine::operator=(const ContentLine& src)
 bool    ContentLine::getCompletion() const
 {
     return (completion);
+}
+
+CONTENTTYPE ContentLine::getContentType() const
+{
+    return (contentType);
 }
 
 int ContentLine::getContentLength() const

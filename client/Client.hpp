@@ -50,32 +50,35 @@ class Client
         Client& operator=(const Client& src);
         ~Client();
         //get function
-        int                         getFd() const;
-        int                         getPort() const;
-        std::string                 getMsg() const;
-        size_t                      getAmount();
-        const char*                 getMsg();
-        Request                     getRequest() const;
-        StartLine                   getStartLine() const;
-        HeaderLine                  getHeaderline() const;
-        ContentLine                 getContentLine() const;
-        bool                        getRequestFin() const;
-        int                         getRequestStatus() const;
+        int         getFd() const;
+        int         getPort() const;
+        size_t      getIndex() const;
+        size_t      getAmount() const;
+        std::string getMsg() const;
+        Request     getRequest() const;
+        StartLine   getStartLine() const;
+        HeaderLine  getHeaderline() const;
+        ContentLine getContentLine() const;
+        Response    getResponse() const;
         //set function
         void    setFd(uintptr_t fd);
         void    setRequestStatus(int temp);
         //logic
-        int     setStart(void);
-        int     setHeader(void);
-        int     setContent(void);
-        int     setTrailer(void);
-        bool    getRequestFin();
-        void    setMessage(std::string str);
-        void    getResponseMessage();
-        void    plusIndex(size_t temp);
+        bool        getRequestFin() const;
+        int         getRequestStatus() const;
+        size_t      getAmount();
+        const char* getMsg();
+        int         setStart(void);
+        int         setHeader(void);
+        int         setContent(void);
+        int         setTrailer(void);
+        bool        getRequestFin();
+        void        setMessage(std::string str);
+        void        getResponseMessage();
+        void        plusIndex(size_t temp);
         // void    makeResponse();
         //temp(must delete)
-        void    showMessage(void);
+        void        showMessage(void);
 };
 
 #endif
