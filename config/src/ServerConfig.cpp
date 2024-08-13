@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 19:19:23 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 20:13:16 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 16:17:14 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ vector<vector<vector< Token *> > > *ServerConfig::getConfig(string key) {
 
     while (cur != NULL)
     {
-        if (cur->get(key) != NULL)
-            return cur->get(key);
+        if (cur->getVar(key) != NULL)
+            return cur->getVar(key);
         cur = cur->getPrev();
     }
     return NULL;

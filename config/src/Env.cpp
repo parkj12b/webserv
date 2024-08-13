@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 17:32:33 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 20:12:13 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 16:16:41 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ vector< Token *> &Env::getHeadDirectiveByIndex(size_t index)
     return _headDirective[index];
 }
 
-void    Env::put(string key, vector<vector< Token *> > &args)
+void    Env::putVar(string key, vector<vector< Token *> > &args)
 {
     map<string, vector<vector<vector< Token *> > > >::iterator v;
 
@@ -48,7 +48,7 @@ void    Env::put(string key, vector<vector< Token *> > &args)
     }
 }
 
-vector<vector<vector< Token *> > > *Env::get(string key)
+vector<vector<vector< Token *> > > *Env::getVar(string key)
 {
     map<string, vector<vector<vector< Token *> > > >::iterator v;
 

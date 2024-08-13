@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:30:28 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/12 19:21:59 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 16:17:34 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ HTTPServer    *Validator::validate()
     checkWorkerConnections();
     map<int, ServerConfigData *> &serverConfigData = _httpServer->getServerConfigData();
     cout << "num server: " << serverConfig.size() << endl;
-    unordered_set<ServerConfigData *> &serverSet = _httpServer->getServerSet();
+    set<ServerConfigData *> &serverSet = _httpServer->getServerSet();
     for (size_t i = 0, size = serverConfig.size(); i < size; i++) {
         ServerConfigData *server = checkServer(serverConfig[i]);
         serverSet.insert(server);
@@ -44,7 +44,7 @@ HTTPServer    *Validator::validate()
 void    Validator::checkWorkerConnections()
 {
     Env *event = _parser.getEvent();
-    vector<vector<vector< Token *> > > *v = event->get("worker_connections");
+    vector<vector<vector< Token *> > > *v = event->getVar("worker_connections");
     if (v == NULL) {
         _httpServer->setWorkerConnections(DEFAULT_WORKER_CONNECTIONS);
         return ;

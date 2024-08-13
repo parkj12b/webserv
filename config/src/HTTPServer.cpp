@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 20:17:13 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/11 18:48:15 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 15:54:10 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,14 @@ map<int, ServerConfigData *>    &HTTPServer::getServerConfigData()
     return _serverConfigData;
 }
 
-unordered_set<ServerConfigData *>   &HTTPServer::getServerSet()
+set<ServerConfigData *>   &HTTPServer::getServerSet()
 {
     return _serverSet;
 }
 
 HTTPServer::~HTTPServer()
 {
-    unordered_set<ServerConfigData *>::iterator it2 = _serverSet.begin();
+    set<ServerConfigData *>::iterator it2 = _serverSet.begin();
     while (it2 != _serverSet.end())
     {
         delete *it2;

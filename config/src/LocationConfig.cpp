@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 19:22:56 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 19:56:00 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 16:16:58 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ vector<vector<vector< Token *> > > *LocationConfig::getConfig(string key) {
 
         while (cur != NULL)
         {
-            if (cur->get(key) != NULL)
-                return cur->get(key);
+            if (cur->getVar(key) != NULL)
+                return cur->getVar(key);
             cur = cur->getPrev();
         }
         return NULL;

@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 18:48:59 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/11 13:53:33 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 16:40:15 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ void Parser::directive()
     string path;
     if (context == "include")
         path = dynamic_cast<Word *>(v[0][0])->lexeme;
-    _top->put(context, v);
+    _top->putVar(context, v);
     free(w);
     match(';');
     if (context == "include")
@@ -246,7 +246,7 @@ Parser::~Parser()
         delete _serverConfig[i];
         _serverConfig[i] = NULL;
     }
-    for (unordered_set<Env *>::iterator it = _envList.begin(); it != _envList.end(); it++)
+    for (set<Env *>::iterator it = _envList.begin(); it != _envList.end(); it++)
     {
         delete *it;
     }
