@@ -19,7 +19,7 @@
 # include "Response.hpp"
 # include "Server.hpp"
 # include <unistd.h>
-// # include <iostream> 
+// # include <iostream>
 // # include <map>
 # include <queue>
 # include <fstream>
@@ -42,7 +42,6 @@
  * @param contentLine request contentLine
  * @param response response msg
  */
-
 class Client
 {
     private:
