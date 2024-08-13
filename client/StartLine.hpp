@@ -39,7 +39,6 @@ class StartLine
         int                                             port;
         std::string                                     url;
         std::unordered_map<std::string, std::string>    query;
-        int urlQuery();
     public:
         //static variable
         static std::map<std::string, Method>    originMethod;
@@ -54,8 +53,11 @@ class StartLine
         bool                                            getCompletion() const;
         Method                                          getMethod() const;
         Version                                         getVersion() const;
+        int                                             getPort() const;
         std::string                                     getUrl() const;
         std::unordered_map<std::string, std::string>    getQuery() const;
+        //sub logic
+        int urlQuery();
         //logic
         int plus(std::string tmp);
 };

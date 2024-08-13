@@ -45,10 +45,6 @@ class HeaderLine
         std::string key;
         std::string value;
         std::unordered_map<std::string, std::deque<std::string> > header;
-        int     eraseSpace(std::string& str, bool space);
-        // bool    checkMime(std::string temp);
-        int     pushValue();
-        int     commentDelete();
     public:
         //static variable
         static std::vector<std::string> singleHeader;
@@ -66,6 +62,7 @@ class HeaderLine
         bool        getCompletion() const;
         TE          getTe() const;
         CONTENTTYPE getContentType() const;
+        int         getPort() const;
         int         getContentLength() const;
         std::string getKey() const;
         std::string getValue() const;
@@ -73,6 +70,10 @@ class HeaderLine
         //set function
         void    setContentLength(int minus);
         void    setTrailer(TE temp);
+        //sub logic
+        int     eraseSpace(std::string& str, bool space);
+        int     pushValue();
+        int     commentDelete();
         //logic
         int checkTrailer(std::string& temp);
         int plus(std::string& temp);
