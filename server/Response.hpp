@@ -68,7 +68,7 @@ class Response
         void    makePost();
         void    makeDelete();
         void    initRequest(Request temp);
-        void    mainloop();
+        void    responseMake();
 };
 
 #endif

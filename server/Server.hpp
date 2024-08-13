@@ -24,6 +24,7 @@
 #include <string>
 #include <arpa/inet.h>
 #include "Client.hpp"
+#include "HTTPServer.hpp"
 
 # define BUFFER_SIZE 4096
 
@@ -45,15 +46,16 @@ class Server
 {
     private:
         int                     serverFd;
+        int                     port;
         std::map<int, Client>   client;  //client을 선언할때에 default 생성자가 필요한듯
         //여기에 파싱된 data가 들어가 있을 것
     public:
+        static HTTPServer   *serverConfig;
         Server();
-        Server(int fd);  //파싱된 데이터도 인자로 추가할 것
+        Server(int fd, int num);  //파싱된 데이터도 인자로 추가할 것
         Server(const Server& src);
         Server &operator=(const Server& src);
         ~Server();
-        static HTTPServer *serverConfig;
         //get function
         int getServerFd(void) const;
         std::map<int, Client>  getClient(void) const;

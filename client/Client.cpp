@@ -347,7 +347,7 @@ void    Client::getResponseMessage()
 {
     index = 0;
     response.initRequest(request);
-    response.mainloop();
+    response.responseMake();
     msg = response.getEntity();
     amount = msg.size();
 }

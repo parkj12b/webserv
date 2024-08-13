@@ -24,7 +24,7 @@ class ServerConfigData {
 private:
     string                          _serverName;
     vector<int>                     _port;
-    map<string, LocationConfigData> _locationConfigData;
+    map<string, LocationConfigData> _locationConfigData;  //location에 따른 정보가 담긴 map??
 public:
     void setServerName(string serverName);
     string getServerName();

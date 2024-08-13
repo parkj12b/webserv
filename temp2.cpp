@@ -8,6 +8,18 @@
 #include <fstream> 
 #include <unistd.h>
 
+class Client
+{
+    private:
+        int a;
+    public:
+        Client()
+        {}
+        int getA()
+        {
+            return (a);
+        }
+};
 
 int main(void)
 {
@@ -22,6 +34,12 @@ int main(void)
         char    buffer[10];
         buffer[read(fd, buffer, 10)] = '\0';
         std::cout<<buffer<<std::endl;
+        return (0);
     }
     wait(NULL);
+    std::cout<<"\n\n======test2=======\n";
+    std::map<int, Client*>   data;
+    data[1] = new Client();
+    std::cout<<data[2]->getA()<<std::endl;
+    return (0);
 }

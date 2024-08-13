@@ -339,7 +339,7 @@ void    Response::makeDelete()
     //접근 권한이 실패될 경우에는 403
 }
 
-void    Response::mainloop()
+void    Response::responseMake()
 {
     init();
     makeHeader("Server", "IK/0.0");

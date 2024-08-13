@@ -19,11 +19,8 @@ HTTPServer *Server::serverConfig = NULL;
 Server::Server()
 {}
 
-Server::Server(int fd)
-{
-    //여기서 startline method설정해야 함
-    serverFd = fd;
-}
+Server::Server(int fd, int num) : serverFd(fd), port(num)
+{}
 
 Server::Server(const Server& src)
 {
@@ -104,10 +101,9 @@ EVENT   Server::clientWrite(struct kevent& store)
 
     if (store.ident == 0)
         return (ING);
+    (void) port;  //make 옵션 때문에
     index = write(store.ident, buffer, client[store.ident].getAmount());
     write(1, buffer, client[store.ident].getAmount());
-    index = write(store.ident, buffer, 100);
-    write(1, buffer, 100);
     client[store.ident].plusIndex(index);
     if (client[store.ident].getAmount())
         return (ING);
