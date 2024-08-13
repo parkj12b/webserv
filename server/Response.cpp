@@ -226,9 +226,9 @@ void    Response::makeError()
     close(fd);
 }
 
-void    Response::initRequest(Request temp)
+void    Response::initRequest(Request msg)
 {
-    request = temp;
+    request = msg;
 }
 
 void    Response::makeHeader(std::string key, std::string value)
