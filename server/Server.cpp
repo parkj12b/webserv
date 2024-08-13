@@ -59,7 +59,9 @@ int Server::plusClient(void)
     adrSize = sizeof(clntAdr);
     //accept 무한 루프
     while ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0);
+    std::cout<<port<<std::endl;
     client[clntFd] = Client(clntFd, port);
+    std::cout<<"server port: "<<port<<std::endl;
     std::cout<<"temp delete"<<std::endl;
     return (clntFd);
     // plusEvent(clntFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
@@ -86,7 +88,7 @@ EVENT Server::clientRead(struct kevent& store)
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
     {
         // request 완성 -> respond 만들면 되지 않나?
-        client[store.ident].getResponseMessage();
+        client[store.ident].setResponseMessage();
         if (client[store.ident].getRequestStatus() == 100)
             return (EXPECT);
         if (client[store.ident].getRequestFin())
@@ -99,15 +101,15 @@ EVENT Server::clientRead(struct kevent& store)
 EVENT   Server::clientWrite(struct kevent& store)
 {
     size_t      index;
-    const char* buffer = client[store.ident].getMsg();
+    const char* buffer = client[store.ident].respondMsgIndex();
 
     if (store.ident == 0)
         return (ING);
     (void) port;  //make 옵션 때문에
-    index = write(store.ident, buffer, client[store.ident].getAmount());
+    index = write(store.ident, buffer, client[store.ident].responseIndex());
     // write(1, buffer, client[store.ident].getAmount());
     client[store.ident].plusIndex(index);
-    if (client[store.ident].getAmount())
+    if (client[store.ident].responseIndex())
         return (ING);
     if (client[store.ident].getRequestStatus() == 100)
         return (EXPECT);

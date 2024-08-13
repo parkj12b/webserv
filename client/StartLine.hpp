@@ -30,6 +30,16 @@ enum Version
     HTTP11 = 1
 };
 
+/**
+ * @brief request message startline class
+ * @param completion startline status
+ * @param version http version
+ * @param method http possible method
+ * @param port server port
+ * @param url resource
+ * @param query all query
+ */
+
 class StartLine
 {
     private:
@@ -41,8 +51,8 @@ class StartLine
         std::unordered_map<std::string, std::string>    query;
     public:
         //static variable
-        static std::map<std::string, Method>    originMethod;
-        static std::map<std::string, Version>   originVersion;
+        static std::map<std::string, Method>    originMethod;   //possible method
+        static std::map<std::string, Version>   originVersion;  //possible version
         //occf
         StartLine();
         StartLine(const StartLine& src);
@@ -57,9 +67,9 @@ class StartLine
         std::string                                     getUrl() const;
         std::unordered_map<std::string, std::string>    getQuery() const;
         //sub logic
-        int urlQuery();
+        int urlQuery(); //query parsing
         //logic
-        int plus(std::string tmp);
+        int check(std::string firstLine);   //startline make
 };
 
 #endif
