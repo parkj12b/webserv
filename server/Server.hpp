@@ -42,6 +42,8 @@ enum EVENT
     EXPECT
 };
 
+class Client;
+
 class Server
 {
     private:

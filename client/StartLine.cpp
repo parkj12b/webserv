@@ -41,7 +41,7 @@ std::map<std::string, Version> StartLine::originVersion = originVersionInit();
 StartLine::StartLine() : completion(false)
 {}
 
-StartLine::StartLine(const StartLine& src) : completion(src.getCompletion()), method(src.getMethod()), version(src.getVersion()), url(src.getUrl()), query(src.getQuery())
+StartLine::StartLine(const StartLine& src) : completion(src.getCompletion()), version(src.getVersion()), method(src.getMethod()), url(src.getUrl()), query(src.getQuery())
 {}
 
 StartLine&  StartLine::operator=(const StartLine& src)
@@ -55,6 +55,11 @@ StartLine&  StartLine::operator=(const StartLine& src)
 }
 
 StartLine::~StartLine()
+{
+    (void) port;
+}
+
+StartLine::StartLine(int port) : port(port)
 {}
 
 bool        StartLine::getCompletion() const
