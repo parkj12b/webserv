@@ -87,6 +87,7 @@ EVENT Server::clientRead(struct kevent& store)
     }
     buffer[readSize] = '\0';
     client[store.ident].setMessage(buffer);
+    client[store.ident].setKeepAlive(std::time(0));
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
     {
         // request 완성 -> respond 만들면 되지 않나?
@@ -107,14 +108,28 @@ EVENT   Server::clientWrite(struct kevent& store)
 
     if (store.ident == 0)
         return (ING);
+    if (client[store.ident].getRequestStatus() != 100 && !client[store.ident].getRequestFin())
+    {
+        if (!client[store.ident].diffKeepAlive())
+            return (FINISH);
+        return (ING);
+    }
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     // write(1, buffer, client[store.ident].getAmount());
     client[store.ident].plusIndex(index);
+    client[store.ident].setKeepAlive(std::time(0));
     if (client[store.ident].responseIndex())
         return (ING);
+    client[store.ident].setRequestFin(false);
     if (client[store.ident].getRequestStatus() == 100)
         return (EXPECT);
-    return (FINISH);
+    if (!client[store.ident].getConnect())
+    {
+        std::cout<<"connection fin"<<std::endl;
+        return (FINISH);    //keep-alive가 선언이 되지 않았을 때
+    }
+    std::cout<<"keep-alive"<<std::endl;
+    return (ING);
 }
 
 void    Server::clientFin(int clientFd)

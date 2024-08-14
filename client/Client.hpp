@@ -45,17 +45,19 @@
 class Client
 {
     private:
+        bool        connect;
         int         fd;
         int         port;
         size_t      index;
         size_t      responseAmount;
+        ssize_t     standardTime;
         std::string msg;
+        std::time_t keepAlive;
         Request     request;
         StartLine   startLine;
         HeaderLine  headerLine;
         ContentLine contentLine;
         Response    response;
-        //temp(must delete)
     public:
         Client();
         Client(int fd, int port);
@@ -63,11 +65,14 @@ class Client
         Client& operator=(const Client& src);
         ~Client();
         //get function
+        bool        getConnect() const;
         int         getFd() const;
         int         getPort() const;
         size_t      getIndex() const;
         size_t      getResponseAmount() const;
+        ssize_t     getStandardTime() const;
         std::string getMsg() const;
+        std::time_t getKeepAlive() const;
         Request     getRequest() const;
         StartLine   getStartLine() const;
         HeaderLine  getHeaderline() const;
@@ -77,8 +82,11 @@ class Client
         int         getRequestStatus() const;
         //set function
         void    setFd(uintptr_t fd);
+        void    setKeepAlive(std::time_t time);
         void    setRequestStatus(int temp);
+        void    setRequestFin(bool fin);
         //logic
+        bool        diffKeepAlive();
         size_t      responseIndex();    //response msg index(responseAmount - index)
         const char* respondMsgIndex();  //msg + index (const char*)
         int         setStart(void);     //startLine make
