@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:30:28 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/13 16:17:34 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/14 14:20:36 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "Word.hpp"
 #include "UtilTemplate.hpp"
 #include "ServerConfig.hpp"
+#include "Trie.hpp"
 
 using namespace std;
 
@@ -64,13 +65,14 @@ ServerConfigData    *Validator::checkServer(ServerConfig *serverConfig)
     checkPort(serverData, serverConfig);
     map<string, LocationConfig> &location = serverConfig->location;
     map<string, LocationConfigData> &locationData = serverData->getLocationConfigData();
-    
+    Trie &locationTrie = serverData->getLocationTrie();
     for (map<string, LocationConfig>::iterator it = location.begin(); it != location.end(); it++)
     {
         string key = it->first;
         LocationConfig &locationConfig = it->second;
 
-        locationData.insert(pair<string, LocationConfigData>(key, checkLocation(locationConfig)));
+        locationData.insert(make_pair(key, checkLocation(locationConfig)));
+        locationTrie.insert(key);
     }
     return serverData;
 }

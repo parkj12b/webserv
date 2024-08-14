@@ -6,14 +6,14 @@
 #    By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/11 14:01:48 by minsepar          #+#    #+#              #
-#    Updated: 2024/08/11 14:01:49 by minsepar         ###   ########.fr        #
+#    Updated: 2024/08/14 14:23:18 by minsepar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRC =	Directives.cpp Env.cpp HTTPServer.cpp Lexer.cpp LocationConfig.cpp \
 		LocationConfigData.cpp main.cpp Parser.cpp ServerConfig.cpp \
 		ServerConfigData.cpp Syntax.cpp Token.cpp UtilTemplate.cpp \
-		Validator.cpp Word.cpp Num.cpp
+		Validator.cpp Word.cpp Num.cpp Trie.cpp
 
 SRCS = $(addprefix src/, $(SRC))
 

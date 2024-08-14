@@ -22,6 +22,7 @@
 # include <fcntl.h>
 # include <cstdio>
 
+using namespace std;
 
 typedef struct Request
 {
@@ -38,6 +39,8 @@ typedef struct Request
 /**
  * @brief request message
  * @param port server port
+ * @param path server path
+ * @param location location block path
  * @param start response startline
  * @param header response header
  * @param content response content
@@ -48,6 +51,7 @@ class Response
 {
     private:
         int         port;
+        string      path;
         std::string location;
         std::string start;
         std::string header;
