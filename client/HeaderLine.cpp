@@ -155,7 +155,7 @@ std::vector<std::string> HeaderLine::commentHeader = commentHeaderInit();
 HeaderLine::HeaderLine() : completion(false), te(NOT), contentType(ENOT), port(0), contentLength(0)
 {}
 
-HeaderLine::HeaderLine(const HeaderLine& src) : completion(src.getCompletion()), te(src.getTe()), contentType(src.getContentType()), port(src.getPort()), contentLength(src.getContentLength()), key(src.getKey()), value(src.getValue()), header(src.getHeader())
+HeaderLine::HeaderLine(const HeaderLine& src) : completion(src.getCompletion()), connect(src.getConnect()), te(src.getTe()), contentType(src.getContentType()), port(src.getPort()), contentLength(src.getContentLength()), key(src.getKey()), value(src.getValue()), header(src.getHeader())
 {}
 
 HeaderLine::~HeaderLine()
@@ -163,12 +163,13 @@ HeaderLine::~HeaderLine()
     (void) port;
 }
 
-HeaderLine::HeaderLine(int port) : completion(false), te(NOT), contentType(ENOT), port(port), contentLength(0)
+HeaderLine::HeaderLine(int port) : completion(false), connect(true), te(NOT), contentType(ENOT), port(port), contentLength(0)
 {}
 
 HeaderLine& HeaderLine::operator=(const HeaderLine& src)
 {
     completion = src.getCompletion();
+    connect = src.getConnect();
     te = src.getTe();
     contentType = src.getContentType();
     port = src.getPort();
@@ -182,6 +183,11 @@ HeaderLine& HeaderLine::operator=(const HeaderLine& src)
 bool    HeaderLine::getCompletion() const
 {
     return (completion);
+}
+
+bool    HeaderLine::getConnect() const
+{
+    return (connect);
 }
 
 TE  HeaderLine::getTe() const
@@ -424,6 +430,12 @@ int HeaderLine::headerError()
             return (408);
         completion = true;
         return (100);
+    }
+    itm = header.find("connection");
+    if (itm != header.end())
+    {
+        if (itm->second.front() == "close")
+            connect = false;
     }
     completion = true;
     return (0);
