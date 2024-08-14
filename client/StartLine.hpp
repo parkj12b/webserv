@@ -54,6 +54,7 @@ class StartLine
     public:
         //static variable
         static std::map<std::string, Method>    originMethod;   //possible method
+        static std::string                      methodString[4];
         static std::map<std::string, Version>   originVersion;  //possible version
         //occf
         StartLine();

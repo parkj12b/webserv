@@ -14,28 +14,31 @@
 
 extern int logs;
 
-Client::Client() : fd(0), port(0), index(0), responseAmount(0), startLine(0), headerLine(0), contentLine(0)
+Client::Client() : connect(false), fd(0), port(0), index(0), responseAmount(0), startLine(0), headerLine(0), contentLine(0)
 {
     request.fin = false;
     request.status = 0;
 }
 
-Client::Client(int fd, int port) : fd(fd), port(port), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port)
+Client::Client(int fd, int port) : connect(false), fd(fd), port(port), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port)
 {
     request.fin = false;
     request.status = 0;
 }
 
-Client::Client(const Client& src) : fd(src.getFd()), port(src.getPort()), index(src.getIndex()), responseAmount(src.getResponseAmount()), msg(src.getMsg()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse())
+Client::Client(const Client& src) : connect(src.getConnect()), fd(src.getFd()), port(src.getPort()), index(src.getIndex()), responseAmount(src.getResponseAmount()), standardTime(src.getStandardTime()), msg(src.getMsg()), keepAlive(src.getKeepAlive()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse())
 {}
 
 Client& Client::operator=(const Client& src)
 {
+    connect = src.getConnect();
     fd = src.getFd();
     port = src.getPort();
     index = src.getIndex();
     responseAmount = src.getResponseAmount();
+    standardTime = src.getStandardTime();
     msg = src.getMsg();
+    keepAlive = src.getKeepAlive();
     request = src.getRequest();
     startLine = src.getStartLine();
     headerLine = src.getHeaderline();
@@ -47,6 +50,11 @@ Client& Client::operator=(const Client& src)
 Client::~Client()
 {
     std::cout<<fd<<" client close"<<std::endl;
+}
+
+bool    Client::getConnect() const
+{
+    return (connect);
 }
 
 int Client::getFd(void) const
@@ -67,6 +75,11 @@ size_t  Client::getIndex() const
 size_t  Client::getResponseAmount() const
 {
     return (responseAmount);
+}
+
+ssize_t Client::getStandardTime() const
+{
+    return (standardTime);
 }
 
 std::string Client::getMsg() const
@@ -136,7 +149,10 @@ void    Client::setRequestFin(bool fin)
 
 bool    Client::diffKeepAlive()
 {
-    if (difftime(std::time(0), keepAlive) > 10)
+    //on or off checking
+    if (!connect)
+        return (false);
+    if (difftime(std::time(0), keepAlive) > standardTime)
         return (false);
     return (true);
 }
@@ -178,12 +194,13 @@ int Client::setStart(void)
 
 int Client::setHeader(void)
 {
-    size_t      flag;
-    std::string str;
+    size_t                                                              flag;
+    std::string                                                         str;
+    std::unordered_map<std::string, std::deque<std::string> >::iterator itm;
 
     if (!startLine.getCompletion() || headerLine.getCompletion() || request.fin || request.status)
         return (0);
-    std::cout<<"...headerline parsing...\n";
+    std::cout<<"...headerline parsing..."<<std::endl;
     while (1)
     {
         flag = msg.find("\r\n");
@@ -191,6 +208,7 @@ int Client::setHeader(void)
         {
             if (flag == 0)
             {
+                std::cout<<"good"<<std::endl;
                 if ((request.status = headerLine.headerError()) > 0)
                 {
                     if (request.status == 100 && !msg.empty())
@@ -204,6 +222,19 @@ int Client::setHeader(void)
                 request.header = headerLine.getHeader();
                 msg = msg.substr(flag + 2);
                 contentLine.initContentLine(headerLine.getContentLength(), headerLine.getContentType());
+                itm = request.header.find("connection");
+                if (itm != request.header.end())
+                {
+                    std::cout<<"good"<<std::endl;
+                    if (itm->second.front() != "keep-alive")
+                    {
+                        request.status = 400;
+                        return (2);
+                    }
+                    std::cout<<"keep-alive"<<std::endl;
+                    connect = true;
+                    standardTime = 100;
+                }
                 break ;
             }
             str = msg.substr(0, flag);
@@ -327,50 +358,55 @@ void    Client::showMessage(void)
     // time_t 형식을 문자열로 변환합니다.
     char* dt = ctime(&now);
     std::cout<<"time : "<<dt;
-    //request 출력
-    std::cout<<"=====strat line=====\n";
-    std::cout<<"fd : "<<fd<<std::endl;
-    std::cout<<request.method<<" "<<request.version<<" "<<request.url<<std::endl;
-    for (std::unordered_map<std::string, std::string>::iterator it = request.query.begin(); it != request.query.end(); it++)
-        std::cout<<it->first<<"="<<it->second<<std::endl;
-    std::cout<<"=====header line=====\n";
-    for (std::unordered_map<std::string, std::deque<std::string> >::iterator it = request.header.begin(); it != request.header.end(); it++)
-    {
-        std::cout<<it->first<<": ";
-        for (itd = request.header[it->first].begin(); itd != request.header[it->first].end(); itd++)
-            std::cout<<*itd<<"  ";
-        std::cout<<"\n";
-    }
-    std::cout<<"=====entity line=====\n";
-    for (std::vector<std::string>::iterator it = request.content.begin(); it != request.content.end(); it++)
-    {
-        std::cout<<*it;
-    }
-    std::cout<<"\n\n";
+    // //request 출력
+    // std::cout<<"=====strat line=====\n";
+    // std::cout<<"fd : "<<fd<<std::endl;
+    // std::cout<<request.method<<" "<<request.version<<" "<<request.url<<std::endl;
+    // for (std::unordered_map<std::string, std::string>::iterator it = request.query.begin(); it != request.query.end(); it++)
+    //     std::cout<<it->first<<"="<<it->second<<std::endl;
+    // std::cout<<"=====header line=====\n";
+    // for (std::unordered_map<std::string, std::deque<std::string> >::iterator it = request.header.begin(); it != request.header.end(); it++)
+    // {
+    //     std::cout<<it->first<<": ";
+    //     for (itd = request.header[it->first].begin(); itd != request.header[it->first].end(); itd++)
+    //         std::cout<<*itd<<"  ";
+    //     std::cout<<"\n";
+    // }
+    // std::cout<<"=====entity line=====\n";
+    // for (std::vector<std::string>::iterator it = request.content.begin(); it != request.content.end(); it++)
+    // {
+    //     std::cout<<*it;
+    // }
+    // std::cout<<"\n\n";
 }
 
 void    Client::setMessage(std::string msgRequest)
 {
     msg += msgRequest;
     write(logs, &msgRequest[0], msgRequest.size());
+    std::cout<<"Read Event"<<std::endl;
     if (setStart())  //max size literal
     {
+        request.fin = true;
         std::cout<<fd<<" "<<request.status<<" ";
         std::cout<<"Startline Error\n";
         return ;
     }
     if (setHeader())  //max size literal, 헤더 파싱
     {
+        request.fin = true;
         std::cout<<"Header Error\n";
         return ;
     }
     if (setContent()) // 바디 파싱
     {
+        request.fin = true;
         std::cout<<"Body Error\n";
         return ;
     }
     if (setTrailer()) // 바디 마지막, 트레일러 파싱
     {
+        request.fin = true;
         std::cout<<"Trailer Error\n";
         return ; 
     }

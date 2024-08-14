@@ -194,9 +194,9 @@ void    Response::setRequest(Request &temp)
 void    Response::init()
 {
     // map<string, LocationConfigData> locationConfig = Server::serverConfig->getServerConfigData()[port]->getLocationConfigData();
-    cout << "port: " << port << endl;
-    std::cout<<"url : "<< request.url <<std::endl;
-    std::cout<<"location : "<< request.location <<std::endl;
+    // cout << "port: " << port << endl;
+    // std::cout<<"url : "<< request.url <<std::endl;
+    // std::cout<<"location : "<< request.location <<std::endl;
     ServerConfigData *s = Server::serverConfig->getServerConfigData()[port];
     cout << s << endl;
     map<string, LocationConfigData> locationMap = s->getLocationConfigData();
