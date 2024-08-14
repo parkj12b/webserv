@@ -12,11 +12,14 @@
 
 #include <map>
 #include <string>
+#include <vector>
+#include <algorithm>
 #include "Response.hpp"
 #include "Server.hpp"
 #include "LocationConfigData.hpp"
 #include "ServerConfigData.hpp"
 #include "Trie.hpp"
+#include "UtilTemplate.hpp"
 
 using namespace std;
 
@@ -106,21 +109,36 @@ std::map<int, std::string>  Response::statusContent = statusContentInit();
 
 void    Response::makeFilePath(std::string& str)
 {
-    size_t  pos;
+    LocationConfigData  &location = Server::serverConfig->getServerConfigData()[port]->getLocationConfigData()[request.location];
 
-    if (str == "/")
-        str = "index.html";
-    pos = str.find("http");
-    if (pos == 0)
+    str = location.getRoot() + "/" + str;
+    if (isDirectory(str.c_str()))
     {
-        str = str.substr(8);
-        pos = str.find('/');
-        str = str.substr(pos);
+        // 없으면 index.html 이라 없을 일은 없음.
+        cout << "index: " << location.getIndex() << endl;
+        if (str[str.size() - 1] == '/')
+            str += location.getIndex();
+        cout << "at the end: " << str << endl;
+        return ;
     }
-    if (str[0] == '/')
-        str = "." + str;
-    else
-        str = "./" + str;
+    cout << "str: " << str << endl;
+    if (access(str.c_str(), F_OK | R_OK) == -1)
+    {
+        request.status = 404;
+        return ;
+    }
+
+    // pos = str.find("http");
+    // if (pos == 0)
+    // {
+    //     str = str.substr(8);
+    //     pos = str.find('/');
+    //     str = str.substr(pos);
+    // }
+    // if (str[0] == '/')
+    //     str = "." + str;
+    // else
+    //     str = "./" + str;
 }
 
 Response::Response()
@@ -193,13 +211,7 @@ void    Response::setRequest(Request &temp)
 
 void    Response::init()
 {
-    // map<string, LocationConfigData> locationConfig = Server::serverConfig->getServerConfigData()[port]->getLocationConfigData();
-    // cout << "port: " << port << endl;
-    // std::cout<<"url : "<< request.url <<std::endl;
-    // std::cout<<"location : "<< request.location <<std::endl;
-    ServerConfigData *s = Server::serverConfig->getServerConfigData()[port];
-    cout << s << endl;
-    map<string, LocationConfigData> locationMap = s->getLocationConfigData();
+    cout << "port: " << port << endl;
 
     start.clear();
     header.clear();
@@ -368,9 +380,11 @@ void    Response::makeDelete()
 
 void    Response::responseMake()
 {
+    
     init();
     makeHeader("Server", "IK/0.0");
     makeDate();
+    checkAllowedMethod();
     if (request.status > 0)
         makeError();
     else
@@ -393,4 +407,15 @@ void    Response::responseMake()
     }
     makeEntity();
     return ;
+}
+
+void    Response::checkAllowedMethod()
+{
+    LocationConfigData  &location = Server::serverConfig->
+        getServerConfigData()[port]->getLocationConfigData()[request.location];
+    vector<string>    &allowedMethods = location.getAllowedMethods();
+
+    if (find(allowedMethods.begin(), allowedMethods.end(), request.method)
+        == allowedMethods.end())
+        request.status = 405;
 }

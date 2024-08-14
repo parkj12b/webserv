@@ -6,11 +6,12 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:04:44 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/14 14:18:45 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/14 15:04:01 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <string>
+#include <stdexcept>
 #include "Trie.hpp"
 
 using namespace std;
@@ -61,5 +62,7 @@ string Trie::find(const std::string& url) const
         }
     }
     
-    return longestMatch.empty() ? "No match found" : longestMatch;
+    return longestMatch.empty()
+        ? throw runtime_error("no matching location found")
+        : longestMatch;
 }

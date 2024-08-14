@@ -52,8 +52,6 @@ class Response
 {
     private:
         int         port;
-        string      path;
-        std::string location;
         std::string start;
         std::string header;
         std::string content;
@@ -89,6 +87,7 @@ class Response
         void    makeDelete();               //DELETE method make response
         void    initRequest(Request msg);   //request msg init
         void    responseMake();             //request msg -> response msg
+        void    checkAllowedMethod();       //check allowed method
 };
 
 #endif

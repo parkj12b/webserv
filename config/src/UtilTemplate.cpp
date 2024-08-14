@@ -6,13 +6,16 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 15:26:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 15:31:31 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/14 16:06:10 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include <fstream>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "UtilTemplate.hpp"
+
 
 using namespace std;
 
@@ -120,4 +123,16 @@ string getErrorAngle(int column)
         angle += " ";
     angle += "^";
     return angle;
+}
+
+int isDirectory(const char *path)
+{
+    struct stat statbuf;
+
+    if (stat(path, &statbuf) != 0)
+        return 0;
+    
+    if (S_ISDIR(statbuf.st_mode))
+        return 1;
+    return 0;
 }
