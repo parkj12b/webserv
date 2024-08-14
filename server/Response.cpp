@@ -250,9 +250,12 @@ void    Response::makeDate()
 void    Response::makeError()
 {
     //url 이 필요함 -> url 파싱해야됨, prefix match 
-    // map<int, string>   errorPage = Server::serverConfig->getServerConfigData()[port].getLocationConfigData();
+    LocationConfigData   location = Server::serverConfig->getServerConfigData()[port]
+        ->getLocationConfigData()[request.location];
+    map<int, string>   &errorPage = location.getErrorPage();
     int fd;
 
+    
     if (request.status >= 300 && request.status < 400)
         return ;
     start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
