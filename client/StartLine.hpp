@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 12:55:26 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/14 14:36:44 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/14 15:07:46 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,9 @@ class StartLine
         int                              getPort() const;
         string                           getUrl() const;
         unordered_map<string, string>    getQuery() const;
-        void                             setMatchingLocation(string str);
         //sub logic
-        int urlQuery(); //query parsing
+        bool                             urlQuery(); //query parsing
+        bool                             setMatchingLocation(string str);
         //logic
         int check(std::string firstLine);   //startline make
 };

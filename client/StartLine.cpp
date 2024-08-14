@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 12:55:24 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/14 14:47:13 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/14 15:08:08 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ std::unordered_map<std::string, std::string>    StartLine::getQuery() const
     return (query);
 }
 
-int StartLine::urlQuery()
+bool    StartLine::urlQuery()
 {
     size_t      pos;
     std::string queryTemp;
@@ -119,7 +119,7 @@ int StartLine::urlQuery()
                 query[str.substr(0, pos)] = str.substr(pos + 1);
         }
     }
-    return (0);
+    return (false);
 }
 
 int     StartLine::check(std::string firstLine)
@@ -145,7 +145,8 @@ int     StartLine::check(std::string firstLine)
                 url = str;  //.찾으면 지우기
                 if (urlQuery())
                     return (400);
-                setMatchingLocation(url);
+                if (setMatchingLocation(url))
+                    return (500);
                 // url이 잘못된 형식이면 400 형식은 맞지만 존재하지 않는다면 404(Not Found)
                 // 여기서 url검사와 allow검사 같이 진행하는 것이 좋을듯
                 break ;
@@ -163,13 +164,18 @@ int     StartLine::check(std::string firstLine)
     return (0);
 }
 
-void    StartLine::setMatchingLocation(string url)
+bool    StartLine::setMatchingLocation(string url)
 {
     HTTPServer *s = Server::serverConfig;
     ServerConfigData *serverConfigData = s->getServerConfigData()[port];
     Trie &locationTrie = serverConfigData->getLocationTrie();
     
     cout << "url " << url << endl;
-    location = locationTrie.find(url);
+    try {
+        location = locationTrie.find(url);
+    } catch (exception &e) {
+        return (true);
+    }
     cout << "location " << location << endl;
+    return (0);
 }
