@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 12:55:24 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/14 15:08:15 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/14 17:49:43 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ std::map<std::string, Version> originVersionInit()
 // 여기에 정의를 추가하세요
 std::map<std::string, Method> StartLine::originMethod = originMethodInit();
 std::map<std::string, Version> StartLine::originVersion = originVersionInit();
-std::string methodString[4] = {"", "GET", "POST", "DELETE"};
+std::string StartLine::methodString[4] = {"", "GET", "POST", "DELETE"};
 
 StartLine::StartLine() : completion(false), port(0)
 {}
