@@ -51,8 +51,6 @@ class Response
 {
     private:
         int         port;
-        string      path;
-        std::string location;
         std::string start;
         std::string header;
         std::string content;
