@@ -208,7 +208,6 @@ int Client::setHeader(void)
         {
             if (flag == 0)
             {
-                std::cout<<"good"<<std::endl;
                 if ((request.status = headerLine.headerError()) > 0)
                 {
                     if (request.status == 100 && !msg.empty())
@@ -222,19 +221,8 @@ int Client::setHeader(void)
                 request.header = headerLine.getHeader();
                 msg = msg.substr(flag + 2);
                 contentLine.initContentLine(headerLine.getContentLength(), headerLine.getContentType());
-                itm = request.header.find("connection");
-                if (itm != request.header.end())
-                {
-                    std::cout<<"good"<<std::endl;
-                    if (itm->second.front() != "keep-alive")
-                    {
-                        request.status = 400;
-                        return (2);
-                    }
-                    std::cout<<"keep-alive"<<std::endl;
-                    connect = true;
-                    standardTime = 100;
-                }
+                if ((connect = headerLine.getConnect()) > 0)
+                    standardTime = 100;  //여기서 location으로 변경
                 break ;
             }
             str = msg.substr(0, flag);
@@ -348,6 +336,17 @@ int Client::setTrailer(void)
     return (0);
 }
 
+void    Client::resetClient()
+{
+    request.fin = false;
+    request.status = 0;
+    connect = false;
+    index = 0;
+    msg.clear();
+    startLine = StartLine(port);
+    headerLine = HeaderLine(port);
+    contentLine = ContentLine(port);
+}
 
 //temp(must delete)
 void    Client::showMessage(void)

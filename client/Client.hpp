@@ -96,6 +96,7 @@ class Client
         void        setMessage(std::string msgRequest); //request msg setting
         void        setResponseMessage();               //make response msg
         void        plusIndex(size_t plus);             //index plus
+        void        resetClient();                     //reset client varidation
         // void    makeResponse();
         //temp(must delete)
         void        showMessage(void);  //request msg show

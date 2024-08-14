@@ -184,6 +184,11 @@ bool    HeaderLine::getCompletion() const
     return (completion);
 }
 
+bool    HeaderLine::getConnect() const
+{
+    return (connect);
+}
+
 TE  HeaderLine::getTe() const
 {
     return (te);
@@ -424,6 +429,13 @@ int HeaderLine::headerError()
             return (408);
         completion = true;
         return (100);
+    }
+    itm = header.find("connection");
+    if (itm != header.end())
+    {
+        if (itm->second.front() != "keep-alive")
+            return (400);
+        connect = true;
     }
     completion = true;
     return (0);

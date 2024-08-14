@@ -120,11 +120,11 @@ EVENT   Server::clientWrite(struct kevent& store)
     client[store.ident].setKeepAlive(std::time(0));
     if (client[store.ident].responseIndex())
         return (ING);
-    client[store.ident].setRequestFin(false);
     if (client[store.ident].getRequestStatus() == 100)
         return (EXPECT);
     if (!client[store.ident].getConnect())
     {
+        client[store.ident].resetClient();
         std::cout<<"connection fin"<<std::endl;
         return (FINISH);    //keep-alive가 선언이 되지 않았을 때
     }
