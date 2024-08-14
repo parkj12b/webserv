@@ -110,6 +110,7 @@ EVENT   Server::clientWrite(struct kevent& store)
         return (ING);
     if (client[store.ident].getRequestStatus() != 100 && !client[store.ident].getRequestFin())
     {
+        // std::cout<<"keep-alive"<<std::endl;
         if (!client[store.ident].diffKeepAlive())
             return (FINISH);
         return (ING);
@@ -117,18 +118,18 @@ EVENT   Server::clientWrite(struct kevent& store)
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     // write(1, buffer, client[store.ident].getAmount());
     client[store.ident].plusIndex(index);
-    client[store.ident].setKeepAlive(std::time(0));
     if (client[store.ident].responseIndex())
         return (ING);
     if (client[store.ident].getRequestStatus() == 100)
         return (EXPECT);
+    client[store.ident].setKeepAlive(std::time(0));
     if (!client[store.ident].getConnect())
     {
-        // client[store.ident].resetClient();
         std::cout<<"connection fin"<<std::endl;
         return (FINISH);    //keep-alive가 선언이 되지 않았을 때
     }
-    std::cout<<"keep-alive"<<std::endl;
+    client[store.ident].resetClient();
+    // std::cout<<"keep-alive"<<std::endl;
     return (ING);
 }
 

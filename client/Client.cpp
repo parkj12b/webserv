@@ -14,13 +14,13 @@
 
 extern int logs;
 
-Client::Client() : connect(false), fd(0), port(0), index(0), responseAmount(0), startLine(0), headerLine(0), contentLine(0)
+Client::Client() : connect(true), fd(0), port(0), index(0), responseAmount(0), startLine(0), headerLine(0), contentLine(0)
 {
     request.fin = false;
     request.status = 0;
 }
 
-Client::Client(int fd, int port) : connect(false), fd(fd), port(port), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port)
+Client::Client(int fd, int port) : connect(true), fd(fd), port(port), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port)
 {
     request.fin = false;
     request.status = 0;
@@ -180,6 +180,7 @@ int Client::setStart(void)
         request.location = startLine.getLocation();
         request.version = startLine.getVersion();
         request.query = startLine.getQuery();
+        standardTime = 100;  //여기서 keep-alive setting
     }
     else
     {
@@ -221,8 +222,7 @@ int Client::setHeader(void)
                 request.header = headerLine.getHeader();
                 msg = msg.substr(flag + 2);
                 contentLine.initContentLine(headerLine.getContentLength(), headerLine.getContentType());
-                if ((connect = headerLine.getConnect()) > 0)
-                    standardTime = 100;  //여기서 location으로 변경
+                connect = headerLine.getConnect();
                 break ;
             }
             str = msg.substr(0, flag);
@@ -340,7 +340,7 @@ void    Client::resetClient()
 {
     request.fin = false;
     request.status = 0;
-    connect = false;
+    connect = true;
     index = 0;
     msg.clear();
     startLine = StartLine(port);

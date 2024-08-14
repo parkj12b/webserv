@@ -290,10 +290,7 @@ void    Response::makeContent(int fd)
     {
         readSize = read(fd, buffer, 4095);
         if (readSize <= 0)
-        {
-            std::cout<<"readsize zero"<<std::endl;
             break ;
-        }
         content.append(buffer, readSize);
         count += readSize;
     }
