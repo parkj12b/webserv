@@ -46,7 +46,6 @@ Client& Client::operator=(const Client& src)
 
 Client::~Client()
 {
-    // close(static_cast<int>(fd));
     std::cout<<fd<<" client close"<<std::endl;
 }
 
@@ -75,6 +74,10 @@ std::string Client::getMsg() const
     return (msg.c_str() + index);
 }
 
+std::time_t Client::getKeepAlive() const
+{
+    return (keepAlive);
+}
 
 Request Client::getRequest() const
 {
@@ -116,11 +119,27 @@ void    Client::setFd(uintptr_t fd)
     this->fd = fd;
 }
 
+void    Client::setKeepAlive(std::time_t time)
+{
+    keepAlive = time;
+}
+
 void    Client::setRequestStatus(int temp)
 {
     request.status = temp;
 }
 
+void    Client::setRequestFin(bool fin)
+{
+    request.fin = fin;
+}
+
+bool    Client::diffKeepAlive()
+{
+    if (difftime(std::time(0), keepAlive) > 10)
+        return (false);
+    return (true);
+}
 
 const char* Client::respondMsgIndex()
 {
