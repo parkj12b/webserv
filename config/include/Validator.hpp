@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:26:25 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/13 18:05:11 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/15 01:44:16 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,18 @@ class LocationConfig;
 */
 class Validator {
 private:
-    Parser &_parser;
-    HTTPServer *_httpServer;
-    set<int> _ports;
+    Parser      &_parser;
+    HTTPServer  *_httpServer;
+    set<pair<string, int> > serverNames;
 public:
+    class ValidatorException : public exception {
+    private:
+        string err;
+    public:
+        ValidatorException(string error);
+        ~ValidatorException() throw();
+        const char *what() const throw();
+    };
     HTTPServer          *validate();
     void                checkWorkerConnections();
     ServerConfigData    *checkServer(ServerConfig *serverConfig);
@@ -90,17 +98,9 @@ public:
                             LocationConfig &locationConfig);
     void                checkIndex(LocationConfigData &locationData,
                             LocationConfig &locationConfig);
-                    
-    set<int>  &getPorts() { return _ports; }
-    
-    class ValidatorException : public exception {
-    private:
-        string err;
-    public:
-        ValidatorException(string error);
-        ~ValidatorException() throw();
-        const char *what() const throw();
-    };
+    void                checkDuplicateServerConfig(ServerConfigData *serverData);
+    set<pair<string, int> >         &getServerNames();
+     
     Validator(Parser &parser);
     ~Validator();
 };

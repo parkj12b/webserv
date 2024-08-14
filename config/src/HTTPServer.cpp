@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 20:17:13 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/13 15:54:10 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/15 02:02:51 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void HTTPServer::setWorkerConnections(int workerConnections)
     _workerConnections = workerConnections;
 }
 
-map<int, ServerConfigData *>    &HTTPServer::getServerConfigData()
+map<int, map<string, ServerConfigData *> >    &HTTPServer::getServerConfigData()
 {
     return _serverConfigData;
 }

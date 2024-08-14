@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 17:27:22 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/14 16:08:07 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/15 01:58:43 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ string      intToUtf8(int codePoint);
 string      getLineFromFile(string filename, int line);
 string      getErrorAngle(int column);
 
-int isDirectory(const char *path);
+int         isDirectory(const char *path);
+void        toLowerCase(string &str);
 
 #endif

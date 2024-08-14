@@ -20,6 +20,8 @@
 #include "Lexer.hpp"
 #include "Syntax.hpp"
 
+#define DEFAULT_CONFIG_PATH "./config/default.conf"
+
 using namespace std;
 
 class Token;

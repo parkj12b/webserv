@@ -110,7 +110,8 @@ std::map<int, std::string>  Response::statusContent = statusContentInit();
 
 void    Response::makeFilePath(std::string& str)
 {
-    LocationConfigData  &location = Server::serverConfig->getServerConfigData()[port]->getLocationConfigData()[request.location];
+    LocationConfigData  &location = Server::serverConfig->getServerConfigData()[port]
+        ->getLocationConfigData()[request.location];
 
     str = location.getRoot() + "/" + str;
     if (isDirectory(str.c_str()))
@@ -253,6 +254,8 @@ void    Response::makeError()
     LocationConfigData   location = Server::serverConfig->getServerConfigData()[port]
         ->getLocationConfigData()[request.location];
     map<int, string>   &errorPage = location.getErrorPage();
+
+    (void) errorPage;
     int fd;
 
     
