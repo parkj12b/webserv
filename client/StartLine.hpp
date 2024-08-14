@@ -62,14 +62,15 @@ class StartLine
         ~StartLine();
         StartLine(int port);
         //get function
-        bool                             getCompletion() const;
-        Method                           getMethod() const;
-        Version                          getVersion() const;
-        int                              getPort() const;
-        string                           getUrl() const;
-        unordered_map<string, string>    getQuery() const;
-        void                             setMatchingLocation(string str);
+        bool                            getCompletion() const;
+        Method                          getMethod() const;
+        Version                         getVersion() const;
+        int                             getPort() const;
+        string                          getUrl() const;
+        std::string                     getLocation() const;    
+        unordered_map<string, string>   getQuery() const;
         //sub logic
+        void                             setMatchingLocation(string str);
         int urlQuery(); //query parsing
         //logic
         int check(std::string firstLine);   //startline make

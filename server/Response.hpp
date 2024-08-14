@@ -30,6 +30,7 @@ typedef struct Request
     int     status; //request status code
     Method                                                      method;     //http method
     std::string                                                 url;        //http resource
+    std::string                                                 location;   //location for config
     Version                                                     version;    //http version
     std::unordered_map<std::string, std::string>                query;      //resource query
     std::unordered_map<std::string, std::deque<std::string> >   header;     //request header
