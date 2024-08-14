@@ -142,6 +142,7 @@ int Client::setStart(void)
         msg = msg.substr(flag + 2);
         request.method = startLine.getMethod();
         request.url = startLine.getUrl();
+        request.location = startLine.getLocation();
         request.version = startLine.getVersion();
         request.query = startLine.getQuery();
     }

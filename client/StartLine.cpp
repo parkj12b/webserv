@@ -90,6 +90,11 @@ std::string  StartLine::getUrl() const
     return (url);
 }
 
+std::string StartLine::getLocation() const
+{
+    return (location);
+}
+
 std::unordered_map<std::string, std::string>    StartLine::getQuery() const
 {
     return (query);

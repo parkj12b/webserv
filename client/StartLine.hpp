@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 12:55:26 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/14 15:07:46 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/14 15:10:32 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,12 +62,13 @@ class StartLine
         ~StartLine();
         StartLine(int port);
         //get function
-        bool                             getCompletion() const;
-        Method                           getMethod() const;
-        Version                          getVersion() const;
-        int                              getPort() const;
-        string                           getUrl() const;
-        unordered_map<string, string>    getQuery() const;
+        bool                            getCompletion() const;
+        Method                          getMethod() const;
+        Version                         getVersion() const;
+        int                             getPort() const;
+        string                          getUrl() const;
+        std::string                     getLocation() const;    
+        unordered_map<string, string>   getQuery() const;
         //sub logic
         bool                             urlQuery(); //query parsing
         bool                             setMatchingLocation(string str);
