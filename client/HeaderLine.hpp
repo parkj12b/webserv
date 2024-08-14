@@ -37,6 +37,7 @@ enum    TE
 /**
  * @brief request message header make
  * @param completion HeaderLine completion status
+ * @param connect keep-alive connect
  * @param te trailer status 
  * @param contentType content type(length or chunked)
  * @param port server port
@@ -50,6 +51,7 @@ class HeaderLine
 {
     private:
         bool        completion;
+        bool        connect;
         TE          te;
         CONTENTTYPE contentType;
         int         port;
@@ -72,6 +74,7 @@ class HeaderLine
         HeaderLine(int port);
         //get function
         bool        getCompletion() const;
+        bool        getConnect() const;
         TE          getTe() const;
         CONTENTTYPE getContentType() const;
         int         getPort() const;
