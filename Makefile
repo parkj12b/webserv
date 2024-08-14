@@ -42,7 +42,7 @@ CONFIG_SRC_DIR = ./config/src
 CONFIG_SRC = 	Directives.cpp Env.cpp HTTPServer.cpp Lexer.cpp LocationConfig.cpp \
 				LocationConfigData.cpp Parser.cpp ServerConfig.cpp \
 				ServerConfigData.cpp Syntax.cpp Token.cpp UtilTemplate.cpp \
-				Validator.cpp Word.cpp Num.cpp
+				Validator.cpp Word.cpp Num.cpp Trie.cpp
 
 CONFIG_SRCS = $(addprefix $(CONFIG_SRC_DIR)/, $(CONFIG_SRC))
 
@@ -56,7 +56,7 @@ BIN_DIR = ./bin
 
 CPP = c++
 
-FLAGS = -Wall -Wextra -Werror -std=c++11 -g
+FLAGS = -Wall -Wextra -Werror -std=c++11 -g -fsanitize=address
 
 NAME = webserv
 
@@ -65,7 +65,7 @@ all :
 	make -j6 $(NAME)
 
 $(NAME) : $(SERVER_OBJS) $(CLIENT_OBJS) $(MAIN_OBJ) $(CONFIG_OBJS)
-	@$(CPP) $(SERVER_OBJS) $(CLIENT_OBJS) $(MAIN_OBJ) $(CONFIG_OBJS) $(INC) -o $(NAME)
+	@$(CPP) $(FLAGS) $(SERVER_OBJS) $(CLIENT_OBJS) $(MAIN_OBJ) $(CONFIG_OBJS) $(INC) -o $(NAME)
 	@echo $(GREEN)"\n==========================================================\n"$(EOC)
 	@echo $(YELLOW)"                    Webserv $(NAME) is ready"$(EOC)
 	@echo $(GREEN)"\n==========================================================\n"$(EOC)

@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 20:19:25 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/13 18:01:21 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/14 14:16:06 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <vector>
 #include <map>
 #include "LocationConfigData.hpp"
+#include "Trie.hpp"
 
 using namespace std;
 
@@ -29,11 +30,13 @@ private:
     string                          _serverName;
     vector<int>                     _port;
     map<string, LocationConfigData> _locationConfigData;  //location에 따른 정보가 담긴 map??
+    Trie                            _locationTrie;
 public:
     void                            setServerName(string serverName);
     string                          getServerName();
     vector<int>                     &getPort();
     map<string, LocationConfigData> &getLocationConfigData();
+    Trie                            &getLocationTrie();
     ServerConfigData();
 };
 

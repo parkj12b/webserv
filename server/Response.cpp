@@ -10,7 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <map>
+#include <string>
 #include "Response.hpp"
+#include "Server.hpp"
+#include "LocationConfigData.hpp"
+#include "ServerConfigData.hpp"
+#include "Trie.hpp"
+
+using namespace std;
 
 std::map<int, std::string>  statusContentInit()
 {
@@ -125,23 +133,33 @@ Response::Response(const Response& src)
     content = src.getContent();
     entity = src.getEntity();
     request = src.getRequest();
+    port = src.getPort();
 }
 
 Response&    Response::operator=(const Response& src)
 {
+    if (this == &src)
+        return (*this);
     start = src.getStart();
     header = src.getHeader();
     content = src.getContent();
     entity = src.getEntity();
     request = src.getRequest();
+    port = src.getPort();
     return (*this);
 }
 
 Response::~Response()
-{}
+{
+}
 
 Response::Response(int port) : port(port)
 {}
+
+int Response::getPort() const
+{
+    return (port);
+}
 
 std::string Response::getStart() const
 {
@@ -175,10 +193,19 @@ void    Response::setRequest(Request &temp)
 
 void    Response::init()
 {
+    // map<string, LocationConfigData> locationConfig = Server::serverConfig->getServerConfigData()[port]->getLocationConfigData();
+    cout << "port: " << port << endl;
+    std::cout<<"url : "<< request.url <<std::endl;
+    std::cout<<"location : "<< request.location <<std::endl;
+    ServerConfigData *s = Server::serverConfig->getServerConfigData()[port];
+    cout << s << endl;
+    map<string, LocationConfigData> locationMap = s->getLocationConfigData();
+
     start.clear();
     header.clear();
     content.clear();
     entity.clear();
+
 }
 
 void    Response::makeDate()
@@ -209,6 +236,8 @@ void    Response::makeDate()
 
 void    Response::makeError()
 {
+    //url 이 필요함 -> url 파싱해야됨, prefix match 
+    // map<int, string>   errorPage = Server::serverConfig->getServerConfigData()[port].getLocationConfigData();
     int fd;
 
     if (request.status >= 300 && request.status < 400)
@@ -216,12 +245,11 @@ void    Response::makeError()
     start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
     if (request.status == 100)
         return ;
-    fd = open("./resource/html/40x.html", O_RDONLY);  //config
+    fd = open("./resource/html/40x.html", O_RDONLY);  //url에 대한 location 찾아서 error page 가져오기(config parser)
     if (fd < 0)
         return ;
     makeHeader("content-type", "text/html");
     makeContent(fd);
-    close(fd);
 }
 
 void    Response::initRequest(Request msg)
@@ -241,10 +269,7 @@ void    Response::makeContent(int fd)
     char    buffer[4096];
 
     if (request.url == "./favicon.ico")
-    {
         makeHeader("Content-Type", "image/x-icon");
-        std::cout<<"here\n"<<std::endl;
-    }
     else
         makeHeader("Content-Type", "text/html");
     count = 0;
@@ -261,6 +286,7 @@ void    Response::makeContent(int fd)
     }
     std::cout<<content.size()<<std::endl;
     makeHeader("content-length", std::to_string(count));
+    close(fd);
 }
 
 void    Response::makeEntity()
@@ -291,13 +317,11 @@ void    Response::makeGet()
         //거기에 맞는 content만들기
         makeHeader("Content-Type", "text/html");
         makeContent(fd);
-        close(fd);
         return ;
     }
     makeContent(fd);
     request.status = 200;
     start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
-    close(fd);
 }
 
 

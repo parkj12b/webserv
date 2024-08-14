@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/13 18:27:32 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/13 23:22:07 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ Client& Client::operator=(const Client& src)
     startLine = src.getStartLine();
     headerLine = src.getHeaderline();
     contentLine = src.getContentLine();
-    response = src.getResponse();
+    response = src.getResponse(); // 디폴트로 불리면서 포트 설정 안됨
     return (*this);
 }
 
@@ -161,12 +161,13 @@ int Client::setStart(void)
         msg = msg.substr(flag + 2);
         request.method = startLine.getMethod();
         request.url = startLine.getUrl();
+        request.location = startLine.getLocation();
         request.version = startLine.getVersion();
         request.query = startLine.getQuery();
     }
     else
     {
-        if (msg.size() > 8192)  //config parser
+        if (msg.size() > 8192)
         {
             request.status = 414;
             return (2);
@@ -378,6 +379,7 @@ void    Client::setMessage(std::string msgRequest)
 void    Client::setResponseMessage()
 {
     index = 0;
+    response = Response(port);
     response.initRequest(request);
     response.responseMake();
     msg = response.getEntity();

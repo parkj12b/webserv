@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 14:35:58 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/13 16:19:05 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/14 13:53:04 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ class HTTPServer
 private:
     int                                 _workerConnections;
     map<int, ServerConfigData *>        _serverConfigData;  //포트에 알맞는 서버 config _serverSet과의 차이는??
-    set<ServerConfigData *>             _serverSet;
+    set<ServerConfigData *>             _serverSet; //delete할때 사용
 public:
     int                                 getWorkerConnections();
     void                                setWorkerConnections(int workerConnections);

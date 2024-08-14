@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 20:21:17 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/09 20:23:16 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/14 14:24:21 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,7 @@ map<string, LocationConfigData> &ServerConfigData::getLocationConfigData()
 {
     return _locationConfigData;
 }
+
+Trie &ServerConfigData::getLocationTrie() { return _locationTrie; }
 
 ServerConfigData::ServerConfigData() {}
