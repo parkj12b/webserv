@@ -39,6 +39,7 @@ std::map<std::string, Version> originVersionInit()
 // 여기에 정의를 추가하세요
 std::map<std::string, Method> StartLine::originMethod = originMethodInit();
 std::map<std::string, Version> StartLine::originVersion = originVersionInit();
+std::string methodString[4] = {"", "GET", "POST", "DELETE"};
 
 StartLine::StartLine() : completion(false), port(0)
 {}

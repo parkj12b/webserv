@@ -45,10 +45,12 @@
 class Client
 {
     private:
+        bool        connect;
         int         fd;
         int         port;
         size_t      index;
         size_t      responseAmount;
+        ssize_t     standardTime;
         std::string msg;
         std::time_t keepAlive;
         Request     request;
@@ -63,10 +65,12 @@ class Client
         Client& operator=(const Client& src);
         ~Client();
         //get function
+        bool        getConnect() const;
         int         getFd() const;
         int         getPort() const;
         size_t      getIndex() const;
         size_t      getResponseAmount() const;
+        ssize_t     getStandardTime() const;
         std::string getMsg() const;
         std::time_t getKeepAlive() const;
         Request     getRequest() const;

@@ -110,6 +110,7 @@ std::vector<std::string>    singleHeaderInit()
     v.push_back("x-forwarded-proto");
     v.push_back("x-frame-options");
     v.push_back("x-xss-protection");
+    v.push_back("connection");  //upgrade field가 있기는 하나 우리는 허용하지 않는다. 
     return (v);
 }
 
