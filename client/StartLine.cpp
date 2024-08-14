@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 12:55:24 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/14 15:08:08 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/14 15:08:15 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,5 +177,5 @@ bool    StartLine::setMatchingLocation(string url)
         return (true);
     }
     cout << "location " << location << endl;
-    return (0);
+    return (false);
 }
