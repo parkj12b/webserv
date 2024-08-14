@@ -42,7 +42,7 @@ CONFIG_SRC_DIR = ./config/src
 CONFIG_SRC = 	Directives.cpp Env.cpp HTTPServer.cpp Lexer.cpp LocationConfig.cpp \
 				LocationConfigData.cpp Parser.cpp ServerConfig.cpp \
 				ServerConfigData.cpp Syntax.cpp Token.cpp UtilTemplate.cpp \
-				Validator.cpp Word.cpp Num.cpp
+				Validator.cpp Word.cpp Num.cpp Trie.cpp
 
 CONFIG_SRCS = $(addprefix $(CONFIG_SRC_DIR)/, $(CONFIG_SRC))
 

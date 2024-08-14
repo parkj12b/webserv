@@ -6,11 +6,13 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 12:55:24 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/13 19:58:37 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/14 14:47:13 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "StartLine.hpp"
+#include "HTTPServer.hpp"
+#include "Server.hpp"
 
 extern int logs;
 
@@ -143,6 +145,7 @@ int     StartLine::check(std::string firstLine)
                 url = str;  //.찾으면 지우기
                 if (urlQuery())
                     return (400);
+                setMatchingLocation(url);
                 // url이 잘못된 형식이면 400 형식은 맞지만 존재하지 않는다면 404(Not Found)
                 // 여기서 url검사와 allow검사 같이 진행하는 것이 좋을듯
                 break ;
@@ -158,4 +161,15 @@ int     StartLine::check(std::string firstLine)
         return (400);
     completion = true;
     return (0);
+}
+
+void    StartLine::setMatchingLocation(string url)
+{
+    HTTPServer *s = Server::serverConfig;
+    ServerConfigData *serverConfigData = s->getServerConfigData()[port];
+    Trie &locationTrie = serverConfigData->getLocationTrie();
+    
+    cout << "url " << url << endl;
+    location = locationTrie.find(url);
+    cout << "location " << location << endl;
 }

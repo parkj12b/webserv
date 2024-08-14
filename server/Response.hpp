@@ -22,6 +22,7 @@
 # include <fcntl.h>
 # include <cstdio>
 
+using namespace std;
 
 typedef struct Request
 {
@@ -38,6 +39,8 @@ typedef struct Request
 /**
  * @brief request message
  * @param port server port
+ * @param path server path
+ * @param location location block path
  * @param start response startline
  * @param header response header
  * @param content response content
@@ -46,9 +49,9 @@ typedef struct Request
  */
 class Response
 {
-    // 얘네들 다 언제설정됨???
     private:
         int         port;
+        string      path;
         std::string location;
         std::string start;
         std::string header;
@@ -65,6 +68,7 @@ class Response
         ~Response();
         Response(int port);
         //get function
+        int         getPort() const;
         std::string getStart() const;
         std::string getHeader() const;
         std::string getContent() const;

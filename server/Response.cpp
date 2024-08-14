@@ -16,6 +16,7 @@
 #include "Server.hpp"
 #include "LocationConfigData.hpp"
 #include "ServerConfigData.hpp"
+#include "Trie.hpp"
 
 using namespace std;
 
@@ -132,15 +133,19 @@ Response::Response(const Response& src)
     content = src.getContent();
     entity = src.getEntity();
     request = src.getRequest();
+    port = src.getPort();
 }
 
 Response&    Response::operator=(const Response& src)
 {
+    if (this == &src)
+        return (*this);
     start = src.getStart();
     header = src.getHeader();
     content = src.getContent();
     entity = src.getEntity();
     request = src.getRequest();
+    port = src.getPort();
     return (*this);
 }
 
@@ -150,6 +155,11 @@ Response::~Response()
 
 Response::Response(int port) : port(port)
 {}
+
+int Response::getPort() const
+{
+    return (port);
+}
 
 std::string Response::getStart() const
 {
@@ -188,41 +198,12 @@ void    Response::init()
     ServerConfigData *s = Server::serverConfig->getServerConfigData()[port];
     cout << s << endl;
     map<string, LocationConfigData> locationMap = s->getLocationConfigData();
-    size_t  pos;
 
     start.clear();
     header.clear();
     content.clear();
     entity.clear();
-    location = request.url;
-    while (1)
-    {
-        pos = location.rfind('/');
-        if (pos != std::string::npos)
-        {
-            location = request.url.substr(0, pos);
-            //location 찾으면 나오게
-            if (location.size() == 0)
-            {
-                request.status = 404;
-                break ;
-            }
-            map<string, LocationConfigData>::iterator it = locationMap.find(location);
-            if (it != locationMap.end())
-                continue;
-            else
-            {
-                cout << location << endl;
-                break;
-            }
-        }
-        else
-        {
-            request.status = 404;
-            break ;
-        }
-    }
-    
+
 }
 
 void    Response::makeDate()
