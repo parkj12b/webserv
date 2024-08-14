@@ -20,6 +20,7 @@
 #include "ServerConfigData.hpp"
 #include "Trie.hpp"
 #include "UtilTemplate.hpp"
+#include "StartLine.hpp"
 
 using namespace std;
 
@@ -415,7 +416,7 @@ void    Response::checkAllowedMethod()
         getServerConfigData()[port]->getLocationConfigData()[request.location];
     vector<string>    &allowedMethods = location.getAllowedMethods();
 
-    if (find(allowedMethods.begin(), allowedMethods.end(), request.method)
-        == allowedMethods.end())
+    if (find(allowedMethods.begin(), allowedMethods.end(),
+        StartLine::methodString[request.method]) == allowedMethods.end())
         request.status = 405;
 }
