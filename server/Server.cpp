@@ -124,7 +124,7 @@ EVENT   Server::clientWrite(struct kevent& store)
         return (EXPECT);
     if (!client[store.ident].getConnect())
     {
-        client[store.ident].resetClient();
+        // client[store.ident].resetClient();
         std::cout<<"connection fin"<<std::endl;
         return (FINISH);    //keep-alive가 선언이 되지 않았을 때
     }
