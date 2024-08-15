@@ -112,6 +112,7 @@ void    Response::makeFilePath(std::string& str)
 {
     LocationConfigData  &location = Server::serverConfig->getServerConfigData()[port]->getLocationConfigData()[request.location];
 
+    cout << "host: " << request.header["host"].front() << endl;
     str = location.getRoot() + "/" + str;
     if (isDirectory(str.c_str()))
     {

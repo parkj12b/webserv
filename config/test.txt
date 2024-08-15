@@ -6,7 +6,7 @@
 #    By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/11 14:01:38 by minsepar          #+#    #+#              #
-#    Updated: 2024/08/14 17:50:50 by minsepar         ###   ########.fr        #
+#    Updated: 2024/08/15 14:19:29 by minsepar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,7 @@ http {
         #limit_except GET;
 
         location / {
-            limit_except HEAD {
+            limit_except GET HEAD {
                 #deny all;
             }
             keepalive_timeout 10s 10;
