@@ -14,13 +14,14 @@
 # define RESONSE_HPP
 
 # include <iostream>
-# include "../client/StartLine.hpp"
 # include <vector>
 # include <deque>
 # include <fstream>
 # include <unistd.h>
 # include <fcntl.h>
 # include <cstdio>
+# include "StartLine.hpp"
+# include "ServerConfigData.hpp"
 
 using namespace std;
 
@@ -38,25 +39,27 @@ typedef struct Request
 }   Request;
 
 /**
- * @brief request message
- * @param port server port
- * @param path server path
- * @param location location block path
- * @param start response startline
- * @param header response header
- * @param content response content
- * @param entity response messgae entity
- * @param request request struct
+ * @brief           request message
+ * @param port      server port
+ * @param path      server path
+ * @param location  location block path
+ * @param start     response startline
+ * @param header    response header
+ * @param content   response content
+ * @param entity    response messgae entity
+ * @param request   request struct
+ * @param serverConfig    server used to take care of request.
  */
 class Response
 {
     private:
-        int         port;
-        std::string start;
-        std::string header;
-        std::string content;
-        std::string entity;
-        Request     request;
+        int                 port;
+        std::string         start;
+        std::string         header;
+        std::string         content;
+        std::string         entity;
+        Request             request;
+        ServerConfigData    *serverConfig;    //server config
         void        makeFilePath(std::string& str);
     public:
         static std::map<int, std::string>   statusContent;

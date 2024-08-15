@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 18:48:59 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/15 01:22:58 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/15 15:50:47 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,7 +285,7 @@ map<string, vector<Syntax> > Parser::_directiveSyntax = {
     {"worker_connections", {{{Tag::NUM}, 1}}},
     {"default_type", {{{Tag::ID}, 1}}},
     {"keepalive_timeout", {{{Tag::TIME, Tag::NUM}, 1}, {{Tag::TIME, Tag::NUM}, 0}}},
-    {"listen", {{{Tag::NUM, Tag::IPV4}, 1}}},
+    {"listen", {{{Tag::NUM, Tag::IPV4}, 1}, {{Tag::ID}, 0}}},
     {"server_name", {{{Tag::ID}, 1}, {{Tag::ID}, 2}}},
     {"root", {{{Tag::ID}, 1}}},
     {"error_page", {{{Tag::HTTPCODE}, 1}, {{Tag::HTTPCODE}, 2}, {{Tag::ID}, 0}}},

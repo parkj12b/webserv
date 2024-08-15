@@ -110,8 +110,8 @@ std::map<int, std::string>  Response::statusContent = statusContentInit();
 
 void    Response::makeFilePath(std::string& str)
 {
-    LocationConfigData  &location = Server::serverConfig->getServerConfigData()[port]
-        ->getLocationConfigData()[request.location];
+    LocationConfigData location
+        = serverConfig->getLocationConfigData()[request.location];
 
     str = location.getRoot() + "/" + str;
     if (isDirectory(str.c_str()))
@@ -219,7 +219,18 @@ void    Response::init()
     header.clear();
     content.clear();
     entity.clear();
-
+    string host = request.header["host"].front();
+    try
+    {
+        serverConfig = Server::serverConfig->getServerData(host, port);
+    }
+    catch(const std::exception& e)
+    {
+        serverConfig = Server::serverConfig->getDefaultServer();
+        if (serverConfig == NULL)
+            request.status = 404;
+    }
+    
 }
 
 void    Response::makeDate()
@@ -251,8 +262,8 @@ void    Response::makeDate()
 void    Response::makeError()
 {
     //url 이 필요함 -> url 파싱해야됨, prefix match 
-    LocationConfigData   location = Server::serverConfig->getServerConfigData()[port]
-        ->getLocationConfigData()[request.location];
+    LocationConfigData   location
+        = serverConfig->getLocationConfigData()[request.location];
     map<int, string>   &errorPage = location.getErrorPage();
 
     (void) errorPage;
@@ -415,8 +426,8 @@ void    Response::responseMake()
 
 void    Response::checkAllowedMethod()
 {
-    LocationConfigData  &location = Server::serverConfig->
-        getServerConfigData()[port]->getLocationConfigData()[request.location];
+    LocationConfigData  &location
+        = serverConfig->getLocationConfigData()[request.location];
     vector<string>    &allowedMethods = location.getAllowedMethods();
 
     if (find(allowedMethods.begin(), allowedMethods.end(),

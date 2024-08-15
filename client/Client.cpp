@@ -6,11 +6,13 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/13 23:22:07 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/15 16:12:54 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
+#include "ServerConfigData.hpp"
+#include "HTTPServer.hpp"
 
 extern int logs;
 
@@ -397,6 +399,13 @@ void    Client::setMessage(std::string msgRequest)
         std::cout<<"Header Error\n";
         return ;
     }
+    //일단 여기서 함
+    if (setMatchingLocation(request.url))
+    {
+        request.fin = true;
+        std::cout<<"Location Error\n";
+        return ;
+    }
     if (setContent()) // 바디 파싱
     {
         request.fin = true;
@@ -431,4 +440,29 @@ size_t  Client::responseIndex()
 void    Client::plusIndex(size_t plus)
 {
     index += plus;
+}
+
+bool    Client::setMatchingLocation(string url)
+{
+    string host = request.header["host"].front();
+    ServerConfigData *serverConfigData;
+    try {
+        serverConfigData = Server::serverConfig->getServerData(host, port);
+    } catch (exception &e) {
+        if (Server::serverConfig->getDefaultServer() == NULL)
+            return (true);
+        else
+            serverConfigData = Server::serverConfig->getDefaultServer();
+    }
+    Trie &locationTrie = serverConfigData->getLocationTrie();
+    
+    cout << "url " << url << endl;
+    try {
+        request.location = locationTrie.find(url);
+    } catch (exception &e) {
+        return (true);
+    }
+    cout << "location " << request.location << endl;
+    return (false);
+
 }

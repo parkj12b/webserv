@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:17 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/13 23:20:59 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/15 15:23:21 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ class Client
         void        setResponseMessage();               //make response msg
         void        plusIndex(size_t plus);             //index plus
         void        resetClient();                     //reset client varidation
+        bool        setMatchingLocation(string url); // 임시
         // void    makeResponse();
         //temp(must delete)
         void        showMessage(void);  //request msg show
