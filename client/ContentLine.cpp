@@ -14,16 +14,16 @@
 
 extern int logs;
 
-ContentLine::ContentLine() : completion(false), port(0), contentLength(0)
+ContentLine::ContentLine() : completion(false), port(0), contentLength(0), maxSize(0)
 {}
 
-ContentLine::ContentLine(const ContentLine& src) : completion(src.getCompletion()), contentType(src.getContentType()), port(src.getPort()), contentLength(src.getContentLength()), chunked(src.getChunked()), content(src.getContent())
+ContentLine::ContentLine(const ContentLine& src) : completion(src.getCompletion()), contentType(src.getContentType()), port(src.getPort()), contentLength(src.getContentLength()), maxSize(src.getMaxSize()), chunked(src.getChunked()), content(src.getContent())
 {}
 
 ContentLine::~ContentLine()
 {}
 
-ContentLine::ContentLine(int port) : completion(false), port(port), contentLength(0)
+ContentLine::ContentLine(int port) : completion(false), port(port), contentLength(0), maxSize(0)
 {}
 
 ContentLine& ContentLine::operator=(const ContentLine& src)
@@ -55,6 +55,11 @@ int ContentLine::getContentLength() const
 int ContentLine::getPort() const
 {
     return (port);
+}
+
+size_t  ContentLine::getMaxSize() const
+{
+    return (maxSize);
 }
 
 std::string ContentLine::getChunked() const

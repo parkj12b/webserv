@@ -30,6 +30,7 @@ class ContentLine
         CONTENTTYPE                 contentType;
         int                         port;
         int                         contentLength;
+        size_t                      maxSize;
         std::string                 chunked;
         std::vector<std::string>    content;
     public:
@@ -45,6 +46,7 @@ class ContentLine
         CONTENTTYPE                 getContentType() const;
         int                         getPort() const;
         int                         getContentLength() const;
+        size_t                      getMaxSize() const;
         std::string                 getChunked() const;
         std::vector<std::string>    getContent() const;
         //logic
