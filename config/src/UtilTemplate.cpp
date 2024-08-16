@@ -131,7 +131,6 @@ int isDirectory(const char *path)
 
     if (stat(path, &statbuf) != 0)
         return 0;
-    
     if (S_ISDIR(statbuf.st_mode))
         return 1;
     return 0;

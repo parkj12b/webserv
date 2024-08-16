@@ -128,6 +128,23 @@ bool    StartLine::urlQuery()
     return (false);
 }
 
+bool    StartLine::setMatchingLocation(string url)
+{
+    HTTPServer *s = Server::serverConfig;
+    ServerConfigData *serverConfigData = s->getServerConfigData()[port];
+    Trie &locationTrie = serverConfigData->getLocationTrie();
+    
+    cout << "url " << url << endl;
+    // 상대 url일 경우에는 에러가 발생함
+    try {
+        location = locationTrie.find(url);
+    } catch (exception &e) {
+        return (true);
+    }
+    cout << "location " << location << endl;
+    return (false);
+}
+
 int     StartLine::check(std::string firstLine)
 {
     std::istringstream  strStream(firstLine);
@@ -168,20 +185,4 @@ int     StartLine::check(std::string firstLine)
         return (400);
     completion = true;
     return (0);
-}
-
-bool    StartLine::setMatchingLocation(string url)
-{
-    HTTPServer *s = Server::serverConfig;
-    ServerConfigData *serverConfigData = s->getServerConfigData()[port];
-    Trie &locationTrie = serverConfigData->getLocationTrie();
-    
-    cout << "url " << url << endl;
-    try {
-        location = locationTrie.find(url);
-    } catch (exception &e) {
-        return (true);
-    }
-    cout << "location " << location << endl;
-    return (false);
 }

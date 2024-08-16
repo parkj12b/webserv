@@ -38,7 +38,6 @@ Kq::Kq()
         serverAdr.sin_family = AF_INET;
         serverAdr.sin_addr.s_addr = htonl(INADDR_ANY);  //ip는 무조건 localhost로. config에서 에러 처리
         serverAdr.sin_port = htons(port);   //config parser
-        cout << "port: " << port << endl;   
         while (::bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0)
         {
             if (errno == EADDRINUSE)  //ip 에러를 여기서 처리할 수도...
@@ -49,7 +48,8 @@ Kq::Kq()
         server[serverFd] = Server(serverFd, port);  //config parser
         serverConfigIt++;
     }
-    std::cout<<"\nserver port open.\n";
+    std::cout<<"server port open.\n";
+    connectionCnt = Server::serverConfig->getWorkerConnections();
 }
 
 Kq::Kq(const Kq& src) : kq(src.getKq()), fdList(src.getFdList()), server(src.getServer()), findServer(src.getFindServer())
@@ -124,10 +124,7 @@ void    Kq::eventRead(struct kevent& store)
         case ING:
             break ;
         case EXPECT:
-            plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
-            break ;
         case FINISH:
-            // std::cout<<"read event delete\n";
             plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
             break ;
     }
@@ -146,11 +143,9 @@ void    Kq::eventWrite(struct kevent& store)
     event = server[serverFd].clientWrite(store);
     switch (event)
     {
-        case ERROR:
-            clientFin(store);
-            break ;
         case ING:
             break ;
+        case ERROR:
         case FINISH:
             std::cout<<"write delete\n";
             clientFin(store);
@@ -163,13 +158,11 @@ void    Kq::eventWrite(struct kevent& store)
 
 void    Kq::mainLoop()
 {
-    //changing EVENTCNT to WORKER_CONNECTIONS
-    const int WORKER_CONNECTIONS = Server::serverConfig->getWorkerConnections();
-    struct kevent   store[WORKER_CONNECTIONS];
+    struct kevent   store[connectionCnt];
     int             count;
 
-    //changed EVENTCNT to WORKER_CONNECTIONS
-    while ((count = kevent(kq, &fdList[0], fdList.size(), store, WORKER_CONNECTIONS, NULL)) < 0);
+    //changed EVENTCNT to connectionCnt
+    while ((count = kevent(kq, &fdList[0], fdList.size(), store, connectionCnt, NULL)) < 0);
     fdList.clear();
     for (int i = 0; i < count; i++)
     {

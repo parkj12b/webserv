@@ -54,6 +54,7 @@ private:
     string  _fileName;
     void    init();
 public:
+    //왜 이것들을 public하게 선언하였는지
     int                 line;
     int                 column;
     int                 startLine;

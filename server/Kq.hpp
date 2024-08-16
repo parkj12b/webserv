@@ -36,6 +36,7 @@ class Kq
 {
     private:
         int                         kq;
+        int                         connectionCnt;
         std::vector<struct kevent>  fdList;
         std::map<int, Server>       server;
         std::map<int, int>          findServer;
