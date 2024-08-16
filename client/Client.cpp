@@ -6,11 +6,13 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/13 23:22:07 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/16 14:46:57 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
+#include "ServerConfigData.hpp"
+#include "HTTPServer.hpp"
 
 extern int logs;
 
@@ -223,6 +225,11 @@ int Client::setHeader(void)
                 msg = msg.substr(flag + 2);
                 contentLine.initContentLine(headerLine.getContentLength(), headerLine.getContentType());
                 connect = headerLine.getConnect();
+                if (setMatchingLocation(request.url))
+                {
+                    request.status = 404;
+                    return (2);
+                }
                 break ;
             }
             str = msg.substr(0, flag);
@@ -431,4 +438,29 @@ size_t  Client::responseIndex()
 void    Client::plusIndex(size_t plus)
 {
     index += plus;
+}
+
+bool    Client::setMatchingLocation(string url)
+{
+    string host = request.header["host"].front();
+    ServerConfigData *serverConfigData;
+    try {
+        serverConfigData = Server::serverConfig->getServerData(host, port);
+    } catch (exception &e) {
+        if (Server::serverConfig->getDefaultServer() == NULL)
+            return (true);
+        else
+            serverConfigData = Server::serverConfig->getDefaultServer();
+    }
+    Trie &locationTrie = serverConfigData->getLocationTrie();
+    
+    cout << "url " << url << endl;
+    try {
+        request.location = locationTrie.find(url);
+    } catch (exception &e) {
+        return (true);
+    }
+    cout << "location " << request.location << endl;
+    return (false);
+
 }

@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 12:55:26 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/14 15:10:32 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/15 15:15:45 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,13 @@ enum Version
 };
 
 /**
- * @brief request message startline class
- * @param completion startline status
- * @param version http version
- * @param method http possible method
- * @param port server port
- * @param url resource
- * @param query all query
+ * @brief               request message startline class
+ * @param completion    startline status
+ * @param version       http version
+ * @param method        http possible method
+ * @param port          server port
+ * @param url           resource
+ * @param query         all query
  */
 class StartLine
 {
@@ -72,7 +72,6 @@ class StartLine
         unordered_map<string, string>   getQuery() const;
         //sub logic
         bool                             urlQuery(); //query parsing
-        bool                             setMatchingLocation(string str);
         //logic
         int check(std::string firstLine);   //startline make
 };

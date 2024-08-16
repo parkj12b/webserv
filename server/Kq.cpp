@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/13 15:34:21 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/15 02:07:26 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ Kq::Kq()
     int                 option;
     int                 serverFd;
     //Changing portNum to config port
-    map<int, ServerConfigData *> &serverConfigData = Server::serverConfig->getServerConfigData();
-    map<int, ServerConfigData *>::iterator serverConfigIt = serverConfigData.begin();
+    map<int, map<string, ServerConfigData *> > &serverConfigData = Server::serverConfig->getServerConfigData();
+    map<int, map<string, ServerConfigData *> >::iterator serverConfigIt = serverConfigData.begin();
     //temp
     // int                 portNum[4] = {80, 800, 8000, 8080};
 
