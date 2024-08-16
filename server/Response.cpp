@@ -374,6 +374,7 @@ void    Response::makePost()
             return ;
         }
     }
+    close(fd);
     request.status = 204;
     start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
 }
