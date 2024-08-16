@@ -330,6 +330,7 @@ void    Response::makeGet()
 
     std::cout<<"Method: GET"<<std::endl;
     std::cout<<request.url.c_str()<<std::endl;
+    //cgi checking...
     fd = open(request.url.c_str(), O_RDONLY);
     if (fd < 0)
     {
@@ -354,6 +355,8 @@ void    Response::makePost()
     std::string buffer;
     int         fd;
 
+    std::cout<<"Method: POST"<<std::endl;
+    //cgi checking...
     fd = open(request.url.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0777);
     if (fd < 0)
     {
@@ -377,6 +380,7 @@ void    Response::makePost()
 
 void    Response::makeDelete()
 {
+    std::cout<<"Method: DELETE"<<std::endl;
     if (std::remove(request.url.c_str()) == 0)
     {
         request.status = 204;
