@@ -16,7 +16,6 @@
 # include <iostream>
 # include <sstream>
 # include <map>
-# include <unordered_map>
 
 using namespace std;
 
@@ -50,7 +49,7 @@ class StartLine
         int                                             port;
         std::string                                     url;
         std::string                                     location;
-        std::unordered_map<std::string, std::string>    query;
+        std::map<std::string, std::string>    query;
     public:
         //static variable
         static std::map<std::string, Method>    originMethod;   //possible method
@@ -69,7 +68,7 @@ class StartLine
         int                             getPort() const;
         string                          getUrl() const;
         std::string                     getLocation() const;    
-        unordered_map<string, string>   getQuery() const;
+        map<string, string>   getQuery() const;
         //sub logic
         bool                             urlQuery(); //query parsing
         //logic

@@ -16,7 +16,7 @@
 # include <iostream>
 # include <vector>
 # include <deque>
-# include <unordered_map>
+# include <map>
 # include <sstream>
 # include <algorithm>
 # include <cctype>
@@ -58,7 +58,7 @@ class HeaderLine
         size_t      contentLength;
         std::string key;
         std::string value;
-        std::unordered_map<std::string, std::deque<std::string> > header;
+        std::map<std::string, std::deque<std::string> > header;
     public:
         //static variable
         static std::vector<std::string> singleHeader;   //only one header
@@ -81,7 +81,7 @@ class HeaderLine
         int         getContentLength() const;
         std::string getKey() const;
         std::string getValue() const;
-        std::unordered_map<std::string, std::deque<std::string> > getHeader() const;
+        std::map<std::string, std::deque<std::string> > getHeader() const;
         //set function
         void    setContentLength(int minus);
         void    setTrailer(TE temp);

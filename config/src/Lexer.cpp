@@ -137,7 +137,7 @@ Lexer::Lexer(string fileName)
     init();
     file.open(fileName);
     if (!file.is_open())
-        throw runtime_error("File open fail");
+        std::exit(1);
 }
 
 void    Lexer::checkNewLine()
