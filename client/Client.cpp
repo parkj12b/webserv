@@ -359,26 +359,26 @@ void    Client::showMessage(void)
     // time_t 형식을 문자열로 변환합니다.
     char* dt = ctime(&now);
     std::cout<<"time : "<<dt;
-    // //request 출력
-    // std::cout<<"=====strat line=====\n";
-    // std::cout<<"fd : "<<fd<<std::endl;
-    // std::cout<<request.method<<" "<<request.version<<" "<<request.url<<std::endl;
-    // for (std::unordered_map<std::string, std::string>::iterator it = request.query.begin(); it != request.query.end(); it++)
-    //     std::cout<<it->first<<"="<<it->second<<std::endl;
-    // std::cout<<"=====header line=====\n";
-    // for (std::unordered_map<std::string, std::deque<std::string> >::iterator it = request.header.begin(); it != request.header.end(); it++)
-    // {
-    //     std::cout<<it->first<<": ";
-    //     for (itd = request.header[it->first].begin(); itd != request.header[it->first].end(); itd++)
-    //         std::cout<<*itd<<"  ";
-    //     std::cout<<"\n";
-    // }
-    // std::cout<<"=====entity line=====\n";
-    // for (std::vector<std::string>::iterator it = request.content.begin(); it != request.content.end(); it++)
-    // {
-    //     std::cout<<*it;
-    // }
-    // std::cout<<"\n\n";
+    //request 출력
+    std::cout<<"=====strat line=====\n";
+    std::cout<<"fd : "<<fd<<std::endl;
+    std::cout<<request.method<<" "<<request.version<<" "<<request.url<<std::endl;
+    for (std::unordered_map<std::string, std::string>::iterator it = request.query.begin(); it != request.query.end(); it++)
+        std::cout<<it->first<<"="<<it->second<<std::endl;
+    std::cout<<"=====header line=====\n";
+    for (std::unordered_map<std::string, std::deque<std::string> >::iterator it = request.header.begin(); it != request.header.end(); it++)
+    {
+        std::cout<<it->first<<": ";
+        for (itd = request.header[it->first].begin(); itd != request.header[it->first].end(); itd++)
+            std::cout<<*itd<<"  ";
+        std::cout<<"\n";
+    }
+    std::cout<<"=====entity line=====\n";
+    for (std::vector<std::string>::iterator it = request.content.begin(); it != request.content.end(); it++)
+    {
+        std::cout<<*it;
+    }
+    std::cout<<"\n\n";
 }
 
 void    Client::setMessage(std::string msgRequest)

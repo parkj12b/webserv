@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 12:55:24 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/15 15:23:03 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/16 14:29:22 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,23 @@ bool    StartLine::urlQuery()
     return (false);
 }
 
+bool    StartLine::setMatchingLocation(string url)
+{
+    HTTPServer *s = Server::serverConfig;
+    ServerConfigData *serverConfigData = s->getServerConfigData()[port];
+    Trie &locationTrie = serverConfigData->getLocationTrie();
+    
+    cout << "url " << url << endl;
+    // 상대 url일 경우에는 에러가 발생함
+    try {
+        location = locationTrie.find(url);
+    } catch (exception &e) {
+        return (true);
+    }
+    cout << "location " << location << endl;
+    return (false);
+}
+
 int     StartLine::check(std::string firstLine)
 {
     std::istringstream  strStream(firstLine);
@@ -170,4 +187,3 @@ int     StartLine::check(std::string firstLine)
     completion = true;
     return (0);
 }
-

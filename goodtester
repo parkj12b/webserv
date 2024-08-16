@@ -1,4 +1,4 @@
-GET /play.google.com/log?hasfast=true&auth=SAPISIDHASH+25374ca85d3915cf5536719f7b0b9b3b47dded27&authuser=0&format=json HTTP/1.1
+GET ./index.html HTTP/1.1
 Accept: */*
 Host: hi
 Accept-Encoding: gzip, deflate, br
