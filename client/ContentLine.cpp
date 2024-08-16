@@ -122,6 +122,9 @@ int ContentLine::makeContentLine(std::string &str)
 {
     size_t  flag;
 
+    maxSize += str.size();
+    if (maxSize > 800000000000)
+        return (-1);
     if (contentType == CONTENT)
     {
         std::cout<<contentLength<<' '<<str.size()<<std::endl;
