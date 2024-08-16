@@ -110,7 +110,8 @@ std::map<int, std::string>  Response::statusContent = statusContentInit();
 
 void    Response::makeFilePath(std::string& str)
 {
-    LocationConfigData  &location = Server::serverConfig->getServerConfigData()[port]->getLocationConfigData()[request.location];
+    LocationConfigData location
+        = serverConfig->getLocationConfigData()[request.location];
 
     cout << "host: " << request.header["host"].front() << endl;
     str = location.getRoot() + "/" + str;
@@ -219,7 +220,28 @@ void    Response::init()
     header.clear();
     content.clear();
     entity.clear();
+    string host = request.header["host"].front();
+    cout << "host: " << host << endl;
+    try
+    {
+        serverConfig = Server::serverConfig->getServerData(host, port);
+    }
+    catch(const std::exception& e)
+    {
+        serverConfig = Server::serverConfig->getDefaultServer();
+        if (serverConfig == NULL)
+            request.status = 404;
+    }
+    
+}
 
+int Response::getDefaultErrorPage(int statusCode)
+{
+    if (statusCode >= 400 && statusCode < 500)
+        return (open(DEFAULT_400_ERROR_PAGE, O_RDONLY));
+    else if (statusCode >= 500)
+        return (open(DEFAULT_500_ERROR_PAGE, O_RDONLY));
+    return (open(DEFAULT_400_ERROR_PAGE, O_RDONLY));
 }
 
 void    Response::makeDate()
@@ -251,15 +273,20 @@ void    Response::makeDate()
 void    Response::makeError()
 {
     //url 이 필요함 -> url 파싱해야됨, prefix match 
-    // map<int, string>   errorPage = Server::serverConfig->getServerConfigData()[port].getLocationConfigData();
+    LocationConfigData   location
+        = serverConfig->getLocationConfigData()[request.location];
+    map<int, string>   &errorPage = location.getErrorPage();
+
+    (void) errorPage;
     int fd;
 
+    
     if (request.status >= 300 && request.status < 400)
         return ;
     start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
     if (request.status == 100)
         return ;
-    fd = open("./resource/html/40x.html", O_RDONLY);  //url에 대한 location 찾아서 error page 가져오기(config parser)
+    fd = getDefaultErrorPage(request.status);
     if (fd < 0)
         return ;
     makeHeader("content-type", "text/html");
@@ -322,7 +349,7 @@ void    Response::makeGet()
     {
         request.status = 404;
         start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
-        fd = open("./resource/html/40x.html", O_RDONLY);
+        fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);
         if (fd < 0)
             return ;
         //거기에 맞는 content만들기
@@ -410,8 +437,8 @@ void    Response::responseMake()
 
 void    Response::checkAllowedMethod()
 {
-    LocationConfigData  &location = Server::serverConfig->
-        getServerConfigData()[port]->getLocationConfigData()[request.location];
+    LocationConfigData  &location
+        = serverConfig->getLocationConfigData()[request.location];
     vector<string>    &allowedMethods = location.getAllowedMethods();
 
     if (find(allowedMethods.begin(), allowedMethods.end(),

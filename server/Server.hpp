@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:55 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/12 20:36:39 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/15 16:57:18 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@
 #include "HTTPServer.hpp"
 
 # define BUFFER_SIZE 4096
+# define DEFAULT_400_ERROR_PAGE "./resource/html/error/40x.html"
+# define DEFAULT_500_ERROR_PAGE "./resource/html/error/50x.html"
 
 //server를 여러 개 만들 경우에는 kq클래스 만들기
 //kq 클래스에서 서버 클래스를 관리하기

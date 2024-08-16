@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:33:06 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/12 14:00:59 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/15 01:12:53 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,21 @@
 
 int logs = open("./log", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 
-int main(void)
+int main(int argc, char **argv)
 {
-    std::cout<<"========parser========"<<std::endl;
+    cout << "========parser========" << endl;
     Directives::init();
-    Lexer lex("./config/test.txt");
+    string path = DEFAULT_CONFIG_PATH;
+
+    if (argc == 2)
+        path = argv[1];
+    else if (argc != 1)
+    {
+        cerr << "Usage: ./webserv [config_file]" << endl;
+        exit(1);
+    }
+    
+    Lexer lex(path);
     Parser parser(lex, "main");
 
     parser.program();

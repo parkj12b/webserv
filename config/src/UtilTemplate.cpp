@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 15:26:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/14 16:06:10 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/15 01:58:27 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,4 +135,14 @@ int isDirectory(const char *path)
     if (S_ISDIR(statbuf.st_mode))
         return 1;
     return 0;
+}
+
+void toLowerCase(string &str) {
+    for (size_t i = 0; i < str.length(); ++i) {
+        // Check if the character is uppercase
+        if (str[i] >= 'A' && str[i] <= 'Z') {
+            // Convert to lowercase by adding the difference between 'a' and 'A'
+            str[i] = str[i] + ('a' - 'A');
+        }
+    }
 }

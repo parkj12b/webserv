@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:30:28 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/14 14:20:36 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/15 17:35:18 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,18 @@ HTTPServer    *Validator::validate()
     vector<ServerConfig *> serverConfig = _parser.getServerConfig();
 
     checkWorkerConnections();
-    map<int, ServerConfigData *> &serverConfigData = _httpServer->getServerConfigData();
+    map<int, map<string, ServerConfigData *> > &serverConfigData = _httpServer->getServerConfigData();
     cout << "num server: " << serverConfig.size() << endl;
     set<ServerConfigData *> &serverSet = _httpServer->getServerSet();
     for (size_t i = 0, size = serverConfig.size(); i < size; i++) {
         ServerConfigData *server = checkServer(serverConfig[i]);
         serverSet.insert(server);
         vector<int> &port = server->getPort();
+        vector<string> &serverName = server->getServerName();
         for (size_t j = 0, size = port.size(); j < size; j++) {
-            serverConfigData.insert(make_pair(port[j], server));
+            for (size_t k = 0, size = serverName.size(); k < size; k++) {
+                serverConfigData[port[j]].insert(make_pair(serverName[k], server));
+            }
         }
     }
 
@@ -63,6 +66,7 @@ ServerConfigData    *Validator::checkServer(ServerConfig *serverConfig)
     
     checkServerName(serverData, serverConfig);
     checkPort(serverData, serverConfig);
+    checkDuplicateServerConfig(serverData);
     map<string, LocationConfig> &location = serverConfig->location;
     map<string, LocationConfigData> &locationData = serverData->getLocationConfigData();
     Trie &locationTrie = serverData->getLocationTrie();
@@ -81,7 +85,7 @@ void    Validator::checkServerName(ServerConfigData *serverData, ServerConfig *s
     vector<vector<vector< Token *> > > *v = serverConfig->getConfig("server_name");
 
     if (v == NULL) {
-        serverData->setServerName(DEFAULT_SERVER_NAME);
+        serverData->addServerName(DEFAULT_SERVER_NAME);
         return ;
     }
     if (v->size() != 1) {
@@ -89,22 +93,27 @@ void    Validator::checkServerName(ServerConfigData *serverData, ServerConfig *s
     }
     string serverName = (dynamic_cast<Word *>((*v)[0][0][0]))->lexeme;
     if (serverName == "") {
-        serverData->setServerName(DEFAULT_SERVER_NAME);
+        serverData->addServerName(DEFAULT_SERVER_NAME);
     }
-    serverData->setServerName(serverName);
+    toLowerCase(serverName);
+    serverData->addServerName(serverName);
+    if ((*v)[0].size() > 1)
+    {
+        for (size_t i = 0, size = (*v)[0][1].size(); i < size; i++)
+        {
+            serverName = (dynamic_cast<Word *>((*v)[0][1][i]))->lexeme;
+            toLowerCase(serverName);
+            serverData->addServerName(serverName);
+        }
+    }
 }
 
 void    Validator::checkPort(ServerConfigData *serverData, ServerConfig *serverConfig)
 {
     vector<vector<vector< Token *> > > *v = serverConfig->getConfig("listen");
-    set<int> &ports = getPorts();
     vector<int> &_port = serverData->getPort();
 
     if (v == NULL) {
-        if (ports.find(DEFAULT_PORT) != ports.end()) {
-            throw ValidatorException("duplicate port 80");
-        }
-        ports.insert(DEFAULT_PORT);
         _port.push_back(DEFAULT_PORT);
         return ;
     }
@@ -113,11 +122,16 @@ void    Validator::checkPort(ServerConfigData *serverData, ServerConfig *serverC
         if (port > 65535 || port < 0) {
             throw ValidatorException("invalid port number");
         }
-        if (ports.find(port) != ports.end()) {
-            throw ValidatorException("duplicate port " + toString(port));
-        }
-        ports.insert(port);
         _port.push_back(port);
+        if ((*v)[i].size() > 1) {
+            string str = (dynamic_cast<Word *>((*v)[i][1][0]))->lexeme;
+            if (_httpServer->getDefaultServer() != NULL) {
+                throw ValidatorException("default_server directive must be set only once");
+            }
+            if (str == "default_server") {
+                _httpServer->setDefaultServer(serverData);
+            }
+        }
     }
 }
 
@@ -262,20 +276,26 @@ void    Validator::checkRoot(LocationConfigData &locationData, LocationConfig &l
 
 void    Validator::checkErrorPage(LocationConfigData &locationData, LocationConfig &locationConfig)
 {
-    vector<vector<vector< Token *> > > *v = locationConfig.getConfig("error_page");
 
+    Env *currentEnv = locationConfig.getEnv();
     map<int, string> &errorPage = locationData.getErrorPage();
-    if (v == NULL) { return ; }
-    for (size_t i = 0, size = (*v).size(); i < size; i++)
+    while (currentEnv != NULL)
     {
-        string errorURI = (dynamic_cast<Word *>((*v)[i][2][0]))->lexeme;
-        string errorNum = (dynamic_cast<Word *>((*v)[i][0][0]))->lexeme;
-        errorPage.insert(pair<int, string>(strtol(errorNum.c_str(), NULL, 10), errorURI));
-        for (size_t j = 0, numArg = (*v)[i][1].size(); j < numArg; j++)
+        vector<vector<vector< Token *> > > *v = locationConfig.getConfig("error_page");
+        if (v == NULL) { currentEnv = currentEnv->getPrev(); continue; }
+        for (int i = 0; i < (int)v->size(); i++)
         {
-            string errorNum = (dynamic_cast<Word *>((*v)[i][1][j]))->lexeme;
-            errorPage.insert(pair<int, string>(strtol(errorNum.c_str(), NULL, 10), errorURI));
+            string errorURI = (dynamic_cast<Word *>((*v)[i][2][0]))->lexeme;
+            string errorNum = (dynamic_cast<Word *>((*v)[i][0][0]))->lexeme;
+            for (size_t j = 0, numArg = (*v)[i][1].size(); j < numArg; j++)
+            {
+                string errorNum = (dynamic_cast<Word *>((*v)[i][1][j]))->lexeme;
+                if (errorPage.find(strtol(errorNum.c_str(), NULL, 10)) != errorPage.end())
+                    continue;
+                errorPage.insert(pair<int, string>(strtol(errorNum.c_str(), NULL, 10), errorURI));
+            }
         }
+        currentEnv = currentEnv->getPrev();
     }
 }
 
@@ -449,6 +469,28 @@ Validator::ValidatorException::~ValidatorException() throw() {}
 const char *Validator::ValidatorException::what() const throw()
 {
     return err.c_str();
+}
+
+void    Validator::checkDuplicateServerConfig(ServerConfigData *serverData)
+{
+    set<pair<string, int> > &serverNames = getServerNames();
+    vector<string> &serverName = serverData->getServerName();
+    vector<int> &port = serverData->getPort();
+
+    for (size_t i = 0, size = serverName.size(); i < size; i++)
+    {
+        pair<string, int> p = make_pair(serverName[i], port[0]);
+        if (serverNames.find(p) != serverNames.end())
+        {
+            throw ValidatorException("duplicate server config");
+        }
+        serverNames.insert(p);
+    }
+}
+
+set<pair<string, int> > &Validator::getServerNames()
+{
+    return serverNames;
 }
 
 Validator::Validator(Parser &parser)
