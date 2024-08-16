@@ -24,7 +24,10 @@ int main(void)
 {
     std::cout<<"========parser========"<<std::endl;
     Directives::init();
+    
+    //try - catch문을 제대로 사용할 것
     Lexer lex("./config/test.txt");
+
     Parser parser(lex, "main");
 
     parser.program();
