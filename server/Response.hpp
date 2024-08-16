@@ -49,6 +49,7 @@ typedef struct Request
  * @param entity    response messgae entity
  * @param request   request struct
  * @param serverConfig    server used to take care of request.
+ * @param locationConfig  location used to take care of request.
  */
 class Response
 {
@@ -60,6 +61,7 @@ class Response
         std::string         entity;
         Request             request;
         ServerConfigData    *serverConfig;    //server config
+        LocationConfigData  *locationConfig;  //location config
     public:
         static std::map<int, std::string>   statusContent;
         //oocf
@@ -75,8 +77,10 @@ class Response
         std::string getContent() const;
         std::string getEntity() const;
         Request     getRequest() const;
+        LocationConfigData *getLocationConfigData();
         //set function
         void    setRequest(Request &temp);
+        void    setLocationConfigData(LocationConfigData *locationConfig);
         //sub logic
         void    initRequest(Request msg);       //request msg init
         void    init();                         //start, header, content, entity init

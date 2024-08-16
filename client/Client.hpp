@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:17 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/15 15:23:21 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/16 18:09:13 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ class Client
         HeaderLine  headerLine;
         ContentLine contentLine;
         Response    response;
+        LocationConfigData
+            *recurFindLocation(string url, LocationConfigData *locationConfigData);
     public:
         Client();
         Client(int fd, int port);

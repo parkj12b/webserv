@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 20:21:17 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/15 01:40:29 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/17 01:13:29 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,26 @@ vector<string> &ServerConfigData::getServerName() { return _serverName; }
 
 vector<int> &ServerConfigData::getPort() { return _port; }
 
-map<string, LocationConfigData> &ServerConfigData::getLocationConfigData()
+LocationConfigData  *ServerConfigData::getLocationConfigData(string path, int prePost)
 {
-    return _locationConfigData;
+    map<string, map<int, LocationConfigData> >::iterator it = _locationConfigData.find(path);
+    
+    if (it == _locationConfigData.end())
+        return NULL;
+    map<int, LocationConfigData>::iterator it2 = it->second.find(prePost);
+    if (it2 == it->second.end())
+        return NULL;
+    return &it2->second;
 }
 
-Trie &ServerConfigData::getLocationTrie() { return _locationTrie; }
+void    ServerConfigData::setLocationConfigData(string path,
+            int prePost, LocationConfigData locationConfigData)
+{
+    _locationConfigData[path][prePost] = locationConfigData;
+}
+
+vector<string> &ServerConfigData::getSuffixMatch() { return _suffixMatch; }
+
+Trie &ServerConfigData::getPrefixTrie() { return _prefixTrie; }
 
 ServerConfigData::ServerConfigData() {}

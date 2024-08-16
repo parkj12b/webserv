@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 17:27:22 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/15 01:58:43 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/17 00:36:02 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,5 +33,8 @@ string      getErrorAngle(int column);
 
 int         isDirectory(const char *path);
 void        toLowerCase(string &str);
+
+/* used for suffix matching */
+bool        endsWith(const string& text, const string& suffix);
 
 #endif

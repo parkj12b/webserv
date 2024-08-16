@@ -110,19 +110,23 @@ std::map<int, std::string>  Response::statusContent = statusContentInit();
 
 void    Response::makeFilePath(std::string& str)
 {
-    LocationConfigData location
-        = serverConfig->getLocationConfigData()[request.location];
+    LocationConfigData *location = getLocationConfigData();
 
     cout << "host: " << request.header["host"].front() << endl;
-    str = location.getRoot() + "/" + str;
+    cout << "str before: " << str << endl;
+    str = location->getRoot() + "/" + str;
     if (isDirectory(str.c_str()))
     {
         // 없으면 index.html 이라 없을 일은 없음.
-        cout << "index: " << location.getIndex() << endl;
+        cout << "index: " << location->getIndex() << endl;
         if (str[str.size() - 1] == '/')
-            str += location.getIndex();
-        cout << "at the end: " << str << endl;
-        return ;
+            str += location->getIndex();
+        else
+        {
+            cout << "str: " << str << endl;
+            request.status = 404;
+            return ;
+        }
     }
     cout << "str: " << str << endl;
     if (access(str.c_str(), F_OK | R_OK) == -1)
@@ -278,9 +282,8 @@ void    Response::makeDate()
 void    Response::makeError()
 {
     //url 이 필요함 -> url 파싱해야됨, prefix match 
-    LocationConfigData   location
-        = serverConfig->getLocationConfigData()[request.location];
-    map<int, string>   &errorPage = location.getErrorPage();
+    LocationConfigData   *location = getLocationConfigData();
+    map<int, string>   &errorPage = location->getErrorPage();
 
     (void) errorPage;
     int fd;
@@ -416,24 +419,31 @@ void    Response::responseMake()
     makeDate();
     checkAllowedMethod();
     if (request.status > 0)
-        makeError();
-    else
     {
-        makeFilePath(request.url);
-        switch (request.method)
-        {
-            case GET:
-                makeGet();
-                break ;
-            case POST:
-                makePost();
-                break ;
-            case DELETE:
-                makeDelete();
-                break ;
-            default:
-                break ;
-        }
+        makeError();
+        makeEntity();
+        return ;
+    }
+    makeFilePath(request.url);
+    if (request.status > 0)
+    {
+        makeError();
+        makeEntity();
+        return ;
+    }
+    switch (request.method)
+    {
+        case GET:
+            makeGet();
+            break ;
+        case POST:
+            makePost();
+            break ;
+        case DELETE:
+            makeDelete();
+            break ;
+        default:
+            break ;
     }
     makeEntity();
     return ;
@@ -441,12 +451,20 @@ void    Response::responseMake()
 
 void    Response::checkAllowedMethod()
 {
-    LocationConfigData  &location
-        = serverConfig->getLocationConfigData()[request.location];
-    vector<string>    &allowedMethods = location.getAllowedMethods();
+    LocationConfigData  *location = getLocationConfigData();
+    vector<string>    &allowedMethods = location->getAllowedMethods();
 
     if (find(allowedMethods.begin(), allowedMethods.end(),
         StartLine::methodString[request.method]) == allowedMethods.end())
         request.status = 405;
 }
 
+LocationConfigData *Response::getLocationConfigData()
+{
+    return (locationConfig);
+}
+
+void    Response::setLocationConfigData(LocationConfigData *locationConfigData)
+{
+    locationConfig = locationConfigData;
+}

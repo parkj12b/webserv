@@ -19,6 +19,7 @@
 #include <unordered_set>
 #include "Lexer.hpp"
 #include "Syntax.hpp"
+#include "LocationConfig.hpp"
 
 #define DEFAULT_CONFIG_PATH "./config/default.conf"
 
@@ -48,6 +49,7 @@ private:
     Env *_event;
     stack<pair<Lexer *, Token *> > _lexStack;
     set<Env *> _envList;
+    set<LocationConfig *> _locationList;
     vector<ServerConfig *> _serverConfig;
     static map<string, int> _directiveNum;
     static map<string, vector<Syntax> > _directiveSyntax;
@@ -79,6 +81,7 @@ public:
     };
 
     ServerConfig            *curServer;
+    LocationConfig          *curLocation;
 
     /* getter */
 
@@ -109,7 +112,7 @@ public:
      * @param   env Env to save
     */
     void                    saveEnv(Env *env);
-
+    void                    saveLocation(LocationConfig *location);
     /**
      * @brief           include directive logic
      * @param   path    path (file) to include

@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 20:08:10 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/13 16:49:30 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/16 22:12:21 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ class ServerConfig {
 private:
     Env *_env;
 public:
-    map<string, LocationConfig>         location;
+    map<string, map<int,  LocationConfig *> >         location;
     vector<vector<vector< Token *> > >  *getConfig(string key);
-    LocationConfig                      &getLocationConfig(string key);
+    LocationConfig                      *getLocationConfig(string key, int prePost);
     ServerConfig(Env *env);
     ~ServerConfig();
 };

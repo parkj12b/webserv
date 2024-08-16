@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:30:28 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/15 17:35:18 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/17 01:14:48 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,16 +67,25 @@ ServerConfigData    *Validator::checkServer(ServerConfig *serverConfig)
     checkServerName(serverData, serverConfig);
     checkPort(serverData, serverConfig);
     checkDuplicateServerConfig(serverData);
-    map<string, LocationConfig> &location = serverConfig->location;
-    map<string, LocationConfigData> &locationData = serverData->getLocationConfigData();
-    Trie &locationTrie = serverData->getLocationTrie();
-    for (map<string, LocationConfig>::iterator it = location.begin(); it != location.end(); it++)
+    map<string, map<int, LocationConfig *> > &location = serverConfig->location;
+    Trie &prefixTrie = serverData->getPrefixTrie();
+    
+    for (map<string, map<int, LocationConfig *> >::iterator it = location.begin();
+            it != location.end(); it++)
     {
-        string key = it->first;
-        LocationConfig &locationConfig = it->second;
+        string path = it->first;
+        map<int, LocationConfig *> &locationConfig = it->second;
 
-        locationData.insert(make_pair(key, checkLocation(locationConfig)));
-        locationTrie.insert(key);
+        if (locationConfig.find(0) != locationConfig.end())
+        {
+            serverData->setLocationConfigData(path, 0, checkLocation(locationConfig[0]));
+            prefixTrie.insert(path);
+        }
+        if (locationConfig.find(1) != locationConfig.end())
+        {
+            serverData->setLocationConfigData(path, 1, checkLocation(locationConfig[1]));
+            serverData->getSuffixMatch().push_back(path);
+        }
     }
     return serverData;
 }
@@ -135,25 +144,46 @@ void    Validator::checkPort(ServerConfigData *serverData, ServerConfig *serverC
     }
 }
 
-LocationConfigData    Validator::checkLocation(LocationConfig &locationConfig)
+LocationConfigData    Validator::checkLocation(LocationConfig *locationConfig)
 {
     LocationConfigData locationData;
 
-    checkErrorLog(locationData, locationConfig);
-    checkAllowedMethod(locationData, locationConfig);
-    checkDefaultType(locationData, locationConfig);
-    checkKeepaliveTimeout(locationData, locationConfig);
-    checkErrorLog(locationData, locationConfig);
-    checkRoot(locationData, locationConfig);
-    checkErrorPage(locationData, locationConfig);
-    checkClientMaxBodySize(locationData, locationConfig);
-    checkFastcgiPass(locationData, locationConfig);
-    checkFastcgiIndex(locationData, locationConfig);
-    checkFastcgiParam(locationData, locationConfig);
-    checkAutoIndex(locationData, locationConfig);
-    checkAccessLog(locationData, locationConfig);
-    checkReturn(locationData, locationConfig);
-    checkIndex(locationData, locationConfig);
+    checkErrorLog(locationData, *locationConfig);
+    checkAllowedMethod(locationData, *locationConfig);
+    checkDefaultType(locationData, *locationConfig);
+    checkKeepaliveTimeout(locationData, *locationConfig);
+    checkErrorLog(locationData, *locationConfig);
+    checkRoot(locationData, *locationConfig);
+    checkErrorPage(locationData, *locationConfig);
+    checkClientMaxBodySize(locationData, *locationConfig);
+    checkFastcgiPass(locationData, *locationConfig);
+    checkFastcgiIndex(locationData, *locationConfig);
+    checkFastcgiParam(locationData, *locationConfig);
+    checkAutoIndex(locationData, *locationConfig);
+    checkAccessLog(locationData, *locationConfig);
+    checkReturn(locationData, *locationConfig);
+    checkIndex(locationData, *locationConfig);
+    map<string, map<int, LocationConfig *> >  &location = locationConfig->location;
+    
+    Trie &prefixTrie = locationData.getPrefixTrie();
+
+    for (map<string, map<int, LocationConfig *> >::iterator it = location.begin();
+            it != location.end(); it++)
+    {
+        string path = it->first;
+        map<int, LocationConfig *> &locationMap = it->second;
+        
+        if (locationMap.find(0) != locationMap.end())
+        {
+            locationData.setLocationConfigData(path, 0, checkLocation(locationMap[0]));
+            prefixTrie.insert(path);
+        }
+        if (locationMap.find(1) != locationMap.end())
+        {
+            locationData.setLocationConfigData(path, 1, checkLocation(locationMap[1]));
+            locationData.getSuffixMatch().push_back(path);
+        }
+    }
     return locationData;
 }
 

@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 20:29:44 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/09 20:38:01 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/17 01:13:42 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,3 +157,25 @@ void LocationConfigData::setReturn(pair<int, string> returnPair)
 {
     _return = returnPair;
 }
+
+LocationConfigData  *LocationConfigData::getLocationConfigData(string path, int prePost)
+{
+    map<string, map<int, LocationConfigData> >::iterator it = _locationConfigData.find(path);
+    
+    if (it == _locationConfigData.end())
+        return NULL;
+    map<int, LocationConfigData>::iterator it2 = it->second.find(prePost);
+    if (it2 == it->second.end())
+        return NULL;
+    return &it2->second;
+}
+
+void    LocationConfigData::setLocationConfigData(string path,
+            int prePost, LocationConfigData locationConfigData)
+{
+    _locationConfigData[path][prePost] = locationConfigData;
+}
+
+Trie &LocationConfigData::getPrefixTrie() { return _prefixTrie; }
+
+vector<string> &LocationConfigData::getSuffixMatch() { return _suffixMatch; }

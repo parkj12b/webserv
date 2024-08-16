@@ -6,12 +6,13 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:04:44 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/14 15:04:01 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/17 01:01:51 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <string>
 #include <stdexcept>
+#include <algorithm>
 #include "Trie.hpp"
 
 using namespace std;
@@ -26,6 +27,31 @@ Trie::TrieNode::~TrieNode()
     }
 }
 
+Trie::TrieNode::TrieNode(const TrieNode& other) {
+    deepCopy(&other);
+}
+
+Trie::TrieNode& Trie::TrieNode::operator=(const TrieNode& other) {
+    if (this != &other) {
+        // Clean up current state
+        for (map<char, TrieNode*>::iterator it = children.begin(); it != children.end(); ++it) {
+            delete it->second;
+        }
+        children.clear();
+        // Deep copy from other
+        deepCopy(&other);
+    }
+    return *this;
+}
+
+void Trie::TrieNode::deepCopy(const TrieNode* other) {
+    locationPath = other->locationPath;
+    for (map<char, TrieNode*>::const_iterator it = other->children.begin();
+        it != other->children.end(); ++it) {
+        children[it->first] = new TrieNode(*(it->second));
+    }
+}
+
 Trie::Trie() : root(new TrieNode()) {}
 
 Trie::~Trie()
@@ -34,7 +60,7 @@ Trie::~Trie()
 }
 
 void Trie::insert(const string& path)
-{
+{  
     TrieNode* node = root;
         for (std::string::const_iterator it = path.begin(); it != path.end(); ++it) {
             char c = *it;
@@ -63,6 +89,36 @@ string Trie::find(const std::string& url) const
     }
     
     return longestMatch.empty()
-        ? throw runtime_error("no matching location found")
+        ? ""
         : longestMatch;
 }
+
+Trie::Trie(const Trie& other) : root(NULL) {
+    deepCopy(&other);
+}
+
+Trie& Trie::operator=(const Trie& other) {
+    if (this != &other) {
+        deleteTrie(root);
+        root = NULL;
+        deepCopy(&other);
+    }
+    return *this;
+}
+
+void Trie::deepCopy(const Trie* other) {
+    if (other->root) {
+        root = new TrieNode(*other->root);
+    }
+}
+
+void Trie::deleteTrie(TrieNode* node) {
+    if (node) {
+        for (map<char, TrieNode*>::iterator it = node->children.begin();
+            it != node->children.end(); ++it) {
+            deleteTrie(it->second);
+        }
+        delete node;
+    }
+}
+
