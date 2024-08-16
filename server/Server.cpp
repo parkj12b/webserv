@@ -20,9 +20,7 @@ Server::Server()
 {}
 
 Server::Server(int fd, int num) : serverFd(fd), port(num)
-{
-    std::cout<<"server fd, port: "<<serverFd<<", "<<port<<std::endl;
-}
+{}
 
 Server::Server(const Server& src) : serverFd(src.getServerFd()), port(src.getPort()), client(src.getClient())
 {}

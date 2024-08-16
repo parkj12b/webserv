@@ -38,7 +38,6 @@ Kq::Kq()
         serverAdr.sin_family = AF_INET;
         serverAdr.sin_addr.s_addr = htonl(INADDR_ANY);  //ip는 무조건 localhost로. config에서 에러 처리
         serverAdr.sin_port = htons(port);   //config parser
-        cout << "port: " << port << endl;   
         while (::bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0)
         {
             if (errno == EADDRINUSE)  //ip 에러를 여기서 처리할 수도...
@@ -49,7 +48,7 @@ Kq::Kq()
         server[serverFd] = Server(serverFd, port);  //config parser
         serverConfigIt++;
     }
-    std::cout<<"\nserver port open.\n";
+    std::cout<<"server port open.\n";
 }
 
 Kq::Kq(const Kq& src) : kq(src.getKq()), fdList(src.getFdList()), server(src.getServer()), findServer(src.getFindServer())
