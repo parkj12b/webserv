@@ -298,53 +298,6 @@ void    Response::makeError()
     makeContent(fd);
 }
 
-void    Response::checkAllowedMethod()
-{
-    LocationConfigData  &location = Server::serverConfig->
-        getServerConfigData()[port]->getLocationConfigData()[request.location];
-    vector<string>    &allowedMethods = location.getAllowedMethods();
-
-    if (find(allowedMethods.begin(), allowedMethods.end(),
-        StartLine::methodString[request.method]) == allowedMethods.end())
-        request.status = 405;
-}
-
-void    Response::makeFilePath(std::string& str)
-{
-    LocationConfigData  &location = Server::serverConfig->getServerConfigData()[port]->getLocationConfigData()[request.location];
-
-    cout << "host: " << request.header["host"].front() << endl;
-    str = location.getRoot() + "/" + str;
-    std::cout<<"url: "<<str<<std::endl;
-    if (isDirectory(str.c_str()))
-    {
-        // 없으면 index.html 이라 없을 일은 없음.
-        cout << "index: " << location.getIndex() << endl;
-        if (str[str.size() - 1] == '/')
-            str += location.getIndex();
-        cout << "at the end: " << str << endl;
-        return ;
-    }
-    cout << "str: " << str << endl;
-    if (access(str.c_str(), F_OK | R_OK) == -1)
-    {
-        request.status = 404;
-        return ;
-    }
-
-    // pos = str.find("http");
-    // if (pos == 0)
-    // {
-    //     str = str.substr(8);
-    //     pos = str.find('/');
-    //     str = str.substr(pos);
-    // }
-    // if (str[0] == '/')
-    //     str = "." + str;
-    // else
-    //     str = "./" + str;
-}
-
 void    Response::makeHeader(std::string key, std::string value)
 {
     header += key + ": " + value + "\r\n";
@@ -496,3 +449,4 @@ void    Response::checkAllowedMethod()
         StartLine::methodString[request.method]) == allowedMethods.end())
         request.status = 405;
 }
+

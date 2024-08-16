@@ -60,7 +60,6 @@ class Response
         std::string         entity;
         Request             request;
         ServerConfigData    *serverConfig;    //server config
-        void        makeFilePath(std::string& str);
     public:
         static std::map<int, std::string>   statusContent;
         //oocf
@@ -85,11 +84,8 @@ class Response
         void    makeError();                    //error message make
         void    checkAllowedMethod();           //check allowed method
         void    makeFilePath(std::string& str); //make real url
-        //logic
-        void    init();         //start, header, content, entity init
         int     getDefaultErrorPage(int statusCode); // returns fd of default error page
-        void    makeDate();     //date header make
-        void    makeError();    //error message make
+        //logic
         void    makeHeader(std::string key, std::string value); //key -> value
         void    makeContent(int fd);        //make content
         void    makeEntity();               //plus start, header, content
