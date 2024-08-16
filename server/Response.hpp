@@ -57,7 +57,6 @@ class Response
         std::string content;
         std::string entity;
         Request     request;
-        void        makeFilePath(std::string& str);
     public:
         static std::map<int, std::string>   statusContent;
         //oocf
@@ -75,19 +74,21 @@ class Response
         Request     getRequest() const;
         //set function
         void    setRequest(Request &temp);
+        //sub logic
+        void    initRequest(Request msg);       //request msg init
+        void    init();                         //start, header, content, entity init
+        void    makeDate();                     //date header make
+        void    makeError();                    //error message make
+        void    checkAllowedMethod();           //check allowed method
+        void    makeFilePath(std::string& str); //make real url
         //logic
-        void    init();         //start, header, content, entity init
-        void    makeDate();     //date header make
-        void    makeError();    //error message make
         void    makeHeader(std::string key, std::string value); //key -> value
         void    makeContent(int fd);        //make content
         void    makeEntity();               //plus start, header, content
         void    makeGet();                  //GET method make response
         void    makePost();                 //POST method make response
         void    makeDelete();               //DELETE method make response
-        void    initRequest(Request msg);   //request msg init
         void    responseMake();             //request msg -> response msg
-        void    checkAllowedMethod();       //check allowed method
 };
 
 #endif

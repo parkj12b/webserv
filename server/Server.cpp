@@ -60,12 +60,10 @@ int Server::plusClient(void)
     adrSize = sizeof(clntAdr);
     //accept 무한 루프
     while ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0);
-    std::cout<<"server fd, port: "<<serverFd<<", "<<port<<std::endl;
     client[clntFd] = Client(clntFd, port);
     std::cout<<"temp delete"<<std::endl;
     return (clntFd);
-    // plusEvent(clntFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
-    //나갈 때 소멸자가 호출됨
+    // 나갈 때 소멸자가 호출됨
 }
 
 EVENT Server::clientRead(struct kevent& store)
@@ -108,7 +106,6 @@ EVENT   Server::clientWrite(struct kevent& store)
         return (ING);
     if (client[store.ident].getRequestStatus() != 100 && !client[store.ident].getRequestFin())
     {
-        // std::cout<<"keep-alive"<<std::endl;
         if (!client[store.ident].diffKeepAlive())
             return (FINISH);
         return (ING);

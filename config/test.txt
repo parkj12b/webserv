@@ -42,7 +42,7 @@ http {
                 #deny all;
             }
             keepalive_timeout 10s 10;
-            root /Users/minsepar/webserv;
+            root /Users/inghwang/Documents/42seoul/together;
             index index.html;
         }
 
