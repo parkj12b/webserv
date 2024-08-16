@@ -391,6 +391,7 @@ void    Response::makePost()
             return ;
         }
     }
+    close(fd);
     request.status = 204;
     start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
 }
@@ -416,6 +417,7 @@ void    Response::responseMake()
     
     init();
     makeHeader("Server", "inghwang/0.0");
+    makeHeader("Set-Cookie", "session_id=abc123; Path=/");
     makeDate();
     checkAllowedMethod();
     if (request.status > 0)

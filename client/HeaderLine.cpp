@@ -219,7 +219,7 @@ std::string HeaderLine::getValue() const
 {
     return (value);
 }
-std::unordered_map<std::string, std::deque<std::string> > HeaderLine::getHeader() const
+std::map<std::string, std::deque<std::string> > HeaderLine::getHeader() const
 {
     return (header);
 }
@@ -380,7 +380,7 @@ int HeaderLine::makeHeader(std::string& temp)
 int HeaderLine::headerError()
 {
     std::vector<std::string>::iterator                                  itv;
-    std::unordered_map<std::string, std::deque<std::string> >::iterator itm;
+    std::map<std::string, std::deque<std::string> >::iterator itm;
 
     for (itv = vitalHeader.begin(); itv != vitalHeader.end(); itv++)
     {

@@ -87,6 +87,25 @@ std::map<int, int>  Kq::getFindServer() const
     return (findServer);
 }
 
+void    Kq::clientFin(struct kevent& store)
+{
+    int     serverFd;
+
+    // std::cout<<"error"<<std::endl;
+    serverFd = findServer[store.ident];
+    server[serverFd].clientFin(store.ident);
+}
+
+void    Kq::serverError(struct kevent& store)
+{
+    //client 모두 닫기
+    //server 닫기
+    Server  temp = server[store.ident];
+
+    //server file discriptor가 에러가 나왔을 때에 연결된 클라이언트의 모든 것을 에러 처리한다.
+    temp.serverError();
+}
+
 void    Kq::plusEvent(uintptr_t fd, int16_t filter, uint16_t flags, uint32_t fflags, intptr_t data, void *udata)
 {
     struct kevent   temp;
@@ -185,21 +204,3 @@ void    Kq::mainLoop()
     }
 }
 
-void    Kq::clientFin(struct kevent& store)
-{
-    int     serverFd;
-
-    // std::cout<<"error"<<std::endl;
-    serverFd = findServer[store.ident];
-    server[serverFd].clientFin(store.ident);
-}
-
-void    Kq::serverError(struct kevent& store)
-{
-    //client 모두 닫기
-    //server 닫기
-    Server  temp = server[store.ident];
-
-    //server file discriptor가 에러가 나왔을 때에 연결된 클라이언트의 모든 것을 에러 처리한다.
-    temp.serverError();
-}
