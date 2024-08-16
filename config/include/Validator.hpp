@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:26:25 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/15 01:44:16 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/15 17:36:38 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,6 @@ class LocationConfig;
 #define DEFAULT_ERROR_PAGE "error_page"
 #define DEFAULT_DEFAULT_TYPE "text/plain"
 #define DEFAULT_ROOT "/var/www/html"
-#define DEFAULT_400_ERROR_PAGE "error_page/40x.html"
-#define DEFAULT_500_ERROR_PAGE "error_page/40x.html"
 #define DEFAULT_CLIENT_MAX_BODY_SIZE (1 * 1024 * 1024)
 #define DEFAULT_FASTCGI_INDEX "index.php"
 #define DEFAULT_AUTO_INDEX false

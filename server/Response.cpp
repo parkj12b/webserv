@@ -220,6 +220,7 @@ void    Response::init()
     content.clear();
     entity.clear();
     string host = request.header["host"].front();
+    cout << "host: " << host << endl;
     try
     {
         serverConfig = Server::serverConfig->getServerData(host, port);
@@ -231,6 +232,15 @@ void    Response::init()
             request.status = 404;
     }
     
+}
+
+int Response::getDefaultErrorPage(int statusCode)
+{
+    if (statusCode >= 400 && statusCode < 500)
+        return (open(DEFAULT_400_ERROR_PAGE, O_RDONLY));
+    else if (statusCode >= 500)
+        return (open(DEFAULT_500_ERROR_PAGE, O_RDONLY));
+    return (open(DEFAULT_400_ERROR_PAGE, O_RDONLY));
 }
 
 void    Response::makeDate()
@@ -275,7 +285,7 @@ void    Response::makeError()
     start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
     if (request.status == 100)
         return ;
-    fd = open("./resource/html/40x.html", O_RDONLY);  //url에 대한 location 찾아서 error page 가져오기(config parser)
+    fd = getDefaultErrorPage(request.status);
     if (fd < 0)
         return ;
     makeHeader("content-type", "text/html");
@@ -338,7 +348,7 @@ void    Response::makeGet()
     {
         request.status = 404;
         start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
-        fd = open("./resource/html/40x.html", O_RDONLY);
+        fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);
         if (fd < 0)
             return ;
         //거기에 맞는 content만들기

@@ -80,6 +80,7 @@ class Response
         void    setRequest(Request &temp);
         //logic
         void    init();         //start, header, content, entity init
+        int     getDefaultErrorPage(int statusCode); // returns fd of default error page
         void    makeDate();     //date header make
         void    makeError();    //error message make
         void    makeHeader(std::string key, std::string value); //key -> value
