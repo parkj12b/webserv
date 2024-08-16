@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/15 16:12:54 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/16 14:46:57 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,6 +225,11 @@ int Client::setHeader(void)
                 msg = msg.substr(flag + 2);
                 contentLine.initContentLine(headerLine.getContentLength(), headerLine.getContentType());
                 connect = headerLine.getConnect();
+                if (setMatchingLocation(request.url))
+                {
+                    request.status = 404;
+                    return (2);
+                }
                 break ;
             }
             str = msg.substr(0, flag);
@@ -397,13 +402,6 @@ void    Client::setMessage(std::string msgRequest)
     {
         request.fin = true;
         std::cout<<"Header Error\n";
-        return ;
-    }
-    //일단 여기서 함
-    if (setMatchingLocation(request.url))
-    {
-        request.fin = true;
-        std::cout<<"Location Error\n";
         return ;
     }
     if (setContent()) // 바디 파싱
