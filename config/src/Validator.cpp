@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:30:28 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/17 01:14:48 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/17 17:01:28 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,9 @@ HTTPServer    *Validator::validate()
         for (size_t j = 0, size = port.size(); j < size; j++) {
             for (size_t k = 0, size = serverName.size(); k < size; k++) {
                 serverConfigData[port[j]].insert(make_pair(serverName[k], server));
+                if (_httpServer->getDefaultServer(port[j]) == NULL) {
+                    _httpServer->setDefaultServer(port[j], server);
+                }
             }
         }
     }
@@ -66,7 +69,7 @@ ServerConfigData    *Validator::checkServer(ServerConfig *serverConfig)
     
     checkServerName(serverData, serverConfig);
     checkPort(serverData, serverConfig);
-    checkDuplicateServerConfig(serverData);
+    // checkDuplicateServerConfig(serverData);
     map<string, map<int, LocationConfig *> > &location = serverConfig->location;
     Trie &prefixTrie = serverData->getPrefixTrie();
     
@@ -134,11 +137,11 @@ void    Validator::checkPort(ServerConfigData *serverData, ServerConfig *serverC
         _port.push_back(port);
         if ((*v)[i].size() > 1) {
             string str = (dynamic_cast<Word *>((*v)[i][1][0]))->lexeme;
-            if (_httpServer->getDefaultServer() != NULL) {
+            if (_httpServer->getDefaultServer(port) != NULL) {
                 throw ValidatorException("default_server directive must be set only once");
             }
             if (str == "default_server") {
-                _httpServer->setDefaultServer(serverData);
+                _httpServer->setDefaultServer(port, serverData);
             }
         }
     }

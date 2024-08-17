@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/17 01:22:40 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/17 21:46:11 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -449,33 +449,32 @@ bool    Client::setMatchingLocation(string url)
     try {
         serverConfigData = Server::serverConfig->getServerData(host, port);
     } catch (exception &e) {
-        if (Server::serverConfig->getDefaultServer() == NULL)
+        if (Server::serverConfig->getDefaultServer(port) == NULL)
             return (true);
         else
-            serverConfigData = Server::serverConfig->getDefaultServer();
+            serverConfigData = Server::serverConfig->getDefaultServer(port);
     }
-    Trie &prefixTrie = serverConfigData->getPrefixTrie();
     
     cout << "url " << url << endl;
     LocationConfigData *location = NULL;
 
+    vector<string> &suffixMatch = serverConfigData->getSuffixMatch();
+    for (vector<string>::iterator it = suffixMatch.begin();
+        it != suffixMatch.end(); it++)
+    {
+        if (endsWith(url, *it))
+        {
+            location = serverConfigData->getLocationConfigData(*it, 1);
+            return (recurFindLocation(url, location));
+        }
+    }
+    
+    Trie &prefixTrie = serverConfigData->getPrefixTrie();
     request.location = prefixTrie.find(url);
+    if (request.location == "")
+        return (true);
     location
         = serverConfigData->getLocationConfigData(request.location, 0);
-    if (request.location == "")
-    {
-        vector<string> &suffixMatch = serverConfigData->getSuffixMatch();
-        for (vector<string>::iterator it = suffixMatch.begin();
-            it != suffixMatch.end(); it++)
-        {
-            if (endsWith(url, *it))
-            {
-                location = serverConfigData->getLocationConfigData(*it, 1);
-                return (recurFindLocation(url, location));
-            }
-        }
-        return (true);
-    }
     response.setLocationConfigData(recurFindLocation(url, location));
     cout << "location " << request.location << endl;
     return (false);
@@ -484,26 +483,24 @@ bool    Client::setMatchingLocation(string url)
 LocationConfigData *Client::recurFindLocation(string url,
     LocationConfigData *locationConfigData)
 {
-    Trie &prefixTrie = locationConfigData->getPrefixTrie();
-    
     LocationConfigData *configData = NULL;
 
+    vector<string> &suffixMatch = locationConfigData->getSuffixMatch();
+    for (vector<string>::iterator it = suffixMatch.begin();
+        it != suffixMatch.end(); it++)
+    {
+        if (endsWith(url, *it))
+        {
+            configData = locationConfigData->getLocationConfigData(*it, 1);
+            return (recurFindLocation(url, configData));
+        }
+    }
+ 
+    Trie &prefixTrie = locationConfigData->getPrefixTrie();
     request.location = prefixTrie.find(url);
+    if (request.location == "")
+        return (locationConfigData);
     configData
         = locationConfigData->getLocationConfigData(request.location, 0);
-    if (request.location == "")
-    {
-        vector<string> &suffixMatch = locationConfigData->getSuffixMatch();
-        for (vector<string>::iterator it = suffixMatch.begin();
-            it != suffixMatch.end(); it++)
-        {
-            if (endsWith(url, *it))
-            {
-                configData = locationConfigData->getLocationConfigData(*it, 1);
-                return (recurFindLocation(url, configData));
-            }
-        }
-        return (locationConfigData);
-    }
     return (recurFindLocation(url, configData));
 }

@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 18:48:59 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/17 00:16:41 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/17 17:11:20 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,10 +163,10 @@ void    Parser::context()
     match('}');
     Token *t = NULL;
     string path;
-    int prePostNum = 0;
+    int prePostNum = PREFIX;
     vector<Token *> prePost = _top->getHeadDirectiveByIndex(0);
     if (prePost.size() > 0)
-        prePostNum = 1;
+        prePostNum = POSTFIX;
     LocationConfig *locationConfig = NULL;
     switch(_directiveNum[w->lexeme]) {
         case EVENTS:
@@ -204,17 +204,6 @@ void    Parser::context()
                 throw runtime_error("limit_except without location");
             locationConfig = curLocation->getLocationConfig(path, prePostNum);
             curLocation->setLimitExcept(_top);
-            // if (tempLocation == NULL)
-            // {
-            //     curServer->location[path].insert(make_pair(prePostNum, curLocation));
-            //     cout << curServer << " : " << curLocation << endl;
-            // }
-            // else
-            // {
-            //     cout << "4\n";
-            //     cout << tempLocation << " : " << curLocation << endl;
-            //     tempLocation->location[path].insert(make_pair(prePostNum, curLocation));
-            // }
             delete t;
             break;
     }

@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 20:08:10 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/16 22:12:21 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/17 17:10:07 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@ using namespace std;
 
 class Env;
 class Token;
+
+#define PREFIX 0
+#define POSTFIX 1
 
 /**
  * @brief                       server class used in parser

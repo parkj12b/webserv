@@ -237,9 +237,9 @@ void    Response::init()
     }
     catch(const std::exception& e)
     {
-        serverConfig = Server::serverConfig->getDefaultServer();
+        serverConfig = Server::serverConfig->getDefaultServer(port);
         if (serverConfig == NULL)
-            request.status = 404;
+            request.status = 400;
     }
     
 }
@@ -426,6 +426,14 @@ void    Response::responseMake()
         makeEntity();
         return ;
     }
+    checkRedirect();
+    if (request.status > 0)
+    {
+        makeError();
+        cout << "status: " << request.status << endl;
+        makeEntity();
+        return ;
+    }
     makeFilePath(request.url);
     if (request.status > 0)
     {
@@ -469,4 +477,19 @@ LocationConfigData *Response::getLocationConfigData()
 void    Response::setLocationConfigData(LocationConfigData *locationConfigData)
 {
     locationConfig = locationConfigData;
+}
+
+void    Response::checkRedirect()
+{
+    LocationConfigData  *location = getLocationConfigData();
+    pair<int, string>   &redirect = location->getReturn();
+
+    if (redirect.first != 0)
+    {
+        request.status = redirect.first;
+        request.url = redirect.second;
+    }
+    cout << request.url << endl;
+    cout << request.status << endl;
+    makeHeader("Location", redirect.second);
 }
