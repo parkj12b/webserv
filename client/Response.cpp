@@ -20,7 +20,6 @@
 #include "ServerConfigData.hpp"
 #include "Trie.hpp"
 #include "UtilTemplate.hpp"
-#include "StartLine.hpp"
 
 using namespace std;
 
@@ -236,8 +235,7 @@ void    Response::init()
         serverConfig = Server::serverConfig->getDefaultServer();
         if (serverConfig == NULL)
             request.status = 404;
-    }
-    
+	}
 }
 
 int Response::getDefaultErrorPage(int statusCode)
@@ -284,8 +282,6 @@ void    Response::makeError()
 
     (void) errorPage;
     int fd;
-
-    
     if (request.status >= 300 && request.status < 400)
         return ;
     start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
@@ -363,7 +359,6 @@ void    Response::makeGet()
     start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
 }
 
-
 void    Response::makePost()
 {
     std::string buffer;
@@ -371,23 +366,6 @@ void    Response::makePost()
 
     std::cout<<"Method: POST"<<std::endl;
     //cgi checking...
-    fd = open(request.url.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0777);
-    if (fd < 0)
-    {
-        request.status = 404;
-        makeError();
-        return ;
-    }
-    for (std::vector<std::string>::iterator it = request.content.begin(); it != request.content.end(); it++)
-    {
-        buffer = *it;
-        if (write(fd, &buffer[0], buffer.size()) < static_cast<int>(buffer.size()))
-        {
-            request.status = 500;
-            makeError();
-            return ;
-        }
-    }
     close(fd);
     request.status = 204;
     start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
@@ -411,7 +389,6 @@ void    Response::makeDelete()
 
 void    Response::responseMake()
 {
-    
     init();
     makeHeader("Server", "inghwang/0.0");
     makeHeader("Set-Cookie", "session_id=abc123; Path=/");
@@ -451,4 +428,3 @@ void    Response::checkAllowedMethod()
         StartLine::methodString[request.method]) == allowedMethods.end())
         request.status = 405;
 }
-
