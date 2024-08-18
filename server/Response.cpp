@@ -417,7 +417,7 @@ void    Response::responseMake()
     
     init();
     makeHeader("Server", "inghwang/0.0");
-    makeHeader("Set-Cookie", "session_id=abc123; Path=/");
+    makeHeader("Set-Cookie", "session_id=abc123");
     makeDate();
     checkAllowedMethod();
     if (request.status > 0)
