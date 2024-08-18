@@ -64,6 +64,7 @@ class Response
         LocationConfigData  *locationConfig;  //location config
     public:
         static std::map<int, std::string>   statusContent;
+        static std::map<std::string, std::string>   session;
         //oocf
         Response();
         Response(const Response& src);
