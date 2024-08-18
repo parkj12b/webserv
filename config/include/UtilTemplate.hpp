@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 17:27:22 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/17 00:36:02 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/18 16:08:58 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,5 @@ void        toLowerCase(string &str);
 
 /* used for suffix matching */
 bool        endsWith(const string& text, const string& suffix);
-
+bool        isWithinBasePath(const string &basePath, const string &requestPath);
 #endif
