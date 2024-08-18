@@ -123,6 +123,11 @@ void    Response::makeFilePath(std::string& str)
     cout << "host: " << request.header["host"].front() << endl;
     cout << "str before: " << str << endl;
     str = location->getRoot() + "/" + str;
+    if (isWithinBasePath(location->getRoot(), str) == false)
+    {
+        request.status = 403;
+        return ;
+    }
     if (isDirectory(str.c_str()))
     {
         // 없으면 index.html 이라 없을 일은 없음.

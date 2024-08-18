@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 15:26:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/17 00:35:28 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/18 16:24:47 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include <fstream>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <climits>
+#include <cstdlib>
 #include "UtilTemplate.hpp"
 
 
@@ -153,4 +155,19 @@ bool endsWith(const std::string& text, const std::string& suffix) {
         return false; // suffix is longer than text
     }
     return text.compare(text.length() - suffix.length(), suffix.length(), suffix) == 0;
+}
+
+bool    isWithinBasePath(const string &basePath, const string &requestPath)
+{
+    string resolvedPath;
+    char *resolvedPathCstr;
+    
+    resolvedPathCstr = realpath(requestPath.c_str(), NULL);
+    if (!resolvedPathCstr)
+        return false;
+    resolvedPath = resolvedPathCstr;
+    free(resolvedPathCstr);
+    if (resolvedPath.find(basePath) == 0)
+        return true;
+    return false;
 }
