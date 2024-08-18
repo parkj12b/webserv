@@ -60,7 +60,7 @@ std::vector<std::string>    singleHeaderInit()
     v.push_back("content-range");
     v.push_back("content-security-policy");
     v.push_back("content-security-policy-report-only");
-    v.push_back("cookie");
+    // v.push_back("cookie");
     v.push_back("cross-origin-embedder-policy");
     v.push_back("cross-origin-opener-policy");
     v.push_back("cross-origin-resource-policy");
@@ -124,6 +124,7 @@ std::vector<std::string>    dateHeaderInit()
     v.push_back("date");
     v.push_back("user-agent");
     v.push_back("retry-after");
+    v.push_back("cookie");
     return (v);
 }
 
