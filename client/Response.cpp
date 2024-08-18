@@ -237,9 +237,9 @@ void    Response::init()
     }
     catch(const std::exception& e)
     {
-        serverConfig = Server::serverConfig->getDefaultServer();
+        serverConfig = Server::serverConfig->getDefaultServer(port);
         if (serverConfig == NULL)
-            request.status = 404;
+            request.status = 400;
     }
     makeHeader("Server", "inghwang/0.0");
     if (request.header["cookie"].empty())
@@ -426,6 +426,9 @@ void    Response::responseMake()
         makeEntity();
         return ;
     }
+    checkRedirect();
+    if (request.status > 0)
+        return (makeEntity());
     makeFilePath(request.url);
     if (request.status > 0)
     {
@@ -469,4 +472,20 @@ LocationConfigData *Response::getLocationConfigData()
 void    Response::setLocationConfigData(LocationConfigData *locationConfigData)
 {
     locationConfig = locationConfigData;
+}
+
+void    Response::checkRedirect()
+{
+    LocationConfigData  *location = getLocationConfigData();
+    pair<int, string>   &redirect = location->getReturn();
+
+    if (redirect.first != 0)
+    {
+        request.status = redirect.first;
+        request.url = redirect.second;
+    }
+    cout << request.url << endl;
+    cout << request.status << endl;
+    makeHeader("Location", redirect.second);
+    start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
 }

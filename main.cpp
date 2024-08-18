@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:33:06 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/17 00:20:53 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/17 21:11:30 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,17 +47,13 @@ int main(int argc, char **argv)
     Validator v(parser);
     Server::serverConfig = v.validate();
 
-    cout << Server::serverConfig->getDefaultServer()->_locationConfigData.size() << endl;
 
-    map<string, map<int, LocationConfigData> >::iterator it = Server::serverConfig->getDefaultServer()->_locationConfigData.begin();
-
-    while (it != Server::serverConfig->getDefaultServer()->_locationConfigData.end())
+    auto it = Server::serverConfig->getDefaultServer(80)->_locationConfigData.begin();
+    while (it != Server::serverConfig->getDefaultServer(80)->_locationConfigData.end())
     {
         cout << it->first << endl;
         it++;
     }
-
-    // cout << Server::serverConfig->getDefaultServer()->getLocationConfigData("/", 0)->getLocationConfigData(".html", 1)->getRoot() << endl;
 
 
     //fd를 닫지 않았을 가능성이 존재함
