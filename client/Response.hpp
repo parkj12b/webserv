@@ -29,6 +29,7 @@ typedef struct Request
 {
     bool    fin;    //request completion status
     int     status; //request status code
+    int     port;
     Method                                                      method;     //http method
     std::string                                                 url;        //http resource
     std::string                                                 location;   //location for config
