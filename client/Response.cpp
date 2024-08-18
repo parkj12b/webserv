@@ -241,9 +241,6 @@ void    Response::init()
         if (serverConfig == NULL)
             request.status = 400;
     }
-    makeHeader("Server", "inghwang/0.0");
-    if (request.header["cookie"].empty())
-        makeHeader("Set-Cookie", "session_id=abc123");
 }
 
 int Response::getDefaultErrorPage(int statusCode)
@@ -255,7 +252,7 @@ int Response::getDefaultErrorPage(int statusCode)
     return (open(DEFAULT_400_ERROR_PAGE, O_RDONLY));
 }
 
-void    Response::makeDate()
+void    Response::makeDefaultHeader()
 {
     time_t      now;
     char*       dt;
@@ -279,6 +276,9 @@ void    Response::makeDate()
     }
     date = day[0] + ", " + day[2] + " " + day[1] + " " + day[4] + " " + day[3] + " GMT";
     makeHeader("Date", date);
+    makeHeader("Server", "inghwang/0.0");
+    if (request.header["cookie"].empty())
+        makeHeader("Set-Cookie", "session_id=" + date);
 }
 
 void    Response::makeError()
@@ -418,7 +418,7 @@ void    Response::responseMake()
 {
     
     init();
-    makeDate();
+    makeDefaultHeader();
     checkAllowedMethod();
     if (request.status > 0)
     {
