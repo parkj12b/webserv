@@ -303,8 +303,6 @@ void    Response::makeDefaultHeader()
     date = day[0] + ", " + day[2] + " " + day[1] + " " + day[4] + " " + day[3] + " GMT";
     makeHeader("Date", date);
     makeHeader("Server", "inghwang/0.0");
-    std::cout<<request.header["cookie"].front()<<std::endl;
-    std::cout<<"hereher\n"<<std::endl;
 }
 
 void    Response::makeError()
