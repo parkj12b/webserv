@@ -252,7 +252,7 @@ int Response::getDefaultErrorPage(int statusCode)
     return (open(DEFAULT_400_ERROR_PAGE, O_RDONLY));
 }
 
-void    Response::makeDate()
+void    Response::makeDefaultHeader()
 {
     time_t      now;
     char*       dt;
@@ -418,7 +418,7 @@ void    Response::responseMake()
 {
     
     init();
-    makeDate();
+    makeDefaultHeader();
     checkAllowedMethod();
     if (request.status > 0)
     {
