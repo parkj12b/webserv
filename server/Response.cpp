@@ -428,12 +428,7 @@ void    Response::responseMake()
     }
     checkRedirect();
     if (request.status > 0)
-    {
-        makeError();
-        cout << "status: " << request.status << endl;
-        makeEntity();
-        return ;
-    }
+        return (makeEntity());
     makeFilePath(request.url);
     if (request.status > 0)
     {
@@ -492,4 +487,5 @@ void    Response::checkRedirect()
     cout << request.url << endl;
     cout << request.status << endl;
     makeHeader("Location", redirect.second);
+    start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
 }
