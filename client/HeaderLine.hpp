@@ -86,7 +86,7 @@ class HeaderLine
         void    setContentLength(int minus);
         void    setTrailer(TE temp);
         //sub logic
-        int     eraseSpace(std::string& str, bool spel);    //front and back space delete spel do big changes small
+        static int  eraseSpace(std::string& str, bool spel);    //front and back space delete spel do big changes small
         int     pushValue();                                //key -> value
         int     commentDelete();                            //comment delete
         //logic
