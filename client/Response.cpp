@@ -287,7 +287,7 @@ void    Response::makeCookie(std::string& date)
             result += characters[index];
         }
         session[result] = date;
-        value = "session_id=" + result;
+        value = "session_id=" + result + "; Max-Age=3600";
         makeHeader("Set-Cookie", value);
     }
     else
@@ -302,6 +302,7 @@ void    Response::makeCookie(std::string& date)
         HeaderLine::eraseSpace(cookieValue, 0);
         if (session.find(cookieValue) != session.end())
             session[cookieValue] = date;
+        std::cout<<"cookieValue: "<<cookieValue<<std::endl<<std::endl;
         makeHeader("session", session[cookieValue]);
     }
 }
