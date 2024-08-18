@@ -8,7 +8,7 @@
 class CgiProcessor
 {
 public:
-	CgiProcessor(Request &request_, ServerConfigData *serverConfig_);
+	CgiProcessor(Request &request_, ServerConfigData *serverConfig_, LocationConfigData *locationConfig_);
 	~CgiProcessor();
 	CgiProcessor(const CgiProcessor& rhs);
 	CgiProcessor& operator=(const CgiProcessor& rhs);
@@ -22,6 +22,7 @@ private:
 	std::map<std::string, std::deque<std::string> > cgiResponseHeader;
 	Request 			&request;
 	ServerConfigData	*serverConfig;
+	LocationConfigData	*locationConfig;
 	std::string			scriptFile;
 };
 

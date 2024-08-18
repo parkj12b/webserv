@@ -22,14 +22,14 @@ int main(void)
 	// 		exit(0);
 	// 	}
 	// }
-	std::string url = "http://localhost/cgi-bin/script.py";
+	std::string url = "/cgi-bin/script.php";
+	std::string location = "/cgi-bin";
 	const std::string	availCgiExtensions[2] = {".py", ".php"};
 	std::string			cgiExtension;
 	int					cgiFilePos;
 	for (int i=0; i<2; i++)
 	{
 		cgiExtension = availCgiExtensions[i];
-		std::cout << cgiExtension << std::endl;
 		cgiFilePos = url.find(cgiExtension);
 		if (cgiFilePos != std::string::npos)
 			break ;
@@ -46,6 +46,12 @@ int main(void)
 	{
 		std::cout << "병신" << std::endl;
 		return (2);
+	}
+	size_t cgiLocPos = url.find(location);
+	if (cgiLocPos == std::string::npos || cgiLocPos != 0)
+	{
+		std::cout << "개병신" << std::endl;
+		return (3);
 	}
 	
 	return (0);

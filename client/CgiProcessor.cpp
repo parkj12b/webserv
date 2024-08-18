@@ -1,8 +1,9 @@
 #include "CgiProcessor.hpp"
 
-CgiProcessor::CgiProcessor(Request &request_, ServerConfigData *serverConfig_)
+CgiProcessor::CgiProcessor(Request &request_, ServerConfigData *serverConfig_, LocationConfigData *locationConfig_)
 	:request(request)
 	, serverConfig(serverConfig_)
+	, locationConfig(locationConfig_)
 {
 }
 
@@ -56,8 +57,9 @@ bool	CgiProcessor::checkURL(std::string url)
 	/* Check Available CGI Script Directories */
 	// ebebebe
 
+
 	/* Let's set the URL Environments Variables */
-	// eseses
+	
 
 	/* Let's set the StartLine Environments Variables and the Necessary HeaderLine Environments */
 	// ebssbss
