@@ -33,8 +33,8 @@ typedef struct Request
     std::string                                                 url;        //http resource
     std::string                                                 location;   //location for config
     Version                                                     version;    //http version
-    std::map<std::string, std::string>                query;      //resource query
-    std::map<std::string, std::deque<std::string> >   header;     //request header
+    std::map<std::string, std::string>                          query;      //resource query
+    std::map<std::string, std::deque<std::string> >             header;     //request header
     std::vector<std::string>                                    content;    //request content
 }   Request;
 
