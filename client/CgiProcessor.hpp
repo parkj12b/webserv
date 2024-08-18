@@ -5,6 +5,8 @@
 # include "Response.hpp"
 # include "ServerConfigData.hpp"
 
+struct Request;
+
 class CgiProcessor
 {
 public:
@@ -14,9 +16,9 @@ public:
 	CgiProcessor& operator=(const CgiProcessor& rhs);
 	std::string		getScriptFile();
 	bool	checkURL(std::string url);
-	void	setURLEnv(Request &request);
-	void	setRequestHeaderEnv(Method method, std::map<std::string, std::deque<std::string> >& headers);
-	void	executeCGIScript(std::string path);
+	// void	setURLEnv(Request &request);
+	// void	setRequestHeaderEnv(Method method, std::map<std::string, std::deque<std::string> >& headers);
+	// void	executeCGIScript(std::string path);
 private:
 	CgiProcessor();
 	std::map<std::string, std::deque<std::string> > cgiResponseHeader;
