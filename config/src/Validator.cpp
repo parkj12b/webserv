@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:30:28 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/18 19:31:22 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/18 20:39:58 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,6 +151,8 @@ LocationConfigData    Validator::checkLocation(LocationConfig *locationConfig)
 {
     LocationConfigData locationData;
 
+    string path = locationConfig->getPath();
+    locationData.setPath(path);
     checkErrorLog(locationData, *locationConfig);
     checkAllowedMethod(locationData, *locationConfig);
     checkDefaultType(locationData, *locationConfig);

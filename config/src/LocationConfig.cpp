@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 19:22:56 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/16 22:42:54 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/18 20:34:18 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,10 @@ LocationConfig *LocationConfig::getLocationConfig(string key, int prePost) {
         return NULL;
     return it2->second;
 }
+
+void    LocationConfig::setPath(string path) { _path = path; }
+
+string  LocationConfig::getPath() { return _path; }
 
 LocationConfig::LocationConfig() : _env(NULL), _limitExcept(NULL) {}
 

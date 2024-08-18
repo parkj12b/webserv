@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 20:29:44 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/17 01:13:42 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/18 20:35:45 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,16 @@
 
 
 using namespace std;
+
+void LocationConfigData::setPath(string path)
+{
+    _path = path;
+}
+
+string LocationConfigData::getPath()
+{
+    return _path;
+}
 
 void LocationConfigData::setErrorLog(string errorLog)
 {
