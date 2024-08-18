@@ -20,12 +20,14 @@ extern int logs;
 
 Client::Client() : connect(true), fd(0), port(0), index(0), responseAmount(0), startLine(0), headerLine(0), contentLine(0)
 {
+    request.port = port;
     request.fin = false;
     request.status = 0;
 }
 
 Client::Client(int fd, int port) : connect(true), fd(fd), port(port), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port)
 {
+    request.port = port;
     request.fin = false;
     request.status = 0;
 }

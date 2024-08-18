@@ -29,6 +29,7 @@ typedef struct Request
 {
     bool    fin;    //request completion status
     int     status; //request status code
+    int     port;
     Method                                                      method;     //http method
     std::string                                                 url;        //http resource
     std::string                                                 location;   //location for config
@@ -64,6 +65,7 @@ class Response
         LocationConfigData  *locationConfig;  //location config
     public:
         static std::map<int, std::string>   statusContent;
+        static std::map<std::string, std::string>   session;
         //oocf
         Response();
         Response(const Response& src);
@@ -84,7 +86,7 @@ class Response
         //sub logic
         void    initRequest(Request msg);       //request msg init
         void    init();                         //start, header, content, entity init
-        void    makeDate();                     //date header make
+        void    makeDefaultHeader();            //date header make
         void    makeError();                    //error message make
         void    checkRedirect();                //check redirect
         void    checkAllowedMethod();           //check allowed method
