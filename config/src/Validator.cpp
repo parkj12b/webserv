@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:30:28 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/17 17:01:28 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/18 19:31:22 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -320,6 +320,7 @@ void    Validator::checkErrorPage(LocationConfigData &locationData, LocationConf
         {
             string errorURI = (dynamic_cast<Word *>((*v)[i][2][0]))->lexeme;
             string errorNum = (dynamic_cast<Word *>((*v)[i][0][0]))->lexeme;
+            errorPage.insert(pair<int, string>(strtol(errorNum.c_str(), NULL, 10), errorURI));
             for (size_t j = 0, numArg = (*v)[i][1].size(); j < numArg; j++)
             {
                 string errorNum = (dynamic_cast<Word *>((*v)[i][1][j]))->lexeme;

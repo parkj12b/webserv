@@ -115,11 +115,6 @@ void    Response::makeFilePath(std::string& str)
     cout << "host: " << request.header["host"].front() << endl;
     cout << "str before: " << str << endl;
     str = location->getRoot() + "/" + str;
-    if (isWithinBasePath(location->getRoot(), str) == false)
-    {
-        request.status = 403;
-        return ;
-    }
     if (isDirectory(str.c_str()))
     {
         // 없으면 index.html 이라 없을 일은 없음.
@@ -133,12 +128,17 @@ void    Response::makeFilePath(std::string& str)
             return ;
         }
     }
-    cout << "str: " << str << endl;
     if (access(str.c_str(), F_OK | R_OK) == -1)
     {
         request.status = 404;
         return ;
     }
+    if (isWithinBasePath(location->getRoot(), str) == false)
+    {
+        request.status = 403;
+        return ;
+    }
+    cout << "str: " << str << endl;
 
     // pos = str.find("http");
     // if (pos == 0)
@@ -250,9 +250,17 @@ void    Response::init()
 
 int Response::getDefaultErrorPage(int statusCode)
 {
+    string errorStr = getLocationConfigData()->getErrorPage()[statusCode];
+
+    int fd = -1;
+
+    if (errorStr.size() > 0)
+        fd = open(errorStr.c_str(), O_RDONLY);
+    if (fd != -1)
+        return (fd);
     if (statusCode >= 400 && statusCode < 500)
         return (open(DEFAULT_400_ERROR_PAGE, O_RDONLY));
-    else if (statusCode >= 500)
+    if (statusCode >= 500)
         return (open(DEFAULT_500_ERROR_PAGE, O_RDONLY));
     return (open(DEFAULT_400_ERROR_PAGE, O_RDONLY));
 }
