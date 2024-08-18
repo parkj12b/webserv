@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 20:03:36 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/11 13:25:14 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/16 16:25:16 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ void    Lexer::init()
     reserve(Word("OPTIONS", Tag::METHOD));
     reserve(Word("TRACE", Tag::METHOD));
     reserve(Word("~*", Tag::SYMBOL));
-    reserve(Word("^~", Tag::SYMBOL));
 }
 
 bool    Lexer::isTimeUnit(int c)

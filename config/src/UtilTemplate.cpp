@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 15:26:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/15 01:58:27 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/17 00:35:28 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ bool isString(char peek)
         case '=':
         case '?':
         case '[':
+        case '~':
+        case '*':
             return true;
     }
     return false;
@@ -144,4 +146,11 @@ void toLowerCase(string &str) {
             str[i] = str[i] + ('a' - 'A');
         }
     }
+}
+
+bool endsWith(const std::string& text, const std::string& suffix) {
+    if (suffix.length() > text.length()) {
+        return false; // suffix is longer than text
+    }
+    return text.compare(text.length() - suffix.length(), suffix.length(), suffix) == 0;
 }

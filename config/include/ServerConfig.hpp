@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 20:08:10 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/13 16:49:30 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/17 17:10:07 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,9 @@ using namespace std;
 class Env;
 class Token;
 
+#define PREFIX 0
+#define POSTFIX 1
+
 /**
  * @brief                       server class used in parser
  * @param   location            path to location config
@@ -31,9 +34,9 @@ class ServerConfig {
 private:
     Env *_env;
 public:
-    map<string, LocationConfig>         location;
+    map<string, map<int,  LocationConfig *> >         location;
     vector<vector<vector< Token *> > >  *getConfig(string key);
-    LocationConfig                      &getLocationConfig(string key);
+    LocationConfig                      *getLocationConfig(string key, int prePost);
     ServerConfig(Env *env);
     ~ServerConfig();
 };

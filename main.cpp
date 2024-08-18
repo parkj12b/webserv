@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:33:06 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/16 14:29:12 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/17 21:11:30 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,14 @@
 
 int logs = open("./log", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 
+void    check()
+{
+    system("leaks webserv");
+}
+
 int main(int argc, char **argv)
 {
+    atexit(check);
     cout << "========parser========" << endl;
     Directives::init();
     string path = DEFAULT_CONFIG_PATH;
@@ -40,6 +46,16 @@ int main(int argc, char **argv)
     parser.program();
     Validator v(parser);
     Server::serverConfig = v.validate();
+
+
+    auto it = Server::serverConfig->getDefaultServer(80)->_locationConfigData.begin();
+    while (it != Server::serverConfig->getDefaultServer(80)->_locationConfigData.end())
+    {
+        cout << it->first << endl;
+        it++;
+    }
+
+
     //fd를 닫지 않았을 가능성이 존재함
     std::cout<<"========http message========"<<std::endl;
     Kq  kq;

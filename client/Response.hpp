@@ -30,12 +30,13 @@ typedef struct Request
 {
     bool    fin;    //request completion status
     int     status; //request status code
+    int     port;
     Method                                                      method;     //http method
     std::string                                                 url;        //http resource
     std::string                                                 location;   //location for config
     Version                                                     version;    //http version
-    std::map<std::string, std::string>                query;      //resource query
-    std::map<std::string, std::deque<std::string> >   header;     //request header
+    std::map<std::string, std::string>                          query;      //resource query
+    std::map<std::string, std::deque<std::string> >             header;     //request header
     std::vector<std::string>                                    content;    //request content
 }   Request;
 
@@ -50,6 +51,7 @@ typedef struct Request
  * @param entity    response messgae entity
  * @param request   request struct
  * @param serverConfig    server used to take care of request.
+ * @param locationConfig  location used to take care of request.
  */
 class Response
 {
@@ -61,6 +63,7 @@ class Response
         std::string         entity;
         Request             request;
         ServerConfigData    *serverConfig;    //server config
+        LocationConfigData  *locationConfig;  //location config
     public:
         static std::map<int, std::string>   statusContent;
         //oocf
@@ -76,13 +79,16 @@ class Response
         std::string getContent() const;
         std::string getEntity() const;
         Request     getRequest() const;
+        LocationConfigData *getLocationConfigData();
         //set function
         void    setRequest(Request &temp);
+        void    setLocationConfigData(LocationConfigData *locationConfig);
         //sub logic
         void    initRequest(Request msg);       //request msg init
         void    init();                         //start, header, content, entity init
         void    makeDate();                     //date header make
         void    makeError();                    //error message make
+        void    checkRedirect();                //check redirect
         void    checkAllowedMethod();           //check allowed method
         void    makeFilePath(std::string& str); //make real url
         int     getDefaultErrorPage(int statusCode); // returns fd of default error page

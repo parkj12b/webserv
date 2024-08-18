@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 19:22:56 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/13 16:16:58 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/16 22:42:54 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,20 @@ vector<vector<vector< Token *> > > *LocationConfig::getConfig(string key) {
         return NULL;
     }
 
+LocationConfig *LocationConfig::getLocationConfig(string key, int prePost) {
+    map<string, map<int, LocationConfig *> >::iterator it = location.find(key);
+
+    if (it == location.end())
+        return NULL;
+    map<int, LocationConfig *>::iterator it2 = it->second.find(prePost);
+    if (it2 == it->second.end())
+        return NULL;
+    return it2->second;
+}
+
 LocationConfig::LocationConfig() : _env(NULL), _limitExcept(NULL) {}
 
-LocationConfig::LocationConfig(Env *env) : _env(env), _limitExcept(NULL) {}
+LocationConfig::LocationConfig(Env *env) : _env(env), _limitExcept(NULL), location() {}
 
 LocationConfig::LocationConfig(Env *env, Env *limitExcept) : _env(env), _limitExcept(limitExcept) {}
 

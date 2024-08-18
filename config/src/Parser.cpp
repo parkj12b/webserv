@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 18:48:59 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/15 15:50:47 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/17 17:11:20 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,16 +150,24 @@ void    Parser::context()
     if (!Directives::containsContext(_top->getContext(), w->lexeme))
         error("invalid context");
     Env *temp = _top;
+    LocationConfig *tempLocation = curLocation;
     _top = new Env(_top, w->lexeme);
     saveEnv(_top);
     if (_directiveNum[w->lexeme] == SERVER)
         server();
+    else if (_directiveNum[w->lexeme] == LOCATION)
+        curLocation = new LocationConfig(_top);
     match(Tag::CONTEXT);
     headDirective(); match('{');
     directives();
     match('}');
     Token *t = NULL;
     string path;
+    int prePostNum = PREFIX;
+    vector<Token *> prePost = _top->getHeadDirectiveByIndex(0);
+    if (prePost.size() > 0)
+        prePostNum = POSTFIX;
+    LocationConfig *locationConfig = NULL;
     switch(_directiveNum[w->lexeme]) {
         case EVENTS:
             if (_event != NULL)
@@ -169,24 +177,38 @@ void    Parser::context()
         case LOCATION:
             t = _top->getHeadDirectiveByIndex(1)[0]->clone();
             path = dynamic_cast<Word *>(t)->lexeme;
-            cout << path << endl;
-            if (curServer->location.find(path) == curServer->location.end())
-                curServer->location.insert(make_pair(path, LocationConfig(_top)));
+            cout << "location: " << curLocation << endl;
+            if (tempLocation == NULL)
+            {
+                if (curServer->location.find(path) == curServer->location.end())
+                {
+                    cout << curServer << " : " << curLocation << endl;
+                    curServer->location[path].insert(make_pair(prePostNum, curLocation));
+                }
+            }
+            else
+            {
+                if (tempLocation->location.find(path) == tempLocation->location.end())
+                {
+                    cout << tempLocation << " : " << curLocation << endl;
+                    tempLocation->location[path].insert(make_pair(prePostNum, curLocation));
+                }
+            }
             delete t;
             break;
         case LIMIT_EXCEPT:
-            cout << "size: " << _top->getPrev()->getHeadDirectiveByIndex(1).size() << endl;
-            t = _top->getPrev()->getHeadDirectiveByIndex(1)[0]->clone();
+            cout << "limit_except: " << curLocation << endl;
+            t = curLocation->getEnv()->getHeadDirectiveByIndex(1)[0]->clone();
             path = dynamic_cast<Word *>(t)->lexeme;
-            if (curServer->location.find(path) != curServer->location.end()
-                && curServer->location.find(path)->second.getLimitExcept() != NULL)
-                error("multiple limit_except");
-            curServer->location.insert(make_pair(path, LocationConfig(_top->getPrev(), _top)));
-            curServer->location[path].setLimitExcept(_top);
+            if (curLocation == NULL)
+                throw runtime_error("limit_except without location");
+            locationConfig = curLocation->getLocationConfig(path, prePostNum);
+            curLocation->setLimitExcept(_top);
             delete t;
             break;
     }
     delete w;
+    curLocation = tempLocation;
     _top = temp;
 }
 
@@ -228,8 +250,13 @@ void    Parser::saveEnv(Env *env)
     _envList.insert(env);
 }
 
+void    Parser::saveLocation(LocationConfig *location)
+{
+    _locationList.insert(location);
+}
+
 Parser::Parser(Lexer &l, string context)
-    : _lex(new Lexer(l)), _top(new Env(NULL, context)), _event(NULL)
+    : _lex(new Lexer(l)), _top(new Env(NULL, context)), _event(NULL), curLocation(NULL)
 { 
     _look = NULL;
     move();
@@ -247,6 +274,10 @@ Parser::~Parser()
         _serverConfig[i] = NULL;
     }
     for (set<Env *>::iterator it = _envList.begin(); it != _envList.end(); it++)
+    {
+        delete *it;
+    }
+    for (set<LocationConfig *>::iterator it = _locationList.begin(); it != _locationList.end(); it++)
     {
         delete *it;
     }
@@ -299,7 +330,7 @@ map<string, vector<Syntax> > Parser::_directiveSyntax = {
     {"events", {}},
     {"http", {}},
     {"server", {}},
-    {"location", {{{'=', '~', Tag::SYMBOL}, 0}, {{Tag::ID}, 1}}},
+    {"location", {{{Tag::SYMBOL}, 0}, {{Tag::ID}, 1}}},
     {"limit_except", {{{Tag::METHOD}, 1}, {{Tag::METHOD}, 2}}},
     // {"allow", {{{Tag::ID, Tag::IPV4}, 1}}},
     {"deny", {{{Tag::ID}, 1}}},

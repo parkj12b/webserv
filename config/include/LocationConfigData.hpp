@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 20:28:36 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/13 16:30:48 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/17 01:12:46 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include "Trie.hpp"
 
 using namespace std;
 
@@ -55,7 +56,10 @@ private:
     bool                _autoindex;
     string              _accessLog;
     pair<int, string>   _return; // used to redirect
+    Trie                _prefixTrie;
+    vector<string>      _suffixMatch;
 public:
+    map<string, map<int, LocationConfigData> > _locationConfigData;  //location에 따른 정보가 담긴 map??
     void                setErrorLog(string errorLog);
     void                setDefaultType(string defaultType);
     void                setKeepaliveTimeout(ssize_t keepaliveTimeout);
@@ -84,6 +88,10 @@ public:
     bool                getAutoindex();
     string              getAccessLog();
     pair<int, string>   &getReturn();
+    void                setLocationConfigData(string path, int prePost, LocationConfigData locationConfigData);
+    LocationConfigData  *getLocationConfigData(string path, int prePost);
+    Trie                &getPrefixTrie();
+    vector<string>      &getSuffixMatch();
 };
 
 #endif

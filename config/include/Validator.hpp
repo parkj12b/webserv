@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:26:25 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/15 17:36:38 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/16 22:15:52 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ public:
                             ServerConfig *serverConfig);
     void                checkPort(ServerConfigData *serverData,
                             ServerConfig *serverConfig);
-    LocationConfigData  checkLocation(LocationConfig &locationConfig);
+    LocationConfigData  checkLocation(LocationConfig *locationConfig);
     void                checkErrorLog(LocationConfigData &locationData,
                             LocationConfig &locationConfig);
     void                checkAllowedMethod(LocationConfigData &locationData,

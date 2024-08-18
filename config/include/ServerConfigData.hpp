@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 20:19:25 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/15 01:39:49 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/17 01:12:24 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,17 @@ class ServerConfigData {
 private:
     vector<string>                  _serverName;
     vector<int>                     _port;
-    map<string, LocationConfigData> _locationConfigData;  //location에 따른 정보가 담긴 map??
-    Trie                            _locationTrie;
+    Trie                            _prefixTrie;
+    vector<string>                  _suffixMatch;
 public:
+    map<string, map<int, LocationConfigData> > _locationConfigData;  //location에 따른 정보가 담긴 map??
     void                            addServerName(string serverName);
+    void                            setLocationConfigData(string path, int prePost, LocationConfigData locationConfigData);
+    vector<string>                  &getSuffixMatch();
     vector<string>                  &getServerName();
     vector<int>                     &getPort();
-    map<string, LocationConfigData> &getLocationConfigData();
-    Trie                            &getLocationTrie();
+    LocationConfigData              *getLocationConfigData(string path, int prePost);
+    Trie                            &getPrefixTrie();
     ServerConfigData();
 };
 
