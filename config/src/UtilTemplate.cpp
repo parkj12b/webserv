@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 15:26:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/18 16:24:47 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/18 18:24:34 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <climits>
-#include <cstdlib>
 #include "UtilTemplate.hpp"
+#include "stdlib.h"
 
 
 using namespace std;
@@ -167,6 +167,7 @@ bool    isWithinBasePath(const string &basePath, const string &requestPath)
         return false;
     resolvedPath = resolvedPathCstr;
     free(resolvedPathCstr);
+    cout << "resolved path: " << resolvedPath << endl;
     if (resolvedPath.find(basePath) == 0)
         return true;
     return false;
