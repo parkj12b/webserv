@@ -286,11 +286,9 @@ void    Response::makeError()
     //url 이 필요함 -> url 파싱해야됨, prefix match 
     LocationConfigData   *location = getLocationConfigData();
     map<int, string>   &errorPage = location->getErrorPage();
-
     (void) errorPage;
     int fd;
 
-    
     if (request.status >= 300 && request.status < 400)
         return ;
     start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
@@ -349,6 +347,11 @@ void    Response::makeGet()
 
     std::cout<<"Method: GET"<<std::endl;
     std::cout<<request.url.c_str()<<std::endl;
+    CgiProcessor cgiProcessor(request, serverConfig);
+    if (cgiProcessor.checkURL(request.url))
+    {
+      cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+    }
     //cgi checking...
     fd = open(request.url.c_str(), O_RDONLY);
     if (fd < 0)
@@ -367,7 +370,6 @@ void    Response::makeGet()
     request.status = 200;
     start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
 }
-
 
 void    Response::makePost()
 {
