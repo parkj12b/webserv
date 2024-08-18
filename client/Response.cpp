@@ -270,6 +270,42 @@ int Response::getDefaultErrorPage(int statusCode)
     return (open(DEFAULT_400_ERROR_PAGE, O_RDONLY));
 }
 
+void    Response::makeCookie(std::string& date)
+{
+    const std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const size_t charactersSize = characters.size();
+    std::string result;
+    size_t      index;
+    std::string value;
+    std::string cookieValue;
+
+    if (request.header["cookie"].empty())
+    {
+        for (size_t i = 0; i < 12; ++i)
+        {
+            index = rand() % charactersSize;
+            result += characters[index];
+        }
+        session[result] = date;
+        value = "session_id=" + result;
+        makeHeader("Set-Cookie", value);
+    }
+    else
+    {
+        cookieValue = request.header["cookie"].front();
+        index = cookieValue.find(';');
+        if (index != std::string::npos)
+            cookieValue = cookieValue.substr(0, index);
+        index = cookieValue.find('=');
+        if (index != std::string::npos)
+            cookieValue = cookieValue.substr(index + 1);
+        HeaderLine::eraseSpace(cookieValue, 0);
+        if (session.find(cookieValue) != session.end())
+            session[cookieValue] = date;
+        makeHeader("session", session[cookieValue]);
+    }
+}
+
 void    Response::makeDefaultHeader()
 {
     time_t              now;
@@ -285,8 +321,6 @@ void    Response::makeDefaultHeader()
     std::string         day[5];
     size_t              pos;
     int                 order;
-    // const std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    // const size_t charactersSize = characters.size();
 
     order = 0;
     while (std::getline(strStream, temp, ' '))
@@ -298,7 +332,7 @@ void    Response::makeDefaultHeader()
     date = day[0] + ", " + day[2] + " " + day[1] + " " + day[4] + " " + day[3] + " GMT";
     makeHeader("Date", date);
     makeHeader("Server", "inghwang/0.0");
-    makeHeader("Set-Cookie", "session_id=hi123");
+    makeCookie(date);
 }
 
 void    Response::makeError()
@@ -313,7 +347,7 @@ void    Response::makeError()
     
     if (request.status >= 300 && request.status < 400)
         return ;
-    start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+    // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
     if (request.status == 100)
         return ;
     fd = getDefaultErrorPage(request.status);
@@ -335,7 +369,7 @@ void    Response::checkRedirect()
         cout << request.url << endl;
         cout << request.status << endl;
         makeHeader("Location", redirect.second);
-        start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+        // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
     }
 }
 
@@ -380,7 +414,7 @@ void    Response::makeContent(int fd)
 
 void    Response::makeEntity()
 {
-    entity = start;
+    entity = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
     if (!header.empty())
         entity += header + "\r\n";
     std::cout<<entity.size()<<std::endl;
@@ -400,7 +434,7 @@ void    Response::makeGet()
     if (fd < 0)
     {
         request.status = 404;
-        start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+        // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
         fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);
         if (fd < 0)
             return ;
@@ -411,7 +445,7 @@ void    Response::makeGet()
     }
     makeContent(fd);
     request.status = 200;
-    start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+    // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
 }
 
 
@@ -441,7 +475,7 @@ void    Response::makePost()
     }
     close(fd);
     request.status = 204;
-    start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+    // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
 }
 
 void    Response::makeDelete()
@@ -450,7 +484,7 @@ void    Response::makeDelete()
     if (std::remove(request.url.c_str()) == 0)
     {
         request.status = 204;
-        start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+        // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
     }
     else
     {

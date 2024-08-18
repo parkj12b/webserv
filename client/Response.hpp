@@ -22,6 +22,7 @@
 # include <cstdio>
 # include "StartLine.hpp"
 # include "ServerConfigData.hpp"
+# include "HeaderLine.hpp"
 
 using namespace std;
 
@@ -86,6 +87,7 @@ class Response
         //sub logic
         void    initRequest(Request msg);       //request msg init
         void    init();                         //start, header, content, entity init
+        void    makeCookie(std::string& date);  //make cookie header
         void    makeDefaultHeader();            //date header make
         void    makeError();                    //error message make
         void    checkRedirect();                //check redirect
