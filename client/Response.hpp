@@ -64,7 +64,7 @@ class Response
         ServerConfigData    *serverConfig;    //server config
         LocationConfigData  *locationConfig;  //location config
     public:
-        static std::map<int, std::string>   statusContent;
+        static std::map<int, std::string>           statusContent;
         static std::map<std::string, std::string>   session;
         //oocf
         Response();
@@ -92,9 +92,9 @@ class Response
         void    checkAllowedMethod();           //check allowed method
         void    makeFilePath(std::string& str); //make real url
         int     getDefaultErrorPage(int statusCode); // returns fd of default error page
-        //logic
         void    makeHeader(std::string key, std::string value); //key -> value
-        void    makeContent(int fd);        //make content
+        void    makeContent(int fd);                            //make content
+        //logic
         void    makeEntity();               //plus start, header, content
         void    makeGet();                  //GET method make response
         void    makePost();                 //POST method make response

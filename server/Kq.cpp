@@ -180,6 +180,7 @@ void    Kq::mainLoop()
     struct kevent   store[connectionCnt];
     int             count;
 
+    //waitpid
     //changed EVENTCNT to connectionCnt
     while ((count = kevent(kq, &fdList[0], fdList.size(), store, connectionCnt, NULL)) < 0);
     fdList.clear();
