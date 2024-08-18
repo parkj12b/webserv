@@ -241,9 +241,7 @@ void    Response::init()
         if (serverConfig == NULL)
             request.status = 404;
     }
-    makeHeader("Server", "inghwang/0.0");
-    if (request.header["cookie"].empty())
-        makeHeader("Set-Cookie", "session_id=abc123");
+    
 }
 
 int Response::getDefaultErrorPage(int statusCode)
@@ -418,6 +416,8 @@ void    Response::responseMake()
 {
     
     init();
+    makeHeader("Server", "inghwang/0.0");
+    makeHeader("Set-Cookie", "session_id=abc123");
     makeDate();
     checkAllowedMethod();
     if (request.status > 0)
