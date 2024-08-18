@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include <map>
-#include <string>
-#include <vector>
 #include <algorithm>
 #include "Response.hpp"
 #include "Server.hpp"
@@ -340,6 +338,11 @@ void    Response::makeGet()
 
     std::cout<<"Method: GET"<<std::endl;
     std::cout<<request.url.c_str()<<std::endl;
+	CgiProcessor cgiProcessor(request, serverConfig);
+	if (cgiProcessor.checkURL(request.url))
+	{
+		cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+	}
     //cgi checking...
     fd = open(request.url.c_str(), O_RDONLY);
     if (fd < 0)
