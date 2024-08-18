@@ -106,7 +106,15 @@ std::map<int, std::string>  statusContentInit()
     return (m);
 }
 
+std::map<std::string, std::string>  sessionInit()
+{
+    std::map<std::string, std::string>  m;
+
+    return (m);
+}
+
 std::map<int, std::string>  Response::statusContent = statusContentInit();
+std::map<std::string, std::string>  Response::session = sessionInit();
 
 void    Response::makeFilePath(std::string& str)
 {
@@ -211,9 +219,19 @@ Request Response::getRequest() const
     return (request);
 }
 
+LocationConfigData *Response::getLocationConfigData()
+{
+    return (locationConfig);
+}
+
 void    Response::setRequest(Request &temp)
 {
     request = temp;
+}
+
+void    Response::setLocationConfigData(LocationConfigData *locationConfigData)
+{
+    locationConfig = locationConfigData;
 }
 
 void    Response::initRequest(Request msg)
@@ -252,20 +270,23 @@ int Response::getDefaultErrorPage(int statusCode)
     return (open(DEFAULT_400_ERROR_PAGE, O_RDONLY));
 }
 
-void    Response::makeDate()
+void    Response::makeDefaultHeader()
 {
-    time_t      now;
-    char*       dt;
+    time_t              now;
+    char*               dt;
 
     now = time(0);
     dt = ctime(&now);
     std::string         date;
     std::string         str(dt);
+    std::ostringstream  oss(str);
     std::istringstream  strStream(str);
     std::string         temp;
     std::string         day[5];
     size_t              pos;
     int                 order;
+    // const std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    // const size_t charactersSize = characters.size();
 
     order = 0;
     while (std::getline(strStream, temp, ' '))
@@ -277,8 +298,8 @@ void    Response::makeDate()
     date = day[0] + ", " + day[2] + " " + day[1] + " " + day[4] + " " + day[3] + " GMT";
     makeHeader("Date", date);
     makeHeader("Server", "inghwang/0.0");
-    if (request.header["cookie"].empty())
-        makeHeader("Set-Cookie", "session_id=" + date);
+    std::cout<<request.header["cookie"].front()<<std::endl;
+    std::cout<<"hereher\n"<<std::endl;
 }
 
 void    Response::makeError()
@@ -301,6 +322,32 @@ void    Response::makeError()
         return ;
     makeHeader("content-type", "text/html");
     makeContent(fd);
+}
+
+void    Response::checkRedirect()
+{
+    LocationConfigData  *location = getLocationConfigData();
+    pair<int, string>   &redirect = location->getReturn();
+
+    if (redirect.first != 0)
+    {
+        request.status = redirect.first;
+        request.url = redirect.second;
+        cout << request.url << endl;
+        cout << request.status << endl;
+        makeHeader("Location", redirect.second);
+        start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+    }
+}
+
+void    Response::checkAllowedMethod()
+{
+    LocationConfigData  *location = getLocationConfigData();
+    vector<string>    &allowedMethods = location->getAllowedMethods();
+
+    if (find(allowedMethods.begin(), allowedMethods.end(),
+        StartLine::methodString[request.method]) == allowedMethods.end())
+        request.status = 405;
 }
 
 void    Response::makeHeader(std::string key, std::string value)
@@ -418,7 +465,7 @@ void    Response::responseMake()
 {
     
     init();
-    makeDate();
+    makeDefaultHeader();
     checkAllowedMethod();
     if (request.status > 0)
     {
@@ -454,38 +501,3 @@ void    Response::responseMake()
     return ;
 }
 
-void    Response::checkAllowedMethod()
-{
-    LocationConfigData  *location = getLocationConfigData();
-    vector<string>    &allowedMethods = location->getAllowedMethods();
-
-    if (find(allowedMethods.begin(), allowedMethods.end(),
-        StartLine::methodString[request.method]) == allowedMethods.end())
-        request.status = 405;
-}
-
-LocationConfigData *Response::getLocationConfigData()
-{
-    return (locationConfig);
-}
-
-void    Response::setLocationConfigData(LocationConfigData *locationConfigData)
-{
-    locationConfig = locationConfigData;
-}
-
-void    Response::checkRedirect()
-{
-    LocationConfigData  *location = getLocationConfigData();
-    pair<int, string>   &redirect = location->getReturn();
-
-    if (redirect.first != 0)
-    {
-        request.status = redirect.first;
-        request.url = redirect.second;
-    }
-    cout << request.url << endl;
-    cout << request.status << endl;
-    makeHeader("Location", redirect.second);
-    start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
-}
