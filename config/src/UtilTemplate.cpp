@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 15:26:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/17 00:35:28 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/19 13:55:13 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 #include <fstream>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <climits>
 #include "UtilTemplate.hpp"
+#include "stdlib.h"
 
 
 using namespace std;
@@ -153,4 +155,32 @@ bool endsWith(const std::string& text, const std::string& suffix) {
         return false; // suffix is longer than text
     }
     return text.compare(text.length() - suffix.length(), suffix.length(), suffix) == 0;
+}
+
+bool    isWithinBasePath(const string &basePath, const string &requestPath)
+{
+    string resolvedPath;
+    char *resolvedPathCstr;
+    
+    cout << "requestPath: " << requestPath << endl;
+    resolvedPathCstr = realpath(requestPath.c_str(), NULL);
+    cout << "resolved path: " << resolvedPathCstr << endl;
+    if (!resolvedPathCstr)
+        return false;
+    resolvedPath = resolvedPathCstr;
+    free(resolvedPathCstr);
+    if (resolvedPath.find(basePath) == 0)
+        return true;
+    return false;
+}
+
+bool    isFile(const char *path)
+{
+    struct stat statbuf;
+
+    if (stat(path, &statbuf) != 0)
+        return false;
+    if (S_ISREG(statbuf.st_mode))
+        return true;
+    return false;
 }

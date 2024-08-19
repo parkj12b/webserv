@@ -106,7 +106,15 @@ std::map<int, std::string>  statusContentInit()
     return (m);
 }
 
+std::map<std::string, std::string>  sessionInit()
+{
+    std::map<std::string, std::string>  m;
+
+    return (m);
+}
+
 std::map<int, std::string>  Response::statusContent = statusContentInit();
+std::map<std::string, std::string>  Response::session = sessionInit();
 
 void    Response::makeFilePath(std::string& str)
 {
@@ -119,21 +127,21 @@ void    Response::makeFilePath(std::string& str)
     {
         // 없으면 index.html 이라 없을 일은 없음.
         cout << "index: " << location->getIndex() << endl;
-        if (str[str.size() - 1] == '/')
-            str += location->getIndex();
-        else
-        {
-            cout << "str: " << str << endl;
-            request.status = 404;
-            return ;
-        }
+        
+        str += "/" + location->getIndex();
     }
-    cout << "str: " << str << endl;
-    if (access(str.c_str(), F_OK | R_OK) == -1)
+    if (isFile(str.c_str()) == false)
     {
+        cout << "not file: " << str << endl;
         request.status = 404;
         return ;
     }
+    if (isWithinBasePath(location->getRoot(), str) == false)
+    {
+        request.status = 403;
+        return ;
+    }
+    cout << "str: " << str << endl;
 
     // pos = str.find("http");
     // if (pos == 0)
@@ -211,9 +219,19 @@ Request Response::getRequest() const
     return (request);
 }
 
+LocationConfigData *Response::getLocationConfigData()
+{
+    return (locationConfig);
+}
+
 void    Response::setRequest(Request &temp)
 {
     request = temp;
+}
+
+void    Response::setLocationConfigData(LocationConfigData *locationConfigData)
+{
+    locationConfig = locationConfigData;
 }
 
 void    Response::initRequest(Request msg)
@@ -229,6 +247,8 @@ void    Response::init()
     header.clear();
     content.clear();
     entity.clear();
+    if (request.status != 0)
+        return ;
     string host = request.header["host"].front();
     cout << "host: " << host << endl;
     try
@@ -241,29 +261,72 @@ void    Response::init()
         if (serverConfig == NULL)
             request.status = 400;
     }
-    makeHeader("Server", "inghwang/0.0");
-    if (request.header["cookie"].empty())
-        makeHeader("Set-Cookie", "session_id=abc123");
 }
 
 int Response::getDefaultErrorPage(int statusCode)
 {
+    string errorStr = getLocationConfigData()->getErrorPage()[statusCode];
+
+    int fd = -1;
+
+    if (errorStr.size() > 0)
+        fd = open(errorStr.c_str(), O_RDONLY);
+    if (fd != -1)
+        return (fd);
     if (statusCode >= 400 && statusCode < 500)
         return (open(DEFAULT_400_ERROR_PAGE, O_RDONLY));
-    else if (statusCode >= 500)
+    if (statusCode >= 500)
         return (open(DEFAULT_500_ERROR_PAGE, O_RDONLY));
     return (open(DEFAULT_400_ERROR_PAGE, O_RDONLY));
 }
 
-void    Response::makeDate()
+void    Response::makeCookie(std::string& date)
 {
-    time_t      now;
-    char*       dt;
+    const std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const size_t charactersSize = characters.size();
+    std::string result;
+    size_t      index;
+    std::string value;
+    std::string cookieValue;
+
+    if (request.header["cookie"].empty())
+    {
+        for (size_t i = 0; i < 12; ++i)
+        {
+            index = rand() % charactersSize;
+            result += characters[index];
+        }
+        session[result] = date;
+        value = "session_id=" + result + "; Max-Age=3600";
+        makeHeader("Set-Cookie", value);
+    }
+    else
+    {
+        cookieValue = request.header["cookie"].front();
+        index = cookieValue.find(';');
+        if (index != std::string::npos)
+            cookieValue = cookieValue.substr(0, index);
+        index = cookieValue.find('=');
+        if (index != std::string::npos)
+            cookieValue = cookieValue.substr(index + 1);
+        HeaderLine::eraseSpace(cookieValue, 0);
+        if (session.find(cookieValue) != session.end())
+            session[cookieValue] = date;
+        std::cout<<"cookieValue: "<<cookieValue<<std::endl<<std::endl;
+        makeHeader("session", session[cookieValue]);
+    }
+}
+
+void    Response::makeDefaultHeader()
+{
+    time_t              now;
+    char*               dt;
 
     now = time(0);
     dt = ctime(&now);
     std::string         date;
     std::string         str(dt);
+    std::ostringstream  oss(str);
     std::istringstream  strStream(str);
     std::string         temp;
     std::string         day[5];
@@ -279,6 +342,8 @@ void    Response::makeDate()
     }
     date = day[0] + ", " + day[2] + " " + day[1] + " " + day[4] + " " + day[3] + " GMT";
     makeHeader("Date", date);
+    makeHeader("Server", "inghwang/0.0");
+    makeCookie(date);
 }
 
 void    Response::makeError()
@@ -291,7 +356,7 @@ void    Response::makeError()
 
     if (request.status >= 300 && request.status < 400)
         return ;
-    start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+    // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
     if (request.status == 100)
         return ;
     fd = getDefaultErrorPage(request.status);
@@ -299,6 +364,32 @@ void    Response::makeError()
         return ;
     makeHeader("content-type", "text/html");
     makeContent(fd);
+}
+
+void    Response::checkRedirect()
+{
+    LocationConfigData  *location = getLocationConfigData();
+    pair<int, string>   &redirect = location->getReturn();
+
+    if (redirect.first != 0)
+    {
+        request.status = redirect.first;
+        request.url = redirect.second;
+        cout << request.url << endl;
+        cout << request.status << endl;
+        makeHeader("Location", redirect.second);
+        // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+    }
+}
+
+void    Response::checkAllowedMethod()
+{
+    LocationConfigData  *location = getLocationConfigData();
+    vector<string>    &allowedMethods = location->getAllowedMethods();
+
+    if (find(allowedMethods.begin(), allowedMethods.end(),
+        StartLine::methodString[request.method]) == allowedMethods.end())
+        request.status = 405;
 }
 
 void    Response::makeHeader(std::string key, std::string value)
@@ -332,7 +423,7 @@ void    Response::makeContent(int fd)
 
 void    Response::makeEntity()
 {
-    entity = start;
+    entity = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
     if (!header.empty())
         entity += header + "\r\n";
     std::cout<<entity.size()<<std::endl;
@@ -381,7 +472,7 @@ void    Response::makePost()
     std::cout<<"Method: POST"<<std::endl;
 	
     request.status = 204;
-    start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+    // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
 }
 
 void    Response::makeDelete()
@@ -390,7 +481,7 @@ void    Response::makeDelete()
     if (std::remove(request.url.c_str()) == 0)
     {
         request.status = 204;
-        start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+        // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
     }
     else
     {
@@ -403,24 +494,35 @@ void    Response::makeDelete()
 void    Response::responseMake()
 {
     init();
-    makeDate();
-    checkAllowedMethod();
+    cout << "request.status: " << request.status << endl;
+    makeDefaultHeader();
     if (request.status > 0)
     {
         makeError();
         makeEntity();
         return ;
     }
+    checkAllowedMethod();
+    cout << "path: " << locationConfig->getPath() << endl;
+    if (request.status > 0)
+    {
+        makeError();
+        makeEntity();
+        return ;
+    }
+    cout << "1\n";
     checkRedirect();
     if (request.status > 0)
         return (makeEntity());
     makeFilePath(request.url);
+    cout << "2\n";
     if (request.status > 0)
     {
         makeError();
         makeEntity();
         return ;
     }
+    cout << "3\n";
     switch (request.method)
     {
         case GET:
@@ -439,38 +541,3 @@ void    Response::responseMake()
     return ;
 }
 
-void    Response::checkAllowedMethod()
-{
-    LocationConfigData  *location = getLocationConfigData();
-    vector<string>    &allowedMethods = location->getAllowedMethods();
-
-    if (find(allowedMethods.begin(), allowedMethods.end(),
-        StartLine::methodString[request.method]) == allowedMethods.end())
-        request.status = 405;
-}
-
-LocationConfigData *Response::getLocationConfigData()
-{
-    return (locationConfig);
-}
-
-void    Response::setLocationConfigData(LocationConfigData *locationConfigData)
-{
-    locationConfig = locationConfigData;
-}
-
-void    Response::checkRedirect()
-{
-    LocationConfigData  *location = getLocationConfigData();
-    pair<int, string>   &redirect = location->getReturn();
-
-    if (redirect.first != 0)
-    {
-        request.status = redirect.first;
-        request.url = redirect.second;
-    }
-    cout << request.url << endl;
-    cout << request.status << endl;
-    makeHeader("Location", redirect.second);
-    start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
-}

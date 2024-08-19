@@ -23,6 +23,7 @@
 # include "ServerConfigData.hpp"
 # include "StartLine.hpp"
 # include "CgiProcessor.hpp"
+# include "HeaderLine.hpp"
 
 using namespace std;
 
@@ -66,7 +67,8 @@ class Response
         ServerConfigData    *serverConfig;    //server config
         LocationConfigData  *locationConfig;  //location config
     public:
-        static std::map<int, std::string>   statusContent;
+        static std::map<int, std::string>           statusContent;
+        static std::map<std::string, std::string>   session;
         //oocf
         Response();
         Response(const Response& src);
@@ -87,15 +89,16 @@ class Response
         //sub logic
         void    initRequest(Request msg);       //request msg init
         void    init();                         //start, header, content, entity init
-        void    makeDate();                     //date header make
+        void    makeCookie(std::string& date);  //make cookie header
+        void    makeDefaultHeader();            //date header make
         void    makeError();                    //error message make
         void    checkRedirect();                //check redirect
         void    checkAllowedMethod();           //check allowed method
         void    makeFilePath(std::string& str); //make real url
         int     getDefaultErrorPage(int statusCode); // returns fd of default error page
-        //logic
         void    makeHeader(std::string key, std::string value); //key -> value
-        void    makeContent(int fd);        //make content
+        void    makeContent(int fd);                            //make content
+        //logic
         void    makeEntity();               //plus start, header, content
         void    makeGet();                  //GET method make response
         void    makePost();                 //POST method make response
