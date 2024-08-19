@@ -4,6 +4,7 @@
 # include <deque>
 # include "Response.hpp"
 # include "ServerConfigData.hpp"
+using namespace std;
 
 struct Request;
 
@@ -14,21 +15,22 @@ public:
 	~CgiProcessor();
 	CgiProcessor(const CgiProcessor& rhs);
 	CgiProcessor&	operator=(const CgiProcessor& rhs);
-	std::string		getScriptFile();
-	std::string		getCgiContent();
-	bool			checkURL(std::string url);
-	void			executeCGIScript(const std::string path);
-private:
-	CgiProcessor();
+	string	getScriptFile();
+	string	getCgiContent();
+	void	insertEnv(string key, string value);
 	void	setURLEnv();
 	bool	setStartHeaderEnv();
+	bool	checkURL(string url);
+	void	executeCGIScript(const string path);
+private:
+	CgiProcessor();
 	Request 			&request;
 	ServerConfigData	*serverConfig;
 	LocationConfigData	*locationConfig;
-	std::string			scriptFile;
-	std::string			cgiContent;
-	std::deque<std::string>	metaVariables;
-	std::map<std::string, std::deque<std::string> > cgiResponseHeader;
+	string				scriptFile;
+	string				cgiContent;
+	map<string, string>			metaVariables;
+	map<string, deque<string> > cgiResponseHeader;
 };
 
 #endif

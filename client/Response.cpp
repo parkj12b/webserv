@@ -442,7 +442,6 @@ void    Response::makeGet()
     if (cgiProcessor.checkURL(request.url))
     {
     	cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
-		std::cout << cgiProcessor.getCgiContent() << '\n';
     }
 	else
 	{
@@ -467,15 +466,18 @@ void    Response::makeGet()
 
 void    Response::makePost()
 {
-    std::string buffer;
-    int         fd;
-
-	(void) fd;
-
     std::cout<<"Method: POST"<<std::endl;
-	
-    request.status = 204;
-    // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+	CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
+    if (!cgiProcessor.checkURL(request.url))
+		request.status = 400;
+	else
+	{
+		
+		cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+		if (request.status == 0)
+			request.status = 204;
+	}
+    start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
 }
 
 void    Response::makeDelete()
