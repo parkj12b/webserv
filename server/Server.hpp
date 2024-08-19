@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:55 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/15 16:57:18 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/19 14:42:09 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 #include "Client.hpp"
 #include "HTTPServer.hpp"
 
-# define BUFFER_SIZE 4096
+# define BUFFER_SIZE 4095
 # define DEFAULT_400_ERROR_PAGE "./resource/html/error/40x.html"
 # define DEFAULT_500_ERROR_PAGE "./resource/html/error/50x.html"
 

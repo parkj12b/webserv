@@ -127,17 +127,12 @@ void    Response::makeFilePath(std::string& str)
     {
         // 없으면 index.html 이라 없을 일은 없음.
         cout << "index: " << location->getIndex() << endl;
-        if (str[str.size() - 1] == '/')
-            str += location->getIndex();
-        else
-        {
-            cout << "str: " << str << endl;
-            request.status = 404;
-            return ;
-        }
+        
+        str += "/" + location->getIndex();
     }
-    if (access(str.c_str(), F_OK | R_OK) == -1)
+    if (isFile(str.c_str()) == false)
     {
+        cout << "not file: " << str << endl;
         request.status = 404;
         return ;
     }
@@ -252,6 +247,8 @@ void    Response::init()
     header.clear();
     content.clear();
     entity.clear();
+    if (request.status != 0)
+        return ;
     string host = request.header["host"].front();
     cout << "host: " << host << endl;
     try
@@ -470,6 +467,7 @@ void    Response::makePost()
 
     std::cout<<"Method: POST"<<std::endl;
     //cgi checking...
+    cout << "post file: " << request.url.c_str() << endl;
     fd = open(request.url.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0777);
     if (fd < 0)
     {
@@ -512,24 +510,35 @@ void    Response::responseMake()
 {
     
     init();
+    cout << "request.status: " << request.status << endl;
     makeDefaultHeader();
-    checkAllowedMethod();
     if (request.status > 0)
     {
         makeError();
         makeEntity();
         return ;
     }
+    checkAllowedMethod();
+    cout << "path: " << locationConfig->getPath() << endl;
+    if (request.status > 0)
+    {
+        makeError();
+        makeEntity();
+        return ;
+    }
+    cout << "1\n";
     checkRedirect();
     if (request.status > 0)
         return (makeEntity());
     makeFilePath(request.url);
+    cout << "2\n";
     if (request.status > 0)
     {
         makeError();
         makeEntity();
         return ;
     }
+    cout << "3\n";
     switch (request.method)
     {
         case GET:
