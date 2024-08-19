@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/19 14:49:32 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/19 16:47:28 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,15 +225,15 @@ int Client::setHeader(void)
                     std::cout<<"default error"<<std::endl;
                     return (2);
                 }
-                request.header = headerLine.getHeader();
-                msg = msg.substr(flag + 2);
-                contentLine.initContentLine(headerLine.getContentLength(), headerLine.getContentType());
-                connect = headerLine.getConnect();
                 if (setMatchingLocation(request.url))
                 {
                     request.status = 404;
                     return (2);
                 }
+                request.header = headerLine.getHeader();
+                msg = msg.substr(flag + 2);
+                contentLine.initContentLine(headerLine.getContentLength(), headerLine.getContentType());
+                connect = headerLine.getConnect();
                 break ;
             }
             str = msg.substr(0, flag);
@@ -446,6 +446,7 @@ void    Client::plusIndex(size_t plus)
 
 bool    Client::setMatchingLocation(string url)
 {
+    cout << "url " << url << endl;
     string host = request.header["host"].front();
     ServerConfigData *serverConfigData;
     try {
@@ -457,7 +458,6 @@ bool    Client::setMatchingLocation(string url)
             serverConfigData = Server::serverConfig->getDefaultServer(port);
     }
     
-    cout << "url " << url << endl;
     LocationConfigData *location = NULL;
 
     vector<string> &suffixMatch = serverConfigData->getSuffixMatch();
