@@ -469,6 +469,8 @@ void    Response::makePost()
     std::string buffer;
     int         fd;
 
+	(void) fd;
+
     std::cout<<"Method: POST"<<std::endl;
 	
     request.status = 204;

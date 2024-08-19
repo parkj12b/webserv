@@ -160,7 +160,7 @@ void	CgiProcessor::executeCGIScript(const std::string path)
 		std::string pythonCmd = "/usr/local/bin/python3";
 		char *argv[] = {const_cast<char *>(&pythonCmd[0]), const_cast<char *>(&path[0]), NULL};
 		char **envp = new char*[metaVariables.size() + 1];
-		for (int i=0; i<metaVariables.size(); i++)
+		for (size_t i=0; i<metaVariables.size(); i++)
 			envp[i] = const_cast<char *>(metaVariables[i].c_str());
 		envp[metaVariables.size()] = 0;
 		if (execve(&pythonCmd[0], argv, envp) == -1)
