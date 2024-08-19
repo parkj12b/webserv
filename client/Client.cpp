@@ -153,6 +153,15 @@ void    Client::setRequestFin(bool fin)
     request.fin = fin;
 }
 
+void	Client::clientIP(struct sockaddr_in  clntAdr)
+{
+	char	clientIp[INET_ADDRSTRLEN];
+
+	inet_ntop(AF_INET, &clntAdr.sin_addr, clientIp, INET_ADDRSTRLEN);
+	request.clientIp = clientIp;
+	// std::cout<<"client ip: "<<clientIp<<std::endl;
+}
+
 bool    Client::diffKeepAlive()
 {
     //on or off checking

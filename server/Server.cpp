@@ -61,6 +61,7 @@ int Server::plusClient(void)
     //accept 무한 루프
     while ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0);
     client[clntFd] = Client(clntFd, port);
+	client[clntFd].clientIP(clntAdr);
     std::cout<<"temp delete"<<std::endl;
     return (clntFd);
     // 나갈 때 소멸자가 호출됨

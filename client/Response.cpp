@@ -351,11 +351,9 @@ void    Response::makeError()
     //url 이 필요함 -> url 파싱해야됨, prefix match 
     LocationConfigData   *location = getLocationConfigData();
     map<int, string>   &errorPage = location->getErrorPage();
-
     (void) errorPage;
     int fd;
 
-    
     if (request.status >= 300 && request.status < 400)
         return ;
     // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
@@ -440,52 +438,42 @@ void    Response::makeGet()
 
     std::cout<<"Method: GET"<<std::endl;
     std::cout<<request.url.c_str()<<std::endl;
-    //cgi checking...
-    fd = open(request.url.c_str(), O_RDONLY);
-    if (fd < 0)
+    CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
+    if (cgiProcessor.checkURL(request.url))
     {
-        request.status = 404;
-        // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
-        fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);
-        if (fd < 0)
-            return ;
-        //거기에 맞는 content만들기
-        makeHeader("Content-Type", "text/html");
-        makeContent(fd);
-        return ;
+    	cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+		std::cout << cgiProcessor.getCgiContent() << '\n';
     }
-    makeContent(fd);
-    request.status = 200;
-    // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+	else
+	{
+		fd = open(request.url.c_str(), O_RDONLY);
+		if (fd < 0)
+		{
+			request.status = 404;
+			start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+			fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);
+			if (fd < 0)
+				return ;
+			//거기에 맞는 content만들기
+			makeHeader("Content-Type", "text/html");
+			makeContent(fd);
+			return ;
+		}
+		makeContent(fd);
+	}
+	request.status = 200;
+    start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
 }
-
 
 void    Response::makePost()
 {
     std::string buffer;
     int         fd;
 
+	(void) fd;
+
     std::cout<<"Method: POST"<<std::endl;
-    //cgi checking...
-    cout << "post file: " << request.url.c_str() << endl;
-    fd = open(request.url.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0777);
-    if (fd < 0)
-    {
-        request.status = 404;
-        makeError();
-        return ;
-    }
-    for (std::vector<std::string>::iterator it = request.content.begin(); it != request.content.end(); it++)
-    {
-        buffer = *it;
-        if (write(fd, &buffer[0], buffer.size()) < static_cast<int>(buffer.size()))
-        {
-            request.status = 500;
-            makeError();
-            return ;
-        }
-    }
-    close(fd);
+	
     request.status = 204;
     // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
 }
@@ -508,7 +496,6 @@ void    Response::makeDelete()
 
 void    Response::responseMake()
 {
-    
     init();
     cout << "request.status: " << request.status << endl;
     makeDefaultHeader();
