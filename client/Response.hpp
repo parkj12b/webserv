@@ -32,6 +32,7 @@ typedef struct Request
     int     status; //request status code
     int     port;
     Method                                                      method;     //http method
+	std::string													clientIp;	//client IP
     std::string                                                 url;        //http resource
     std::string                                                 location;   //location for config
     Version                                                     version;    //http version

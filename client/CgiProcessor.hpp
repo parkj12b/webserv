@@ -16,16 +16,17 @@ public:
 	CgiProcessor& operator=(const CgiProcessor& rhs);
 	std::string		getScriptFile();
 	bool	checkURL(std::string url);
-	// void	setURLEnv(Request &request);
-	// void	setRequestHeaderEnv(Method method, std::map<std::string, std::deque<std::string> >& headers);
-	// void	executeCGIScript(std::string path);
+	void	executeCGIScript(std::string path);
 private:
 	CgiProcessor();
+	void	setURLEnv();
+	void	setStartHeaderEnv();
 	std::map<std::string, std::deque<std::string> > cgiResponseHeader;
 	Request 			&request;
 	ServerConfigData	*serverConfig;
 	LocationConfigData	*locationConfig;
 	std::string			scriptFile;
+	std::deque<std::string>	metaVariables;
 };
 
 #endif
