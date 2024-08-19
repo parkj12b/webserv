@@ -127,17 +127,12 @@ void    Response::makeFilePath(std::string& str)
     {
         // 없으면 index.html 이라 없을 일은 없음.
         cout << "index: " << location->getIndex() << endl;
-        if (str[str.size() - 1] == '/')
-            str += location->getIndex();
-        else
-        {
-            cout << "str: " << str << endl;
-            request.status = 404;
-            return ;
-        }
+        
+        str += "/" + location->getIndex();
     }
-    if (access(str.c_str(), F_OK | R_OK) == -1)
+    if (isFile(str.c_str()) == false)
     {
+        cout << "not file: " << str << endl;
         request.status = 404;
         return ;
     }
@@ -514,6 +509,7 @@ void    Response::responseMake()
     init();
     makeDefaultHeader();
     checkAllowedMethod();
+    cout << "path: " << locationConfig->getPath() << endl;
     if (request.status > 0)
     {
         makeError();

@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 15:26:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/18 18:46:57 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/19 13:55:13 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,6 +170,17 @@ bool    isWithinBasePath(const string &basePath, const string &requestPath)
     resolvedPath = resolvedPathCstr;
     free(resolvedPathCstr);
     if (resolvedPath.find(basePath) == 0)
+        return true;
+    return false;
+}
+
+bool    isFile(const char *path)
+{
+    struct stat statbuf;
+
+    if (stat(path, &statbuf) != 0)
+        return false;
+    if (S_ISREG(statbuf.st_mode))
         return true;
     return false;
 }

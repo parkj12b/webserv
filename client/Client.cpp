@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/17 21:46:11 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/19 14:49:32 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -281,7 +281,7 @@ int Client::setContent(void)
 {
     if (!headerLine.getCompletion() || contentLine.getCompletion() || request.fin || request.status)
         return (0);
-    std::cout<<"...setBodyLine parsing...\n";
+    // std::cout<<"...setBodyLine parsing...\n";
     if (contentLine.makeContentLine(msg) < 0)
     {
         request.status = 400;
@@ -394,7 +394,7 @@ void    Client::setMessage(std::string msgRequest)
 {
     msg += msgRequest;
     write(logs, &msgRequest[0], msgRequest.size());
-    std::cout<<"Read Event"<<std::endl;
+    // std::cout<<"Read Event"<<std::endl;
     if (setStart())  //max size literal
     {
         request.fin = true;

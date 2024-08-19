@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/13 15:34:06 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/19 14:49:04 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int Server::plusClient(void)
 EVENT Server::clientRead(struct kevent& store)
 {
     //buffer 문제인지 생각해보기
-    char    buffer[BUFFER_SIZE];
+    char    buffer[BUFFER_SIZE + 1];
     int     readSize;
 
     //eof신호를 못 받게 됨
@@ -81,6 +81,7 @@ EVENT Server::clientRead(struct kevent& store)
         std::cout<<"read error or socket close\n";
         return (ERROR);
     }
+    // cout << "readSize: " << readSize << endl;
     buffer[readSize] = '\0';
     client[store.ident].setMessage(buffer);
     client[store.ident].setKeepAlive(std::time(0));
