@@ -15,6 +15,7 @@ public:
 	CgiProcessor(const CgiProcessor& rhs);
 	CgiProcessor&	operator=(const CgiProcessor& rhs);
 	std::string		getScriptFile();
+	std::string		getCgiContent();
 	bool			checkURL(std::string url);
 	void			executeCGIScript(const std::string path);
 private:

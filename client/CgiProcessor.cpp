@@ -30,6 +30,11 @@ std::string	CgiProcessor::getScriptFile()
 	return (scriptFile);
 }
 
+std::string	CgiProcessor::getCgiContent()
+{
+	return (cgiContent);
+}
+
 void	CgiProcessor::setURLEnv()
 {
 	metaVariables.push_back("SERVER_NAME=" + request.header["host"].front());

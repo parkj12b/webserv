@@ -442,6 +442,7 @@ void    Response::makeGet()
     if (cgiProcessor.checkURL(request.url))
     {
     	cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+		std::cout << cgiProcessor.getCgiContent() << '\n';
     }
 	else
 	{
