@@ -13,20 +13,21 @@ public:
 	CgiProcessor(Request &request_, ServerConfigData *serverConfig_, LocationConfigData *locationConfig_);
 	~CgiProcessor();
 	CgiProcessor(const CgiProcessor& rhs);
-	CgiProcessor& operator=(const CgiProcessor& rhs);
+	CgiProcessor&	operator=(const CgiProcessor& rhs);
 	std::string		getScriptFile();
-	bool	checkURL(std::string url);
-	void	executeCGIScript(std::string path);
+	bool			checkURL(std::string url);
+	void			executeCGIScript(const std::string path);
 private:
 	CgiProcessor();
 	void	setURLEnv();
-	void	setStartHeaderEnv();
-	std::map<std::string, std::deque<std::string> > cgiResponseHeader;
+	bool	setStartHeaderEnv();
 	Request 			&request;
 	ServerConfigData	*serverConfig;
 	LocationConfigData	*locationConfig;
 	std::string			scriptFile;
+	std::string			cgiContent;
 	std::deque<std::string>	metaVariables;
+	std::map<std::string, std::deque<std::string> > cgiResponseHeader;
 };
 
 #endif

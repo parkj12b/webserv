@@ -352,21 +352,24 @@ void    Response::makeGet()
     {
     	cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
     }
-    fd = open(request.url.c_str(), O_RDONLY);
-    if (fd < 0)
-    {
-        request.status = 404;
-        start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
-        fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);
-        if (fd < 0)
-            return ;
-        //거기에 맞는 content만들기
-        makeHeader("Content-Type", "text/html");
-        makeContent(fd);
-        return ;
-    }
-    makeContent(fd);
-    request.status = 200;
+	else
+	{
+		fd = open(request.url.c_str(), O_RDONLY);
+		if (fd < 0)
+		{
+			request.status = 404;
+			start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+			fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);
+			if (fd < 0)
+				return ;
+			//거기에 맞는 content만들기
+			makeHeader("Content-Type", "text/html");
+			makeContent(fd);
+			return ;
+		}
+		makeContent(fd);
+	}
+	request.status = 200;
     start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
 }
 
@@ -376,25 +379,7 @@ void    Response::makePost()
     int         fd;
 
     std::cout<<"Method: POST"<<std::endl;
-    //cgi checking...
-    fd = open(request.url.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0777);
-    if (fd < 0)
-    {
-        request.status = 404;
-        makeError();
-        return ;
-    }
-    for (std::vector<std::string>::iterator it = request.content.begin(); it != request.content.end(); it++)
-    {
-        buffer = *it;
-        if (write(fd, &buffer[0], buffer.size()) < static_cast<int>(buffer.size()))
-        {
-            request.status = 500;
-            makeError();
-            return ;
-        }
-    }
-    close(fd);
+	
     request.status = 204;
     start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
 }
