@@ -225,15 +225,15 @@ int Client::setHeader(void)
                     std::cout<<"default error"<<std::endl;
                     return (2);
                 }
+                request.header = headerLine.getHeader();
+                msg = msg.substr(flag + 2);
+                contentLine.initContentLine(headerLine.getContentLength(), headerLine.getContentType());
+                connect = headerLine.getConnect();
                 if (setMatchingLocation(request.url))
                 {
                     request.status = 404;
                     return (2);
                 }
-                request.header = headerLine.getHeader();
-                msg = msg.substr(flag + 2);
-                contentLine.initContentLine(headerLine.getContentLength(), headerLine.getContentType());
-                connect = headerLine.getConnect();
                 break ;
             }
             str = msg.substr(0, flag);
