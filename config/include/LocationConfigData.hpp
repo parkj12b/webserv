@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 20:28:36 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/17 01:12:46 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/18 20:35:23 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ using namespace std;
 */
 class LocationConfigData {
 private:
+    string              _path;
     string              _errorLog;
     vector<string>      _allowedMethods;
     string              _defaultType;
@@ -60,6 +61,7 @@ private:
     vector<string>      _suffixMatch;
 public:
     map<string, map<int, LocationConfigData> > _locationConfigData;  //location에 따른 정보가 담긴 map??
+    void                setPath(string path);
     void                setErrorLog(string errorLog);
     void                setDefaultType(string defaultType);
     void                setKeepaliveTimeout(ssize_t keepaliveTimeout);
@@ -73,6 +75,7 @@ public:
     void                setAutoIndex(bool autoindex);
     void                setAccessLog(string accessLog);
     void                setReturn(pair<int, string> returnPair);
+    string              getPath();
     string              getErrorLog();
     vector<string>      &getAllowedMethods();
     string              getDefaultType();

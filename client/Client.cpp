@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/17 21:46:11 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/19 16:47:28 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,6 +153,15 @@ void    Client::setRequestFin(bool fin)
     request.fin = fin;
 }
 
+void	Client::clientIP(struct sockaddr_in  clntAdr)
+{
+	char	clientIp[INET_ADDRSTRLEN];
+
+	inet_ntop(AF_INET, &clntAdr.sin_addr, clientIp, INET_ADDRSTRLEN);
+	request.clientIp = clientIp;
+	// std::cout<<"client ip: "<<clientIp<<std::endl;
+}
+
 bool    Client::diffKeepAlive()
 {
     //on or off checking
@@ -281,7 +290,7 @@ int Client::setContent(void)
 {
     if (!headerLine.getCompletion() || contentLine.getCompletion() || request.fin || request.status)
         return (0);
-    std::cout<<"...setBodyLine parsing...\n";
+    // std::cout<<"...setBodyLine parsing...\n";
     if (contentLine.makeContentLine(msg) < 0)
     {
         request.status = 400;
@@ -394,7 +403,7 @@ void    Client::setMessage(std::string msgRequest)
 {
     msg += msgRequest;
     write(logs, &msgRequest[0], msgRequest.size());
-    std::cout<<"Read Event"<<std::endl;
+    // std::cout<<"Read Event"<<std::endl;
     if (setStart())  //max size literal
     {
         request.fin = true;
@@ -446,6 +455,7 @@ void    Client::plusIndex(size_t plus)
 
 bool    Client::setMatchingLocation(string url)
 {
+    cout << "url " << url << endl;
     string host = request.header["host"].front();
     ServerConfigData *serverConfigData;
     try {
@@ -457,7 +467,6 @@ bool    Client::setMatchingLocation(string url)
             serverConfigData = Server::serverConfig->getDefaultServer(port);
     }
     
-    cout << "url " << url << endl;
     LocationConfigData *location = NULL;
 
     vector<string> &suffixMatch = serverConfigData->getSuffixMatch();

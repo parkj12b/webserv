@@ -7,3 +7,4 @@ log
 tester
 testCase
 .DS_Store
+./config/default.conf

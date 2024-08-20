@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 15:26:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/18 16:24:47 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/19 13:55:13 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <climits>
-#include <cstdlib>
 #include "UtilTemplate.hpp"
+#include "stdlib.h"
 
 
 using namespace std;
@@ -162,12 +162,25 @@ bool    isWithinBasePath(const string &basePath, const string &requestPath)
     string resolvedPath;
     char *resolvedPathCstr;
     
+    cout << "requestPath: " << requestPath << endl;
     resolvedPathCstr = realpath(requestPath.c_str(), NULL);
+    cout << "resolved path: " << resolvedPathCstr << endl;
     if (!resolvedPathCstr)
         return false;
     resolvedPath = resolvedPathCstr;
     free(resolvedPathCstr);
     if (resolvedPath.find(basePath) == 0)
+        return true;
+    return false;
+}
+
+bool    isFile(const char *path)
+{
+    struct stat statbuf;
+
+    if (stat(path, &statbuf) != 0)
+        return false;
+    if (S_ISREG(statbuf.st_mode))
         return true;
     return false;
 }
