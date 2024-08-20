@@ -247,7 +247,7 @@ void    Response::init()
     header.clear();
     content.clear();
     entity.clear();
-    if (request.status <= 100)
+    if (request.status != 0)
         return ;
     string host = request.header["host"].front();
     cout << "host: " << host << endl;
