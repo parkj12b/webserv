@@ -339,22 +339,33 @@ void    Response::makeDefaultHeader()
 
 void    Response::makeError()
 {
-    //url 이 필요함 -> url 파싱해야됨, prefix match 
-    LocationConfigData   *location = getLocationConfigData();
-    map<int, string>   &errorPage = location->getErrorPage();
-    (void) errorPage;
-    int fd;
-
     if (request.status >= 300 && request.status < 400)
         return ;
-    // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
     if (request.status == 100)
         return ;
-    fd = getDefaultErrorPage(request.status);
-    if (fd < 0)
-        return ;
-    makeHeader("content-type", "text/html");
-    makeContent(fd);
+    LocationConfigData   *location = getLocationConfigData();
+    map<int, string>   &errorPage = location->getErrorPage();
+    
+    string errorPath = errorPage[request.status];
+    
+    int fd;
+    if (errorPath != "")
+        fd = open(errorPath.c_str(), O_RDONLY);
+    if (errorPath != "" || fd >= 0)
+        makeContent(fd);
+    else
+    {
+        CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
+        if (cgiProcessor.checkURL(DEFAULT_400_ERROR_PAGE_TEST))
+        {
+            cgiProcessor.insertEnv("ERROR_CODE", toString(request.status));
+            cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+            content += cgiProcessor.getCgiContent();
+            std::cout << cgiProcessor.getCgiContent() << '\n';
+        }
+    }
+    makeHeader("Content-Type", "text/html");
+    makeHeader("Content-Length", std::to_string(content.size()));
 }
 
 void    Response::checkRedirect()
@@ -373,7 +384,7 @@ void    Response::checkRedirect()
     }
 }
 
-void    Response::checkAllowedMethod()
+void    Response::checkAllowedMethod() 
 {
     LocationConfigData  *location = getLocationConfigData();
     vector<string>    &allowedMethods = location->getAllowedMethods();
@@ -433,6 +444,9 @@ void    Response::makeGet()
     if (cgiProcessor.checkURL(request.url))
     {
     	cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+        makeHeader("Content-Type", "text/html");
+        content += cgiProcessor.getCgiContent();
+		std::cout << cgiProcessor.getCgiContent() << '\n';
     }
 	else
 	{
@@ -441,12 +455,19 @@ void    Response::makeGet()
 		{
 			request.status = 404;
 			start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
-			fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);
-			if (fd < 0)
-				return ;
-			//거기에 맞는 content만들기
-			makeHeader("Content-Type", "text/html");
-			makeContent(fd);
+			if (cgiProcessor.checkURL(DEFAULT_400_ERROR_PAGE_TEST))
+            {
+                cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+                makeHeader("Content-Type", "text/html");
+                content += cgiProcessor.getCgiContent();
+                std::cout << cgiProcessor.getCgiContent() << '\n';
+            }
+            // fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);
+			// if (fd < 0)
+			// 	return ;
+			// //거기에 맞는 content만들기
+			// makeHeader("Content-Type", "text/html");
+			// makeContent(fd);
 			return ;
 		}
 		makeContent(fd);
