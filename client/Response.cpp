@@ -287,7 +287,7 @@ void    Response::makeCookie(std::string& date)
             result += characters[index];
         }
         session[result] = date;
-        value = "session_id=" + result + "; Max-Age=3600";
+        value = "session_id=" + result + "; Max-Age=3600";  //1시간
         makeHeader("Set-Cookie", value);
     }
     else
