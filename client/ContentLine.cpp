@@ -118,13 +118,16 @@ int ContentLine::chunkedEntity()
     return (0);
 }
 
-int ContentLine::makeContentLine(std::string &str)
+int ContentLine::makeContentLine(std::string &str, int &status)
 {
     size_t  flag;
 
     maxSize += str.size();
     if (maxSize > 800000000000)
+    {
+        status = 413;
         return (-1);
+    }
     if (contentType == CONTENT)
     {
         std::cout<<contentLength<<' '<<str.size()<<std::endl;
@@ -157,7 +160,10 @@ int ContentLine::makeContentLine(std::string &str)
             chunked = chunked.substr(0, flag);
             // str = str.substr(flag + 3);
             if (chunkedEntity() < 0)
+            {
+                status = 400;
                 return (-1);
+            }
         }
     }
     return (0);
