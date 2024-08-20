@@ -187,6 +187,7 @@ int Client::setStart(void)
     flag = msg.find("\r\n");
     if (flag != std::string::npos)
     {
+        //keepa-alive
         standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
         if ((request.status = startLine.check(msg.substr(0, flag))))  //ingu test
             return (1);
