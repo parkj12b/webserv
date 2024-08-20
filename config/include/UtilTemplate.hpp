@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 17:27:22 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/19 13:54:56 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/20 15:28:45 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ using namespace std;
 
 set<string> createSet(const char *str[]);
 bool        isString(char peek);
-string      toString(int value);
+string      toString(size_t value);
 ssize_t     timeToSeconds(string time);
 
 /* int to utf string */

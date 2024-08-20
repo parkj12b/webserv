@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 15:26:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/19 13:55:13 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/20 15:29:13 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ bool isString(char peek)
     return false;
 }
 
-string toString(int value) {
+string toString(size_t value) {
     char buffer[50]; // Ensure the buffer is large enough
     std::sprintf(buffer, "%d", value);
     return std::string(buffer);
