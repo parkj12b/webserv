@@ -18,6 +18,7 @@ public:
 	std::string		getCgiContent();
 	bool			checkURL(std::string url);
 	void			executeCGIScript(const std::string path);
+	void			setMetaVariable(string key, string value);
 private:
 	CgiProcessor();
 	void	setURLEnv();

@@ -8,3 +8,4 @@ tester
 testCase
 .DS_Store
 ./config/default.conf
+*/config/default.conf
