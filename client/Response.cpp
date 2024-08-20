@@ -353,7 +353,7 @@ void    Response::makeError()
     CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
     if (cgiProcessor.checkURL(DEFAULT_400_ERROR_PAGE_TEST))
     {
-        cgiProcessor.setMetaVariable("ERROR_CODE", toString(request.status));
+        cgiProcessor.insertEnv("ERROR_CODE", toString(request.status));
     	cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
         content += cgiProcessor.getCgiContent();
 		std::cout << cgiProcessor.getCgiContent() << '\n';

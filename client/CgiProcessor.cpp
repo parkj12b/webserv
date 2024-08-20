@@ -197,8 +197,3 @@ void	CgiProcessor::executeCGIScript(const std::string path)
 		close(pipefd[0]);
 	}
 }
-
-void	CgiProcessor::setMetaVariable(std::string key, std::string value)
-{
-	metaVariables.push_back(key + "=" + value);
-}
