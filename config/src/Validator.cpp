@@ -147,6 +147,45 @@ void    Validator::checkPort(ServerConfigData *serverData, ServerConfig *serverC
     }
 }
 
+void    Validator::checkServerKeepaliveTimeout(ServerConfigData *serverData,
+            ServerConfig *serverConfig)
+{
+    vector<vector<vector< Token *> > > *v = serverConfig->getConfig("keepalive_timeout");
+
+    if (v == NULL) {
+        serverData->setKeepaliveTimeout(DEFAULT_KEEPALIVE_TIMEOUT);
+        return ;
+    }
+    if (v->size() != 1) {
+        throw ValidatorException("keepalive_timeout directive must be set only once");
+    }
+    Num *num;
+    if ((num = dynamic_cast<Num *>((*v)[0][0][0])))
+        serverData->setKeepaliveTimeout(num->value);
+    else
+    {
+        string keepaliveTimeout = (dynamic_cast<Word *>((*v)[0][0][0]))->lexeme;
+        ssize_t keepaliveTimeoutInt = timeToSeconds(keepaliveTimeout);        
+        serverData->setKeepaliveTimeout(keepaliveTimeoutInt);
+    }
+
+    if ((*v)[0].size() == 2)
+    {
+        Num *num;
+        if ((num = dynamic_cast<Num *>((*v)[0][1][0])))
+            serverData->setHeaderTimeout(num->value);
+        else
+        {
+            string keepaliveTimeoutHeader = (dynamic_cast<Word *>((*v)[0][1][0]))->lexeme;
+            ssize_t keepaliveTimeoutInt = timeToSeconds(keepaliveTimeoutHeader);
+            serverData->setHeaderTimeout(keepaliveTimeoutInt);
+        }
+    }
+    else
+        serverData->setHeaderTimeout(0);
+
+}
+
 LocationConfigData    Validator::checkLocation(LocationConfig *locationConfig)
 {
     LocationConfigData locationData;

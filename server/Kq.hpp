@@ -14,10 +14,12 @@
 # define KQ_HPP
 
 # include "Server.hpp"
+# include "HTTPServer.hpp"
 # include <cstdlib>
 # include <cerrno>
 # include <map>
 # include <vector>
+# include <sys/wait.h>
 
 class HTTPServer;
 
@@ -41,6 +43,7 @@ class Kq
         std::map<int, Server>       server;
         std::map<int, int>          findServer;
     public:
+        static std::vector<pid_t>   processor;
         Kq();
         Kq(const Kq& src);
         Kq& operator=(const Kq& src);

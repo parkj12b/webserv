@@ -11,9 +11,17 @@
 /* ************************************************************************** */
 
 #include "Kq.hpp"
-#include "HTTPServer.hpp"
 
 extern int logs;
+
+std::vector<pid_t>  processorInit()
+{
+    std::vector<pid_t>  m;
+
+    return (m);
+}
+
+std::vector<pid_t>  Kq::processor = processorInit();
 
 Kq::Kq()
 {
@@ -177,10 +185,17 @@ void    Kq::eventWrite(struct kevent& store)
 
 void    Kq::mainLoop()
 {
-    struct kevent   store[connectionCnt];
-    int             count;
+    std::vector<pid_t>  notFin;
+    struct kevent       store[connectionCnt];
+    int                 count;
 
     //waitpid
+    for (std::vector<pid_t>::iterator it = Kq::processor.begin(); it != Kq::processor.end(); it++)
+    {
+        if (waitpid(*it, NULL, WNOHANG) == 0)
+            notFin.push_back(*it);
+    }
+    Kq::processor = notFin;
     //changed EVENTCNT to connectionCnt
     while ((count = kevent(kq, &fdList[0], fdList.size(), store, connectionCnt, NULL)) < 0);
     fdList.clear();

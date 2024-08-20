@@ -187,6 +187,8 @@ int Client::setStart(void)
     flag = msg.find("\r\n");
     if (flag != std::string::npos)
     {
+        //keepa-alive
+        standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
         if ((request.status = startLine.check(msg.substr(0, flag))))  //ingu test
             return (1);
         msg = msg.substr(flag + 2);
@@ -195,13 +197,15 @@ int Client::setStart(void)
         request.location = startLine.getLocation();
         request.version = startLine.getVersion();
         request.query = startLine.getQuery();
-        standardTime = 100;  //여기서 keep-alive setting
         // standardTime = Server::serverConfig->getServerData;  //여기서 keep-alive setting
     }
     else
     {
         if (msg.size() > 8192)
         {
+            //location && keep-alive
+            standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
+            standardTime = 100;  //여기서 keep-alive setting
             request.status = 414;
             return (2);
         }
@@ -227,6 +231,8 @@ int Client::setHeader(void)
             {
                 request.header = headerLine.getHeader();
                 msg = msg.substr(flag + 2);
+                //keep-alive
+                standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
                 if (setMatchingLocation(request.url))
                 {
                     request.status = 404;
@@ -400,7 +406,7 @@ void    Client::showMessage(void)
 void    Client::setMessage(std::string msgRequest)
 {
     msg += msgRequest;
-    write(logs, &msgRequest[0], msgRequest.size());
+    // write(logs, &msgRequest[0], msgRequest.size());
     // std::cout<<"Read Event"<<std::endl;
     if (setStart())  //max size literal
     {

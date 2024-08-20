@@ -67,6 +67,8 @@ public:
                             ServerConfig *serverConfig);
     void                checkPort(ServerConfigData *serverData,
                             ServerConfig *serverConfig);
+    void                checkServerKeepaliveTimeout(ServerConfigData *serverData,
+                            ServerConfig *serverConfig);
     LocationConfigData  checkLocation(LocationConfig *locationConfig);
     void                checkErrorLog(LocationConfigData &locationData,
                             LocationConfig &locationConfig);
