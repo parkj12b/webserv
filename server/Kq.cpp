@@ -176,16 +176,17 @@ void    Kq::eventWrite(struct kevent& store)
     if (serverFd == 0)
         return ;
     event = server[serverFd].clientWrite(store);
+    std::cout<<"event write"<<std::endl;
     switch (event)
     {
         case ING:
             break ;
         case ERROR:
-        case FINISH:
-            std::cout<<"write delete\n";
             clientFin(store);
             break ;
+        case FINISH:
         case EXPECT:
+            std::cout<<"FINISH"<<std::endl;
             EV_SET(&store, store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
             break ;
     }
@@ -197,19 +198,6 @@ void    Kq::mainLoop()
     struct kevent       store[connectionCnt];
     int                 count;
 
-    //keep-alive check
-    for (std::vector<Client*>::iterator it = clientKeepAlive.begin(); it != clientKeepAlive.end(); )
-    {
-        Client* c = *it;
-    
-        if (!(c->diffKeepAlive()))
-        {
-            close(c->getFd());
-            it = clientKeepAlive.erase(it);
-        }
-        else
-            ++it;
-    }
     //waitpid
     for (std::vector<pid_t>::iterator it = Kq::processor.begin(); it != Kq::processor.end(); it++)
     {
@@ -219,6 +207,7 @@ void    Kq::mainLoop()
     Kq::processor = notFin;
     //changed EVENTCNT to connectionCnt
     while ((count = kevent(kq, &fdList[0], fdList.size(), store, connectionCnt, NULL)) < 0);
+    // std::cout<<count<<std::endl;
     fdList.clear();
     for (int i = 0; i < count; i++)
     {
@@ -239,5 +228,27 @@ void    Kq::mainLoop()
                 eventWrite(store[i]);
         }
     }
+    //keep-alive check
+    // std::cout<<"hereherher\n"<<std::endl;
+    // for (std::vector<Client*>::iterator it = Kq::clientKeepAlive.begin(); it != Kq::clientKeepAlive.end(); )
+    // {
+    //     Client* c = *it;
+
+    //     if (c == NULL)
+    //     {
+    //         std::cout<<"c: NULL"<<std::endl;
+    //         ++it;
+    //     }
+    //     else if (c->getFd() != 0 && !(c->diffKeepAlive()))
+    //     {
+    //         std::cout<<"good"<<std::endl;
+    //         server[findServer[c->getFd()]].clientFin(c->getFd());
+    //         std::cout<<"here\n"<<std::endl;
+    //         // close(c->getFd());
+    //         std::cout<<"here\n"<<std::endl;
+    //     }
+    //     else
+    //         ++it;
+    // }
 }
 

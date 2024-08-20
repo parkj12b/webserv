@@ -123,7 +123,7 @@ int ContentLine::makeContentLine(std::string &str, int &status)
     size_t  flag;
 
     maxSize += str.size();
-    if (maxSize > 800000000000)
+    if (maxSize > 8000000000)
     {
         status = 413;
         return (-1);

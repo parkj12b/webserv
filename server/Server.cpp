@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include <algorithm>
 
 extern int logs;
 
@@ -71,11 +72,15 @@ int Server::plusClient(void)
 EVENT Server::clientRead(struct kevent& store)
 {
     //buffer 문제인지 생각해보기
+    std::vector<Client*>::iterator   it;
     char    buffer[BUFFER_SIZE + 1];
     int     readSize;
 
     //eof신호를 못 받게 됨
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 100)
+        return (ING);
+    it = std::find(Kq::clientKeepAlive.begin(), Kq::clientKeepAlive.end(), &client[store.ident]);
+    if (it == Kq::clientKeepAlive.end())
         return (ING);
     readSize = read(store.ident, buffer, BUFFER_SIZE);
     if (readSize <= 0) // read가 발생했는데 읽은게 없다면 에러
@@ -102,10 +107,14 @@ EVENT Server::clientRead(struct kevent& store)
 
 EVENT   Server::clientWrite(struct kevent& store)
 {
+    std::vector<Client*>::iterator   it;
     size_t      index;
     const char* buffer = client[store.ident].respondMsgIndex();
 
     if (store.ident == 0)
+        return (ING);
+    it = std::find(Kq::clientKeepAlive.begin(), Kq::clientKeepAlive.end(), &client[store.ident]);
+    if (it == Kq::clientKeepAlive.end())
         return (ING);
     if (client[store.ident].getRequestStatus() != 100 && !client[store.ident].getRequestFin())
     {
@@ -114,26 +123,37 @@ EVENT   Server::clientWrite(struct kevent& store)
         return (ING);
     }
     index = write(store.ident, buffer, client[store.ident].responseIndex());
-    // write(1, buffer, client[store.ident].getAmount());
+    // write(1, buffer, strlen(buffer));
+    std::cout<<std::endl<<std::endl<<store.ident<<" "<<index<<std::endl<<std::endl;
     client[store.ident].plusIndex(index);
     if (client[store.ident].responseIndex())
+    {
         return (ING);
+    }
     if (client[store.ident].getRequestStatus() == 100)
         return (EXPECT);
     client[store.ident].setKeepAlive(std::time(0));
     if (!client[store.ident].getConnect())
     {
         std::cout<<"connection fin"<<std::endl;
-        return (FINISH);    //keep-alive가 선언이 되지 않았을 때
+        return (ERROR);    //keep-alive가 선언이 되지 않았을 때
     }
     client[store.ident].resetClient();
-    // std::cout<<"keep-alive"<<std::endl;
-    return (ING);
+    std::cout<<"keep-alive"<<std::endl;
+    return (FINISH);
 }
 
 void    Server::clientFin(int clientFd)
 {
+    std::vector<Client*>::iterator it;
+
     close(clientFd);
+    it = std::find(Kq::clientKeepAlive.begin(), Kq::clientKeepAlive.end(), &client[clientFd]);
+    if (it != Kq::clientKeepAlive.end())
+    {
+        std::cout<<"NULL"<<std::endl;
+        *it = NULL;
+    }
     client.erase(clientFd);
 }
 
