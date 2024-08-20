@@ -17,7 +17,7 @@ CLIENT_SRC_DIR = ./client
 
 SERVER_SRC_DIR = ./server
 
-CLIENT_SRC = Client.cpp ContentLine.cpp HeaderLine.cpp StartLine.cpp Response.cpp
+CLIENT_SRC = Client.cpp ContentLine.cpp HeaderLine.cpp StartLine.cpp CgiProcessor.cpp Response.cpp
 
 CLIENT_SRCS = $(addprefix $(CLIENT_SRC_DIR)/, $(CLIENT_SRC))
 

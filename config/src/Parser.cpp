@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 18:48:59 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/17 17:11:20 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/18 20:34:55 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,6 +178,7 @@ void    Parser::context()
             t = _top->getHeadDirectiveByIndex(1)[0]->clone();
             path = dynamic_cast<Word *>(t)->lexeme;
             cout << "location: " << curLocation << endl;
+            curLocation->setPath(path);
             if (tempLocation == NULL)
             {
                 if (curServer->location.find(path) == curServer->location.end())
