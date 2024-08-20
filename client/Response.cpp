@@ -297,7 +297,8 @@ void    Response::makeCookie(std::string& date)
             result += characters[index];
         }
         session[result] = date;
-        value = "session_id=" + result + "; Max-Age=3600";
+        // value = "session_id=" + result + "; Max-Age=3600";  //1시간
+        value = "session_id=" + result + "; Max-Age=60";  //1분
         makeHeader("Set-Cookie", value);
     }
     else
@@ -332,6 +333,8 @@ void    Response::makeDefaultHeader()
     std::string         day[5];
     size_t              pos;
     int                 order;
+    // const std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    // const size_t charactersSize = characters.size();
 
     order = 0;
     while (std::getline(strStream, temp, ' '))
