@@ -22,6 +22,7 @@ public:
 	bool	setStartHeaderEnv();
 	bool	checkURL(string url);
 	void	executeCGIScript(const string path);
+	void	setMetaVariable(std::string key, std::string value);
 private:
 	CgiProcessor();
 	Request 			&request;
