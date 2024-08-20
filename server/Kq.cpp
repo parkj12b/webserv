@@ -14,14 +14,22 @@
 
 extern int logs;
 
-std::vector<pid_t>  processorInit()
+std::vector<Client *>   clientKeepAliveInit()
 {
-    std::vector<pid_t>  m;
+    std::vector<Client *>   v;
 
-    return (m);
+    return (v);
 }
 
-std::vector<pid_t>  Kq::processor = processorInit();
+std::vector<pid_t>  processorInit()
+{
+    std::vector<pid_t>  v;
+
+    return (v);
+}
+
+std::vector<Client *>   Kq::clientKeepAlive = clientKeepAliveInit();
+std::vector<pid_t>      Kq::processor = processorInit();
 
 Kq::Kq()
 {
@@ -189,6 +197,19 @@ void    Kq::mainLoop()
     struct kevent       store[connectionCnt];
     int                 count;
 
+    //keep-alive check
+    for (std::vector<Client*>::iterator it = clientKeepAlive.begin(); it != clientKeepAlive.end(); )
+    {
+        Client* c = *it;
+    
+        if (!(c->diffKeepAlive()))
+        {
+            close(c->getFd());
+            it = clientKeepAlive.erase(it);
+        }
+        else
+            ++it;
+    }
     //waitpid
     for (std::vector<pid_t>::iterator it = Kq::processor.begin(); it != Kq::processor.end(); it++)
     {

@@ -13,6 +13,7 @@
 #ifndef KQ_HPP
 # define KQ_HPP
 
+# include "Client.hpp"
 # include "Server.hpp"
 # include "HTTPServer.hpp"
 # include <cstdlib>
@@ -26,6 +27,9 @@ class HTTPServer;
 # define PORT 8000
 # define CLIENT_CNT 10
 # define EVENTCNT 10
+
+class Server;
+class Client;
 
 /***
  * @brief Kq manages server and kq
@@ -43,6 +47,7 @@ class Kq
         std::map<int, Server>       server;
         std::map<int, int>          findServer;
     public:
+        static std::vector<Client*> clientKeepAlive;
         static std::vector<pid_t>   processor;
         Kq();
         Kq(const Kq& src);

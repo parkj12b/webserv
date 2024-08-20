@@ -62,6 +62,7 @@ int Server::plusClient(void)
     while ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0);
     client[clntFd] = Client(clntFd, port);
 	client[clntFd].clientIP(clntAdr);
+    Kq::clientKeepAlive.push_back(&client[clntFd]);
     std::cout<<"temp delete"<<std::endl;
     return (clntFd);
     // 나갈 때 소멸자가 호출됨

@@ -13,18 +13,17 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-#include <sys/event.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <algorithm>
-
-//temp
-#include <cstdlib>
-#include <string>
-#include <arpa/inet.h>
-#include "Client.hpp"
-#include "HTTPServer.hpp"
+# include <sys/event.h>
+# include <sys/socket.h>
+# include <unistd.h>
+# include <fcntl.h>
+# include <algorithm>
+# include <cstdlib>
+# include <string>
+# include <arpa/inet.h>
+# include "Client.hpp"
+# include "HTTPServer.hpp"
+# include "Kq.hpp"
 
 # define BUFFER_SIZE 4095
 # define DEFAULT_400_ERROR_PAGE "./resource/html/error/40x.html"
