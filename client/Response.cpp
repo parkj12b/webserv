@@ -297,7 +297,8 @@ void    Response::makeCookie(std::string& date)
             result += characters[index];
         }
         session[result] = date;
-        value = "session_id=" + result + "; Max-Age=3600";  //1시간
+        // value = "session_id=" + result + "; Max-Age=3600";  //1시간
+        value = "session_id=" + result + "; Max-Age=60";  //1분
         makeHeader("Set-Cookie", value);
     }
     else
@@ -345,10 +346,7 @@ void    Response::makeDefaultHeader()
     date = day[0] + ", " + day[2] + " " + day[1] + " " + day[4] + " " + day[3] + " GMT";
     makeHeader("Date", date);
     makeHeader("Server", "inghwang/0.0");
-<<<<<<< HEAD
-=======
     makeCookie(date);
->>>>>>> ec619a812636c7e273cd5aeb0529c4d13e8c8a0b
 }
 
 void    Response::makeError()
@@ -383,11 +381,7 @@ void    Response::checkRedirect()
         cout << request.url << endl;
         cout << request.status << endl;
         makeHeader("Location", redirect.second);
-<<<<<<< HEAD
-        start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
-=======
         // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
->>>>>>> ec619a812636c7e273cd5aeb0529c4d13e8c8a0b
     }
 }
 
