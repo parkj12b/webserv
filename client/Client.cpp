@@ -196,6 +196,7 @@ int Client::setStart(void)
         request.version = startLine.getVersion();
         request.query = startLine.getQuery();
         standardTime = 100;  //여기서 keep-alive setting
+        // standardTime = Server::serverConfig->getServerData;  //여기서 keep-alive setting
     }
     else
     {
@@ -224,6 +225,13 @@ int Client::setHeader(void)
         {
             if (flag == 0)
             {
+                request.header = headerLine.getHeader();
+                msg = msg.substr(flag + 2);
+                if (setMatchingLocation(request.url))
+                {
+                    request.status = 404;
+                    return (2);
+                }
                 if ((request.status = headerLine.headerError()) > 0)
                 {
                     if (request.status == 100 && !msg.empty())
@@ -234,15 +242,8 @@ int Client::setHeader(void)
                     std::cout<<"default error"<<std::endl;
                     return (2);
                 }
-                request.header = headerLine.getHeader();
-                msg = msg.substr(flag + 2);
                 contentLine.initContentLine(headerLine.getContentLength(), headerLine.getContentType());
                 connect = headerLine.getConnect();
-                if (setMatchingLocation(request.url))
-                {
-                    request.status = 404;
-                    return (2);
-                }
                 break ;
             }
             str = msg.substr(0, flag);
