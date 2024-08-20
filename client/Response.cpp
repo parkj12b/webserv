@@ -142,18 +142,6 @@ void    Response::makeFilePath(std::string& str)
         return ;
     }
     cout << "str: " << str << endl;
-
-    // pos = str.find("http");
-    // if (pos == 0)
-    // {
-    //     str = str.substr(8);
-    //     pos = str.find('/');
-    //     str = str.substr(pos);
-    // }
-    // if (str[0] == '/')
-    //     str = "." + str;
-    // else
-    //     str = "./" + str;
 }
 
 Response::Response()
@@ -472,15 +460,17 @@ void    Response::makePost()
     std::cout<<"Method: POST"<<std::endl;
 	CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
     if (!cgiProcessor.checkURL(request.url))
+    {
 		request.status = 400;
+        makeError();
+    }
 	else
 	{
-		
 		cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
 		if (request.status == 0)
-			request.status = 204;
+			request.status = 200;
 	}
-    start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+    // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
 }
 
 void    Response::makeDelete()
@@ -530,7 +520,6 @@ void    Response::responseMake()
         makeEntity();
         return ;
     }
-    cout << "3\n";
     switch (request.method)
     {
         case GET:
