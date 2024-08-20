@@ -58,11 +58,12 @@ typedef struct Request
 class Response
 {
     private:
-        int                 port;
         std::string         start;
         std::string         header;
         std::string         content;
         std::string         entity;
+        int                 port;
+		bool				cgiFlag;
         Request             request;
         ServerConfigData    *serverConfig;    //server config
         LocationConfigData  *locationConfig;  //location config
@@ -82,11 +83,13 @@ class Response
         std::string getContent() const;
         std::string getEntity() const;
         Request     getRequest() const;
+		bool		getCgiFlag() const;
         LocationConfigData *getLocationConfigData();
         //set function
         void    setRequest(Request &temp);
         void    setLocationConfigData(LocationConfigData *locationConfig);
         //sub logic
+		bool	isCgiScriptInURL(string& str);
         void    initRequest(Request msg);       //request msg init
         void    init();                         //start, header, content, entity init
         void    makeCookie(std::string& date);  //make cookie header

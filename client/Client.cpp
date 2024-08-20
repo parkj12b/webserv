@@ -484,7 +484,6 @@ bool    Client::setMatchingLocation(string url)
             return (recurFindLocation(url, location));
         }
     }
-    
     Trie &prefixTrie = serverConfigData->getPrefixTrie();
     request.location = prefixTrie.find(url);
     if (request.location == "")
