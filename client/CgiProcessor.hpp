@@ -17,19 +17,22 @@ public:
 	CgiProcessor&	operator=(const CgiProcessor& rhs);
 	string	getScriptFile();
 	string	getCgiContent();
+	size_t	getContentLength();
 	void	insertEnv(string key, string value);
 	void	setURLEnv();
 	bool	setStartHeaderEnv();
 	bool	checkURL(string url);
+	bool	checkPostContentType();
 	void	executeCGIScript(const string path);
-	void	setMetaVariable(std::string key, std::string value);
 private:
 	CgiProcessor();
 	Request 			&request;
 	ServerConfigData	*serverConfig;
 	LocationConfigData	*locationConfig;
 	string				scriptFile;
+	string				cgiCommand;
 	string				cgiContent;
+	size_t				contentLength;
 	map<string, string>			metaVariables;
 	map<string, deque<string> > cgiResponseHeader;
 };
