@@ -168,7 +168,7 @@ bool    Client::diffKeepAlive()
     //on or off checking
     if (!connect)
         return (false);
-    if (difftime(std::time(0), keepAlive) > standardTime)
+    if (difftime(std::time(0), keepAlive) > 5)
         return (false);
     return (true);
 }

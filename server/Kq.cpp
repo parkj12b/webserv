@@ -176,18 +176,20 @@ void    Kq::eventWrite(struct kevent& store)
     if (serverFd == 0)
         return ;
     event = server[serverFd].clientWrite(store);
-    std::cout<<"event write"<<std::endl;
     switch (event)
     {
         case ING:
             break ;
         case ERROR:
+            std::cout<<"hereh\n"<<std::endl;
             clientFin(store);
             break ;
         case FINISH:
         case EXPECT:
-            std::cout<<"FINISH"<<std::endl;
+            std::cout<<"good morning\n"<<std::endl;
             EV_SET(&store, store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
+            // clientFin(store);
+            kevent(kq, &store, 1, NULL, 0, NULL);
             break ;
     }
 }
@@ -206,7 +208,8 @@ void    Kq::mainLoop()
     }
     Kq::processor = notFin;
     //changed EVENTCNT to connectionCnt
-    while ((count = kevent(kq, &fdList[0], fdList.size(), store, connectionCnt, NULL)) < 0);
+    if ((count = kevent(kq, &fdList[0], fdList.size(), store, connectionCnt, NULL)) <= 0)
+        return ;
     // std::cout<<count<<std::endl;
     fdList.clear();
     for (int i = 0; i < count; i++)
