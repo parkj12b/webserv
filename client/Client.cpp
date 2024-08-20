@@ -292,11 +292,8 @@ int Client::setContent(void)
     if (!headerLine.getCompletion() || contentLine.getCompletion() || request.fin || request.status)
         return (0);
     // std::cout<<"...setBodyLine parsing...\n";
-    if (contentLine.makeContentLine(msg) < 0)
-    {
-        request.status = 400;
+    if (contentLine.makeContentLine(msg, request.status) < 0)
         return (1);
-    }
     request.content = contentLine.getContent();
     if (contentLine.getCompletion())
     {
