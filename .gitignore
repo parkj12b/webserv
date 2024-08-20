@@ -7,8 +7,5 @@ log
 tester
 testCase
 .DS_Store
-<<<<<<< HEAD
-=======
 ./config/default.conf
->>>>>>> 235157f... .
 *.conf

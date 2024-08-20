@@ -165,9 +165,10 @@ void	CgiProcessor::executeCGIScript(const std::string path)
 		size_t	idx = 0;
 		for (map<string, string>::iterator iter = metaVariables.begin(); iter != metaVariables.end(); iter++)
 		{
-			string env;
+			string	env;
 			env = env.append(iter->first).append("=").append(iter->second);
-			envp[idx++] = const_cast<char *>(env.c_str());
+			envp[idx] = new char[env.size() + 1];
+			std::strcpy(envp[idx++], env.c_str());
 		}
 		envp[metaVariables.size()] = 0;
 		if (execve(&pythonCmd[0], argv, envp) == -1)

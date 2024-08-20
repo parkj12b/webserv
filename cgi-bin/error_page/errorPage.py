@@ -74,7 +74,8 @@ print("<h1>Error Page</h1>")
 print("<p>We're sorry, but something went wrong.</p>")
 
 # Capture the error details from the environment
-error_code = os.environ["ERROR_CODE"]
+error_code = os.environ.get("ERROR_CODE")
+print(f"<p>Error code: {error_code}</p>")
 error_msg = f"{error_code} {http_status_codes[int(error_code)]}"  # Default error code
 
 print(f"<p class='error-code'>{error_msg}</p>")
