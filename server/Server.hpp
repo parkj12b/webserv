@@ -13,18 +13,17 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-#include <sys/event.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <algorithm>
-
-//temp
-#include <cstdlib>
-#include <string>
-#include <arpa/inet.h>
-#include "Client.hpp"
-#include "HTTPServer.hpp"
+# include <sys/event.h>
+# include <sys/socket.h>
+# include <unistd.h>
+# include <fcntl.h>
+# include <algorithm>
+# include <cstdlib>
+# include <string>
+# include <arpa/inet.h>
+# include "Client.hpp"
+# include "HTTPServer.hpp"
+# include "Kq.hpp"
 
 # define BUFFER_SIZE 4095
 # define DEFAULT_400_ERROR_PAGE "./resource/html/error/40x.html"
@@ -75,6 +74,7 @@ class Server
         int     plusClient(void);                   //client socket accept
         EVENT   clientRead(struct kevent& store);   //client read event manage
         EVENT   clientWrite(struct kevent& store);  //client write event manage
+        EVENT   clientTimer(struct kevent& store);  //client timer event manage
         //error
         void    clientFin(int clientFd);    //one client close
         void    serverError();              //clients connected server close
