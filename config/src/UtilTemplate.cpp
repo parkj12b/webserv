@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 15:26:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/20 15:29:13 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/21 16:18:33 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ bool isString(char peek)
 
 string toString(size_t value) {
     char buffer[50]; // Ensure the buffer is large enough
-    std::sprintf(buffer, "%d", value);
+    std::sprintf(buffer, "%zu", value);
     return std::string(buffer);
 }
 
@@ -164,9 +164,9 @@ bool    isWithinBasePath(const string &basePath, const string &requestPath)
     
     cout << "requestPath: " << requestPath << endl;
     resolvedPathCstr = realpath(requestPath.c_str(), NULL);
-    cout << "resolved path: " << resolvedPathCstr << endl;
     if (!resolvedPathCstr)
         return false;
+    cout << "resolved path: " << resolvedPathCstr << endl;
     resolvedPath = resolvedPathCstr;
     free(resolvedPathCstr);
     if (resolvedPath.find(basePath) == 0)

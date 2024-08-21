@@ -25,6 +25,8 @@
 # include "CgiProcessor.hpp"
 # include "HeaderLine.hpp"
 
+# define AUTOINDEX_PATH "./cgi-bin/autoindex.py"
+
 using namespace std;
 
 typedef struct Request
