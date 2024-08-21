@@ -6,7 +6,7 @@
 /*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/21 18:14:11 by devpark          ###   ########.fr       */
+/*   Updated: 2024/08/21 19:38:42 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,7 @@ void    Kq::eventRead(struct kevent& store)
 
     if (store.ident == 0)
         return ;
+	
     serverFd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
     if (serverFd == 0)
         return ;
