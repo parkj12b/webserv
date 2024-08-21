@@ -144,15 +144,7 @@ EVENT   Server::clientTimer(struct kevent& store)
 
 void    Server::clientFin(int clientFd)
 {
-    std::vector<Client*>::iterator it;
-
-    close(clientFd);
-    // it = std::find(Kq::clientKeepAlive.begin(), Kq::clientKeepAlive.end(), &client[clientFd]);
-    // if (it != Kq::clientKeepAlive.end())
-    // {
-    //     std::cout<<"NULL"<<std::endl;
-    //     *it = NULL;
-    // }
+    // close(clientFd);
     client.erase(clientFd);
 }
 
