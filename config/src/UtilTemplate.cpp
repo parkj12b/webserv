@@ -54,7 +54,7 @@ bool isString(char peek)
 
 string toString(size_t value) {
     char buffer[50]; // Ensure the buffer is large enough
-    std::sprintf(buffer, "%d", value);
+    std::sprintf(buffer, "%zu", value);
     return std::string(buffer);
 }
 
