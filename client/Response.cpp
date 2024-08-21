@@ -142,18 +142,6 @@ void    Response::makeFilePath(std::string& str)
         return ;
     }
     cout << "str: " << str << endl;
-
-    // pos = str.find("http");
-    // if (pos == 0)
-    // {
-    //     str = str.substr(8);
-    //     pos = str.find('/');
-    //     str = str.substr(pos);
-    // }
-    // if (str[0] == '/')
-    //     str = "." + str;
-    // else
-    //     str = "./" + str;
 }
 
 Response::Response()
@@ -297,7 +285,8 @@ void    Response::makeCookie(std::string& date)
             result += characters[index];
         }
         session[result] = date;
-        value = "session_id=" + result + "; Max-Age=3600";
+        value = "session_id=" + result + "; Max-Age=3600";  //1시간
+        // value = "session_id=" + result + "; Max-Age=60";  //1분
         makeHeader("Set-Cookie", value);
     }
     else
@@ -350,22 +339,33 @@ void    Response::makeDefaultHeader()
 
 void    Response::makeError()
 {
-    //url 이 필요함 -> url 파싱해야됨, prefix match 
-    LocationConfigData   *location = getLocationConfigData();
-    map<int, string>   &errorPage = location->getErrorPage();
-    (void) errorPage;
-    int fd;
-
     if (request.status >= 300 && request.status < 400)
         return ;
-    // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
     if (request.status == 100)
         return ;
-    fd = getDefaultErrorPage(request.status);
-    if (fd < 0)
-        return ;
-    makeHeader("content-type", "text/html");
-    makeContent(fd);
+    LocationConfigData   *location = getLocationConfigData();
+    map<int, string>   &errorPage = location->getErrorPage();
+    
+    string errorPath = errorPage[request.status];
+    
+    int fd;
+    if (errorPath != "")
+        fd = open(errorPath.c_str(), O_RDONLY);
+    if (errorPath != "" || fd >= 0)
+        makeContent(fd);
+    else
+    {
+        CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
+        if (cgiProcessor.checkURL(DEFAULT_400_ERROR_PAGE_TEST))
+        {
+            cgiProcessor.insertEnv("ERROR_CODE", toString(request.status));
+            cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+            content += cgiProcessor.getCgiContent();
+            std::cout << cgiProcessor.getCgiContent() << '\n';
+        }
+    }
+    makeHeader("Content-Type", "text/html");
+    makeHeader("Content-Length", std::to_string(content.size()));
 }
 
 void    Response::checkRedirect()
@@ -385,7 +385,7 @@ void    Response::checkRedirect()
     }
 }
 
-void    Response::checkAllowedMethod()
+void    Response::checkAllowedMethod() 
 {
     LocationConfigData  *location = getLocationConfigData();
     vector<string>    &allowedMethods = location->getAllowedMethods();
@@ -445,6 +445,9 @@ void    Response::makeGet()
     if (cgiProcessor.checkURL(request.url))
     {
     	cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+        makeHeader("Content-Type", "text/html");
+        content += cgiProcessor.getCgiContent();
+		std::cout << cgiProcessor.getCgiContent() << '\n';
     }
 	else
 	{
@@ -453,12 +456,19 @@ void    Response::makeGet()
 		{
 			request.status = 404;
 			start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
-			fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);
-			if (fd < 0)
-				return ;
-			//거기에 맞는 content만들기
-			makeHeader("Content-Type", "text/html");
-			makeContent(fd);
+			if (cgiProcessor.checkURL(DEFAULT_400_ERROR_PAGE_TEST))
+            {
+                cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+                makeHeader("Content-Type", "text/html");
+                content += cgiProcessor.getCgiContent();
+                std::cout << cgiProcessor.getCgiContent() << '\n';
+            }
+            // fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);
+			// if (fd < 0)
+			// 	return ;
+			// //거기에 맞는 content만들기
+			// makeHeader("Content-Type", "text/html");
+			// makeContent(fd);
 			return ;
 		}
 		makeContent(fd);
@@ -472,15 +482,17 @@ void    Response::makePost()
     std::cout<<"Method: POST"<<std::endl;
 	CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
     if (!cgiProcessor.checkURL(request.url))
+    {
 		request.status = 400;
+        makeError();
+    }
 	else
 	{
-		
 		cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
 		if (request.status == 0)
-			request.status = 204;
+			request.status = 200;
 	}
-    start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+    // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
 }
 
 void    Response::makeDelete()
@@ -530,7 +542,6 @@ void    Response::responseMake()
         makeEntity();
         return ;
     }
-    cout << "3\n";
     switch (request.method)
     {
         case GET:

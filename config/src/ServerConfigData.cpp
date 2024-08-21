@@ -36,6 +36,26 @@ LocationConfigData  *ServerConfigData::getLocationConfigData(string path, int pr
     return &it2->second;
 }
 
+void    ServerConfigData::setKeepaliveTimeout(ssize_t time)
+{
+    _keepaliveTimeout = time;
+}
+
+ssize_t    ServerConfigData::getKeepaliveTimeout()
+{
+    return (_keepaliveTimeout);
+}
+
+void    ServerConfigData::setHeaderTimeout(ssize_t time)
+{
+    _headerTimeout = time;
+}
+
+ssize_t    ServerConfigData::getHeaderTimeout()
+{
+    return (_headerTimeout);
+}
+
 void    ServerConfigData::setLocationConfigData(string path,
             int prePost, LocationConfigData locationConfigData)
 {

@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/19 16:47:28 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/20 14:57:03 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,6 +187,9 @@ int Client::setStart(void)
     flag = msg.find("\r\n");
     if (flag != std::string::npos)
     {
+        //keepa-alive
+        // standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
+        standardTime = Server::serverConfig->getDefaultServer(port)->getHeaderTimeout();  //여기서 keep-alive setting
         if ((request.status = startLine.check(msg.substr(0, flag))))  //ingu test
             return (1);
         msg = msg.substr(flag + 2);
@@ -195,12 +198,15 @@ int Client::setStart(void)
         request.location = startLine.getLocation();
         request.version = startLine.getVersion();
         request.query = startLine.getQuery();
-        standardTime = 100;  //여기서 keep-alive setting
+        // standardTime = Server::serverConfig->getServerData;  //여기서 keep-alive setting
     }
     else
     {
         if (msg.size() > 8192)
         {
+            //location && keep-alive
+            standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
+            standardTime = 100;  //여기서 keep-alive setting
             request.status = 414;
             return (2);
         }
@@ -224,6 +230,15 @@ int Client::setHeader(void)
         {
             if (flag == 0)
             {
+                request.header = headerLine.getHeader();
+                msg = msg.substr(flag + 2);
+                //keep-alive
+                standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
+                if (setMatchingLocation(request.url))
+                {
+                    request.status = 404;
+                    return (2);
+                }
                 if ((request.status = headerLine.headerError()) > 0)
                 {
                     if (request.status == 100 && !msg.empty())
@@ -234,15 +249,8 @@ int Client::setHeader(void)
                     std::cout<<"default error"<<std::endl;
                     return (2);
                 }
-                request.header = headerLine.getHeader();
-                msg = msg.substr(flag + 2);
                 contentLine.initContentLine(headerLine.getContentLength(), headerLine.getContentType());
                 connect = headerLine.getConnect();
-                if (setMatchingLocation(request.url))
-                {
-                    request.status = 404;
-                    return (2);
-                }
                 break ;
             }
             str = msg.substr(0, flag);
@@ -291,11 +299,8 @@ int Client::setContent(void)
     if (!headerLine.getCompletion() || contentLine.getCompletion() || request.fin || request.status)
         return (0);
     // std::cout<<"...setBodyLine parsing...\n";
-    if (contentLine.makeContentLine(msg) < 0)
-    {
-        request.status = 400;
+    if (contentLine.makeContentLine(msg, request.status) < 0)
         return (1);
-    }
     request.content = contentLine.getContent();
     if (contentLine.getCompletion())
     {
@@ -402,7 +407,7 @@ void    Client::showMessage(void)
 void    Client::setMessage(std::string msgRequest)
 {
     msg += msgRequest;
-    write(logs, &msgRequest[0], msgRequest.size());
+    // write(logs, &msgRequest[0], msgRequest.size());
     // std::cout<<"Read Event"<<std::endl;
     if (setStart())  //max size literal
     {

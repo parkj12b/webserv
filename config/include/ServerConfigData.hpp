@@ -31,10 +31,16 @@ private:
     vector<int>                     _port;
     Trie                            _prefixTrie;
     vector<string>                  _suffixMatch;
+    ssize_t                         _keepaliveTimeout;
+    ssize_t                         _headerTimeout;
 public:
     map<string, map<int, LocationConfigData> > _locationConfigData;  //location에 따른 정보가 담긴 map??
     void                            addServerName(string serverName);
     void                            setLocationConfigData(string path, int prePost, LocationConfigData locationConfigData);
+    void                            setKeepaliveTimeout(ssize_t time);
+    ssize_t                          getKeepaliveTimeout();
+    void                            setHeaderTimeout(ssize_t time);
+    ssize_t                          getHeaderTimeout();
     vector<string>                  &getSuffixMatch();
     vector<string>                  &getServerName();
     vector<int>                     &getPort();
