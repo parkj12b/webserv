@@ -127,18 +127,18 @@ EVENT   Server::clientWrite(struct kevent& store)
     return (FINISH);
 }
 
-// EVENT   Server::clientTimer(struct kevent& store)
-// {
-//     bool    flag;
+EVENT   Server::clientTimer(struct kevent& store)
+{
+    bool    flag;
 
-//     if (store.ident == 0 || client[store.ident].getFd() == 0)
-//         return (ING);
-//     flag = client[store.ident].getConnection();
-//     client[store.ident].setConnection(false);
-//     if (flag)
-//         return (ING);
-//     return (FINISH);
-// }
+    if (store.ident == 0 || client[store.ident].getFd() == 0)
+        return (ING);
+    flag = client[store.ident].getConnection();
+    client[store.ident].setConnection(false);
+    if (flag)
+        return (ING);
+    return (FINISH);
+}
 
 void    Server::clientFin(int clientFd)
 {
