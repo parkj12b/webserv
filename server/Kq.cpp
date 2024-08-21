@@ -99,11 +99,13 @@ void    Kq::clientFin(struct kevent& store)
 {
     int     serverFd;
 
-    // std::cout<<"error"<<std::endl;
+    std::cout<<"bye"<<std::endl;
     serverFd = findServer[store.ident];
     plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
-    plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
-    plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+    // plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
+    // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+    close(store.ident);
+    findServer[store.ident] = 0;
     server[serverFd].clientFin(store.ident);
 }
 
@@ -122,6 +124,7 @@ void    Kq::plusEvent(uintptr_t fd, int16_t filter, uint16_t flags, uint32_t ffl
     struct kevent   temp;
 
     EV_SET(&temp, fd, filter, flags, fflags, data, udata);
+    // kevent(kq, &temp, 1, NULL, 0, NULL);
     fdList.push_back(temp);  //temp를 복사해서 저장을 함
 }
 
@@ -130,7 +133,7 @@ void    Kq::plusClient(int serverFd)
     int clientFd;
 
     clientFd = server[serverFd].plusClient();
-    std::cout<<"plus client"<<std::endl;
+    std::cout<<"plus client "<<clientFd<<std::endl;
     // plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 5000, 0);  //여기는 찐 디폴트 값인데
     plusEvent(clientFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     findServer[clientFd] = serverFd;
@@ -147,7 +150,6 @@ void    Kq::eventRead(struct kevent& store)
     if (serverFd == 0)
         return ;
     event = server[serverFd].clientRead(store);
-    plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 5000, 0);
     switch (event)
     {
         case ERROR:
@@ -158,6 +160,8 @@ void    Kq::eventRead(struct kevent& store)
         case EXPECT:
         case FINISH:
             plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
+            plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
+            plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 10000, 0);
             break ;
     }
 }
@@ -237,6 +241,7 @@ void    Kq::mainLoop()
         }
         else
         {
+            std::cout<<"store[i].ident: "<<store[i].ident<<std::endl;
             if (store[i].flags == EV_ERROR)
                 clientFin(store[i]);  //client 종료
             else if (store[i].filter == EVFILT_READ)

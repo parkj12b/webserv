@@ -340,6 +340,7 @@ void    Response::makeDefaultHeader()
     date = day[0] + ", " + day[2] + " " + day[1] + " " + day[4] + " " + day[3] + " GMT";
     makeHeader("Date", date);
     makeHeader("Server", "inghwang/0.0");
+    makeHeader("connection", "keep-alive");
     makeCookie(date);
 }
 

@@ -15,6 +15,7 @@
 
 #include <vector>
 #include <map>
+#include <stack>
 #include <string>
 #include <unordered_set>
 #include "Lexer.hpp"

@@ -13,6 +13,7 @@
 #ifndef RESPONSE_HPP
 # define RESPONSE_HPP
 
+# include <algorithm>
 # include <iostream>
 # include <vector>
 # include <deque>
@@ -60,14 +61,15 @@ typedef struct Request
 class Response
 {
     private:
-        int                 port;
-        std::string         start;
-        std::string         header;
-        std::string         content;
-        std::string         entity;
-        Request             request;
-        ServerConfigData    *serverConfig;    //server config
-        LocationConfigData  *locationConfig;  //location config
+        int                         port;
+        std::string                 start;
+        std::vector<std::string>    keyHeader;
+        std::string                 header;
+        std::string                 content;
+        std::string                 entity;
+        Request                     request;
+        ServerConfigData            *serverConfig;    //server config
+        LocationConfigData          *locationConfig;  //location config
     public:
         static std::map<int, std::string>           statusContent;
         static std::map<std::string, std::string>   session;

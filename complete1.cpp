@@ -71,6 +71,7 @@ void    plusClient(std::vector<struct kevent> &fdList, int serverFd)
     clntFd = accept(serverFd, (struct sockaddr*)&clntAdr, &adrSize);
     if (clntFd < 0)
         errorHandler("accept error.");
+    plusEvent(fdList, clntFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 50000, 0);
     plusEvent(fdList, clntFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     // plusEvent(fdList, clntFd, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
     //비동기 I/O가 걸릴 수 있다고 생각 되나 우리는 read를 다하고 나서 write를 하기 때문에 문제가 없을 것이라고 생각됨
