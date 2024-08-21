@@ -18,14 +18,14 @@
 
 extern int logs;
 
-Client::Client() : connect(true), fd(0), port(0), index(0), responseAmount(0), startLine(0), headerLine(0), contentLine(0)
+Client::Client() : connect(true), connection(false), fd(0), port(0), index(0), responseAmount(0), startLine(0), headerLine(0), contentLine(0)
 {
     request.port = port;
     request.fin = false;
     request.status = 0;
 }
 
-Client::Client(int fd, int port) : connect(true), fd(fd), port(port), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port)
+Client::Client(int fd, int port) : connect(true), connection(false), fd(fd), port(port), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port)
 {
     keepAlive = time(0);
     request.port = port;
@@ -33,12 +33,13 @@ Client::Client(int fd, int port) : connect(true), fd(fd), port(port), index(0), 
     request.status = 0;
 }
 
-Client::Client(const Client& src) : connect(src.getConnect()), fd(src.getFd()), port(src.getPort()), index(src.getIndex()), responseAmount(src.getResponseAmount()), standardTime(src.getStandardTime()), msg(src.getMsg()), keepAlive(src.getKeepAlive()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse())
+Client::Client(const Client& src) : connect(src.getConnect()), connection(src.getConnection()), fd(src.getFd()), port(src.getPort()), index(src.getIndex()), responseAmount(src.getResponseAmount()), standardTime(src.getStandardTime()), msg(src.getMsg()), keepAlive(src.getKeepAlive()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse())
 {}
 
 Client& Client::operator=(const Client& src)
 {
     connect = src.getConnect();
+    connection = src.getConnection();
     fd = src.getFd();
     port = src.getPort();
     index = src.getIndex();
@@ -62,6 +63,11 @@ Client::~Client()
 bool    Client::getConnect() const
 {
     return (connect);
+}
+
+bool    Client::getConnection() const
+{
+    return (connection);
 }
 
 int Client::getFd(void) const
@@ -132,6 +138,11 @@ bool    Client::getRequestFin() const
 int Client::getRequestStatus() const
 {
     return (request.status);
+}
+
+void    Client::setConnection(bool ycdi)
+{
+    this->connection = ycdi;
 }
 
 void    Client::setFd(uintptr_t fd)

@@ -46,6 +46,7 @@ class Client
 {
     private:
         bool        connect;
+        bool        connection;
         int         fd;
         int         port;
         size_t      index;
@@ -68,6 +69,7 @@ class Client
         ~Client();
         //get function
         bool        getConnect() const;
+        bool        getConnection() const;
         int         getFd() const;
         int         getPort() const;
         size_t      getIndex() const;
@@ -83,6 +85,7 @@ class Client
         bool        getRequestFin() const;
         int         getRequestStatus() const;
         //set function
+        void    setConnection(bool ycdi);
         void    setFd(uintptr_t fd);
         void    setKeepAlive(std::time_t time);
         void    setRequestStatus(int temp);

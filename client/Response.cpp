@@ -321,8 +321,6 @@ void    Response::makeDefaultHeader()
     std::string         day[5];
     size_t              pos;
     int                 order;
-    // const std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    // const size_t charactersSize = characters.size();
 
     order = 0;
     while (std::getline(strStream, temp, ' '))
@@ -470,7 +468,6 @@ void    Response::makePost()
 		if (request.status == 0)
 			request.status = 200;
 	}
-    // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
 }
 
 void    Response::makeDelete()
@@ -479,14 +476,12 @@ void    Response::makeDelete()
     if (std::remove(request.url.c_str()) == 0)
     {
         request.status = 204;
-        // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
     }
     else
     {
         request.status = 404;
         makeError();
     }
-    //접근 권한이 실패될 경우에는 403
 }
 
 void    Response::responseMake()

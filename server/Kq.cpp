@@ -109,6 +109,9 @@ void    Kq::clientFin(struct kevent& store)
 
     // std::cout<<"error"<<std::endl;
     serverFd = findServer[store.ident];
+    plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
+    plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
+    plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
     server[serverFd].clientFin(store.ident);
 }
 
@@ -151,6 +154,7 @@ void    Kq::eventRead(struct kevent& store)
     if (serverFd == 0)
         return ;
     event = server[serverFd].clientRead(store);
+    plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 5000, 0);
     switch (event)
     {
         case ERROR:
@@ -181,15 +185,32 @@ void    Kq::eventWrite(struct kevent& store)
         case ING:
             break ;
         case ERROR:
-            std::cout<<"hereh\n"<<std::endl;
             clientFin(store);
             break ;
         case FINISH:
         case EXPECT:
-            std::cout<<"good morning\n"<<std::endl;
-            EV_SET(&store, store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
-            // clientFin(store);
-            kevent(kq, &store, 1, NULL, 0, NULL);
+            plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
+            break ;
+    }
+}
+
+void    Kq::eventTimer(struct kevent& store)
+{
+    int     serverFd;
+    EVENT   event;
+
+    serverFd = findServer[store.ident];
+    if (serverFd == 0)
+        return ;
+    event = server[serverFd].clientTimer(store);
+    switch (event)
+    {
+        case EXPECT:
+        case ERROR:
+        case ING:
+            break ;
+        case FINISH:
+            clientFin(store);
             break ;
     }
 }
@@ -229,29 +250,9 @@ void    Kq::mainLoop()
                 eventRead(store[i]);
             else if (store[i].filter == EVFILT_WRITE)
                 eventWrite(store[i]);
+            else if (store[i].filter == EVFILT_TIMER)
+                eventTimer(store[i]);
         }
     }
-    //keep-alive check
-    // std::cout<<"hereherher\n"<<std::endl;
-    // for (std::vector<Client*>::iterator it = Kq::clientKeepAlive.begin(); it != Kq::clientKeepAlive.end(); )
-    // {
-    //     Client* c = *it;
-
-    //     if (c == NULL)
-    //     {
-    //         std::cout<<"c: NULL"<<std::endl;
-    //         ++it;
-    //     }
-    //     else if (c->getFd() != 0 && !(c->diffKeepAlive()))
-    //     {
-    //         std::cout<<"good"<<std::endl;
-    //         server[findServer[c->getFd()]].clientFin(c->getFd());
-    //         std::cout<<"here\n"<<std::endl;
-    //         // close(c->getFd());
-    //         std::cout<<"here\n"<<std::endl;
-    //     }
-    //     else
-    //         ++it;
-    // }
 }
 

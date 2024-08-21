@@ -77,10 +77,9 @@ EVENT Server::clientRead(struct kevent& store)
     int     readSize;
 
     //eof신호를 못 받게 됨
-    if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 100)
+    if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
-    it = std::find(Kq::clientKeepAlive.begin(), Kq::clientKeepAlive.end(), &client[store.ident]);
-    if (it == Kq::clientKeepAlive.end())
+    if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 100)
         return (ING);
     readSize = read(store.ident, buffer, BUFFER_SIZE);
     if (readSize <= 0) // read가 발생했는데 읽은게 없다면 에러
@@ -88,10 +87,9 @@ EVENT Server::clientRead(struct kevent& store)
         std::cout<<"read error or socket close\n";
         return (ERROR);
     }
-    // cout << "readSize: " << readSize << endl;
     buffer[readSize] = '\0';
     client[store.ident].setMessage(buffer);
-    client[store.ident].setKeepAlive(std::time(0));
+    client[store.ident].setConnection(true);
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
     {
         // request 완성 -> respond 만들면 되지 않나?
@@ -111,35 +109,35 @@ EVENT   Server::clientWrite(struct kevent& store)
     size_t      index;
     const char* buffer = client[store.ident].respondMsgIndex();
 
-    if (store.ident == 0)
+    if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
-    it = std::find(Kq::clientKeepAlive.begin(), Kq::clientKeepAlive.end(), &client[store.ident]);
-    if (it == Kq::clientKeepAlive.end())
-        return (ING);
-    if (client[store.ident].getRequestStatus() != 100 && !client[store.ident].getRequestFin())
-    {
-        if (!client[store.ident].diffKeepAlive())
-            return (FINISH);
-        return (ING);
-    }
     index = write(store.ident, buffer, client[store.ident].responseIndex());
-    // write(1, buffer, strlen(buffer));
-    std::cout<<std::endl<<std::endl<<store.ident<<" "<<index<<std::endl<<std::endl;
     client[store.ident].plusIndex(index);
+    client[store.ident].setConnection(true);
     if (client[store.ident].responseIndex())
-    {
         return (ING);
-    }
     if (client[store.ident].getRequestStatus() == 100)
         return (EXPECT);
-    client[store.ident].setKeepAlive(std::time(0));
     if (!client[store.ident].getConnect())
     {
         std::cout<<"connection fin"<<std::endl;
-        return (ERROR);    //keep-alive가 선언이 되지 않았을 때
+        return (ERROR);
     }
     client[store.ident].resetClient();
     std::cout<<"keep-alive"<<std::endl;
+    return (FINISH);
+}
+
+EVENT   Server::clientTimer(struct kevent& store)
+{
+    bool    flag;
+
+    if (store.ident == 0 || client[store.ident].getFd() == 0)
+        return (ING);
+    flag = client[store.ident].getConnection();
+    client[store.ident].setConnection(false);
+    if (flag)
+        return (ING);
     return (FINISH);
 }
 

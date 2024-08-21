@@ -73,6 +73,7 @@ class Server
         int     plusClient(void);                   //client socket accept
         EVENT   clientRead(struct kevent& store);   //client read event manage
         EVENT   clientWrite(struct kevent& store);  //client write event manage
+        EVENT   clientTimer(struct kevent& store);  //client timer event manage
         //error
         void    clientFin(int clientFd);    //one client close
         void    serverError();              //clients connected server close
