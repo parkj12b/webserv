@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:55 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/19 14:42:09 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/19 19:08:03 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 
 # define BUFFER_SIZE 4095
 # define DEFAULT_400_ERROR_PAGE "./resource/html/error/40x.html"
+# define DEFAULT_400_ERROR_PAGE_TEST "./cgi-bin/error_page/errorPage.py"
 # define DEFAULT_500_ERROR_PAGE "./resource/html/error/50x.html"
 
 //server를 여러 개 만들 경우에는 kq클래스 만들기
