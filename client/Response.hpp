@@ -32,14 +32,15 @@ typedef struct Request
     bool    fin;    //request completion status
     int     status; //request status code
     int     port;
-    Method                                                      method;     //http method
-	std::string													clientIp;	//client IP
-    std::string                                                 url;        //http resource
-    std::string                                                 location;   //location for config
-    Version                                                     version;    //http version
-    std::map<std::string, std::string>                          query;      //resource query
-    std::map<std::string, std::deque<std::string> >             header;     //request header
-    std::vector<std::string>                                    content;    //request content
+	int		clientFd;	//client File Descriptor
+    Method											method;     //http method
+	std::string										clientIp;	//client IP
+    std::string										url;        //http resource
+    std::string										location;   //location for config
+    Version											version;    //http version
+    std::map<std::string, std::string>				query;      //resource query
+    std::map<std::string, std::deque<std::string> >	header;     //request header
+    std::vector<std::string>						content;    //request content
 }   Request;
 
 /**
@@ -64,6 +65,7 @@ class Response
         std::string         entity;
         int                 port;
 		bool				cgiFlag;
+		size_t				contentLength;
         Request             request;
         ServerConfigData    *serverConfig;    //server config
         LocationConfigData  *locationConfig;  //location config
@@ -88,6 +90,8 @@ class Response
         //set function
         void    setRequest(Request &temp);
         void    setLocationConfigData(LocationConfigData *locationConfig);
+		void	setContent(string content_);
+		void	setContentLength(size_t contentLength_);
         //sub logic
 		bool	isCgiScriptInURL(string& str);
         void    initRequest(Request msg);       //request msg init

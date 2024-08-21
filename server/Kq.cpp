@@ -134,28 +134,51 @@ void    Kq::plusClient(int serverFd)
 
 void    Kq::eventRead(struct kevent& store)
 {
-    int     serverFd;
+    int     fd;
     EVENT   event;
+	map<int, int>::iterator iter = cgiFd.begin();
 
     if (store.ident == 0)
         return ;
-	
-    serverFd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
-    if (serverFd == 0)
-        return ;
-    event = server[serverFd].clientRead(store);
-    switch (event)
-    {
-        case ERROR:
-            clientFin(store);
-            break ;
-        case ING:
-            break ;
-        case EXPECT:
-        case FINISH:
-            plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
-            break ;
-    }
+	//vector에 담기 혹은 다른 방안 생각하기 serverFd가 map일 텐데 이거를 pipe일 경우에 value값을 1로
+	while (iter != cgiFd.end())
+	{
+		if (iter->first == static_cast<int>(store.ident))
+			break;
+	}
+	if (iter != cgiFd.end())
+	{
+		event = server[findServer[iter->second]].cgiRead(store);
+		switch (event)
+		{
+			case ING:
+				break ;
+			case ERROR:
+			case FINISH:
+				cgiFd.erase(iter->first);
+				close(iter->first);
+				break ;
+		}
+	}
+	else
+	{
+		fd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
+		if (fd == 0)
+			return ;
+		event = server[fd].clientRead(store);
+		switch (event)
+		{
+			case ERROR:
+				clientFin(store);
+				break ;
+			case ING:
+				break ;
+			case EXPECT:
+			case FINISH:
+				plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
+				break ;
+		}
+	}
 }
 
 void    Kq::eventWrite(struct kevent& store)

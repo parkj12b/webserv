@@ -73,8 +73,8 @@ class Client
         size_t      getIndex() const;
         size_t      getResponseAmount() const;
         ssize_t     getStandardTime() const;
-        string getMsg() const;
-        time_t getKeepAlive() const;
+        string		getMsg() const;
+        time_t		getKeepAlive() const;
         Request     getRequest() const;
         StartLine   getStartLine() const;
         HeaderLine  getHeaderline() const;
@@ -87,6 +87,8 @@ class Client
         void    setKeepAlive(time_t time);
         void    setRequestStatus(int temp);
         void    setRequestFin(bool fin);
+		void	setResponseContent(string content);
+		void	setResponseContentLength(size_t contentLength);
         //logic
 		void		clientIP(struct sockaddr_in clntAdr);
         bool        diffKeepAlive();

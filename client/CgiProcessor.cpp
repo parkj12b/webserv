@@ -97,7 +97,7 @@ void	CgiProcessor::selectCgiCmd(string url)
 	// Find CGI Script File in URL
 	const string	availCgiExtensions[2] = {".py", ".php"};
 	string			cgiExtension;
-	size_t				cgiFilePos;
+	size_t			cgiFilePos;
 	for (int i=0; i<2; i++)
 	{
 		cgiExtension = availCgiExtensions[i];
@@ -142,7 +142,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 		request.status = 500;
 		return ;
 	}
-	int pid = fork();
+	pid_t pid = fork();
 	if (pid == -1)
 	{
 		close(pipefd[0]);
@@ -155,6 +155,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 	{
 		close(pipefd[0]);
 		dup2(pipefd[1], STDOUT_FILENO);
+		dup2(pipefd[1], STDERR_FILENO);
 		close(pipefd[1]);
 		char *argv[] = {const_cast<char *>(&cgiCommand[0]), const_cast<char *>(&path[0]), NULL};
 		char **envp = new char*[metaVariables.size() + 1];
@@ -176,21 +177,9 @@ void	CgiProcessor::executeCGIScript(const string path)
 	else
 	{
 		close(pipefd[1]);
-		char buf[65537];
-		int length;
-		length = read(pipefd[0], buf, 65536);
-		if (length <= 0)
-		{
-			close(pipefd[0]);
-			if (length < 0)
-				request.status = 500;
-			return ;
-		}
-		buf[length] = 0;
-		contentLength += length;
-		cgiContent.append(string(buf));
-		close(pipefd[0]);
 		Kq::processor.push_back(pid);
-		fin = true;
+		int tmpFd = pipefd[0];
+		close(pipefd[0]);
+		Kq::cgiFd.insert(make_pair(tmpFd, request.clientFd));
 	}
 }

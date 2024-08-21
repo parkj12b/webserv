@@ -39,11 +39,12 @@ class Kq
     private:
         int                         kq;
         int                         connectionCnt;
-        static std::vector<struct kevent>  fdList;
+        static std::vector<struct kevent> 	fdList;
         std::map<int, Server>       server;
         std::map<int, int>          findServer;
     public:
         static std::vector<pid_t>   processor;
+		static std::map<int, int>	cgiFd;
         Kq();
         Kq(const Kq& src);
         Kq& operator=(const Kq& src);

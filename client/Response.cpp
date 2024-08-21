@@ -249,6 +249,16 @@ void    Response::setLocationConfigData(LocationConfigData *locationConfigData)
     locationConfig = locationConfigData;
 }
 
+void	Response::setContent(string content_)
+{
+	content = content_;
+}
+
+void	Response::setContentLength(size_t contentLength_)
+{
+	contentLength = contentLength_;
+}
+
 void    Response::initRequest(Request msg)
 {
     request = msg;

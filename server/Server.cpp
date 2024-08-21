@@ -19,7 +19,7 @@ HTTPServer *Server::serverConfig = NULL;
 Server::Server()
 {}
 
-Server::Server(int fd, int num) : serverFd(fd), port(num)
+Server::Server(int fd, int num) : serverFd(fd), port(num), cgiContentLength(0)
 {}
 
 Server::Server(const Server& src) : serverFd(src.getServerFd()), port(src.getPort()), client(src.getClient())
@@ -65,6 +65,31 @@ int Server::plusClient()
     std::cout<<"temp delete"<<std::endl;
     return (clntFd);
     // 나갈 때 소멸자가 호출됨
+}
+
+EVENT Server::cgiRead(struct kevent& store)
+{
+	char	buf[PIPE_BUFFER_SIZE + 1];
+	int		readSize;
+
+	readSize = read(store.ident, buf, PIPE_BUFFER_SIZE);
+	if (readSize <= 0)
+	{
+		if (readSize < 0)
+		{
+			client[Kq::cgiFd[store.ident]].setRequestStatus(500);
+			cgiContent.clear();
+			cgiContentLength = 0;
+			return (ERROR);
+		}
+		client[Kq::cgiFd[store.ident]].setResponseContent(cgiContent);
+		client[Kq::cgiFd[store.ident]].setResponseContentLength(cgiContentLength);
+		cgiContent.clear();
+		cgiContentLength = 0;
+		return (FINISH);
+	}
+	cgiContent.append(string(buf));
+	cgiContentLength += readSize;
 }
 
 EVENT Server::clientRead(struct kevent& store)

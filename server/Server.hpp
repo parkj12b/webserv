@@ -28,6 +28,7 @@
 #include "Kq.hpp"
 
 # define BUFFER_SIZE 4095
+# define PIPE_BUFFER_SIZE 65536
 # define DEFAULT_400_ERROR_PAGE "./resource/html/error/40x.html"
 # define DEFAULT_500_ERROR_PAGE "./resource/html/error/50x.html"
 # define CGI_ERROR_PAGE "./cgi-bin/error_page/errorPage.py"
@@ -59,6 +60,8 @@ class Server
     private:
         int                     serverFd;
         int                     port;
+		string					cgiContent;
+		size_t					cgiContentLength;
         std::map<int, Client>   client;  //client을 선언할때에 default 생성자가 필요한듯
         //여기에 파싱된 data가 들어가 있을 것 - 아래 서버 스태틱으로 설정되어 있음
     public:
@@ -73,7 +76,8 @@ class Server
         int                     getPort(void) const;
         std::map<int, Client>   getClient(void) const;
         //logic
-        int     plusClient();                   //client socket accept
+        int     plusClient();                   	//client socket accept
+		EVENT	cgiRead(struct kevent& store);		//client cgi read event manage
         EVENT   clientRead(struct kevent& store);   //client read event manage
         EVENT   clientWrite(struct kevent& store);  //client write event manage
         //error
