@@ -133,6 +133,7 @@ void    Kq::plusClient(int serverFd)
     std::cout<<"plus client"<<std::endl;
     // plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 5000, 0);  //여기는 찐 디폴트 값인데
     plusEvent(clientFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
+    // plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 5000, 0);
     findServer[clientFd] = serverFd;
 }
 
@@ -147,7 +148,7 @@ void    Kq::eventRead(struct kevent& store)
     if (serverFd == 0)
         return ;
     event = server[serverFd].clientRead(store);
-    plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 5000, 0);
+    plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 20000, 0);
     switch (event)
     {
         case ERROR:

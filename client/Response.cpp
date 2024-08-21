@@ -287,7 +287,7 @@ void    Response::makeCookie(std::string& date)
         session[result] = date;
         value = "session_id=" + result + "; Max-Age=3600";  //1시간
         // value = "session_id=" + result + "; Max-Age=60";  //1분
-        makeHeader("Set-Cookie", value);
+        makeHeader("set-cookie", value);
     }
     else
     {
@@ -330,8 +330,8 @@ void    Response::makeDefaultHeader()
         day[order++] = temp;
     }
     date = day[0] + ", " + day[2] + " " + day[1] + " " + day[4] + " " + day[3] + " GMT";
-    makeHeader("Date", date);
-    makeHeader("Server", "inghwang/0.0");
+    makeHeader("date", date);
+    makeHeader("server", "inghwang/0.0");
     makeCookie(date);
 }
 
@@ -361,9 +361,9 @@ void    Response::makeError()
             content += cgiProcessor.getCgiContent();
             std::cout << cgiProcessor.getCgiContent() << '\n';
         }
+        makeHeader("content-type", "text/html");
+        makeHeader("content-length", std::to_string(content.size()));
     }
-    makeHeader("Content-Type", "text/html");
-    makeHeader("Content-Length", std::to_string(content.size()));
 }
 
 void    Response::checkRedirect()
@@ -377,7 +377,7 @@ void    Response::checkRedirect()
         request.url = redirect.second;
         cout << request.url << endl;
         cout << request.status << endl;
-        makeHeader("Location", redirect.second);
+        makeHeader("location", redirect.second);
         // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
         // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
     }
@@ -395,7 +395,13 @@ void    Response::checkAllowedMethod()
 
 void    Response::makeHeader(std::string key, std::string value)
 {
+    std::vector<std::string>::iterator  it;
+
+    it = std::find(keyHeader.begin(), keyHeader.end(), key);
+    if (it != keyHeader.end())
+        return ;
     header += key + ": " + value + "\r\n";
+    keyHeader.push_back(key);
 }
 
 void    Response::makeContent(int fd)
@@ -405,9 +411,9 @@ void    Response::makeContent(int fd)
     char    buffer[4096];
 
     if (request.url == "./favicon.ico")
-        makeHeader("Content-Type", "image/x-icon");
+        makeHeader("content-type", "image/x-icon");
     else
-        makeHeader("Content-Type", "text/html");
+        makeHeader("content-type", "text/html");
     count = 0;
     while (1)
     {
@@ -443,7 +449,7 @@ void    Response::makeGet()
     if (cgiProcessor.checkURL(request.url))
     {
     	cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
-        makeHeader("Content-Type", "text/html");
+        makeHeader("content-type", "text/html");
         content += cgiProcessor.getCgiContent();
 		std::cout << cgiProcessor.getCgiContent() << '\n';
     }
@@ -457,7 +463,7 @@ void    Response::makeGet()
 			if (cgiProcessor.checkURL(DEFAULT_400_ERROR_PAGE_TEST))
             {
                 cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
-                makeHeader("Content-Type", "text/html");
+                makeHeader("content-type", "text/html");
                 content += cgiProcessor.getCgiContent();
                 std::cout << cgiProcessor.getCgiContent() << '\n';
             }
