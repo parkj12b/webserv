@@ -59,7 +59,7 @@ int Server::plusClient(void)
     socklen_t           adrSize;
 
     adrSize = sizeof(clntAdr);
-    //accept 무한 루프
+    //accept 무한 루프 && server 동기적 실패시 무한 루프 가능성 
     while ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0);
     client[clntFd] = Client(clntFd, port);
 	client[clntFd].clientIP(clntAdr);
@@ -92,6 +92,7 @@ EVENT Server::clientRead(struct kevent& store)
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
     {
         // request 완성 -> respond 만들면 되지 않나?
+        std::cout<<"fd: "<<store.ident<<std::endl;
         client[store.ident].setResponseMessage();
         if (client[store.ident].getRequestStatus() == 100)
             return (EXPECT);
@@ -137,20 +138,13 @@ EVENT   Server::clientTimer(struct kevent& store)
     client[store.ident].setConnection(false);
     if (flag)
         return (ING);
+    std::cout<<"TIMER OUT"<<std::endl;
     return (FINISH);
 }
 
 void    Server::clientFin(int clientFd)
 {
-    std::vector<Client*>::iterator it;
-
-    close(clientFd);
-    // it = std::find(Kq::clientKeepAlive.begin(), Kq::clientKeepAlive.end(), &client[clientFd]);
-    // if (it != Kq::clientKeepAlive.end())
-    // {
-    //     std::cout<<"NULL"<<std::endl;
-    //     *it = NULL;
-    // }
+    // close(clientFd);
     client.erase(clientFd);
 }
 

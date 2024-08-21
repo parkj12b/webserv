@@ -268,10 +268,10 @@ Token *Lexer::scan() {
         string  b = "";
         startLine = line;
         startColumn = column;
-        bool    isMask = false;
+        // bool    isMask = false;
         do {
-            if (peek == '*')
-                isMask = true;
+            // if (peek == '*')
+            //     isMask = true;
             if (peek == '[')
             {
                 startLine = line;

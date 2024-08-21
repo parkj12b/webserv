@@ -185,10 +185,19 @@ int main()
     std::cout<<"\n\n=========test15=========\n";
     ssize_t stand = 3;
     std::time_t start = std::time(0);
-    sleep(4);
+    // sleep(4);
     std::cout<<difftime(std::time(0), start)<<std::endl;
     if (difftime(std::time(0), start) < stand)
         std::cout<<"good\n"<<std::endl;
+    std::cout<<"\n\n=========test16=========\n";
+    int                 ai = 2147483647;
+    long                al = 2147483648;
+    std::stringstream is;
+    std::stringstream is2;
+    is << 2147483648;
+    std::cout<<is.str()<<std::endl;
+    is2 << al;
+    std::cout<<is2.str()<<std::endl;
     return 0;
 }
 
