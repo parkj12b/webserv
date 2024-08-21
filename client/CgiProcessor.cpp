@@ -124,7 +124,8 @@ void	CgiProcessor::checkPostContentType()
 		executeCGIScript(scriptFile);
 	else if (!request.header["content-type"].front().compare("multipart/form-data"))
 	{
-		
+		scriptFile = "/upload/upload.py";
+		executeCGIScript(scriptFile);
 	}
 	else
 		request.status = 400;
@@ -149,6 +150,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 		request.status = 500;
 		return ;
 	}
+	Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 	if (pid == 0)
 	{
 		close(pipefd[0]);
@@ -176,22 +178,19 @@ void	CgiProcessor::executeCGIScript(const string path)
 		close(pipefd[1]);
 		char buf[65537];
 		int length;
-		while (1)
+		length = read(pipefd[0], buf, 65536);
+		if (length <= 0)
 		{
-			length = read(pipefd[0], buf, 65536);
-			if (length <= 0)
-			{
-				close(pipefd[0]);
-				if (length < 0)
-					request.status = 500;
-				return ;
-			}
-			buf[length] = 0;
-			contentLength += length;
-			cgiContent.append(string(buf));
+			close(pipefd[0]);
+			if (length < 0)
+				request.status = 500;
+			return ;
 		}
-		Kq::processor.push_back(pid);
+		buf[length] = 0;
+		contentLength += length;
+		cgiContent.append(string(buf));
 		close(pipefd[0]);
+		Kq::processor.push_back(pid);
 		fin = true;
 	}
 }

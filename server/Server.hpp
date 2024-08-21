@@ -6,7 +6,7 @@
 /*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:55 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/21 13:20:54 by devpark          ###   ########.fr       */
+/*   Updated: 2024/08/21 17:12:31 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 #include <arpa/inet.h>
 #include "Client.hpp"
 #include "HTTPServer.hpp"
+#include "Kq.hpp"
 
 # define BUFFER_SIZE 4095
 # define DEFAULT_400_ERROR_PAGE "./resource/html/error/40x.html"
@@ -72,7 +73,7 @@ class Server
         int                     getPort(void) const;
         std::map<int, Client>   getClient(void) const;
         //logic
-        int     plusClient(void);                   //client socket accept
+        int     plusClient();                   //client socket accept
         EVENT   clientRead(struct kevent& store);   //client read event manage
         EVENT   clientWrite(struct kevent& store);  //client write event manage
         //error

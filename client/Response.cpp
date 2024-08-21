@@ -159,8 +159,7 @@ void    Response::makeFilePath(string& str)
         request.status = 403;
         return ;
     }
-	size_t	parentDirReservedPos = str.find("..");
-	if (parentDirReservedPos != std::string::npos)
+	if (str.find("..") != std::string::npos)
 	{
 		request.status = 404;
 		return ;
@@ -348,8 +347,8 @@ void    Response::makeDefaultHeader()
     istringstream  strStream(str);
     string         temp;
     string         day[5];
-    size_t              pos;
-    int                 order;
+    size_t         pos;
+    int            order;
     // const string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     // const size_t charactersSize = characters.size();
 
@@ -372,8 +371,8 @@ void    Response::makeError()
         return ;
     if (request.status == 100)
         return ;
-    LocationConfigData   *location = getLocationConfigData();
-    map<int, string>   &errorPage = location->getErrorPage();
+    LocationConfigData	*location = getLocationConfigData();
+    map<int, string>	&errorPage = location->getErrorPage();
     string errorPath = errorPage[request.status];
     int fd;
     if (errorPath != "")

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/19 14:49:04 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/21 17:12:45 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ std::map<int, Client>  Server::getClient(void) const
     return (client);
 }
 
-int Server::plusClient(void)
+int Server::plusClient()
 {
     int                 clntFd;
     struct sockaddr_in  clntAdr;

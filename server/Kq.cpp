@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kq.cpp                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/15 02:07:26 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/21 18:14:11 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ Kq::Kq()
     connectionCnt = Server::serverConfig->getWorkerConnections();
 }
 
-Kq::Kq(const Kq& src) : kq(src.getKq()), fdList(src.getFdList()), server(src.getServer()), findServer(src.getFindServer())
+Kq::Kq(const Kq& src) : kq(src.getKq()), server(src.getServer()), findServer(src.getFindServer())
 {}
 
 Kq& Kq::operator=(const Kq& src)
@@ -219,4 +219,3 @@ void    Kq::mainLoop()
         }
     }
 }
-
