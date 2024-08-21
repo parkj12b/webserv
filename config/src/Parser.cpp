@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 18:48:59 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/18 20:34:55 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/21 13:23:54 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,7 @@ void    Parser::context()
     vector<Token *> prePost = _top->getHeadDirectiveByIndex(0);
     if (prePost.size() > 0)
         prePostNum = POSTFIX;
-    LocationConfig *locationConfig = NULL;
+    // LocationConfig *locationConfig = NULL;
     switch(_directiveNum[w->lexeme]) {
         case EVENTS:
             if (_event != NULL)
@@ -203,7 +203,7 @@ void    Parser::context()
             path = dynamic_cast<Word *>(t)->lexeme;
             if (curLocation == NULL)
                 throw runtime_error("limit_except without location");
-            locationConfig = curLocation->getLocationConfig(path, prePostNum);
+            // locationConfig = curLocation->getLocationConfig(path, prePostNum);
             curLocation->setLimitExcept(_top);
             delete t;
             break;

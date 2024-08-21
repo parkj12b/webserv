@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   UtilTemplate.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 15:26:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/20 15:29:13 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/21 13:39:55 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <climits>
 #include "UtilTemplate.hpp"
-#include "stdlib.h"
 
 
 using namespace std;
@@ -53,9 +53,9 @@ bool isString(char peek)
 }
 
 string toString(size_t value) {
-    char buffer[50]; // Ensure the buffer is large enough
-    std::sprintf(buffer, "%d", value);
-    return std::string(buffer);
+    stringstream ss;
+	ss << value;
+    return string(ss.str());
 }
 
 ssize_t timeToSeconds(string time)
@@ -150,7 +150,7 @@ void toLowerCase(string &str) {
     }
 }
 
-bool endsWith(const std::string& text, const std::string& suffix) {
+bool endsWith(const string& text, const string& suffix) {
     if (suffix.length() > text.length()) {
         return false; // suffix is longer than text
     }

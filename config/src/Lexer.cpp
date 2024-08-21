@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Lexer.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 20:03:36 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/16 16:25:16 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/21 13:22:50 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -268,10 +268,10 @@ Token *Lexer::scan() {
         string  b = "";
         startLine = line;
         startColumn = column;
-        bool    isMask = false;
+        // bool    isMask = false;
         do {
-            if (peek == '*')
-                isMask = true;
+            // if (peek == '*')
+            //     isMask = true;
             if (peek == '[')
             {
                 startLine = line;

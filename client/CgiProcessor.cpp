@@ -5,7 +5,6 @@ CgiProcessor::CgiProcessor(Request &request_, ServerConfigData *serverConfig_, L
 	:request(request_)
 	, serverConfig(serverConfig_)
 	, locationConfig(locationConfig_)
-	, cgiCommand("python3")
 	, contentLength(0)
 	, fin(false)
 {

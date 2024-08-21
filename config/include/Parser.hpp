@@ -13,15 +13,16 @@
 #ifndef __PARSER_HPP__
 # define __PARSER_HPP__
 
-#include <vector>
-#include <map>
-#include <string>
-#include <unordered_set>
-#include "Lexer.hpp"
-#include "Syntax.hpp"
-#include "LocationConfig.hpp"
+# include <vector>
+# include <map>
+# include <stack>
+# include <string>
+# include <unordered_set>
+# include "Lexer.hpp"
+# include "Syntax.hpp"
+# include "LocationConfig.hpp"
 
-#define DEFAULT_CONFIG_PATH "./config/default.conf"
+# define DEFAULT_CONFIG_PATH "./config/default.conf"
 
 using namespace std;
 

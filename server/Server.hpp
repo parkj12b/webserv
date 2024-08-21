@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:55 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/19 19:08:03 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/21 13:20:54 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 # define BUFFER_SIZE 4095
 # define DEFAULT_400_ERROR_PAGE "./resource/html/error/40x.html"
 # define DEFAULT_500_ERROR_PAGE "./resource/html/error/50x.html"
-# define ERROR_PAGE "./cgi-bin/error_page/errorPage.py"
+# define CGI_ERROR_PAGE "./cgi-bin/error_page/errorPage.py"
 
 //server를 여러 개 만들 경우에는 kq클래스 만들기
 //kq 클래스에서 서버 클래스를 관리하기

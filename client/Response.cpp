@@ -230,6 +230,11 @@ Request Response::getRequest() const
     return (request);
 }
 
+bool	Response::getCgiFlag() const
+{
+	return (cgiFlag);
+}
+
 LocationConfigData *Response::getLocationConfigData()
 {
     return (locationConfig);
@@ -378,7 +383,7 @@ void    Response::makeError()
     else
     {
         CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
-		cgiProcessor.selectCgiCmd(ERROR_PAGE);
+		cgiProcessor.selectCgiCmd(CGI_ERROR_PAGE);
 		cgiProcessor.insertEnv("ERROR_CODE", toString(request.status));
         cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
 		content += cgiProcessor.getCgiContent();
@@ -468,7 +473,7 @@ void    Response::makeGet()
 		if (request.status >= 400)
 		{
 			while (!cgiProcessor.getFin())
-				cgiProcessor.executeCGIScript(ERROR_PAGE);
+				cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
 		}
 		start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 		makeHeader("Content-Type", "text/html");
@@ -483,7 +488,7 @@ void    Response::makeGet()
 			request.status = 404;
 			start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 			while (!cgiProcessor.getFin())
-				cgiProcessor.executeCGIScript(ERROR_PAGE);
+				cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
             makeHeader("Content-Type", "text/html");
 			content += cgiProcessor.getCgiContent();
             cout << cgiProcessor.getCgiContent() << '\n';
@@ -513,7 +518,7 @@ void    Response::makePost()
 	if (request.status >= 400)
 	{
 		while (!cgiProcessor.getFin())
-			cgiProcessor.executeCGIScript(ERROR_PAGE);
+			cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
 	}
     // start = "HTTP/1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 }
