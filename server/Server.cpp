@@ -59,7 +59,7 @@ int Server::plusClient(void)
     socklen_t           adrSize;
 
     adrSize = sizeof(clntAdr);
-    //accept 무한 루프
+    //accept 무한 루프 && server 동기적 실패시 무한 루프 가능성 
     while ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0);
     client[clntFd] = Client(clntFd, port);
 	client[clntFd].clientIP(clntAdr);
