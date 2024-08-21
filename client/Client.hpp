@@ -92,7 +92,6 @@ class Client
         void    setRequestFin(bool fin);
         //logic
 		void		clientIP(struct sockaddr_in clntAdr);
-        bool        diffKeepAlive();
         size_t      responseIndex();    //response msg index(responseAmount - index)
         const char* respondMsgIndex();  //msg + index (const char*)
         int         setStart(void);     //startLine make

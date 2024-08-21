@@ -14,13 +14,6 @@
 
 extern int logs;
 
-std::vector<Client *>   clientKeepAliveInit()
-{
-    std::vector<Client *>   v;
-
-    return (v);
-}
-
 std::vector<pid_t>  processorInit()
 {
     std::vector<pid_t>  v;
@@ -28,7 +21,6 @@ std::vector<pid_t>  processorInit()
     return (v);
 }
 
-std::vector<Client *>   Kq::clientKeepAlive = clientKeepAliveInit();
 std::vector<pid_t>      Kq::processor = processorInit();
 
 Kq::Kq()
@@ -139,6 +131,7 @@ void    Kq::plusClient(int serverFd)
 
     clientFd = server[serverFd].plusClient();
     std::cout<<"plus client"<<std::endl;
+    // plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 5000, 0);  //여기는 찐 디폴트 값인데
     plusEvent(clientFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     findServer[clientFd] = serverFd;
 }

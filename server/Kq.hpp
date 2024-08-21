@@ -47,7 +47,6 @@ class Kq
         std::map<int, Server>       server;
         std::map<int, int>          findServer;
     public:
-        static std::vector<Client*> clientKeepAlive;
         static std::vector<pid_t>   processor;
         Kq();
         Kq(const Kq& src);
