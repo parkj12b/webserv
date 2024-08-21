@@ -123,22 +123,30 @@ void    Response::makeFilePath(std::string& str)
     cout << "host: " << request.header["host"].front() << endl;
     cout << "str before: " << str << endl;
     str = location->getRoot() + "/" + str;
-    if (isDirectory(str.c_str()))
-    {
-        // 없으면 index.html 이라 없을 일은 없음.
-        cout << "index: " << location->getIndex() << endl;
-        
-        str += "/" + location->getIndex();
-    }
-    if (isFile(str.c_str()) == false)
-    {
-        cout << "not file: " << str << endl;
-        request.status = 404;
-        return ;
-    }
     if (isWithinBasePath(location->getRoot(), str) == false)
     {
         request.status = 403;
+        return ;
+    }
+    if (str[str.size() - 1] == '/' && isDirectory(str.c_str()))
+    {
+        // 없으면 index.html 이라 없을 일은 없음.
+        cout << "index: " << location->getIndex() << endl;
+        string temp = str;
+        str += "/" + location->getIndex();
+        if (isFile(str.c_str()) == false)
+        {
+            if (location->getAutoindex())
+                str = temp + "/";
+            else
+                request.status = 404;
+            return ;
+        }
+    }
+    else if (isFile(str.c_str()) == false)
+    {
+        cout << "not file: " << str << endl;
+        request.status = 404;
         return ;
     }
     cout << "str: " << str << endl;
@@ -337,6 +345,7 @@ void    Response::makeDefaultHeader()
 
 void    Response::makeError()
 {
+    cout << "makeError\n";
     if (request.status >= 300 && request.status < 400)
         return ;
     if (request.status == 100)
@@ -345,6 +354,8 @@ void    Response::makeError()
     map<int, string>   &errorPage = location->getErrorPage();
     
     string errorPath = errorPage[request.status];
+
+    cout << "errorPath: " << errorPath << endl;
     
     int fd;
     if (errorPath != "")
@@ -353,17 +364,19 @@ void    Response::makeError()
         makeContent(fd);
     else
     {
+        cout << "cgi error page\n";
         CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
         if (cgiProcessor.checkURL(DEFAULT_400_ERROR_PAGE_TEST))
         {
+            cout << "url passed\n";
             cgiProcessor.insertEnv("ERROR_CODE", toString(request.status));
             cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
-            content += cgiProcessor.getCgiContent();
+            content = cgiProcessor.getCgiContent();
             std::cout << cgiProcessor.getCgiContent() << '\n';
         }
+        makeHeader("Content-Type", "text/html");
+        makeHeader("Content-Length", std::to_string(content.size()));
     }
-    makeHeader("Content-Type", "text/html");
-    makeHeader("Content-Length", std::to_string(content.size()));
 }
 
 void    Response::checkRedirect()
@@ -440,8 +453,13 @@ void    Response::makeGet()
     std::cout<<"Method: GET"<<std::endl;
     std::cout<<request.url.c_str()<<std::endl;
     CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
-    if (cgiProcessor.checkURL(request.url))
+    
+    cout << "is directory: " << isDirectory(request.url.c_str());
+
+    if ((isDirectory(request.url.c_str()) && cgiProcessor.checkURL(AUTOINDEX_PATH))
+        || cgiProcessor.checkURL(request.url))
     {
+        cout << "directory listing" << endl;
     	cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
         makeHeader("Content-Type", "text/html");
         content += cgiProcessor.getCgiContent();
