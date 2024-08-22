@@ -73,9 +73,11 @@ EVENT Server::cgiRead(struct kevent& store)
 	char	buf[PIPE_BUFFER_SIZE + 1];
 	int		readSize;
 
+	cout << "" << endl;
 	readSize = read(store.ident, buf, PIPE_BUFFER_SIZE);
 	if (readSize <= 0)
 	{
+		cout << "CGI Read End" << endl;
 		if (readSize < 0)
 		{
 			client[Kq::cgiFd[store.ident]].setRequestStatus(500);

@@ -31,13 +31,14 @@ def generate_html(query_params):
 
 def main():
     # CGI 환경에서 쿼리 문자열을 가져오기
-    form = cgi.FieldStorage()
+	while True:
+		form = cgi.FieldStorage()
 
-    # 쿼리 문자열을 딕셔너리 형태로 저장
-    query_params = {key: form.getvalue(key) for key in form.keys()}
+		# 쿼리 문자열을 딕셔너리 형태로 저장
+		query_params = {key: form.getvalue(key) for key in form.keys()}
 
-    # HTML 페이지 출력
-    print(generate_html(query_params))
+		# HTML 페이지 출력
+		print(generate_html(query_params))
 
 if __name__ == "__main__":
     main()
