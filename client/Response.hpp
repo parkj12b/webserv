@@ -31,7 +31,7 @@ typedef struct Request
 {
     bool    fin;    //request completion status
     int     status; //request status code
-    int     port;
+    int     port;		//server port
 	int		clientFd;	//client File Descriptor
     Method											method;     //http method
 	std::string										clientIp;	//client IP
@@ -42,6 +42,8 @@ typedef struct Request
     std::map<std::string, std::deque<std::string> >	header;     //request header
     std::vector<std::string>						content;    //request content
 }   Request;
+
+class Server;
 
 /**
  * @brief           request message

@@ -90,6 +90,7 @@ EVENT Server::cgiRead(struct kevent& store)
 	}
 	cgiContent.append(string(buf));
 	cgiContentLength += readSize;
+	return (ING);
 }
 
 EVENT Server::clientRead(struct kevent& store)

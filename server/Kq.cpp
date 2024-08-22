@@ -21,7 +21,23 @@ std::vector<pid_t>  processorInit()
     return (m);
 }
 
+std::vector<struct kevent>  fdListInit()
+{
+    std::vector<struct kevent>  m;
+
+    return (m);
+}
+
+std::map<int, int>  cgiFdInit()
+{
+    std::map<int, int>  m;
+
+    return (m);
+}
+
 std::vector<pid_t>  Kq::processor = processorInit();
+std::vector<struct kevent> Kq::fdList = fdListInit();
+std::map<int, int>  Kq::cgiFd = cgiFdInit();
 
 Kq::Kq()
 {
@@ -66,7 +82,6 @@ Kq::Kq(const Kq& src) : kq(src.getKq()), server(src.getServer()), findServer(src
 Kq& Kq::operator=(const Kq& src)
 {
     kq = src.getKq();
-    fdList = src.getFdList();
     server = src.getServer();
     findServer = src.getFindServer();
     return (*this);
@@ -78,11 +93,6 @@ Kq::~Kq()
 int Kq::getKq() const
 {
     return (kq);
-}
-
-std::vector<struct kevent>  Kq::getFdList() const
-{
-    return (fdList);
 }
 
 std::map<int, Server>   Kq::getServer() const
@@ -145,12 +155,14 @@ void    Kq::eventRead(struct kevent& store)
 	{
 		if (iter->first == static_cast<int>(store.ident))
 			break;
+		iter++;
 	}
 	if (iter != cgiFd.end())
 	{
 		event = server[findServer[iter->second]].cgiRead(store);
 		switch (event)
 		{
+			case EXPECT:
 			case ING:
 				break ;
 			case ERROR:
