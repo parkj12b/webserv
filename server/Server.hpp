@@ -72,8 +72,10 @@ class Server
         //get function
         int                     getServerFd(void) const;
         int                     getPort(void) const;
+        size_t                  getCgiContentLength(void) const;
         std::map<int, Client>   getClient(void) const;
         //logic
+        bool    getResponseCgi(int fd);
         int     plusClient();                   	//client socket accept
 		EVENT	cgiRead(struct kevent& store);		//client cgi read event manage
         EVENT   clientRead(struct kevent& store);   //client read event manage

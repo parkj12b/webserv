@@ -23,7 +23,7 @@ Server::Server() : serverFd(0), port(0)
 Server::Server(int fd, int num) : serverFd(fd), port(num), cgiContentLength(0)
 {}
 
-Server::Server(const Server& src) : serverFd(src.getServerFd()), port(src.getPort()), client(src.getClient())
+Server::Server(const Server& src) : serverFd(src.getServerFd()), port(src.getPort()), cgiContentLength(src.getCgiContentLength()), client(src.getClient())
 {}
 
 Server&  Server::operator=(const Server& src)
@@ -31,6 +31,7 @@ Server&  Server::operator=(const Server& src)
     serverFd = src.getServerFd();
     port = src.getPort();
     client = src.getClient();
+    cgiContentLength = src.getCgiContentLength();
     return (*this);
 }
 
@@ -47,9 +48,19 @@ int Server::getPort(void) const
     return (port);
 }
 
+size_t  Server::getCgiContentLength(void) const
+{
+    return (cgiContentLength);
+}
+
 std::map<int, Client>  Server::getClient(void) const
 {
     return (client);
+}
+
+bool    Server::getResponseCgi(int fd)
+{
+    return (client[fd].getResponseCgi());
 }
 
 int Server::plusClient()
@@ -71,26 +82,34 @@ int Server::plusClient()
 EVENT Server::cgiRead(struct kevent& store)
 {
 	char	buf[PIPE_BUFFER_SIZE + 1];
-	int		readSize;
+	int     readSize;
 
 	readSize = read(store.ident, buf, PIPE_BUFFER_SIZE);
 	if (readSize <= 0)
 	{
-		if (readSize < 0)
-		{
-			client[Kq::cgiFd[store.ident]].setRequestStatus(500);
-			cgiContent.clear();
-			cgiContentLength = 0;
-			return (ERROR);
-		}
-		client[Kq::cgiFd[store.ident]].setResponseContent(cgiContent);
+        client[Kq::cgiFd[store.ident]].setRequestStatus(500);
+        cgiContent.clear();
+        cgiContentLength = 0;
+        return (ERROR);
+	}
+    cgiContent.append(string(buf));
+    std::cout<<cgiContent<<std::endl;
+    std::cout<<cgiContentLength<<std::endl;
+    cgiContentLength += readSize;
+    cout << "hi: " <<cgiContentLength << endl;
+    if (readSize < PIPE_BUFFER_SIZE)
+    {
+        std::cout<<"Kq::cgiFd[store.ident]: "<<Kq::cgiFd[store.ident]<<std::endl;
+        //pipe fd를 갖는 새로운 client이므로 새로운 request.status를 갖는다. 따라서 쓰레기 값이 들어감(정답)
 		client[Kq::cgiFd[store.ident]].setResponseContentLength(cgiContentLength);
+        client[Kq::cgiFd[store.ident]].setResponseContent(cgiContent);
 		cgiContent.clear();
 		cgiContentLength = 0;
+        client[Kq::cgiFd[store.ident]].setResponseMessage();
+        std::cout<<"msg: "<<client[Kq::cgiFd[store.ident]].getMsg();
+        std::cout<<"====================="<<std::endl;
 		return (FINISH);
-	}
-	cgiContent.append(string(buf));
-	cgiContentLength += readSize;
+    }
 	return (ING);
 }
 
@@ -120,8 +139,8 @@ EVENT Server::clientRead(struct kevent& store)
         client[store.ident].setResponseMessage();
         if (client[store.ident].getRequestStatus() == 100)
             return (EXPECT);
-        if (client[store.ident].getRequestFin())
-            client[store.ident].showMessage();
+        // if (client[store.ident].getRequestFin())
+        //     client[store.ident].showMessage();
         return (FINISH);
     }
     return (ING);

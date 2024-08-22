@@ -178,8 +178,6 @@ void	CgiProcessor::executeCGIScript(const string path)
 	{
 		close(pipefd[1]);
 		Kq::processor.push_back(pid);
-		int tmpFd = pipefd[0];
-		close(pipefd[0]);
-		Kq::cgiFd.insert(make_pair(tmpFd, request.clientFd));
+		Kq::cgiFd.insert(make_pair(pipefd[0], request.clientFd));
 	}
 }

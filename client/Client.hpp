@@ -93,6 +93,7 @@ class Client
 		void	setResponseContent(string content);
 		void	setResponseContentLength(size_t contentLength);
         //logic
+        bool        getResponseCgi();
 		void		clientIP(struct sockaddr_in clntAdr);
         size_t      responseIndex();    //response msg index(responseAmount - index)
         const char* respondMsgIndex();  //msg + index (const char*)

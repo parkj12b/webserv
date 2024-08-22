@@ -50,7 +50,9 @@ class Server;
 
 /**
  * @brief           request message
+ * @param cgiFlag   server cgi flag
  * @param port      server port
+ * @param contentLength response content length
  * @param path      server path
  * @param location  location block path
  * @param start     response startline
@@ -66,6 +68,7 @@ class Response
     private:
 		bool				cgiFlag;
         int                 port;
+        size_t              startHeaderLength;
 		size_t				contentLength;
         std::string         start;
         std::string         header;
@@ -86,18 +89,21 @@ class Response
         Response(int port);
         //get function
         int         getPort() const;
+        size_t      getStartHeaderLength() const;
+        size_t      getContentLength() const;
         std::string getStart() const;
         std::string getHeader() const;
         std::string getContent() const;
         std::string getEntity() const;
         Request     getRequest() const;
+        int         getRequestStatus() const;
 		bool		getCgiFlag() const;
         LocationConfigData *getLocationConfigData();
         //set function
-        void    setRequest(Request &temp);
-        void    setLocationConfigData(LocationConfigData *locationConfig);
-		void	setContent(string content_);
-		void	setContentLength(size_t contentLength_);
+        void        setRequest(Request &temp);
+        void        setLocationConfigData(LocationConfigData *locationConfig);
+		std::string setContent(string content_);
+		void	    setContentLength(size_t contentLength_);
         //sub logic
 		bool	isCgiScriptInURL(string& str);
         void    initRequest(Request msg);       //request msg init

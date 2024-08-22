@@ -196,6 +196,7 @@ Response&    Response::operator=(const Response& src)
     content = src.getContent();
     entity = src.getEntity();
     request = src.getRequest();
+    request.status = src.getRequestStatus();
     port = src.getPort();
 	cgiFlag = src.getCgiFlag();
     return (*this);
@@ -211,6 +212,16 @@ Response::Response(int port) : port(port), contentLength(0)
 int Response::getPort() const
 {
     return (port);
+}
+
+size_t  Response::getStartHeaderLength() const
+{
+    return (startHeaderLength);
+}
+
+size_t  Response::getContentLength() const
+{
+    return (contentLength);
 }
 
 string Response::getStart() const
@@ -238,6 +249,11 @@ Request Response::getRequest() const
     return (request);
 }
 
+int Response::getRequestStatus() const
+{
+    return (request.status);
+}
+
 bool	Response::getCgiFlag() const
 {
 	return (cgiFlag);
@@ -258,14 +274,20 @@ void    Response::setLocationConfigData(LocationConfigData *locationConfigData)
     locationConfig = locationConfigData;
 }
 
-void	Response::setContent(string content_)
+std::string Response::setContent(string content_)
 {
 	content = content_;
+    std::cout<< "request.status: "<<request.status<<std::endl;
+    makeEntity();
+    std::cout<<entity<<std::endl<<std::endl;
+    return (entity);
 }
 
 void	Response::setContentLength(size_t contentLength_)
 {
-	contentLength = contentLength_;
+    contentLength = contentLength_;
+    makeHeader("content-length", toString(contentLength));
+    std::cout<<"header: \n\n"<<header;
 }
 
 void    Response::initRequest(Request msg)
@@ -345,8 +367,9 @@ void    Response::makeCookie(string& date)
         index = cookieValue.find('=');
         if (index != string::npos)
             cookieValue = cookieValue.substr(index + 1);
+        std::cout<<"cookieValue: "<<cookieValue<<std::endl;
         HeaderLine::eraseSpace(cookieValue, 0);
-        if (session.find(cookieValue) != session.end())
+        if (session.find(cookieValue) == session.end())
         {
             std::cout<<"here\n"<<std::endl;
             session[cookieValue] = date;
@@ -399,13 +422,14 @@ void    Response::makeError()
 
     cout << "errorPath: " << errorPath << endl;
     
-    int fd;
+    int fd = -1;
     if (errorPath != "")
         fd = open(errorPath.c_str(), O_RDONLY);
     if (errorPath != "" || fd >= 0)
         makeContent(fd);
     else
     {
+        cout << "cgi error page " << endl;
         CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
 		cgiProcessor.selectCgiCmd(CGI_ERROR_PAGE);
 		cgiProcessor.insertEnv("ERROR_CODE", toString(request.status));
@@ -414,7 +438,7 @@ void    Response::makeError()
         cout << cgiProcessor.getCgiContent() << '\n';
     }
     makeHeader("content-type", "text/html");
-    makeHeader("content-length", to_string(content.size()));
+    makeHeader("content-length", toString(content.size()));
 }
 
 void    Response::checkRedirect()
@@ -468,19 +492,25 @@ void    Response::makeContent(int fd)
         count += readSize;
     }
     cout<<content.size()<<endl;
+    contentLength = count;
     makeHeader("content-length", to_string(count));
     close(fd);
 }
 
 void    Response::makeEntity()
 {
+    entity.clear();
+    std::cout<<request.status<<std::endl;
+    if (request.status == 0)
+        request.status = 0;
     entity = "HTTP/1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
     if (!header.empty())
         entity += header + "\r\n";
-    cout<<entity.size()<<endl;
+    startHeaderLength = entity.size();
     if (!content.empty())
         entity.append(content);
-    cout<<entity.size()<<endl;
+    std::cout<<"request.status: "<<request.status<<std::endl;
+    // cout<<entity.size()<<endl;
 }
 
 void    Response::makeGet()
@@ -502,10 +532,11 @@ void    Response::makeGet()
 		// 나중에 content-length가 0일 때, 서버 에러 추가
 		start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 		makeHeader("content-type", "text/html");
-		makeHeader("content-length", toString(contentLength));
+		// makeHeader("content-length", toString(contentLength)); //여기서 추가하고 나중에 또 추가함
 		makeHeader("status", toString(request.status));
 		content += cgiProcessor.getCgiContent();
 		cout << cgiProcessor.getCgiContent() << '\n';
+        // std::cout<<header;
 	}
 	else
 	{
@@ -530,7 +561,7 @@ void    Response::makeGet()
 		makeContent(fd);
 	}
 	request.status = 200;
-    start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
+    // start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 }
 
 void    Response::makePost()
@@ -566,7 +597,7 @@ void    Response::makeDelete()
 void    Response::responseMake()
 {
     init();
-    cout << "request.status: " << request.status << endl;
+    // cout << "request.status: " << request.status << endl;
     makeDefaultHeader();
     if (request.status > 0)
     {

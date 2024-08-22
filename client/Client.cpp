@@ -194,12 +194,20 @@ void    Client::setRequestFin(bool fin)
 
 void	Client::setResponseContent(string content)
 {
-	response.setContent(content);
+	msg = response.setContent(content);
+    responseAmount = msg.size();
+    std::cout<<msg;
+    // std::cout<<"content: "<<content;
 }
 
 void	Client::setResponseContentLength(size_t contentLength)
 {
 	response.setContentLength(contentLength);
+}
+
+bool    Client::getResponseCgi()
+{
+    return (response.getCgiFlag());
 }
 
 void	Client::clientIP(struct sockaddr_in  clntAdr)
@@ -448,12 +456,16 @@ void    Client::setMessage(std::string msgRequest)
 
 void    Client::setResponseMessage()
 {
+    msg.clear();
     index = 0;
     response = Response(port);
     response.initRequest(request);
     response.responseMake();
-    msg = response.getEntity();
-    responseAmount = msg.size();
+    if (!response.getCgiFlag())
+    {
+        msg = response.getEntity();
+        responseAmount = response.getStartHeaderLength() + response.getContentLength();
+    }
 }
 
 size_t  Client::responseIndex()
