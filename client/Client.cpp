@@ -390,11 +390,14 @@ int Client::setTrailer(void)
 
 void    Client::resetClient()
 {
+    Response    temp;
+
     request.fin = false;
     request.status = 0;
     connect = true;
     index = 0;
     msg.clear();
+    response = temp;
     startLine = StartLine(port);
     headerLine = HeaderLine(port);
     contentLine = ContentLine(port);
