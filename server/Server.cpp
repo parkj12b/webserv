@@ -84,6 +84,7 @@ EVENT Server::cgiRead(struct kevent& store)
 	char	buf[PIPE_BUFFER_SIZE + 1];
 	int     readSize;
 
+	cout << "" << endl;
 	readSize = read(store.ident, buf, PIPE_BUFFER_SIZE);
 	if (readSize <= 0)
 	{
