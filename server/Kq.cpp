@@ -128,6 +128,8 @@ void    Kq::plusClient(int serverFd)
     int clientFd;
 
     clientFd = server[serverFd].plusClient();
+    if (clientFd < 0)
+        return ;
     std::cout<<"plus client "<<clientFd<<std::endl;
     plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 50000, 0);  //50초
     plusEvent(clientFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);

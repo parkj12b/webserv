@@ -409,8 +409,7 @@ void    Client::showMessage(void)
 void    Client::setMessage(std::string msgRequest)
 {
     msg += msgRequest;
-    // write(logs, &msgRequest[0], msgRequest.size());
-    // std::cout<<"Read Event"<<std::endl;
+    write(logs, &msgRequest[0], msgRequest.size());
     if (setStart())  //max size literal
     {
         request.fin = true;

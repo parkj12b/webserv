@@ -60,12 +60,12 @@ int Server::plusClient(void)
 
     adrSize = sizeof(clntAdr);
     //accept 무한 루프 && server 동기적 실패시 무한 루프 가능성 
-    while ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0);
+    if ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0)
+        return (-1);
     client[clntFd] = Client(clntFd, port);
 	client[clntFd].clientIP(clntAdr);
     std::cout<<"temp delete"<<std::endl;
     return (clntFd);
-    // 나갈 때 소멸자가 호출됨
 }
 
 EVENT Server::clientRead(struct kevent& store)
@@ -91,8 +91,6 @@ EVENT Server::clientRead(struct kevent& store)
     client[store.ident].setConnection(true);
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
     {
-        // request 완성 -> respond 만들면 되지 않나?
-        std::cout<<"fd: "<<store.ident<<std::endl;
         client[store.ident].setResponseMessage();
         if (client[store.ident].getRequestStatus() == 100)
             return (EXPECT);
