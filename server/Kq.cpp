@@ -58,12 +58,13 @@ Kq::Kq()
     connectionCnt = Server::serverConfig->getWorkerConnections();
 }
 
-Kq::Kq(const Kq& src) : kq(src.getKq()), fdList(src.getFdList()), server(src.getServer()), findServer(src.getFindServer())
+Kq::Kq(const Kq& src) : kq(src.getKq()), connectionCnt(Server::serverConfig->getWorkerConnections()), fdList(src.getFdList()), server(src.getServer()), findServer(src.getFindServer())
 {}
 
 Kq& Kq::operator=(const Kq& src)
 {
     kq = src.getKq();
+    connectionCnt = Server::serverConfig->getWorkerConnections();
     fdList = src.getFdList();
     server = src.getServer();
     findServer = src.getFindServer();

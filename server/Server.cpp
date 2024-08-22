@@ -17,7 +17,7 @@ extern int logs;
 
 HTTPServer *Server::serverConfig = NULL;
 
-Server::Server()
+Server::Server() : serverFd(0), port(0)
 {}
 
 Server::Server(int fd, int num) : serverFd(fd), port(num)
