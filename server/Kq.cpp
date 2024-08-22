@@ -21,7 +21,23 @@ std::vector<pid_t>  processorInit()
     return (v);
 }
 
-std::vector<pid_t>      Kq::processor = processorInit();
+std::vector<struct kevent>  fdListInit()
+{
+    std::vector<struct kevent>  m;
+
+    return (m);
+}
+
+std::map<int, int>  cgiFdInit()
+{
+    std::map<int, int>  m;
+
+    return (m);
+}
+
+std::vector<pid_t>  Kq::processor = processorInit();
+std::vector<struct kevent> Kq::fdList = fdListInit();
+std::map<int, int>  Kq::cgiFd = cgiFdInit();
 
 Kq::Kq()
 {
@@ -58,14 +74,13 @@ Kq::Kq()
     connectionCnt = Server::serverConfig->getWorkerConnections();
 }
 
-Kq::Kq(const Kq& src) : kq(src.getKq()), connectionCnt(Server::serverConfig->getWorkerConnections()), fdList(src.getFdList()), server(src.getServer()), findServer(src.getFindServer())
+Kq::Kq(const Kq& src) : kq(src.getKq()), connectionCnt(Server::serverConfig->getWorkerConnections()), server(src.getServer()), findServer(src.getFindServer())
 {}
 
 Kq& Kq::operator=(const Kq& src)
 {
     kq = src.getKq();
     connectionCnt = Server::serverConfig->getWorkerConnections();
-    fdList = src.getFdList();
     server = src.getServer();
     findServer = src.getFindServer();
     return (*this);
@@ -77,11 +92,6 @@ Kq::~Kq()
 int Kq::getKq() const
 {
     return (kq);
-}
-
-std::vector<struct kevent>  Kq::getFdList() const
-{
-    return (fdList);
 }
 
 std::map<int, Server>   Kq::getServer() const
@@ -141,27 +151,56 @@ void    Kq::eventRead(struct kevent& store)
 {
     int     serverFd;
     EVENT   event;
+	map<int, int>::iterator iter = cgiFd.begin();
 
     if (store.ident == 0)
         return ;
-    serverFd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
-    if (serverFd == 0)
-        return ;
-    event = server[serverFd].clientRead(store);
-    switch (event)
-    {
-        case ERROR:
-            clientFin(store);
-            break ;
-        case ING:
-            break ;
-        case EXPECT:
-        case FINISH:
-            plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
-            plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
-            plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 75000, 0);  //75초
-            break ;
-    }
+	//vector에 담기 혹은 다른 방안 생각하기 serverFd가 map일 텐데 이거를 pipe일 경우에 value값을 1로
+	while (iter != cgiFd.end())
+	{
+		if (iter->first == static_cast<int>(store.ident))
+			break;
+		iter++;
+	}
+	if (iter != cgiFd.end())
+	{
+		serverFd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
+		if (serverFd == 0)
+			return ;
+		event = server[serverFd].cgiRead(store);
+		switch (event)
+		{
+			case EXPECT:
+			case ING:
+				break ;
+			case ERROR:
+			case FINISH:
+				cgiFd.erase(iter->first);
+				close(iter->first);
+				break ;
+		}
+	}
+	else
+	{
+		serverFd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
+		if (serverFd == 0)
+			return ;
+		event = server[serverFd].clientRead(store);
+		switch (event)
+		{
+			case ERROR:
+				clientFin(store);
+				break ;
+			case ING:
+				break ;
+			case EXPECT:
+			case FINISH:
+				plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
+				plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
+				plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 75000, 0);  //75초
+				break ;
+		}
+	}
 }
 
 void    Kq::eventWrite(struct kevent& store)
@@ -250,4 +289,3 @@ void    Kq::mainLoop()
         }
     }
 }
-

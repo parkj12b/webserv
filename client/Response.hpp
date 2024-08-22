@@ -34,16 +34,19 @@ typedef struct Request
 {
     bool    fin;    //request completion status
     int     status; //request status code
-    int     port;
-    Method                                                      method;     //http method
-	std::string													clientIp;	//client IP
-    std::string                                                 url;        //http resource
-    std::string                                                 location;   //location for config
-    Version                                                     version;    //http version
-    std::map<std::string, std::string>                          query;      //resource query
-    std::map<std::string, std::deque<std::string> >             header;     //request header
-    std::vector<std::string>                                    content;    //request content
+    int     port;		//server port
+	int		clientFd;	//client File Descriptor
+    Method											method;     //http method
+	std::string										clientIp;	//client IP
+    std::string										url;        //http resource
+    std::string										location;   //location for config
+    Version											version;    //http version
+    std::map<std::string, std::string>				query;      //resource query
+    std::map<std::string, std::deque<std::string> >	header;     //request header
+    std::vector<std::string>						content;    //request content
 }   Request;
+
+class Server;
 
 /**
  * @brief           request message
@@ -61,15 +64,17 @@ typedef struct Request
 class Response
 {
     private:
-        int                         port;
-        std::string                 start;
+		bool				cgiFlag;
+        int                 port;
+		size_t				contentLength;
+        std::string         start;
+        std::string         header;
+        std::string         content;
+        std::string         entity;
+        Request             request;
         std::vector<std::string>    keyHeader;
-        std::string                 header;
-        std::string                 content;
-        std::string                 entity;
-        Request                     request;
-        ServerConfigData            *serverConfig;    //server config
-        LocationConfigData          *locationConfig;  //location config
+        ServerConfigData    *serverConfig;    //server config
+        LocationConfigData  *locationConfig;  //location config
     public:
         static std::map<int, std::string>           statusContent;
         static std::map<std::string, std::string>   session;
@@ -86,11 +91,15 @@ class Response
         std::string getContent() const;
         std::string getEntity() const;
         Request     getRequest() const;
+		bool		getCgiFlag() const;
         LocationConfigData *getLocationConfigData();
         //set function
         void    setRequest(Request &temp);
         void    setLocationConfigData(LocationConfigData *locationConfig);
+		void	setContent(string content_);
+		void	setContentLength(size_t contentLength_);
         //sub logic
+		bool	isCgiScriptInURL(string& str);
         void    initRequest(Request msg);       //request msg init
         void    init();                         //start, header, content, entity init
         void    makeCookie(std::string& date);  //make cookie header

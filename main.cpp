@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:33:06 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/17 21:11:30 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/21 18:10:58 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,23 +39,18 @@ int main(int argc, char **argv)
         cerr << "Usage: ./webserv [config_file]" << endl;
         exit(1);
     }
-    
     Lexer lex(path);
     Parser parser(lex, "main");
 
     parser.program();
     Validator v(parser);
     Server::serverConfig = v.validate();
-
-
     auto it = Server::serverConfig->getDefaultServer(80)->_locationConfigData.begin();
     while (it != Server::serverConfig->getDefaultServer(80)->_locationConfigData.end())
     {
         cout << it->first << endl;
         it++;
     }
-
-
     //fd를 닫지 않았을 가능성이 존재함
     std::cout<<"========http message========"<<std::endl;
     // std::srand(std::time(0));  //cookie 값 정할 때에 사용할 예정
