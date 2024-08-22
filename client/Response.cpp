@@ -396,7 +396,7 @@ void    Response::makeError()
 
     cout << "errorPath: " << errorPath << endl;
     
-    int fd;
+    int fd = -1;
     if (errorPath != "")
         fd = open(errorPath.c_str(), O_RDONLY);
     if (errorPath != "" || fd >= 0)
@@ -499,6 +499,7 @@ void    Response::makeGet()
         cout << "directory listing" << endl;
     	cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
         makeHeader("Content-Type", "text/html");
+        makeHeader("content_length", toString(contentLength));
         content += cgiProcessor.getCgiContent();
 		std::cout << cgiProcessor.getCgiContent() << '\n';
     }
