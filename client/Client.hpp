@@ -90,9 +90,10 @@ class Client
         void    setKeepAlive(time_t time);
         void    setRequestStatus(int temp);
         void    setRequestFin(bool fin);
-		void	setResponseContent(string content);
+		void	setResponseContent(size_t cgiContentLength, string content);
 		void	setResponseContentLength(size_t contentLength);
         //logic
+        bool        getResponseCgi();
 		void		clientIP(struct sockaddr_in clntAdr);
         size_t      responseIndex();    //response msg index(responseAmount - index)
         const char* respondMsgIndex();  //msg + index (const char*)

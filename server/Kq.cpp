@@ -164,7 +164,7 @@ void    Kq::eventRead(struct kevent& store)
 	}
 	if (iter != cgiFd.end())
 	{
-		serverFd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
+		serverFd = findServer[cgiFd[store.ident]]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
 			return ;
 		event = server[serverFd].cgiRead(store);
@@ -174,9 +174,17 @@ void    Kq::eventRead(struct kevent& store)
 			case ING:
 				break ;
 			case ERROR:
+                clientFin(store);
+                break ;
 			case FINISH:
-				cgiFd.erase(iter->first);
+                std::cout<<"finish\n"<<std::endl;
+                std::cout<<iter->first<<std::endl;
+                std::cout<<"finish\n"<<std::endl;
+                plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
+				plusEvent(cgiFd[store.ident], EVFILT_TIMER, EV_DELETE, 0, 0, 0);
+				plusEvent(cgiFd[store.ident], EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 75000, 0);  //75초
 				close(iter->first);
+				cgiFd.erase(iter->first);
 				break ;
 		}
 	}
@@ -185,6 +193,7 @@ void    Kq::eventRead(struct kevent& store)
 		serverFd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
 			return ;
+        std::cout<<"not cgi"<<std::endl;
 		event = server[serverFd].clientRead(store);
 		switch (event)
 		{
@@ -195,12 +204,14 @@ void    Kq::eventRead(struct kevent& store)
 				break ;
 			case EXPECT:
 			case FINISH:
-				plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
+                if (!server[serverFd].getResponseCgi(store.ident))  //cgi임을 체크하기
+                    plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
 				plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
 				plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 75000, 0);  //75초
 				break ;
 		}
 	}
+    std::cout<<"not all"<<std::endl;
 }
 
 void    Kq::eventWrite(struct kevent& store)
@@ -281,11 +292,20 @@ void    Kq::mainLoop()
             if (store[i].flags == EV_ERROR)
                 clientFin(store[i]);  //client 종료
             else if (store[i].filter == EVFILT_READ)
+            {
+                std::cout<<"read"<<std::endl;
                 eventRead(store[i]);
+            }
             else if (store[i].filter == EVFILT_WRITE)
+            {
+                std::cout<<"write"<<std::endl;
                 eventWrite(store[i]);
+            }
             else if (store[i].filter == EVFILT_TIMER)
+            {
+                std::cout<<"timer"<<std::endl;
                 eventTimer(store[i]);
+            }
         }
     }
 }

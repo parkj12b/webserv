@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/20 14:57:03 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/22 15:01:39 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,10 @@ LocationConfigData *Client::recurFindLocation(string url,
         }
     }
  
+    cout << locationConfigData->getPath() << endl;
     Trie &prefixTrie = locationConfigData->getPrefixTrie();
     request.location = prefixTrie.find(url);
+    cout << "location: " << request.location << endl;
     if (request.location == "")
         return (locationConfigData);
     configData
@@ -192,14 +194,22 @@ void    Client::setRequestFin(bool fin)
     request.fin = fin;
 }
 
-void	Client::setResponseContent(string content)
-{
-	response.setContent(content);
-}
-
 void	Client::setResponseContentLength(size_t contentLength)
 {
 	response.setContentLength(contentLength);
+}
+
+void	Client::setResponseContent(size_t cgiContentLength, string content)
+{
+	msg = response.setContent(content);
+    responseAmount = response.getStartHeaderLength() + cgiContentLength;
+    // std::cout<<"content: "<<content;
+}
+
+
+bool    Client::getResponseCgi()
+{
+    return (response.getCgiFlag());
 }
 
 void	Client::clientIP(struct sockaddr_in  clntAdr)
@@ -448,12 +458,19 @@ void    Client::setMessage(std::string msgRequest)
 
 void    Client::setResponseMessage()
 {
+    msg.clear();
     index = 0;
     response = Response(port);
     response.initRequest(request);
     response.responseMake();
-    msg = response.getEntity();
-    responseAmount = msg.size();
+    if (!response.getCgiFlag())
+    {
+        std::cout<<"NOtCGI"<<std::endl;
+        msg = response.getEntity();
+        responseAmount = response.getStartHeaderLength() + response.getContentLength();
+        return ;
+    }
+    std::cout<<"YES CGI"<<std::endl;
 }
 
 size_t  Client::responseIndex()
@@ -481,7 +498,7 @@ bool    Client::setMatchingLocation(string url)
         else
             serverConfigData = Server::serverConfig->getDefaultServer(port);
     }
-    
+
     LocationConfigData *location = NULL;
 
     vector<string> &suffixMatch = serverConfigData->getSuffixMatch();
@@ -500,7 +517,9 @@ bool    Client::setMatchingLocation(string url)
         return (true);
     location
         = serverConfigData->getLocationConfigData(request.location, 0);
-    response.setLocationConfigData(recurFindLocation(url, location));
+    size_t i = url.find(location->getPath());
+    string temp = url.substr(i + location->getPath().size());
+    response.setLocationConfigData(recurFindLocation(temp, location));
     cout << "location " << request.location << endl;
     return (false);
 }
