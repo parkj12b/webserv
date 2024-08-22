@@ -192,18 +192,18 @@ void    Client::setRequestFin(bool fin)
     request.fin = fin;
 }
 
-void	Client::setResponseContent(string content)
-{
-	msg = response.setContent(content);
-    responseAmount = msg.size();
-    std::cout<<msg;
-    // std::cout<<"content: "<<content;
-}
-
 void	Client::setResponseContentLength(size_t contentLength)
 {
 	response.setContentLength(contentLength);
 }
+
+void	Client::setResponseContent(size_t cgiContentLength, string content)
+{
+	msg = response.setContent(content);
+    responseAmount = response.getStartHeaderLength() + cgiContentLength;
+    // std::cout<<"content: "<<content;
+}
+
 
 bool    Client::getResponseCgi()
 {
@@ -463,9 +463,12 @@ void    Client::setResponseMessage()
     response.responseMake();
     if (!response.getCgiFlag())
     {
+        std::cout<<"NOtCGI"<<std::endl;
         msg = response.getEntity();
         responseAmount = response.getStartHeaderLength() + response.getContentLength();
+        return ;
     }
+    std::cout<<"YES CGI"<<std::endl;
 }
 
 size_t  Client::responseIndex()

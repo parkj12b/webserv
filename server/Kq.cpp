@@ -164,11 +164,9 @@ void    Kq::eventRead(struct kevent& store)
 	}
 	if (iter != cgiFd.end())
 	{
-        std::cout<<"1cgi"<<std::endl;
 		serverFd = findServer[cgiFd[store.ident]]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
 			return ;
-        std::cout<<"2cgi"<<std::endl;
 		event = server[serverFd].cgiRead(store);
 		switch (event)
 		{
@@ -182,7 +180,6 @@ void    Kq::eventRead(struct kevent& store)
                 std::cout<<"finish\n"<<std::endl;
                 std::cout<<iter->first<<std::endl;
                 std::cout<<"finish\n"<<std::endl;
-                plusEvent(cgiFd[store.ident], EVFILT_READ, EV_DELETE, 0, 0, 0);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
 				plusEvent(cgiFd[store.ident], EVFILT_TIMER, EV_DELETE, 0, 0, 0);
 				plusEvent(cgiFd[store.ident], EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 75000, 0);  //75초

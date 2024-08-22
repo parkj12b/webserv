@@ -90,7 +90,7 @@ class Client
         void    setKeepAlive(time_t time);
         void    setRequestStatus(int temp);
         void    setRequestFin(bool fin);
-		void	setResponseContent(string content);
+		void	setResponseContent(size_t cgiContentLength, string content);
 		void	setResponseContentLength(size_t contentLength);
         //logic
         bool        getResponseCgi();

@@ -178,7 +178,7 @@ void    Response::makeFilePath(string& str)
     cout << "str: " << str << endl;
 }
 
-Response::Response()
+Response::Response() : cgiFlag(false)
 {
 }
 
@@ -191,6 +191,7 @@ Response&    Response::operator=(const Response& src)
 {
     if (this == &src)
         return (*this);
+    cgiFlag = src.getCgiFlag();
     start = src.getStart();
     header = src.getHeader();
     content = src.getContent();
@@ -274,20 +275,22 @@ void    Response::setLocationConfigData(LocationConfigData *locationConfigData)
     locationConfig = locationConfigData;
 }
 
-std::string Response::setContent(string content_)
-{
-	content = content_;
-    std::cout<< "request.status: "<<request.status<<std::endl;
-    makeEntity();
-    std::cout<<entity<<std::endl<<std::endl;
-    return (entity);
-}
-
 void	Response::setContentLength(size_t contentLength_)
 {
     contentLength = contentLength_;
     makeHeader("content-length", toString(contentLength));
-    std::cout<<"header: \n\n"<<header;
+    // std::cout<<"header: \n\n"<<header;
+    // std::cout<<"================"<<std::endl;
+}
+
+std::string Response::setContent(string content_)
+{
+	content = content_;
+    // std::cout<< "request.status: "<<request.status<<std::endl;
+    makeEntity();
+    // std::cout<<entity<<std::endl<<std::endl;
+    // std::cout<<"================"<<std::endl;
+    return (entity);
 }
 
 void    Response::initRequest(Request msg)
@@ -500,7 +503,7 @@ void    Response::makeContent(int fd)
 void    Response::makeEntity()
 {
     entity.clear();
-    std::cout<<request.status<<std::endl;
+    // std::cout<<request.status<<std::endl;
     if (request.status == 0)
         request.status = 0;
     entity = "HTTP/1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
@@ -509,7 +512,7 @@ void    Response::makeEntity()
     startHeaderLength = entity.size();
     if (!content.empty())
         entity.append(content);
-    std::cout<<"request.status: "<<request.status<<std::endl;
+    // std::cout<<"request.status: "<<request.status<<std::endl;
     // cout<<entity.size()<<endl;
 }
 
