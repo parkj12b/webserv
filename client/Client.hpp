@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:17 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/16 18:09:13 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/21 17:13:30 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,8 @@ class Client
         size_t      index;
         size_t      responseAmount;
         ssize_t     standardTime;
-        std::string msg;
-        std::time_t keepAlive;
+        string		msg;
+        time_t		keepAlive;
         Request     request;
         StartLine   startLine;
         HeaderLine  headerLine;
@@ -75,8 +75,8 @@ class Client
         size_t      getIndex() const;
         size_t      getResponseAmount() const;
         ssize_t     getStandardTime() const;
-        std::string getMsg() const;
-        std::time_t getKeepAlive() const;
+        string		getMsg() const;
+        time_t		getKeepAlive() const;
         Request     getRequest() const;
         StartLine   getStartLine() const;
         HeaderLine  getHeaderline() const;
@@ -87,9 +87,11 @@ class Client
         //set function
         void    setConnection(bool ycdi);
         void    setFd(uintptr_t fd);
-        void    setKeepAlive(std::time_t time);
+        void    setKeepAlive(time_t time);
         void    setRequestStatus(int temp);
         void    setRequestFin(bool fin);
+		void	setResponseContent(string content);
+		void	setResponseContentLength(size_t contentLength);
         //logic
 		void		clientIP(struct sockaddr_in clntAdr);
         size_t      responseIndex();    //response msg index(responseAmount - index)
@@ -98,7 +100,7 @@ class Client
         int         setHeader(void);    //headerLine make
         int         setContent(void);   //contentLine make
         int         setTrailer(void);   //trailer make
-        void        setMessage(std::string msgRequest); //request msg setting
+        void        setMessage(string msgRequest); //request msg setting
         void        setResponseMessage();               //make response msg
         void        plusIndex(size_t plus);             //index plus
         void        resetClient();                      //reset client varidation

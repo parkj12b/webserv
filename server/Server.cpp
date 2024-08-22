@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/19 14:49:04 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/21 17:12:45 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ HTTPServer *Server::serverConfig = NULL;
 Server::Server() : serverFd(0), port(0)
 {}
 
-Server::Server(int fd, int num) : serverFd(fd), port(num)
+Server::Server(int fd, int num) : serverFd(fd), port(num), cgiContentLength(0)
 {}
 
 Server::Server(const Server& src) : serverFd(src.getServerFd()), port(src.getPort()), client(src.getClient())
@@ -52,7 +52,7 @@ std::map<int, Client>  Server::getClient(void) const
     return (client);
 }
 
-int Server::plusClient(void)
+int Server::plusClient()
 {
     int                 clntFd;
     struct sockaddr_in  clntAdr;
@@ -66,6 +66,32 @@ int Server::plusClient(void)
 	client[clntFd].clientIP(clntAdr);
     std::cout<<"temp delete"<<std::endl;
     return (clntFd);
+}
+
+EVENT Server::cgiRead(struct kevent& store)
+{
+	char	buf[PIPE_BUFFER_SIZE + 1];
+	int		readSize;
+
+	readSize = read(store.ident, buf, PIPE_BUFFER_SIZE);
+	if (readSize <= 0)
+	{
+		if (readSize < 0)
+		{
+			client[Kq::cgiFd[store.ident]].setRequestStatus(500);
+			cgiContent.clear();
+			cgiContentLength = 0;
+			return (ERROR);
+		}
+		client[Kq::cgiFd[store.ident]].setResponseContent(cgiContent);
+		client[Kq::cgiFd[store.ident]].setResponseContentLength(cgiContentLength);
+		cgiContent.clear();
+		cgiContentLength = 0;
+		return (FINISH);
+	}
+	cgiContent.append(string(buf));
+	cgiContentLength += readSize;
+	return (ING);
 }
 
 EVENT Server::clientRead(struct kevent& store)

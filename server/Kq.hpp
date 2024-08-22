@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kq.hpp                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:09:01 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/15 01:10:31 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/21 17:16:43 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,12 @@ class Kq
     private:
         int                         kq;
         int                         connectionCnt;
-        std::vector<struct kevent>  fdList;
+        static std::vector<struct kevent> 	fdList;
         std::map<int, Server>       server;
         std::map<int, int>          findServer;
     public:
         static std::vector<pid_t>   processor;
+		static std::map<int, int>	cgiFd;
         Kq();
         Kq(const Kq& src);
         Kq& operator=(const Kq& src);
@@ -61,7 +62,7 @@ class Kq
         void    clientFin(struct kevent& store);    //client error client socket close
         void    serverError(struct kevent& store);  //server error clients connected server and server sockets close
         //logic
-        void    plusEvent(uintptr_t fd, int16_t filter, uint16_t flags, uint32_t fflags, intptr_t data, void *udata);   //event enoll
+        static void    plusEvent(uintptr_t fd, int16_t filter, uint16_t flags, uint32_t fflags, intptr_t data, void *udata);   //event enoll
         void    plusClient(int serverFd);           //client and server connect
         void    eventRead(struct kevent& store);    //kq event read
         void    eventWrite(struct kevent& store);   //kq event write

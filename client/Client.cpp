@@ -48,6 +48,7 @@ Client::Client() : connect(true), connection(false), fd(0), port(0), index(0), r
     request.port = port;
     request.fin = false;
     request.status = 0;
+	request.clientFd = fd;
 }
 
 Client::Client(int fd, int port) : connect(true), connection(false), fd(fd), port(port), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port)
@@ -56,6 +57,7 @@ Client::Client(int fd, int port) : connect(true), connection(false), fd(fd), por
     request.port = port;
     request.fin = false;
     request.status = 0;
+	request.clientFd = fd;
 }
 
 Client::Client(const Client& src) : connect(src.getConnect()), connection(src.getConnection()), fd(src.getFd()), port(src.getPort()), index(src.getIndex()), responseAmount(src.getResponseAmount()), standardTime(src.getStandardTime()), msg(src.getMsg()), keepAlive(src.getKeepAlive()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse())
@@ -190,6 +192,16 @@ void    Client::setRequestFin(bool fin)
     request.fin = fin;
 }
 
+void	Client::setResponseContent(string content)
+{
+	response.setContent(content);
+}
+
+void	Client::setResponseContentLength(size_t contentLength)
+{
+	response.setContentLength(contentLength);
+}
+
 void	Client::clientIP(struct sockaddr_in  clntAdr)
 {
 	char	clientIp[INET_ADDRSTRLEN];
@@ -243,8 +255,8 @@ int Client::setStart(void)
 
 int Client::setHeader(void)
 {
-    size_t                                                              flag;
-    std::string                                                         str;
+    size_t                                                    flag;
+    std::string                                               str;
     std::map<std::string, std::deque<std::string> >::iterator itm;
 
     if (!startLine.getCompletion() || headerLine.getCompletion() || request.fin || request.status)
@@ -482,7 +494,6 @@ bool    Client::setMatchingLocation(string url)
             return (recurFindLocation(url, location));
         }
     }
-    
     Trie &prefixTrie = serverConfigData->getPrefixTrie();
     request.location = prefixTrie.find(url);
     if (request.location == "")

@@ -1,9 +1,12 @@
 #include "CgiProcessor.hpp"
+#include "Kq.hpp"
 
 CgiProcessor::CgiProcessor(Request &request_, ServerConfigData *serverConfig_, LocationConfigData *locationConfig_)
 	:request(request_)
 	, serverConfig(serverConfig_)
 	, locationConfig(locationConfig_)
+	, contentLength(0)
+	, fin(false)
 {
 }
 
@@ -11,27 +14,24 @@ CgiProcessor::~CgiProcessor()
 {
 }
 
-CgiProcessor::CgiProcessor(const CgiProcessor& rhs)
-	:request(rhs.request)
-	, serverConfig(rhs.serverConfig)
-{
-}
-
-CgiProcessor& CgiProcessor::operator=(const CgiProcessor& rhs)
-{
-	request = rhs.request;
-	serverConfig = rhs.serverConfig;
-	return (*this);
-}
-
-std::string	CgiProcessor::getScriptFile()
+string	CgiProcessor::getScriptFile()
 {
 	return (scriptFile);
 }
 
-std::string	CgiProcessor::getCgiContent()
+string	CgiProcessor::getCgiContent()
 {
 	return (cgiContent);
+}
+
+size_t	CgiProcessor::getContentLength()
+{
+	return (contentLength);
+}
+
+bool	CgiProcessor::getFin()
+{
+	return (fin);
 }
 
 void	CgiProcessor::insertEnv(string key, string value)
@@ -45,12 +45,12 @@ void	CgiProcessor::setURLEnv()
 	insertEnv("SERVER_PORT", to_string(request.port));
 	insertEnv("PATH_INFO", request.url);
 	insertEnv("SCRIPT_NAME", scriptFile);
-	std::deque<std::string>	queryStrings;
-	std::string				metaQueryString;
-	for (std::map<std::string, std::string>::iterator iter=request.query.begin(); iter != request.query.end(); iter++)
+	deque<string>	queryStrings;
+	string			metaQueryString;
+	for (map<string, string>::iterator iter=request.query.begin(); iter != request.query.end(); iter++)
 	{
-		std::string key = iter->first;
-		std::string value = iter->second;
+		string key = iter->first;
+		string value = iter->second;
 		queryStrings.push_back(key.append("=").append(value));
 	}
 	for (size_t idx = 0; idx < queryStrings.size(); idx++)
@@ -63,10 +63,10 @@ void	CgiProcessor::setURLEnv()
 	insertEnv("QUERY_STRING", metaQueryString);
 }
 
-bool	CgiProcessor::setStartHeaderEnv()
+void	CgiProcessor::setStartHeaderEnv()
 {
 	insertEnv("SERVER_PROTOCOL", "HTTP/1.1");
-	std::string	method;
+	string	method;
 	if (request.method == GET)
 		method = "GET";
 	else if (request.method == POST)
@@ -75,11 +75,6 @@ bool	CgiProcessor::setStartHeaderEnv()
 	if (request.header.find("Content-length") != request.header.end()
 		&& request.header["Content-length"].size() > 0)
 	{
-		if (!atoi(request.header["Content-length"].front().c_str()))
-		{
-			request.status = 400;
-			return (false);
-		}
 		insertEnv("CONTENT_LENGTH", request.header["Content-length"].front());
 	}
 	if (request.header.find("Content-type") != request.header.end()
@@ -95,49 +90,50 @@ bool	CgiProcessor::setStartHeaderEnv()
 			insertEnv("REMOTE_USER", request.header["Authorization"][1]);
 	}
 	insertEnv("REMOTE_ADDR", request.clientIp);
-	return (true);
 }
 
-bool	CgiProcessor::checkURL(std::string url)
+void	CgiProcessor::selectCgiCmd(string url)
 {
 	// Find CGI Script File in URL
-	const std::string	availCgiExtensions[2] = {".py", ".php"};
-	std::string			cgiExtension;
-	size_t				cgiFilePos;
+	const string	availCgiExtensions[2] = {".py", ".php"};
+	string			cgiExtension;
+	size_t			cgiFilePos;
 	for (int i=0; i<2; i++)
 	{
 		cgiExtension = availCgiExtensions[i];
 		cgiFilePos = url.find(cgiExtension);
-		if (cgiFilePos != std::string::npos)
+		if (cgiFilePos != string::npos)
 			break ;
 	}
-	std::cout << "-------------------CGI TEST----------------------\n";
-	for (auto iter = request.header["host"].begin(); iter != request.header["host"].end(); iter++)
-		std::cout << *iter << ' ';
-	std::cout << '\n';
-	if (cgiFilePos == std::string::npos)
-	{
-		std::cout << "ㅋ 1" << std::endl;
-		std::cout << "-------------------CGI END!----------------------\n";
-		return (false);
-	}
-	// config location 확인
+	cgiCommand = (!cgiExtension.compare(".py")) ? "python3" : "php";
 	scriptFile = url.substr(0, cgiFilePos + cgiExtension.size());
-	size_t	parentDirReservedPos = url.find("..");
-	if (parentDirReservedPos != std::string::npos)
-	{
-		std::cout << "ㅋㅋ 2" << std::endl;
-		request.status = 404;
-		std::cout << "-------------------CGI END!----------------------\n";
-		return (false);
-	}
-
-	std::cout << "-------------------CGI END!----------------------\n";
-	return (true);
 }
 
-void	CgiProcessor::executeCGIScript(const std::string path)
+void	CgiProcessor::checkPostContentType()
 {
+	if (request.header.find("content-type") == request.header.end()
+		|| request.header.find("content-length") == request.header.end()
+		|| atol(request.header["content-length"].front().c_str()) <= 0
+		|| atol(request.header["content-length"].front().c_str()) > locationConfig->getClientMaxBodySize())
+	{
+		request.status = 400;
+		return ;
+	}
+	if (!request.header["content-type"].front().compare("application/x-www-form-urlencoded")
+		|| !request.header["content-type"].front().compare("application/json"))
+		executeCGIScript(scriptFile);
+	else if (!request.header["content-type"].front().compare("multipart/form-data"))
+	{
+		scriptFile = "/upload/upload.py";
+		executeCGIScript(scriptFile);
+	}
+	else
+		request.status = 400;
+}
+
+void	CgiProcessor::executeCGIScript(const string path)
+{
+	scriptFile = path;
 	setURLEnv();
 	setStartHeaderEnv();
 	int pipefd[2];
@@ -146,7 +142,7 @@ void	CgiProcessor::executeCGIScript(const std::string path)
 		request.status = 500;
 		return ;
 	}
-	int pid = fork();
+	pid_t pid = fork();
 	if (pid == -1)
 	{
 		close(pipefd[0]);
@@ -154,13 +150,14 @@ void	CgiProcessor::executeCGIScript(const std::string path)
 		request.status = 500;
 		return ;
 	}
+	Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 	if (pid == 0)
 	{
 		close(pipefd[0]);
 		dup2(pipefd[1], STDOUT_FILENO);
+		dup2(pipefd[1], STDERR_FILENO);
 		close(pipefd[1]);
-		std::string pythonCmd = "/usr/local/bin/python3";
-		char *argv[] = {const_cast<char *>(&pythonCmd[0]), const_cast<char *>(&path[0]), NULL};
+		char *argv[] = {const_cast<char *>(&cgiCommand[0]), const_cast<char *>(&path[0]), NULL};
 		char **envp = new char*[metaVariables.size() + 1];
 		size_t	idx = 0;
 		for (map<string, string>::iterator iter = metaVariables.begin(); iter != metaVariables.end(); iter++)
@@ -168,10 +165,10 @@ void	CgiProcessor::executeCGIScript(const std::string path)
 			string	env;
 			env = env.append(iter->first).append("=").append(iter->second);
 			envp[idx] = new char[env.size() + 1];
-			std::strcpy(envp[idx++], env.c_str());
+			strcpy(envp[idx++], env.c_str());
 		}
 		envp[metaVariables.size()] = 0;
-		if (execve(&pythonCmd[0], argv, envp) == -1)
+		if (execve(&cgiCommand[0], argv, envp) == -1)
 		{
 			request.status = 500;
 			exit(1);
@@ -180,21 +177,9 @@ void	CgiProcessor::executeCGIScript(const std::string path)
 	else
 	{
 		close(pipefd[1]);
-		char buf[65537];
-		int size;
-		while (1)
-		{
-			size = read(pipefd[0], buf, 65536);
-			if (size <= 0)
-			{
-				close(pipefd[0]);
-				if (size < 0)
-					request.status = 500;
-				return ;
-			}
-			buf[size] = 0;
-			cgiContent.append(std::string(buf));
-		}
+		Kq::processor.push_back(pid);
+		int tmpFd = pipefd[0];
 		close(pipefd[0]);
+		Kq::cgiFd.insert(make_pair(tmpFd, request.clientFd));
 	}
 }
