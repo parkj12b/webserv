@@ -24,9 +24,9 @@
 
 using namespace std;
 
-std::map<int, std::string>  statusContentInit()
+map<int, string>  statusContentInit()
 {
-    std::map<int, std::string>  m;
+    map<int, string>  m;
 
     m[100] = " Continue";
     m[101] = " Switching Protocols";
@@ -106,17 +106,36 @@ std::map<int, std::string>  statusContentInit()
     return (m);
 }
 
-std::map<std::string, std::string>  sessionInit()
+map<string, string>  sessionInit()
 {
-    std::map<std::string, std::string>  m;
+    map<string, string>  m;
 
     return (m);
 }
 
-std::map<int, std::string>  Response::statusContent = statusContentInit();
-std::map<std::string, std::string>  Response::session = sessionInit();
+map<int, string>  Response::statusContent = statusContentInit();
+map<string, string>  Response::session = sessionInit();
 
-void    Response::makeFilePath(std::string& str)
+bool	Response::isCgiScriptInURL(string& str)
+{
+	const string	availCgiExtensions[2] = {".py", ".php"};
+	size_t			cgiFilePos;
+	for (int i=0; i<2; i++)
+	{
+		cgiFilePos = str.find(availCgiExtensions[i]);
+		if (cgiFilePos != string::npos)
+			break ;
+	}
+	if (cgiFilePos == string::npos)
+	{
+		if (request.method == POST)
+			request.status = 400;
+		return (false);
+	}
+	return (true);
+}
+
+void    Response::makeFilePath(string& str)
 {
     LocationConfigData *location = getLocationConfigData();
 
@@ -149,20 +168,23 @@ void    Response::makeFilePath(std::string& str)
         request.status = 404;
         return ;
     }
+	if (str.find("..") != std::string::npos)
+	{
+		request.status = 404;
+		return ;
+	}
+	if (isCgiScriptInURL(str))
+		cgiFlag = true;
     cout << "str: " << str << endl;
 }
 
 Response::Response()
-{}
+{
+}
 
 Response::Response(const Response& src)
 {
-    start = src.getStart();
-    header = src.getHeader();
-    content = src.getContent();
-    entity = src.getEntity();
-    request = src.getRequest();
-    port = src.getPort();
+    *this = src;
 }
 
 Response&    Response::operator=(const Response& src)
@@ -175,6 +197,7 @@ Response&    Response::operator=(const Response& src)
     entity = src.getEntity();
     request = src.getRequest();
     port = src.getPort();
+	cgiFlag = src.getCgiFlag();
     return (*this);
 }
 
@@ -182,7 +205,7 @@ Response::~Response()
 {
 }
 
-Response::Response(int port) : port(port)
+Response::Response(int port) : port(port), contentLength(0)
 {}
 
 int Response::getPort() const
@@ -190,22 +213,22 @@ int Response::getPort() const
     return (port);
 }
 
-std::string Response::getStart() const
+string Response::getStart() const
 {
     return (start);
 }
 
-std::string Response::getHeader() const
+string Response::getHeader() const
 {
     return (header);
 }
 
-std::string Response::getContent() const
+string Response::getContent() const
 {
     return (content);
 }
 
-std::string Response::getEntity() const
+string Response::getEntity() const
 {
     return (entity);
 }
@@ -213,6 +236,11 @@ std::string Response::getEntity() const
 Request Response::getRequest() const
 {
     return (request);
+}
+
+bool	Response::getCgiFlag() const
+{
+	return (cgiFlag);
 }
 
 LocationConfigData *Response::getLocationConfigData()
@@ -230,6 +258,16 @@ void    Response::setLocationConfigData(LocationConfigData *locationConfigData)
     locationConfig = locationConfigData;
 }
 
+void	Response::setContent(string content_)
+{
+	content = content_;
+}
+
+void	Response::setContentLength(size_t contentLength_)
+{
+	contentLength = contentLength_;
+}
+
 void    Response::initRequest(Request msg)
 {
     request = msg;
@@ -239,19 +277,20 @@ void    Response::init()
 {
     cout << "port: " << port << endl;
 
+    if (request.status != 0)
+        return ;
     start.clear();
     header.clear();
     content.clear();
     entity.clear();
-    if (request.status != 0)
-        return ;
     string host = request.header["host"].front();
+	cgiFlag = false;
     cout << "host: " << host << endl;
     try
     {
         serverConfig = Server::serverConfig->getServerData(host, port);
     }
-    catch(const std::exception& e)
+    catch(const exception& e)
     {
         serverConfig = Server::serverConfig->getDefaultServer(port);
         if (serverConfig == NULL)
@@ -276,14 +315,14 @@ int Response::getDefaultErrorPage(int statusCode)
     return (open(DEFAULT_400_ERROR_PAGE, O_RDONLY));
 }
 
-void    Response::makeCookie(std::string& date)
+void    Response::makeCookie(string& date)
 {
-    const std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     const size_t charactersSize = characters.size();
-    std::string result;
+    string result;
     size_t      index;
-    std::string value;
-    std::string cookieValue;
+    string value;
+    string cookieValue;
 
     if (request.header["cookie"].empty())
     {
@@ -301,15 +340,15 @@ void    Response::makeCookie(std::string& date)
     {
         cookieValue = request.header["cookie"].front();
         index = cookieValue.find(';');
-        if (index != std::string::npos)
+        if (index != string::npos)
             cookieValue = cookieValue.substr(0, index);
         index = cookieValue.find('=');
-        if (index != std::string::npos)
+        if (index != string::npos)
             cookieValue = cookieValue.substr(index + 1);
         HeaderLine::eraseSpace(cookieValue, 0);
         if (session.find(cookieValue) != session.end())
             session[cookieValue] = date;
-        std::cout<<"cookieValue: "<<cookieValue<<std::endl<<std::endl;
+        cout<<"cookieValue: "<<cookieValue<<endl<<endl;
         makeHeader("session", session[cookieValue]);
     }
 }
@@ -331,7 +370,7 @@ void    Response::makeDefaultHeader()
     int                 order;
 
     order = 0;
-    while (std::getline(strStream, temp, ' '))
+    while (getline(strStream, temp, ' '))
     {
         pos = temp.find_last_not_of('\n');
         temp.erase(pos + 1);
@@ -351,9 +390,8 @@ void    Response::makeError()
         return ;
     if (request.status == 100)
         return ;
-    LocationConfigData   *location = getLocationConfigData();
-    map<int, string>   &errorPage = location->getErrorPage();
-    
+    LocationConfigData	*location = getLocationConfigData();
+    map<int, string>	&errorPage = location->getErrorPage();
     string errorPath = errorPage[request.status];
 
     cout << "errorPath: " << errorPath << endl;
@@ -365,19 +403,15 @@ void    Response::makeError()
         makeContent(fd);
     else
     {
-        cout << "cgi error page\n";
         CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
-        if (cgiProcessor.checkURL(DEFAULT_400_ERROR_PAGE_TEST))
-        {
-            cout << "url passed\n";
-            cgiProcessor.insertEnv("ERROR_CODE", toString(request.status));
-            cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
-            content = cgiProcessor.getCgiContent();
-            std::cout << cgiProcessor.getCgiContent() << '\n';
-        }
-        makeHeader("Content-Type", "text/html");
-        makeHeader("Content-Length", std::to_string(content.size()));
+		cgiProcessor.selectCgiCmd(CGI_ERROR_PAGE);
+		cgiProcessor.insertEnv("ERROR_CODE", toString(request.status));
+        cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+		content += cgiProcessor.getCgiContent();
+        cout << cgiProcessor.getCgiContent() << '\n';
     }
+    makeHeader("content-type", "text/html");
+    makeHeader("content-length", to_string(content.size()));
 }
 
 void    Response::checkRedirect()
@@ -392,8 +426,7 @@ void    Response::checkRedirect()
         cout << request.url << endl;
         cout << request.status << endl;
         makeHeader("Location", redirect.second);
-        // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
-        // start = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+        // start = "HTTP/1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
     }
 }
 
@@ -407,7 +440,7 @@ void    Response::checkAllowedMethod()
         request.status = 405;
 }
 
-void    Response::makeHeader(std::string key, std::string value)
+void    Response::makeHeader(string key, string value)
 {
     header += key + ": " + value + "\r\n";
 }
@@ -431,20 +464,20 @@ void    Response::makeContent(int fd)
         content.append(buffer, readSize);
         count += readSize;
     }
-    std::cout<<content.size()<<std::endl;
-    makeHeader("content-length", std::to_string(count));
+    cout<<content.size()<<endl;
+    makeHeader("content-length", to_string(count));
     close(fd);
 }
 
 void    Response::makeEntity()
 {
-    entity = "HTTP/1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+    entity = "HTTP/1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
     if (!header.empty())
         entity += header + "\r\n";
-    std::cout<<entity.size()<<std::endl;
+    cout<<entity.size()<<endl;
     if (!content.empty())
         entity.append(content);
-    std::cout<<entity.size()<<std::endl;
+    cout<<entity.size()<<endl;
 }
 
 void    Response::makeGet()
@@ -469,20 +502,35 @@ void    Response::makeGet()
         content += cgiProcessor.getCgiContent();
 		std::cout << cgiProcessor.getCgiContent() << '\n';
     }
+	else if (cgiFlag)
+	{
+		cgiProcessor.selectCgiCmd(request.url);
+		cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+		if (request.status >= 400)
+		{
+			while (!cgiProcessor.getFin())
+				cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
+		}
+		// 나중에 content-length가 0일 때, 서버 에러 추가
+		start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
+		makeHeader("content-type", "text/html");
+		makeHeader("content-length", toString(contentLength));
+		makeHeader("status", toString(request.status));
+		content += cgiProcessor.getCgiContent();
+		cout << cgiProcessor.getCgiContent() << '\n';
+	}
 	else
 	{
 		fd = open(request.url.c_str(), O_RDONLY);
 		if (fd < 0)
 		{
 			request.status = 404;
-			start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
-			if (cgiProcessor.checkURL(DEFAULT_400_ERROR_PAGE_TEST))
-            {
-                cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
-                makeHeader("Content-Type", "text/html");
-                content += cgiProcessor.getCgiContent();
-                std::cout << cgiProcessor.getCgiContent() << '\n';
-            }
+			start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
+			while (!cgiProcessor.getFin())
+				cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
+            makeHeader("Content-Type", "text/html");
+			content += cgiProcessor.getCgiContent();
+            cout << cgiProcessor.getCgiContent() << '\n';
             // fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);
 			// if (fd < 0)
 			// 	return ;
@@ -494,30 +542,29 @@ void    Response::makeGet()
 		makeContent(fd);
 	}
 	request.status = 200;
-    start = "HTTP1.1 " + std::to_string(request.status) + statusContent[request.status] + "\r\n";
+    start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 }
 
 void    Response::makePost()
 {
-    std::cout<<"Method: POST"<<std::endl;
+    cout<<"Method: POST"<<endl;
 	CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
-    if (!cgiProcessor.checkURL(request.url))
-    {
-		request.status = 400;
-        makeError();
-    }
-	else
+	if (cgiFlag)
 	{
-		cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
-		if (request.status == 0)
-			request.status = 200;
+		cgiProcessor.selectCgiCmd(request.url);
+		cgiProcessor.checkPostContentType();
+	}
+	if (request.status >= 400)
+	{
+		while (!cgiProcessor.getFin())
+			cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
 	}
 }
 
 void    Response::makeDelete()
 {
-    std::cout<<"Method: DELETE"<<std::endl;
-    if (std::remove(request.url.c_str()) == 0)
+    cout<<"Method: DELETE"<<endl;
+    if (remove(request.url.c_str()) == 0)
     {
         request.status = 204;
     }
@@ -547,12 +594,10 @@ void    Response::responseMake()
         makeEntity();
         return ;
     }
-    cout << "1\n";
     checkRedirect();
     if (request.status > 0)
         return (makeEntity());
     makeFilePath(request.url);
-    cout << "2\n";
     if (request.status > 0)
     {
         makeError();

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:55 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/19 19:08:03 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/21 17:12:31 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,10 @@
 # include "Kq.hpp"
 
 # define BUFFER_SIZE 4095
+# define PIPE_BUFFER_SIZE 65536
 # define DEFAULT_400_ERROR_PAGE "./resource/html/error/40x.html"
-# define DEFAULT_400_ERROR_PAGE_TEST "./cgi-bin/error_page/errorPage.py"
 # define DEFAULT_500_ERROR_PAGE "./resource/html/error/50x.html"
+# define CGI_ERROR_PAGE "./cgi-bin/error_page/errorPage.py"
 
 //server를 여러 개 만들 경우에는 kq클래스 만들기
 //kq 클래스에서 서버 클래스를 관리하기
@@ -57,6 +58,8 @@ class Server
     private:
         int                     serverFd;
         int                     port;
+		string					cgiContent;
+		size_t					cgiContentLength;
         std::map<int, Client>   client;  //client을 선언할때에 default 생성자가 필요한듯
         //여기에 파싱된 data가 들어가 있을 것 - 아래 서버 스태틱으로 설정되어 있음
     public:
@@ -71,7 +74,8 @@ class Server
         int                     getPort(void) const;
         std::map<int, Client>   getClient(void) const;
         //logic
-        int     plusClient(void);                   //client socket accept
+        int     plusClient();                   	//client socket accept
+		EVENT	cgiRead(struct kevent& store);		//client cgi read event manage
         EVENT   clientRead(struct kevent& store);   //client read event manage
         EVENT   clientWrite(struct kevent& store);  //client write event manage
         EVENT   clientTimer(struct kevent& store);  //client timer event manage
