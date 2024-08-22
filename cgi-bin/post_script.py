@@ -16,7 +16,6 @@ content_type = os.environ.get('CONTENT_TYPE')
 # Function to handle 'application/x-www-form-urlencoded'
 def handle_urlencoded():
     form = cgi.FieldStorage()
-    print("Content-Type: text/html\n")
     print("<html><body>")
     print("<h2>Received Form Data (application/x-www-form-urlencoded)</h2>")
     for key in form.keys():
@@ -32,7 +31,6 @@ def handle_json():
         json_data = sys.stdin.read(content_length)
         # Parse the JSON data
         data = json.loads(json_data)
-        print("Content-Type: text/html\n")
         print("<html><body>")
         print("<h2>Received JSON Data (application/json)</h2>")
         print("<pre>")
@@ -40,7 +38,6 @@ def handle_json():
         print("</pre>")
         print("</body></html>")
     except json.JSONDecodeError:
-        print("Content-Type: text/html\n")
         print("<html><body>")
         print("<h2>Error: Invalid JSON Data</h2>")
         print("</body></html>")
@@ -50,9 +47,5 @@ if content_type == 'application/x-www-form-urlencoded':
     handle_urlencoded()
 elif content_type == 'application/json':
     handle_json()
-else:
-    print("Content-Type: text/html\n")
-    print("<html><body>")
-    print("<h2>Error: Unsupported Content-Type</h2>")
-    print(f"<p>Content-Type received: {content_type}</p>")
-    print("</body></html>")
+else
+	sys.exit(1)
