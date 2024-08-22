@@ -168,11 +168,6 @@ void    Response::makeFilePath(string& str)
         request.status = 404;
         return ;
     }
-	if (str.find("..") != std::string::npos)
-	{
-		request.status = 404;
-		return ;
-	}
 	if (isCgiScriptInURL(str))
 		cgiFlag = true;
     cout << "str: " << str << endl;

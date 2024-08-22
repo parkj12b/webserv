@@ -48,7 +48,7 @@ int main(int argc, char **argv)
     auto it = Server::serverConfig->getDefaultServer(80)->_locationConfigData.begin();
     while (it != Server::serverConfig->getDefaultServer(80)->_locationConfigData.end())
     {
-        cout << it->first << endl;
+        cout << it->first << " ㅎㅎ" << endl;
         it++;
     }
     //fd를 닫지 않았을 가능성이 존재함

@@ -33,19 +33,19 @@ def handle_file_uploads():
 def process_file(file_item):
     if file_item.filename:
         filename = os.path.basename(file_item.filename)
-        
+
         # Check if the file has a .py or .php extension
         if filename.endswith('.py') or filename.endswith('.php'):
             print(f"<p>File '{filename}' is not allowed and was skipped.</p>")
             return
-        
+
         # Define the path where the file will be saved
         filepath = os.path.join(upload_dir, filename)
 
         # Save the uploaded file
         with open(filepath, 'wb') as output_file:
             output_file.write(file_item.file.read())
-        
+
         print(f"<p>File '{filename}' uploaded successfully!</p>")
 
 # Handle file uploads
