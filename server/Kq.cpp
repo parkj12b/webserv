@@ -223,7 +223,6 @@ void    Kq::mainLoop()
     //changed EVENTCNT to connectionCnt
     if ((count = kevent(kq, &fdList[0], fdList.size(), store, connectionCnt, NULL)) <= 0)
         return ;
-    // std::cout<<count<<std::endl;
     fdList.clear();
     for (int i = 0; i < count; i++)
     {
