@@ -158,7 +158,7 @@ void    Response::makeFilePath(string& str)
             if (location->getAutoindex())
                 str = temp + "/";
             else
-                request.status = 404;
+                request.status = 403;
             return ;
         }
     }
@@ -520,10 +520,27 @@ void    Response::makeGet()
 {
     int fd;
 
-    cout<<"Method: GET"<<endl;
-    cout<<request.url.c_str()<<endl;
-	CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
-	if (cgiFlag)
+    std::cout<<"Method: GET"<<std::endl;
+    std::cout<<request.url.c_str()<<std::endl;
+    CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
+    
+    cout << "is directory: " << isDirectory(request.url.c_str()) << endl;
+    cout << "location: " << getLocationConfigData()->getPath() << endl;
+    cout << "autoindex: " << getLocationConfigData()->getAutoindex() << endl;
+
+    //directory 검사는 makeFilePath 에서 함
+    cout << "request url: " << request.url << endl;
+    if (isDirectory(request.url.c_str()))
+    {
+        cgiProcessor.selectCgiCmd(AUTOINDEX_PATH);
+        cout << "directory listing" << endl;
+    	cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+        content += cgiProcessor.getCgiContent();
+        makeHeader("content-type", "text/html");
+        makeHeader("content_length", toString(contentLength));
+		std::cout << cgiProcessor.getCgiContent() << '\n';
+    }
+	else if (cgiFlag)
 	{
 		cgiProcessor.selectCgiCmd(request.url);
 		cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
