@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/20 14:57:03 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/22 15:01:39 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,10 @@ LocationConfigData *Client::recurFindLocation(string url,
         }
     }
  
+    cout << locationConfigData->getPath() << endl;
     Trie &prefixTrie = locationConfigData->getPrefixTrie();
     request.location = prefixTrie.find(url);
+    cout << "location: " << request.location << endl;
     if (request.location == "")
         return (locationConfigData);
     configData
@@ -469,7 +471,7 @@ bool    Client::setMatchingLocation(string url)
         else
             serverConfigData = Server::serverConfig->getDefaultServer(port);
     }
-    
+
     LocationConfigData *location = NULL;
 
     vector<string> &suffixMatch = serverConfigData->getSuffixMatch();
@@ -489,7 +491,9 @@ bool    Client::setMatchingLocation(string url)
         return (true);
     location
         = serverConfigData->getLocationConfigData(request.location, 0);
-    response.setLocationConfigData(recurFindLocation(url, location));
+    size_t i = url.find(location->getPath());
+    string temp = url.substr(i + location->getPath().size());
+    response.setLocationConfigData(recurFindLocation(temp, location));
     cout << "location " << request.location << endl;
     return (false);
 }

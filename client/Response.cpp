@@ -139,7 +139,7 @@ void    Response::makeFilePath(std::string& str)
             if (location->getAutoindex())
                 str = temp + "/";
             else
-                request.status = 404;
+                request.status = 403;
             return ;
         }
     }
@@ -455,10 +455,13 @@ void    Response::makeGet()
     std::cout<<request.url.c_str()<<std::endl;
     CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
     
-    cout << "is directory: " << isDirectory(request.url.c_str());
+    cout << "is directory: " << isDirectory(request.url.c_str()) << endl;
+    cout << "location: " << getLocationConfigData()->getPath() << endl;
+    cout << "autoindex: " << getLocationConfigData()->getAutoindex() << endl;
 
+    //directory 검사는 makeFilePath 에서 함
     if ((isDirectory(request.url.c_str()) && cgiProcessor.checkURL(AUTOINDEX_PATH))
-        || cgiProcessor.checkURL(request.url))
+            || cgiProcessor.checkURL(request.url))
     {
         cout << "directory listing" << endl;
     	cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
