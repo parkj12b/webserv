@@ -31,8 +31,6 @@ Kq::Kq()
     //Changing portNum to config port
     map<int, map<string, ServerConfigData *> > &serverConfigData = Server::serverConfig->getServerConfigData();
     map<int, map<string, ServerConfigData *> >::iterator serverConfigIt = serverConfigData.begin();
-    //temp
-    // int                 portNum[4] = {80, 800, 8000, 8080};
 
     while ((kq = kqueue()) < 0);
     option = 1;
@@ -104,7 +102,6 @@ void    Kq::clientFin(struct kevent& store)
     plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-    close(store.ident);
     findServer[store.ident] = 0;
     server[serverFd].clientFin(store.ident);
 }
@@ -115,7 +112,6 @@ void    Kq::serverError(struct kevent& store)
     //server 닫기
     Server  temp = server[store.ident];
 
-    //server file discriptor가 에러가 나왔을 때에 연결된 클라이언트의 모든 것을 에러 처리한다.
     temp.serverError();
 }
 
@@ -124,7 +120,6 @@ void    Kq::plusEvent(uintptr_t fd, int16_t filter, uint16_t flags, uint32_t ffl
     struct kevent   temp;
 
     EV_SET(&temp, fd, filter, flags, fflags, data, udata);
-    // kevent(kq, &temp, 1, NULL, 0, NULL);
     fdList.push_back(temp);  //temp를 복사해서 저장을 함
 }
 
@@ -134,7 +129,7 @@ void    Kq::plusClient(int serverFd)
 
     clientFd = server[serverFd].plusClient();
     std::cout<<"plus client "<<clientFd<<std::endl;
-    // plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 5000, 0);  //여기는 찐 디폴트 값인데
+    plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 50000, 0);  //50초
     plusEvent(clientFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     findServer[clientFd] = serverFd;
 }
@@ -161,7 +156,7 @@ void    Kq::eventRead(struct kevent& store)
         case FINISH:
             plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
             plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
-            plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 10000, 0);
+            plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 75000, 0);  //75초
             break ;
     }
 }

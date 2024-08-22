@@ -144,7 +144,7 @@ EVENT   Server::clientTimer(struct kevent& store)
 
 void    Server::clientFin(int clientFd)
 {
-    // close(clientFd);
+    close(clientFd);
     client.erase(clientFd);
 }
 
