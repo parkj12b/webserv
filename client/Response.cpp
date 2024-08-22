@@ -308,7 +308,10 @@ void    Response::makeCookie(std::string& date)
             cookieValue = cookieValue.substr(index + 1);
         HeaderLine::eraseSpace(cookieValue, 0);
         if (session.find(cookieValue) != session.end())
+        {
+            std::cout<<"here\n"<<std::endl;
             session[cookieValue] = date;
+        }
         std::cout<<"cookieValue: "<<cookieValue<<std::endl<<std::endl;
         makeHeader("session", session[cookieValue]);
     }
