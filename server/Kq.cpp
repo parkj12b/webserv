@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kq.cpp                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/21 19:38:42 by devpark          ###   ########.fr       */
+/*   Updated: 2024/08/15 02:07:26 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@ extern int logs;
 
 std::vector<pid_t>  processorInit()
 {
-    std::vector<pid_t>  m;
+    std::vector<pid_t>  v;
 
-    return (m);
+    return (v);
 }
 
 std::vector<struct kevent>  fdListInit()
@@ -47,8 +47,6 @@ Kq::Kq()
     //Changing portNum to config port
     map<int, map<string, ServerConfigData *> > &serverConfigData = Server::serverConfig->getServerConfigData();
     map<int, map<string, ServerConfigData *> >::iterator serverConfigIt = serverConfigData.begin();
-    //temp
-    // int                 portNum[4] = {80, 800, 8000, 8080};
 
     while ((kq = kqueue()) < 0);
     option = 1;
@@ -76,12 +74,13 @@ Kq::Kq()
     connectionCnt = Server::serverConfig->getWorkerConnections();
 }
 
-Kq::Kq(const Kq& src) : kq(src.getKq()), server(src.getServer()), findServer(src.getFindServer())
+Kq::Kq(const Kq& src) : kq(src.getKq()), connectionCnt(Server::serverConfig->getWorkerConnections()), server(src.getServer()), findServer(src.getFindServer())
 {}
 
 Kq& Kq::operator=(const Kq& src)
 {
     kq = src.getKq();
+    connectionCnt = Server::serverConfig->getWorkerConnections();
     server = src.getServer();
     findServer = src.getFindServer();
     return (*this);
@@ -109,8 +108,12 @@ void    Kq::clientFin(struct kevent& store)
 {
     int     serverFd;
 
-    // std::cout<<"error"<<std::endl;
+    std::cout<<"bye"<<std::endl;
     serverFd = findServer[store.ident];
+    plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
+    // plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
+    // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+    findServer[store.ident] = 0;
     server[serverFd].clientFin(store.ident);
 }
 
@@ -120,7 +123,6 @@ void    Kq::serverError(struct kevent& store)
     //server 닫기
     Server  temp = server[store.ident];
 
-    //server file discriptor가 에러가 나왔을 때에 연결된 클라이언트의 모든 것을 에러 처리한다.
     temp.serverError();
 }
 
@@ -137,14 +139,17 @@ void    Kq::plusClient(int serverFd)
     int clientFd;
 
     clientFd = server[serverFd].plusClient();
-    std::cout<<"plus client"<<std::endl;
+    if (clientFd < 0)
+        return ;
+    std::cout<<"plus client "<<clientFd<<std::endl;
+    plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 50000, 0);  //50초
     plusEvent(clientFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     findServer[clientFd] = serverFd;
 }
 
 void    Kq::eventRead(struct kevent& store)
 {
-    int     fd;
+    int     serverFd;
     EVENT   event;
 	map<int, int>::iterator iter = cgiFd.begin();
 
@@ -159,7 +164,10 @@ void    Kq::eventRead(struct kevent& store)
 	}
 	if (iter != cgiFd.end())
 	{
-		event = server[findServer[iter->second]].cgiRead(store);
+		serverFd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
+		if (serverFd == 0)
+			return ;
+		event = server[serverFd].cgiRead(store);
 		switch (event)
 		{
 			case EXPECT:
@@ -174,10 +182,10 @@ void    Kq::eventRead(struct kevent& store)
 	}
 	else
 	{
-		fd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
-		if (fd == 0)
+		serverFd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
+		if (serverFd == 0)
 			return ;
-		event = server[fd].clientRead(store);
+		event = server[serverFd].clientRead(store);
 		switch (event)
 		{
 			case ERROR:
@@ -188,6 +196,8 @@ void    Kq::eventRead(struct kevent& store)
 			case EXPECT:
 			case FINISH:
 				plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
+				plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
+				plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 75000, 0);  //75초
 				break ;
 		}
 	}
@@ -209,12 +219,32 @@ void    Kq::eventWrite(struct kevent& store)
         case ING:
             break ;
         case ERROR:
-        case FINISH:
-            std::cout<<"write delete\n";
             clientFin(store);
             break ;
+        case FINISH:
         case EXPECT:
-            EV_SET(&store, store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
+            plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
+            break ;
+    }
+}
+
+void    Kq::eventTimer(struct kevent& store)
+{
+    int     serverFd;
+    EVENT   event;
+
+    serverFd = findServer[store.ident];
+    if (serverFd == 0)
+        return ;
+    event = server[serverFd].clientTimer(store);
+    switch (event)
+    {
+        case EXPECT:
+        case ERROR:
+        case ING:
+            break ;
+        case FINISH:
+            clientFin(store);
             break ;
     }
 }
@@ -233,7 +263,8 @@ void    Kq::mainLoop()
     }
     Kq::processor = notFin;
     //changed EVENTCNT to connectionCnt
-    while ((count = kevent(kq, &fdList[0], fdList.size(), store, connectionCnt, NULL)) < 0);
+    if ((count = kevent(kq, &fdList[0], fdList.size(), store, connectionCnt, NULL)) <= 0)
+        return ;
     fdList.clear();
     for (int i = 0; i < count; i++)
     {
@@ -246,12 +277,15 @@ void    Kq::mainLoop()
         }
         else
         {
+            std::cout<<"store[i].ident: "<<store[i].ident<<std::endl;
             if (store[i].flags == EV_ERROR)
                 clientFin(store[i]);  //client 종료
             else if (store[i].filter == EVFILT_READ)
                 eventRead(store[i]);
             else if (store[i].filter == EVFILT_WRITE)
                 eventWrite(store[i]);
+            else if (store[i].filter == EVFILT_TIMER)
+                eventTimer(store[i]);
         }
     }
 }

@@ -142,21 +142,30 @@ void    Response::makeFilePath(string& str)
     cout << "host: " << request.header["host"].front() << endl;
     cout << "str before: " << str << endl;
     str = location->getRoot() + "/" + str;
-    if (isDirectory(str.c_str()))
-    {
-        // 없으면 index.html 이라 없을 일은 없음.
-        cout << "index: " << location->getIndex() << endl;
-        str += "/" + location->getIndex();
-    }
-    if (isFile(str.c_str()) == false)
-    {
-        cout << "not file: " << str << endl;
-        request.status = 404;
-        return ;
-    }
     if (isWithinBasePath(location->getRoot(), str) == false)
     {
         request.status = 403;
+        return ;
+    }
+    if (str[str.size() - 1] == '/' && isDirectory(str.c_str()))
+    {
+        // 없으면 index.html 이라 없을 일은 없음.
+        cout << "index: " << location->getIndex() << endl;
+        string temp = str;
+        str += "/" + location->getIndex();
+        if (isFile(str.c_str()) == false)
+        {
+            if (location->getAutoindex())
+                str = temp + "/";
+            else
+                request.status = 404;
+            return ;
+        }
+    }
+    else if (isFile(str.c_str()) == false)
+    {
+        cout << "not file: " << str << endl;
+        request.status = 404;
         return ;
     }
 	if (str.find("..") != std::string::npos)
@@ -196,7 +205,7 @@ Response::~Response()
 {
 }
 
-Response::Response(int port) : port(port)
+Response::Response(int port) : port(port), contentLength(0)
 {}
 
 int Response::getPort() const
@@ -351,16 +360,14 @@ void    Response::makeDefaultHeader()
 
     now = time(0);
     dt = ctime(&now);
-    string         date;
-    string         str(dt);
-    ostringstream  oss(str);
-    istringstream  strStream(str);
-    string         temp;
-    string         day[5];
-    size_t         pos;
-    int            order;
-    // const string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    // const size_t charactersSize = characters.size();
+    std::string         date;
+    std::string         str(dt);
+    std::ostringstream  oss(str);
+    std::istringstream  strStream(str);
+    std::string         temp;
+    std::string         day[5];
+    size_t              pos;
+    int                 order;
 
     order = 0;
     while (getline(strStream, temp, ' '))
@@ -372,11 +379,13 @@ void    Response::makeDefaultHeader()
     date = day[0] + ", " + day[2] + " " + day[1] + " " + day[4] + " " + day[3] + " GMT";
     makeHeader("Date", date);
     makeHeader("Server", "inghwang/0.0");
+    makeHeader("connection", "keep-alive");
     makeCookie(date);
 }
 
 void    Response::makeError()
 {
+    cout << "makeError\n";
     if (request.status >= 300 && request.status < 400)
         return ;
     if (request.status == 100)
@@ -384,6 +393,9 @@ void    Response::makeError()
     LocationConfigData	*location = getLocationConfigData();
     map<int, string>	&errorPage = location->getErrorPage();
     string errorPath = errorPage[request.status];
+
+    cout << "errorPath: " << errorPath << endl;
+    
     int fd;
     if (errorPath != "")
         fd = open(errorPath.c_str(), O_RDONLY);
@@ -398,8 +410,8 @@ void    Response::makeError()
 		content += cgiProcessor.getCgiContent();
         cout << cgiProcessor.getCgiContent() << '\n';
     }
-    makeHeader("Content-Type", "text/html");
-    makeHeader("Content-Length", to_string(content.size()));
+    makeHeader("content-type", "text/html");
+    makeHeader("content-length", to_string(content.size()));
 }
 
 void    Response::checkRedirect()
@@ -484,8 +496,11 @@ void    Response::makeGet()
 			while (!cgiProcessor.getFin())
 				cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
 		}
+		// 나중에 content-length가 0일 때, 서버 에러 추가
 		start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
-		makeHeader("Content-Type", "text/html");
+		makeHeader("content-type", "text/html");
+		makeHeader("content-length", toString(contentLength));
+		makeHeader("status", toString(request.status));
 		content += cgiProcessor.getCgiContent();
 		cout << cgiProcessor.getCgiContent() << '\n';
 	}
@@ -529,7 +544,6 @@ void    Response::makePost()
 		while (!cgiProcessor.getFin())
 			cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
 	}
-    // start = "HTTP/1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 }
 
 void    Response::makeDelete()
@@ -538,14 +552,12 @@ void    Response::makeDelete()
     if (remove(request.url.c_str()) == 0)
     {
         request.status = 204;
-        // start = "HTTP/1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
     }
     else
     {
         request.status = 404;
         makeError();
     }
-    //접근 권한이 실패될 경우에는 403
 }
 
 void    Response::responseMake()

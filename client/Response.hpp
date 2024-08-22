@@ -13,6 +13,7 @@
 #ifndef RESPONSE_HPP
 # define RESPONSE_HPP
 
+# include <algorithm>
 # include <iostream>
 # include <vector>
 # include <deque>
@@ -24,6 +25,8 @@
 # include "StartLine.hpp"
 # include "CgiProcessor.hpp"
 # include "HeaderLine.hpp"
+
+# define AUTOINDEX_PATH "./cgi-bin/autoindex.py"
 
 using namespace std;
 
@@ -61,14 +64,15 @@ class Server;
 class Response
 {
     private:
+		bool				cgiFlag;
+        int                 port;
+		size_t				contentLength;
         std::string         start;
         std::string         header;
         std::string         content;
         std::string         entity;
-        int                 port;
-		bool				cgiFlag;
-		size_t				contentLength;
         Request             request;
+        std::vector<std::string>    keyHeader;
         ServerConfigData    *serverConfig;    //server config
         LocationConfigData  *locationConfig;  //location config
     public:

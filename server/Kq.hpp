@@ -13,6 +13,7 @@
 #ifndef KQ_HPP
 # define KQ_HPP
 
+# include "Client.hpp"
 # include "Server.hpp"
 # include "HTTPServer.hpp"
 # include <cstdlib>
@@ -26,6 +27,9 @@ class HTTPServer;
 # define PORT 8000
 # define CLIENT_CNT 10
 # define EVENTCNT 10
+
+class Server;
+class Client;
 
 /***
  * @brief Kq manages server and kq
@@ -62,6 +66,7 @@ class Kq
         void    plusClient(int serverFd);           //client and server connect
         void    eventRead(struct kevent& store);    //kq event read
         void    eventWrite(struct kevent& store);   //kq event write
+        void    eventTimer(struct kevent& store);   //kq event timer
         void    mainLoop();                         //main logic
 };
 

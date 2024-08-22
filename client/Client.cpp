@@ -18,7 +18,32 @@
 
 extern int logs;
 
-Client::Client() : connect(true), fd(0), port(0), index(0), responseAmount(0), startLine(0), headerLine(0), contentLine(0)
+LocationConfigData *Client::recurFindLocation(string url,
+    LocationConfigData *locationConfigData)
+{
+    LocationConfigData *configData = NULL;
+
+    vector<string> &suffixMatch = locationConfigData->getSuffixMatch();
+    for (vector<string>::iterator it = suffixMatch.begin();
+        it != suffixMatch.end(); it++)
+    {
+        if (endsWith(url, *it))
+        {
+            configData = locationConfigData->getLocationConfigData(*it, 1);
+            return (recurFindLocation(url, configData));
+        }
+    }
+ 
+    Trie &prefixTrie = locationConfigData->getPrefixTrie();
+    request.location = prefixTrie.find(url);
+    if (request.location == "")
+        return (locationConfigData);
+    configData
+        = locationConfigData->getLocationConfigData(request.location, 0);
+    return (recurFindLocation(url, configData));
+}
+
+Client::Client() : connect(true), connection(false), fd(0), port(0), index(0), responseAmount(0), startLine(0), headerLine(0), contentLine(0)
 {
     request.port = port;
     request.fin = false;
@@ -26,20 +51,22 @@ Client::Client() : connect(true), fd(0), port(0), index(0), responseAmount(0), s
 	request.clientFd = fd;
 }
 
-Client::Client(int fd, int port) : connect(true), fd(fd), port(port), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port)
+Client::Client(int fd, int port) : connect(true), connection(false), fd(fd), port(port), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port)
 {
+    keepAlive = time(0);
     request.port = port;
     request.fin = false;
     request.status = 0;
 	request.clientFd = fd;
 }
 
-Client::Client(const Client& src) : connect(src.getConnect()), fd(src.getFd()), port(src.getPort()), index(src.getIndex()), responseAmount(src.getResponseAmount()), standardTime(src.getStandardTime()), msg(src.getMsg()), keepAlive(src.getKeepAlive()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse())
+Client::Client(const Client& src) : connect(src.getConnect()), connection(src.getConnection()), fd(src.getFd()), port(src.getPort()), index(src.getIndex()), responseAmount(src.getResponseAmount()), standardTime(src.getStandardTime()), msg(src.getMsg()), keepAlive(src.getKeepAlive()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse())
 {}
 
 Client& Client::operator=(const Client& src)
 {
     connect = src.getConnect();
+    connection = src.getConnection();
     fd = src.getFd();
     port = src.getPort();
     index = src.getIndex();
@@ -63,6 +90,11 @@ Client::~Client()
 bool    Client::getConnect() const
 {
     return (connect);
+}
+
+bool    Client::getConnection() const
+{
+    return (connection);
 }
 
 int Client::getFd(void) const
@@ -135,6 +167,11 @@ int Client::getRequestStatus() const
     return (request.status);
 }
 
+void    Client::setConnection(bool ycdi)
+{
+    this->connection = ycdi;
+}
+
 void    Client::setFd(uintptr_t fd)
 {
     this->fd = fd;
@@ -172,16 +209,6 @@ void	Client::clientIP(struct sockaddr_in  clntAdr)
 	inet_ntop(AF_INET, &clntAdr.sin_addr, clientIp, INET_ADDRSTRLEN);
 	request.clientIp = clientIp;
 	// std::cout<<"client ip: "<<clientIp<<std::endl;
-}
-
-bool    Client::diffKeepAlive()
-{
-    //on or off checking
-    if (!connect)
-        return (false);
-    if (difftime(std::time(0), keepAlive) > standardTime)
-        return (false);
-    return (true);
 }
 
 const char* Client::respondMsgIndex()
@@ -385,42 +412,10 @@ void    Client::resetClient()
     contentLine = ContentLine(port);
 }
 
-//temp(must delete)
-void    Client::showMessage(void)
-{
-    std::deque<std::string>::iterator  itd;
-
-    time_t now = time(0);
-    // time_t 형식을 문자열로 변환합니다.
-    char* dt = ctime(&now);
-    std::cout<<"time : "<<dt;
-    //request 출력
-    std::cout<<"=====strat line=====\n";
-    std::cout<<"fd : "<<fd<<std::endl;
-    std::cout<<request.method<<" "<<request.version<<" "<<request.url<<std::endl;
-    for (std::map<std::string, std::string>::iterator it = request.query.begin(); it != request.query.end(); it++)
-        std::cout<<it->first<<"="<<it->second<<std::endl;
-    std::cout<<"=====header line=====\n";
-    for (std::map<std::string, std::deque<std::string> >::iterator it = request.header.begin(); it != request.header.end(); it++)
-    {
-        std::cout<<it->first<<": ";
-        for (itd = request.header[it->first].begin(); itd != request.header[it->first].end(); itd++)
-            std::cout<<*itd<<"  ";
-        std::cout<<"\n";
-    }
-    std::cout<<"=====entity line=====\n";
-    for (std::vector<std::string>::iterator it = request.content.begin(); it != request.content.end(); it++)
-    {
-        std::cout<<*it;
-    }
-    std::cout<<"\n\n";
-}
-
 void    Client::setMessage(std::string msgRequest)
 {
     msg += msgRequest;
-    // write(logs, &msgRequest[0], msgRequest.size());
-    // std::cout<<"Read Event"<<std::endl;
+    write(logs, &msgRequest[0], msgRequest.size());
     if (setStart())  //max size literal
     {
         request.fin = true;
@@ -507,27 +502,33 @@ bool    Client::setMatchingLocation(string url)
     return (false);
 }
 
-LocationConfigData *Client::recurFindLocation(string url,
-    LocationConfigData *locationConfigData)
+//temp(must delete)
+void    Client::showMessage(void)
 {
-    LocationConfigData *configData = NULL;
+    std::deque<std::string>::iterator  itd;
 
-    vector<string> &suffixMatch = locationConfigData->getSuffixMatch();
-    for (vector<string>::iterator it = suffixMatch.begin();
-        it != suffixMatch.end(); it++)
+    time_t now = time(0);
+    // time_t 형식을 문자열로 변환합니다.
+    char* dt = ctime(&now);
+    std::cout<<"time : "<<dt;
+    //request 출력
+    std::cout<<"=====strat line=====\n";
+    std::cout<<"fd : "<<fd<<std::endl;
+    std::cout<<request.method<<" "<<request.version<<" "<<request.url<<std::endl;
+    for (std::map<std::string, std::string>::iterator it = request.query.begin(); it != request.query.end(); it++)
+        std::cout<<it->first<<"="<<it->second<<std::endl;
+    std::cout<<"=====header line=====\n";
+    for (std::map<std::string, std::deque<std::string> >::iterator it = request.header.begin(); it != request.header.end(); it++)
     {
-        if (endsWith(url, *it))
-        {
-            configData = locationConfigData->getLocationConfigData(*it, 1);
-            return (recurFindLocation(url, configData));
-        }
+        std::cout<<it->first<<": ";
+        for (itd = request.header[it->first].begin(); itd != request.header[it->first].end(); itd++)
+            std::cout<<*itd<<"  ";
+        std::cout<<"\n";
     }
- 
-    Trie &prefixTrie = locationConfigData->getPrefixTrie();
-    request.location = prefixTrie.find(url);
-    if (request.location == "")
-        return (locationConfigData);
-    configData
-        = locationConfigData->getLocationConfigData(request.location, 0);
-    return (recurFindLocation(url, configData));
+    std::cout<<"=====entity line=====\n";
+    for (std::vector<std::string>::iterator it = request.content.begin(); it != request.content.end(); it++)
+    {
+        std::cout<<*it;
+    }
+    std::cout<<"\n\n";
 }
