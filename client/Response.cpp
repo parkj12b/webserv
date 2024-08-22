@@ -532,12 +532,11 @@ void    Response::makeGet()
     cout << "request url: " << request.url << endl;
     if (isDirectory(request.url.c_str()))
     {
+        cgiFlag = true;
         cgiProcessor.selectCgiCmd(AUTOINDEX_PATH);
         cout << "directory listing" << endl;
     	cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
-        content += cgiProcessor.getCgiContent();
         makeHeader("content-type", "text/html");
-        makeHeader("content_length", toString(contentLength));
 		std::cout << cgiProcessor.getCgiContent() << '\n';
     }
 	else if (cgiFlag)

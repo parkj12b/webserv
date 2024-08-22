@@ -92,6 +92,7 @@ EVENT Server::cgiRead(struct kevent& store)
         cgiContentLength = 0;
         return (ERROR);
 	}
+    // close(1);
     cgiContent.append(string(buf));
     // std::cout<<cgiContent<<std::endl;
     // std::cout<<cgiContentLength<<std::endl;
