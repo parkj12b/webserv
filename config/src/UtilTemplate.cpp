@@ -162,11 +162,11 @@ bool    isWithinBasePath(const string &basePath, const string &requestPath)
     string resolvedPath;
     char *resolvedPathCstr;
     
-    cout << "requestPath: " << requestPath << endl;
+    // cout << "requestPath: " << requestPath << endl;
     resolvedPathCstr = realpath(requestPath.c_str(), NULL);
     if (!resolvedPathCstr)
         return false;
-    cout << "resolved path: " << resolvedPathCstr << endl;
+    // cout << "resolved path: " << resolvedPathCstr << endl;
     resolvedPath = resolvedPathCstr;
     free(resolvedPathCstr);
     if (resolvedPath.find(basePath) == 0)

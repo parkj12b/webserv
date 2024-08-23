@@ -63,6 +63,15 @@ bool    Server::getResponseCgi(int fd)
     return (client[fd].getResponseCgi());
 }
 
+ssize_t Server::getStandardTime(int fd)
+{
+    ssize_t   standardTime = client[fd].getStandardTime();
+
+    if (standardTime < 0)
+        return (7500);
+    return (standardTime);
+}
+
 int Server::plusClient()
 {
     int                 clntFd;
@@ -108,7 +117,7 @@ EVENT Server::cgiRead(struct kevent& store)
         client[Kq::cgiFd[store.ident]].setResponseContent(cgiContentLength, cgiContent);
 		cgiContent.clear();
 		cgiContentLength = 0;
-        std::cout<<"msgsssssssss: "<<client[Kq::cgiFd[store.ident]].getMsg();
+        std::cout<<"msg\n"<<client[Kq::cgiFd[store.ident]].getMsg();
         std::cout<<"====================="<<std::endl;
 		return (FINISH);
     }

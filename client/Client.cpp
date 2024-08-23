@@ -37,7 +37,7 @@ LocationConfigData *Client::recurFindLocation(string url,
     cout << locationConfigData->getPath() << endl;
     Trie &prefixTrie = locationConfigData->getPrefixTrie();
     request.location = prefixTrie.find(url);
-    cout << "location: " << request.location << endl;
+    // cout << "location: " << request.location << endl;
     if (request.location == "")
         return (locationConfigData);
     configData
@@ -55,14 +55,13 @@ Client::Client() : connect(true), connection(false), fd(0), port(0), index(0), r
 
 Client::Client(int fd, int port) : connect(true), connection(false), fd(fd), port(port), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port)
 {
-    keepAlive = time(0);
     request.port = port;
     request.fin = false;
     request.status = 0;
 	request.clientFd = fd;
 }
 
-Client::Client(const Client& src) : connect(src.getConnect()), connection(src.getConnection()), fd(src.getFd()), port(src.getPort()), index(src.getIndex()), responseAmount(src.getResponseAmount()), standardTime(src.getStandardTime()), msg(src.getMsg()), keepAlive(src.getKeepAlive()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse())
+Client::Client(const Client& src) : connect(src.getConnect()), connection(src.getConnection()), fd(src.getFd()), port(src.getPort()), index(src.getIndex()), responseAmount(src.getResponseAmount()), standardTime(src.getStandardTime()), msg(src.getMsg()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse())
 {}
 
 Client& Client::operator=(const Client& src)
@@ -75,7 +74,6 @@ Client& Client::operator=(const Client& src)
     responseAmount = src.getResponseAmount();
     standardTime = src.getStandardTime();
     msg = src.getMsg();
-    keepAlive = src.getKeepAlive();
     request = src.getRequest();
     startLine = src.getStartLine();
     headerLine = src.getHeaderline();
@@ -129,11 +127,6 @@ std::string Client::getMsg() const
     return (msg.c_str() + index);
 }
 
-std::time_t Client::getKeepAlive() const
-{
-    return (keepAlive);
-}
-
 Request Client::getRequest() const
 {
     return (request);
@@ -177,11 +170,6 @@ void    Client::setConnection(bool ycdi)
 void    Client::setFd(uintptr_t fd)
 {
     this->fd = fd;
-}
-
-void    Client::setKeepAlive(std::time_t time)
-{
-    keepAlive = time;
 }
 
 void    Client::setRequestStatus(int temp)
@@ -255,7 +243,6 @@ int Client::setStart(void)
         {
             //location && keep-alive
             standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
-            standardTime = 100;  //여기서 keep-alive setting
             request.status = 414;
             return (2);
         }

@@ -139,8 +139,8 @@ void    Response::makeFilePath(string& str)
 {
     LocationConfigData *location = getLocationConfigData();
 
-    cout << "host: " << request.header["host"].front() << endl;
-    cout << "str before: " << str << endl;
+    // cout << "host: " << request.header["host"].front() << endl;
+    // cout << "str before: " << str << endl;
     str = location->getRoot() + "/" + str;
     if (isWithinBasePath(location->getRoot(), str) == false)
     {
@@ -175,7 +175,7 @@ void    Response::makeFilePath(string& str)
 	}
 	if (isCgiScriptInURL(str))
 		cgiFlag = true;
-    cout << "str: " << str << endl;
+    // cout << "str: " << str << endl;
 }
 
 Response::Response() : cgiFlag(false)
@@ -310,7 +310,7 @@ void    Response::init()
     entity.clear();
     string host = request.header["host"].front();
 	cgiFlag = false;
-    cout << "host: " << host << endl;
+    // cout << "host: " << host << endl;
     try
     {
         serverConfig = Server::serverConfig->getServerData(host, port);
@@ -370,14 +370,13 @@ void    Response::makeCookie(string& date)
         index = cookieValue.find('=');
         if (index != string::npos)
             cookieValue = cookieValue.substr(index + 1);
-        std::cout<<"cookieValue: "<<cookieValue<<std::endl;
         HeaderLine::eraseSpace(cookieValue, 0);
         if (session.find(cookieValue) == session.end())
         {
             std::cout<<"here\n"<<std::endl;
             session[cookieValue] = date;
         }
-        std::cout<<"cookieValue: "<<cookieValue<<std::endl<<std::endl;
+        // std::cout<<"cookieValue: "<<cookieValue<<std::endl<<std::endl;
         makeHeader("session", session[cookieValue]);
     }
 }
@@ -524,12 +523,12 @@ void    Response::makeGet()
     std::cout<<request.url.c_str()<<std::endl;
     CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
     
-    cout << "is directory: " << isDirectory(request.url.c_str()) << endl;
-    cout << "location: " << getLocationConfigData()->getPath() << endl;
-    cout << "autoindex: " << getLocationConfigData()->getAutoindex() << endl;
+    // cout << "is directory: " << isDirectory(request.url.c_str()) << endl;
+    // cout << "location: " << getLocationConfigData()->getPath() << endl;
+    // cout << "autoindex: " << getLocationConfigData()->getAutoindex() << endl;
 
     //directory 검사는 makeFilePath 에서 함
-    cout << "request url: " << request.url << endl;
+    // cout << "request url: " << request.url << endl;
     if (isDirectory(request.url.c_str()))
     {
         cgiFlag = true;
@@ -625,7 +624,7 @@ void    Response::responseMake()
         return ;
     }
     checkAllowedMethod();
-    cout << "path: " << locationConfig->getPath() << endl;
+    // cout << "path: " << locationConfig->getPath() << endl;
     if (request.status > 0)
     {
         makeError();

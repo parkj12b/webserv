@@ -142,7 +142,7 @@ void    Kq::plusClient(int serverFd)
     if (clientFd < 0)
         return ;
     std::cout<<"plus client "<<clientFd<<std::endl;
-    plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 50000, 0);  //50초
+    plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 75000, 0);  //50초
     plusEvent(clientFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     findServer[clientFd] = serverFd;
 }
@@ -182,8 +182,6 @@ void    Kq::eventRead(struct kevent& store)
                 std::cout<<"finish\n"<<std::endl;
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
-				plusEvent(cgiFd[store.ident], EVFILT_TIMER, EV_DELETE, 0, 0, 0);
-				plusEvent(cgiFd[store.ident], EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 75000, 0);  //75초
 				close(iter->first);
 				cgiFd.erase(iter->first);
 				break ;
@@ -208,11 +206,10 @@ void    Kq::eventRead(struct kevent& store)
                 if (!server[serverFd].getResponseCgi(store.ident))  //cgi임을 체크하기 cgi임을 확인하고 write를 완료하면 response를 초기화를 진행한다. 그렇게 되면 여태까지 만들어놓은 response는 사라진다. 
                     plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
 				plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
-				plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 75000, 0);  //75초
+				plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, server[serverFd].getStandardTime(store.ident), 0);  //75초
 				break ;
 		}
 	}
-    std::cout<<"not all"<<std::endl;
 }
 
 void    Kq::eventWrite(struct kevent& store)
