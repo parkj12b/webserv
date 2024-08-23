@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:17 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/21 17:13:30 by devpark          ###   ########.fr       */
+/*   Updated: 2024/08/23 16:54:52 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ class Client
         HeaderLine  getHeaderline() const;
         ContentLine getContentLine() const;
         Response    getResponse() const;
+        Response    &getResponse();
         bool        getRequestFin() const;
         int         getRequestStatus() const;
         //set function

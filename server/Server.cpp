@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/21 17:12:45 by devpark          ###   ########.fr       */
+/*   Updated: 2024/08/23 16:50:01 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "Response.hpp"
 #include <algorithm>
 
 extern int logs;
@@ -93,8 +94,9 @@ EVENT Server::cgiRead(struct kevent& store)
 	char	buf[PIPE_BUFFER_SIZE + 1];
 	int     readSize;
 
-	cout << "" << endl;
+	cout << "fd: " << store.ident << endl;
 	readSize = read(store.ident, buf, PIPE_BUFFER_SIZE);
+    cout << &client[Kq::cgiFd[store.ident]].getResponse() << endl;
 	if (readSize <= 0)
 	{
         std::cout<<"Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl;

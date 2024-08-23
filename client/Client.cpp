@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/22 15:01:39 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/23 16:55:05 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@ LocationConfigData *Client::recurFindLocation(string url,
  
     cout << locationConfigData->getPath() << endl;
     Trie &prefixTrie = locationConfigData->getPrefixTrie();
-    request.location = prefixTrie.find(url);
+    string temp = prefixTrie.find(url);
     // cout << "location: " << request.location << endl;
-    if (request.location == "")
+    if (temp == "")
         return (locationConfigData);
     configData
         = locationConfigData->getLocationConfigData(request.location, 0);
@@ -145,6 +145,11 @@ HeaderLine  Client::getHeaderline() const
 ContentLine    Client::getContentLine() const
 {
     return (contentLine);
+}
+
+Response    &Client::getResponse()
+{
+    return (response);
 }
 
 Response    Client::getResponse() const
@@ -275,6 +280,7 @@ int Client::setHeader(void)
                 msg = msg.substr(flag + 2);
                 //keep-alive
                 standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
+                cout << "response in location: " << &response << endl;
                 if (setMatchingLocation(request.url))
                 {
                     request.status = 404;
@@ -404,14 +410,13 @@ int Client::setTrailer(void)
 
 void    Client::resetClient()
 {
-    Response    temp;
-
     request.fin = false;
     request.status = 0;
     connect = true;
     index = 0;
     msg.clear();
-    response = temp;
+    // 여기서 뭔가 ServerConfigData, LocationConfigData를 초기화해주는 기분이 듦
+    response = Response(port);
     startLine = StartLine(port);
     headerLine = HeaderLine(port);
     contentLine = ContentLine(port);
@@ -505,6 +510,7 @@ bool    Client::setMatchingLocation(string url)
     }
     Trie &prefixTrie = serverConfigData->getPrefixTrie();
     request.location = prefixTrie.find(url);
+    cout << "location " << request.location << endl;
     if (request.location == "")
         return (true);
     location
@@ -512,7 +518,10 @@ bool    Client::setMatchingLocation(string url)
     size_t i = url.find(location->getPath());
     string temp = url.substr(i + location->getPath().size());
     response.setLocationConfigData(recurFindLocation(temp, location));
-    cout << "location " << request.location << endl;
+    cout << "path: " << response.getLocationConfigData()->getPath() << endl;
+    cout << "location " << location << endl;
+    cout << "lower location " << request.location << endl;
+    cout << "location here: " << location << endl;
     return (false);
 }
 

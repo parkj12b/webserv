@@ -145,6 +145,7 @@ void    Response::makeFilePath(string& str)
     if (isWithinBasePath(location->getRoot(), str) == false)
     {
         request.status = 403;
+        cout << "403 1\n";
         return ;
     }
     if (str[str.size() - 1] == '/' && isDirectory(str.c_str()))
@@ -321,6 +322,7 @@ int Response::init()
     content.clear();
     entity.clear();
     string host = request.header["host"].front();
+    cout << "host : " << host << endl;
 	cgiFlag = false;
     // cout << "host: " << host << endl;
     try
@@ -433,6 +435,8 @@ void    Response::makeError()
         return ;
     if (request.status == 100)
         return ;
+    cout << "makeError\n"<<request.status<<std::endl;
+	cout << request.clientFd << std::endl;
     LocationConfigData	*location = getLocationConfigData();
     map<int, string>	&errorPage = location->getErrorPage();
     string errorPath = errorPage[request.status];

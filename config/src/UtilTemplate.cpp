@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   UtilTemplate.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 15:26:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/21 16:18:33 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/23 14:10:35 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,17 +160,24 @@ bool endsWith(const string& text, const string& suffix) {
 bool    isWithinBasePath(const string &basePath, const string &requestPath)
 {
     string resolvedPath;
+    char *realBasePath;
     char *resolvedPathCstr;
     
     // cout << "requestPath: " << requestPath << endl;
+    realBasePath = realpath(basePath.c_str(), NULL);
+    if (!realBasePath)
+        return false;
     resolvedPathCstr = realpath(requestPath.c_str(), NULL);
     if (!resolvedPathCstr)
         return false;
     // cout << "resolved path: " << resolvedPathCstr << endl;
     resolvedPath = resolvedPathCstr;
-    free(resolvedPathCstr);
-    if (resolvedPath.find(basePath) == 0)
+    delete resolvedPathCstr;
+    if (resolvedPath.find(realBasePath) == 0)
+    {
+        delete realBasePath;
         return true;
+    }
     return false;
 }
 
