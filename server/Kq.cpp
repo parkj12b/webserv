@@ -110,7 +110,7 @@ void    Kq::clientFin(struct kevent& store)
 
     std::cout<<"bye"<<std::endl;
     serverFd = findServer[store.ident];
-    plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
+    // plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
     findServer[store.ident] = 0;
@@ -166,7 +166,10 @@ void    Kq::eventRead(struct kevent& store)
 	{
 		serverFd = findServer[cgiFd[store.ident]]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
+        {
+            plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
 			return ;
+        }
 		event = server[serverFd].cgiRead(store);
 		switch (event)
 		{
@@ -191,7 +194,10 @@ void    Kq::eventRead(struct kevent& store)
 	{
 		serverFd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
+        {
+            plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
 			return ;
+        }
         std::cout<<"not cgi"<<std::endl;
 		event = server[serverFd].clientRead(store);
 		switch (event)
@@ -221,7 +227,10 @@ void    Kq::eventWrite(struct kevent& store)
         return ;
     serverFd = findServer[store.ident];
     if (serverFd == 0)
+    {
+        plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
         return ;
+    }
     event = server[serverFd].clientWrite(store);
     switch (event)
     {
@@ -244,7 +253,10 @@ void    Kq::eventTimer(struct kevent& store)
 
     serverFd = findServer[store.ident];
     if (serverFd == 0)
+    {
+        plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
         return ;
+    }
     event = server[serverFd].clientTimer(store);
     switch (event)
     {
