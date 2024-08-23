@@ -150,8 +150,8 @@ EVENT Server::clientRead(struct kevent& store)
         client[store.ident].setResponseMessage();
         if (client[store.ident].getRequestStatus() == 100)
             return (EXPECT);
-        if (client[store.ident].getRequestFin())
-            client[store.ident].showMessage();
+        // if (client[store.ident].getRequestFin())
+        //     client[store.ident].showMessage();
         return (FINISH);
     }
     return (ING);
