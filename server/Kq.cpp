@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/15 02:07:26 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/23 14:06:29 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,6 +175,8 @@ void    Kq::eventRead(struct kevent& store)
 				break ;
 			case ERROR:
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+                findServer[cgiFd[store.ident]] = 0;
+                std::cout<<"pipe fd error"<<std::endl;
                 clientFin(store);
                 break ;
 			case FINISH:
@@ -295,7 +297,7 @@ void    Kq::mainLoop()
                 clientFin(store[i]);  //client 종료
             else if (store[i].filter == EVFILT_READ)
             {
-                std::cout<<"read"<<std::endl;
+                // std::cout<<"read"<<std::endl;
                 eventRead(store[i]);
             }
             else if (store[i].filter == EVFILT_WRITE)

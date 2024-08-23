@@ -145,6 +145,7 @@ void    Response::makeFilePath(string& str)
     if (isWithinBasePath(location->getRoot(), str) == false)
     {
         request.status = 403;
+        cout << "403 1\n";
         return ;
     }
     if (str[str.size() - 1] == '/' && isDirectory(str.c_str()))
