@@ -97,7 +97,12 @@ EVENT Server::cgiRead(struct kevent& store)
 	readSize = read(store.ident, buf, PIPE_BUFFER_SIZE);
 	if (readSize <= 0)
 	{
-        client[Kq::cgiFd[store.ident]].setRequestStatus(500);
+        std::cout<<"Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl;
+        client[Kq::cgiFd[store.ident]].getResponse().setRequestStatus(500);
+        cout << Kq::cgiFd[store.ident] << endl;
+        client[Kq::cgiFd[store.ident]].getResponse().makeError();
+        cout << "fdsaf" << endl;
+        client[Kq::cgiFd[store.ident]].setErrorMsg();
         cgiContent.clear();
         cgiContentLength = 0;
         return (ERROR);

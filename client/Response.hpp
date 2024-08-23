@@ -98,9 +98,11 @@ class Response
         Request     getRequest() const;
         int         getRequestStatus() const;
 		bool		getCgiFlag() const;
-        LocationConfigData *getLocationConfigData();
+        std::vector<std::string>    getKeyHeader() const;
+        LocationConfigData *getLocationConfigData() const;
         //set function
         void        setRequest(Request &temp);
+        void        setRequestStatus(int status);
         void        setLocationConfigData(LocationConfigData *locationConfig);
 		std::string setContent(string content_);
 		void	    setContentLength(size_t contentLength_);

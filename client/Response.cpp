@@ -192,14 +192,17 @@ Response&    Response::operator=(const Response& src)
     if (this == &src)
         return (*this);
     cgiFlag = src.getCgiFlag();
+    port = src.getPort();
+    startHeaderLength = src.getStartHeaderLength();
+    contentLength = src.getContentLength();
     start = src.getStart();
     header = src.getHeader();
     content = src.getContent();
     entity = src.getEntity();
     request = src.getRequest();
-    request.status = src.getRequestStatus();
-    port = src.getPort();
-	cgiFlag = src.getCgiFlag();
+    keyHeader = src.getKeyHeader();
+    // serverConfig = src.getServerConfig();
+    locationConfig = src.getLocationConfigData();
     return (*this);
 }
 
@@ -260,7 +263,12 @@ bool	Response::getCgiFlag() const
 	return (cgiFlag);
 }
 
-LocationConfigData *Response::getLocationConfigData()
+std::vector<std::string>    Response::getKeyHeader() const
+{
+    return (keyHeader);
+}
+
+LocationConfigData *Response::getLocationConfigData() const
 {
     return (locationConfig);
 }
@@ -268,6 +276,11 @@ LocationConfigData *Response::getLocationConfigData()
 void    Response::setRequest(Request &temp)
 {
     request = temp;
+}
+
+void    Response::setRequestStatus(int status)
+{
+    request.status = status;
 }
 
 void    Response::setLocationConfigData(LocationConfigData *locationConfigData)
@@ -415,7 +428,7 @@ void    Response::makeDefaultHeader()
 
 void    Response::makeError()
 {
-    cout << "makeError\n";
+    cout << "makeError\n"<<request.status<<std::endl;
     if (request.status >= 300 && request.status < 400)
         return ;
     if (request.status == 100)
