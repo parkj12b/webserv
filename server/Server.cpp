@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/23 13:52:27 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/23 16:50:01 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ EVENT Server::cgiRead(struct kevent& store)
 
 	cout << "fd: " << store.ident << endl;
 	readSize = read(store.ident, buf, PIPE_BUFFER_SIZE);
+    cout << &client[Kq::cgiFd[store.ident]].getResponse() << endl;
 	if (readSize <= 0)
 	{
         client[Kq::cgiFd[store.ident]].setRequestStatus(500);
@@ -155,8 +156,8 @@ EVENT Server::clientRead(struct kevent& store)
         client[store.ident].setResponseMessage();
         if (client[store.ident].getRequestStatus() == 100)
             return (EXPECT);
-        if (client[store.ident].getRequestFin())
-            client[store.ident].showMessage();
+        // if (client[store.ident].getRequestFin())
+        //     client[store.ident].showMessage();
         return (FINISH);
     }
     return (ING);
