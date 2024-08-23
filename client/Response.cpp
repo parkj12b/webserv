@@ -140,7 +140,7 @@ void    Response::makeFilePath(string& str)
     LocationConfigData *location = getLocationConfigData();
 
     // cout << "host: " << request.header["host"].front() << endl;
-    // cout << "str before: " << str << endl;
+    cout << "str before: " << str << endl;
     str = location->getRoot() + "/" + str;
     if (isWithinBasePath(location->getRoot(), str) == false)
     {
@@ -176,7 +176,7 @@ void    Response::makeFilePath(string& str)
 	}
 	if (isCgiScriptInURL(str))
 		cgiFlag = true;
-    // cout << "str: " << str << endl;
+    cout << "str: " << str << endl;
 }
 
 Response::Response() : cgiFlag(false)
