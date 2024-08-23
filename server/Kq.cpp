@@ -166,10 +166,7 @@ void    Kq::eventRead(struct kevent& store)
 	{
 		serverFd = findServer[cgiFd[store.ident]]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
-        {
-            plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
 			return ;
-        }
 		event = server[serverFd].cgiRead(store);
 		switch (event)
 		{
@@ -177,6 +174,7 @@ void    Kq::eventRead(struct kevent& store)
 			case ING:
 				break ;
 			case ERROR:
+                plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 clientFin(store);
                 break ;
 			case FINISH:
@@ -194,15 +192,13 @@ void    Kq::eventRead(struct kevent& store)
 	{
 		serverFd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
-        {
-            plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
 			return ;
-        }
         std::cout<<"not cgi"<<std::endl;
 		event = server[serverFd].clientRead(store);
 		switch (event)
 		{
 			case ERROR:
+                plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
 				clientFin(store);
 				break ;
 			case ING:
@@ -227,16 +223,14 @@ void    Kq::eventWrite(struct kevent& store)
         return ;
     serverFd = findServer[store.ident];
     if (serverFd == 0)
-    {
-        plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
         return ;
-    }
     event = server[serverFd].clientWrite(store);
     switch (event)
     {
         case ING:
             break ;
         case ERROR:
+            plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
             clientFin(store);
             break ;
         case FINISH:
@@ -253,10 +247,7 @@ void    Kq::eventTimer(struct kevent& store)
 
     serverFd = findServer[store.ident];
     if (serverFd == 0)
-    {
-        plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
         return ;
-    }
     event = server[serverFd].clientTimer(store);
     switch (event)
     {
@@ -265,6 +256,7 @@ void    Kq::eventTimer(struct kevent& store)
         case ING:
             break ;
         case FINISH:
+            plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
             clientFin(store);
             break ;
     }
@@ -298,7 +290,7 @@ void    Kq::mainLoop()
         }
         else
         {
-            std::cout<<"store[i].ident: "<<store[i].ident<<std::endl;
+            // std::cout<<"store[i].ident: "<<store[i].ident<<std::endl;
             if (store[i].flags == EV_ERROR)
                 clientFin(store[i]);  //client 종료
             else if (store[i].filter == EVFILT_READ)
