@@ -27,7 +27,7 @@ void    check()
 
 int main(int argc, char **argv)
 {
-    atexit(check);
+    // atexit(check);
     cout << "========parser========" << endl;
     Directives::init();
     string path = DEFAULT_CONFIG_PATH;
