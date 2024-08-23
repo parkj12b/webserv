@@ -175,7 +175,9 @@ void    Kq::eventRead(struct kevent& store)
 				break ;
 			case ERROR:
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-                clientFin(store);
+                findServer[cgiFd[store.ident]] = 0;
+                close(store.ident);
+                // clientFin(store);
                 break ;
 			case FINISH:
                 std::cout<<"finish\n"<<std::endl;
