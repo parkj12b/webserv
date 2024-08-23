@@ -96,11 +96,12 @@ EVENT Server::cgiRead(struct kevent& store)
 
 	cout << "cgiRead fd: " << store.ident << endl;
 	readSize = read(store.ident, buf, PIPE_BUFFER_SIZE);
-    cout << &client[Kq::cgiFd[store.ident]].getResponse() << endl;
 	if (readSize <= 0)
 	{
-        std::cout<<"Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl;
+        std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl;
         client[Kq::cgiFd[store.ident]].getResponse().setRequestStatus(500);
+        client[Kq::cgiFd[store.ident]].setResponseContentLength(cgiContentLength);
+        client[Kq::cgiFd[store.ident]].setResponseContent(cgiContentLength, cgiContent);
         cout << Kq::cgiFd[store.ident] << endl;
         // static error page
         // client[Kq::cgiFd[store.ident]].getResponse().makeError();
@@ -119,15 +120,15 @@ EVENT Server::cgiRead(struct kevent& store)
     // if (readSize < PIPE_BUFFER_SIZE)
 	if (readSize < PIPE_BUFFER_SIZE)
     {
-        std::cout<<"Kq::cgiFd[store.ident]: "<<Kq::cgiFd[store.ident]<<std::endl;
+        std::cout<<"FINISH Kq::cgiFd[store.ident]: "<<Kq::cgiFd[store.ident]<<std::endl;
         //pipe fd를 갖는 새로운 client이므로 새로운 request.status를 갖는다. 따라서 쓰레기 값이 들어감(정답)
 		client[Kq::cgiFd[store.ident]].setResponseContentLength(cgiContentLength);
         client[Kq::cgiFd[store.ident]].setResponseContent(cgiContentLength, cgiContent);
 		cgiContent.clear();
 		cgiContentLength = 0;
-        std::cout<<"msg\n"<<client[Kq::cgiFd[store.ident]].getMsg();
-        std::cout<<"====================="<<std::endl;
-		return (FINISH);
+        // std::cout<<"msg\n"<<client[Kq::cgiFd[store.ident]].getMsg();
+        // std::cout<<"====================="<<std::endl;
+		return (ING);
     }
 	return (ING);
 }
