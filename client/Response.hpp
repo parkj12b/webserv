@@ -107,12 +107,12 @@ class Response
         //sub logic
 		bool	isCgiScriptInURL(string& str);
         void    initRequest(Request msg);       //request msg init
-        void    init();                         //start, header, content, entity init
+        int     init();                         //start, header, content, entity init
         void    makeCookie(std::string& date);  //make cookie header
         void    makeDefaultHeader();            //date header make
         void    makeError();                    //error message make
-        void    checkRedirect();                //check redirect
-        void    checkAllowedMethod();           //check allowed method
+        int     checkRedirect();                //check redirect
+        int     checkAllowedMethod();           //check allowed method
         void    makeFilePath(std::string& str); //make real url
         int     getDefaultErrorPage(int statusCode); // returns fd of default error page
         void    makeHeader(std::string key, std::string value); //key -> value
