@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "Response.hpp"
 #include <algorithm>
 
 extern int logs;
@@ -98,7 +99,11 @@ EVENT Server::cgiRead(struct kevent& store)
 	if (readSize <= 0)
 	{
         client[Kq::cgiFd[store.ident]].setRequestStatus(500);
-        cgiContent.clear();
+		cout << Kq::cgiFd[store.ident] << endl;
+		client[Kq::cgiFd[store.ident]].getResponse().makeError();
+		cout << "fdsaf" << endl;
+		client[Kq::cgiFd[store.ident]].setErrorMsg();
+		cgiContent.clear();
         cgiContentLength = 0;
         return (ERROR);
 	}

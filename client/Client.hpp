@@ -91,6 +91,7 @@ class Client
         void    setRequestFin(bool fin);
 		void	setResponseContent(size_t cgiContentLength, string content);
 		void	setResponseContentLength(size_t contentLength);
+		void	setErrorMsg(void);
         //logic
         bool        getResponseCgi();
 		void		clientIP(struct sockaddr_in clntAdr);

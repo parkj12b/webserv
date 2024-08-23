@@ -194,6 +194,12 @@ void	Client::setResponseContent(size_t cgiContentLength, string content)
     // std::cout<<"content: "<<content;
 }
 
+void	Client::setErrorMsg()
+{
+	msg = response.getEntity();
+	responseAmount = msg.size();
+}
+
 
 bool    Client::getResponseCgi()
 {
