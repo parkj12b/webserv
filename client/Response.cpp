@@ -178,7 +178,7 @@ void    Response::makeFilePath(string& str)
     // cout << "str: " << str << endl;
 }
 
-Response::Response() : cgiFlag(false)
+Response::Response() : cgiFlag(false), serverConfig(NULL), locationConfig(NULL)
 {
 }
 
@@ -207,7 +207,7 @@ Response::~Response()
 {
 }
 
-Response::Response(int port) : port(port), contentLength(0)
+Response::Response(int port) : port(port), contentLength(0), serverConfig(NULL), locationConfig(NULL)
 {}
 
 int Response::getPort() const
@@ -418,6 +418,8 @@ void    Response::makeError()
         return ;
     if (request.status == 100)
         return ;
+    cout << "makeError\n"<<request.status<<std::endl;
+	cout << request.clientFd << std::endl;
     LocationConfigData	*location = getLocationConfigData();
     map<int, string>	&errorPage = location->getErrorPage();
     string errorPath = errorPage[request.status];

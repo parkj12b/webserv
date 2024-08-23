@@ -177,6 +177,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 	else
 	{
 		close(pipefd[1]);
+		dup2(pipefd[0], STDIN_FILENO);
 		Kq::processor.push_back(pid);
 		Kq::cgiFd.insert(make_pair(pipefd[0], request.clientFd));
 	}
