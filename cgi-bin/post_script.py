@@ -47,5 +47,5 @@ if content_type == 'application/x-www-form-urlencoded':
     handle_urlencoded()
 elif content_type == 'application/json':
     handle_json()
-else
+else:
 	sys.exit(1)

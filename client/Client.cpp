@@ -21,6 +21,8 @@ extern int logs;
 LocationConfigData *Client::recurFindLocation(string url,
     LocationConfigData *locationConfigData)
 {
+    cout << "url: " << url << endl;
+
     LocationConfigData *configData = NULL;
 
     vector<string> &suffixMatch = locationConfigData->getSuffixMatch();
@@ -34,15 +36,18 @@ LocationConfigData *Client::recurFindLocation(string url,
         }
     }
  
-    cout << locationConfigData->getPath() << endl;
+    // cout << locationConfigData->getPath() << endl;
     Trie &prefixTrie = locationConfigData->getPrefixTrie();
-    string temp = prefixTrie.find(url);
+    string urlFound = prefixTrie.find(url);
+    cout << "temp: " << urlFound << endl;
     // cout << "location: " << request.location << endl;
-    if (temp == "")
+    if (urlFound == "")
         return (locationConfigData);
     configData
-        = locationConfigData->getLocationConfigData(request.location, 0);
-    return (recurFindLocation(url, configData));
+        = locationConfigData->getLocationConfigData(urlFound, 0);
+    size_t i = url.find(configData->getPath());
+    string passURL = url.substr(i + configData->getPath().size());
+    return (recurFindLocation(passURL, configData));
 }
 
 Client::Client() : connect(true), connection(false), fd(0), port(0), index(0), responseAmount(0), startLine(0), headerLine(0), contentLine(0)

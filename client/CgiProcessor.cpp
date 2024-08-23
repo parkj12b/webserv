@@ -157,7 +157,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 		close(pipefd[0]);
 		dup2(pipefd[1], STDOUT_FILENO);
 		// dup2(pipefd[1], STDERR_FILENO);
-		// close(pipefd[1]);
+		close(pipefd[1]);
 		char *argv[] = {const_cast<char *>(&cgiCommand[0]), const_cast<char *>(&path[0]), NULL};
 		char **envp = new char*[metaVariables.size() + 1];
 		size_t	idx = 0;
@@ -169,9 +169,11 @@ void	CgiProcessor::executeCGIScript(const string path)
 			strcpy(envp[idx++], env.c_str());
 		}
 		envp[metaVariables.size()] = 0;
+		cgiCommand = "/usr/local/bin/python3";
 		if (execve(&cgiCommand[0], argv, envp) == -1)
 		{
 			request.status = 500;
+			std::cout<<"execve error"<<endl;
 			exit(1);
 		}
 	}

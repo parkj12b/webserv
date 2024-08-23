@@ -102,7 +102,7 @@ EVENT Server::cgiRead(struct kevent& store)
         std::cout<<"Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl;
         client[Kq::cgiFd[store.ident]].getResponse().setRequestStatus(500);
         cout << Kq::cgiFd[store.ident] << endl;
-        //static error page
+        // static error page
         // client[Kq::cgiFd[store.ident]].getResponse().makeError();
         client[Kq::cgiFd[store.ident]].setErrorMsg();
         cgiContent.clear();

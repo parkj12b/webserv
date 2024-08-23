@@ -581,7 +581,6 @@ void    Response::makeGet()
         cout << "directory listing" << endl;
     	cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
         makeHeader("content-type", "text/html");
-		std::cout << cgiProcessor.getCgiContent() << '\n';
     }
 	else if (cgiFlag)
 	{
