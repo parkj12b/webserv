@@ -298,7 +298,7 @@ void    Kq::mainLoop()
         }
         else
         {
-            std::cout<<"store[i].ident: "<<store[i].ident<<std::endl;
+            // std::cout<<"store[i].ident: "<<store[i].ident<<std::endl;
             if (store[i].flags == EV_ERROR)
                 clientFin(store[i]);  //client 종료
             else if (store[i].filter == EVFILT_READ)
