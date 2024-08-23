@@ -55,7 +55,6 @@ class Kq
         ~Kq();
         //get function
         int                         getKq() const;
-        std::vector<struct kevent>  getFdList() const;
         std::map<int, Server>       getServer() const;
         std::map<int, int>          getFindServer() const;
         //error

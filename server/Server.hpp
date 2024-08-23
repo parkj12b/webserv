@@ -76,6 +76,7 @@ class Server
         std::map<int, Client>   getClient(void) const;
         //logic
         bool    getResponseCgi(int fd);
+        ssize_t getStandardTime(int fd);
         int     plusClient();                   	//client socket accept
 		EVENT	cgiRead(struct kevent& store);		//client cgi read event manage
         EVENT   clientRead(struct kevent& store);   //client read event manage

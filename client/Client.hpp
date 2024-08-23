@@ -53,7 +53,6 @@ class Client
         size_t      responseAmount;
         ssize_t     standardTime;
         string		msg;
-        time_t		keepAlive;
         Request     request;
         StartLine   startLine;
         HeaderLine  headerLine;

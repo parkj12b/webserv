@@ -52,7 +52,7 @@ int main(int argc, char **argv)
         it++;
     }
     //fd를 닫지 않았을 가능성이 존재함
-    std::cout<<"========http message========"<<std::endl;
+    std::cout<<"\n\n========http message========"<<std::endl;
     // std::srand(std::time(0));  //cookie 값 정할 때에 사용할 예정
     Kq  kq;
     std::ios::sync_with_stdio(false);
