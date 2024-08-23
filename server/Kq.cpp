@@ -110,7 +110,7 @@ void    Kq::clientFin(struct kevent& store)
 
     std::cout<<"bye"<<std::endl;
     serverFd = findServer[store.ident];
-    // plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
+    plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
     findServer[store.ident] = 0;
@@ -167,7 +167,7 @@ void    Kq::eventRead(struct kevent& store)
         // std::cout<<"cgi here\n";
         if (cgiFd[store.ident] == 0)
         {
-            plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+            return ;
             // std::cout<<"cgi here\n";
         }
 		serverFd = findServer[cgiFd[store.ident]]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
@@ -187,6 +187,7 @@ void    Kq::eventRead(struct kevent& store)
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
 				close(iter->first);
 				cgiFd[iter->first] = 0;
+                cgiFd.erase(iter->first);
 				break ;
 		}
 	}
