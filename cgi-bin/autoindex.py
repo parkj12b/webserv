@@ -46,6 +46,7 @@ def main():
     # Generate the directory listing HTML
     html = list_directory(directory)
     print(html)
+    os.close(1)
 
 if __name__ == '__main__':
     main()

@@ -466,11 +466,7 @@ void    Response::makeError()
 		cgiProcessor.selectCgiCmd(CGI_ERROR_PAGE);
 		cgiProcessor.insertEnv("ERROR_CODE", toString(request.status));
         cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
-		content += cgiProcessor.getCgiContent();
-        cout << cgiProcessor.getCgiContent() << '\n';
     }
-    makeHeader("content-type", "text/html");
-    makeHeader("content-length", toString(content.size()));
 }
 
 int Response::checkRedirect()
