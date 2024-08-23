@@ -297,7 +297,7 @@ void    Kq::mainLoop()
                 clientFin(store[i]);  //client 종료
             else if (store[i].filter == EVFILT_READ)
             {
-                std::cout<<"read"<<std::endl;
+                // std::cout<<"read"<<std::endl;
                 eventRead(store[i]);
             }
             else if (store[i].filter == EVFILT_WRITE)
