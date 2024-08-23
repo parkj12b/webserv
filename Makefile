@@ -56,7 +56,7 @@ BIN_DIR = ./bin
 
 CPP = c++
 
-FLAGS = -Wall -Wextra -Werror -std=c++11 -g 
+FLAGS = -Wall -Wextra -Werror -std=c++11 -g -fsanitize=address
 
 NAME = webserv
 

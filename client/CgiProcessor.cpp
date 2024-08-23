@@ -153,9 +153,10 @@ void	CgiProcessor::executeCGIScript(const string path)
 	Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 	if (pid == 0)
 	{
+		std::cout<<"pipe fd: "<<pipefd[0]<<", "<<pipefd[1]<<std::endl;
 		close(pipefd[0]);
 		dup2(pipefd[1], STDOUT_FILENO);
-		dup2(pipefd[1], STDERR_FILENO);
+		// dup2(pipefd[1], STDERR_FILENO);
 		close(pipefd[1]);
 		char *argv[] = {const_cast<char *>(&cgiCommand[0]), const_cast<char *>(&path[0]), NULL};
 		char **envp = new char*[metaVariables.size() + 1];
@@ -168,17 +169,19 @@ void	CgiProcessor::executeCGIScript(const string path)
 			strcpy(envp[idx++], env.c_str());
 		}
 		envp[metaVariables.size()] = 0;
+		cgiCommand = "/usr/local/bin/python3";
 		if (execve(&cgiCommand[0], argv, envp) == -1)
 		{
 			request.status = 500;
+			std::cout<<"execve error"<<endl;
 			exit(1);
 		}
 	}
 	else
 	{
 		close(pipefd[1]);
-		dup2(pipefd[0], STDIN_FILENO);
 		Kq::processor.push_back(pid);
+		Kq::cgiFd[pipefd[0]] = request.clientFd;
 		Kq::cgiFd.insert(make_pair(pipefd[0], request.clientFd));
 	}
 }

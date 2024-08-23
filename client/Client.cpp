@@ -21,6 +21,8 @@ extern int logs;
 LocationConfigData *Client::recurFindLocation(string url,
     LocationConfigData *locationConfigData)
 {
+    cout << "url: " << url << endl;
+
     LocationConfigData *configData = NULL;
 
     vector<string> &suffixMatch = locationConfigData->getSuffixMatch();
@@ -34,15 +36,18 @@ LocationConfigData *Client::recurFindLocation(string url,
         }
     }
  
-    cout << locationConfigData->getPath() << endl;
+    // cout << locationConfigData->getPath() << endl;
     Trie &prefixTrie = locationConfigData->getPrefixTrie();
-    string temp = prefixTrie.find(url);
+    string urlFound = prefixTrie.find(url);
+    cout << "temp: " << urlFound << endl;
     // cout << "location: " << request.location << endl;
-    if (temp == "")
+    if (urlFound == "")
         return (locationConfigData);
     configData
-        = locationConfigData->getLocationConfigData(request.location, 0);
-    return (recurFindLocation(url, configData));
+        = locationConfigData->getLocationConfigData(urlFound, 0);
+    size_t i = url.find(configData->getPath());
+    string passURL = url.substr(i + configData->getPath().size());
+    return (recurFindLocation(passURL, configData));
 }
 
 Client::Client() : connect(true), connection(false), fd(0), port(0), index(0), responseAmount(0), startLine(0), headerLine(0), contentLine(0)
@@ -199,12 +204,11 @@ void	Client::setResponseContent(size_t cgiContentLength, string content)
     // std::cout<<"content: "<<content;
 }
 
-void	Client::setErrorMsg()
+void    Client::setErrorMsg()
 {
-	msg = response.getEntity();
-	responseAmount = msg.size();
+    msg = response.getEntity();
+    responseAmount = msg.size();
 }
-
 
 bool    Client::getResponseCgi()
 {
@@ -411,14 +415,13 @@ int Client::setTrailer(void)
 
 void    Client::resetClient()
 {
-    Response    temp;
-
     request.fin = false;
     request.status = 0;
     connect = true;
     index = 0;
     msg.clear();
-    response = temp;
+    // 여기서 뭔가 ServerConfigData, LocationConfigData를 초기화해주는 기분이 듦
+    response = Response(port);
     startLine = StartLine(port);
     headerLine = HeaderLine(port);
     contentLine = ContentLine(port);
@@ -459,7 +462,7 @@ void    Client::setResponseMessage()
 {
     msg.clear();
     index = 0;
-    response = Response(port);
+    response.setPort(port);
     response.initRequest(request);
     response.responseMake();
     if (!response.getCgiFlag())

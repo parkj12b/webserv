@@ -179,7 +179,7 @@ void    Response::makeFilePath(string& str)
     // cout << "str: " << str << endl;
 }
 
-Response::Response() : cgiFlag(false), serverConfig(NULL), locationConfig(NULL)
+Response::Response() : cgiFlag(false)
 {
 }
 
@@ -193,14 +193,17 @@ Response&    Response::operator=(const Response& src)
     if (this == &src)
         return (*this);
     cgiFlag = src.getCgiFlag();
+    port = src.getPort();
+    startHeaderLength = src.getStartHeaderLength();
+    contentLength = src.getContentLength();
     start = src.getStart();
     header = src.getHeader();
     content = src.getContent();
     entity = src.getEntity();
     request = src.getRequest();
-    request.status = src.getRequestStatus();
-    port = src.getPort();
-	cgiFlag = src.getCgiFlag();
+    keyHeader = src.getKeyHeader();
+    // serverConfig = src.getServerConfig();
+    locationConfig = src.getLocationConfigData();
     return (*this);
 }
 
@@ -208,7 +211,7 @@ Response::~Response()
 {
 }
 
-Response::Response(int port) : port(port), contentLength(0), serverConfig(NULL), locationConfig(NULL)
+Response::Response(int port) : cgiFlag(false), port(port), contentLength(0)
 {}
 
 int Response::getPort() const
@@ -261,14 +264,29 @@ bool	Response::getCgiFlag() const
 	return (cgiFlag);
 }
 
-LocationConfigData *Response::getLocationConfigData()
+std::vector<std::string>    Response::getKeyHeader() const
+{
+    return (keyHeader);
+}
+
+LocationConfigData *Response::getLocationConfigData() const
 {
     return (locationConfig);
+}
+
+void        Response::setPort(int port)
+{
+    this->port = port;
 }
 
 void    Response::setRequest(Request &temp)
 {
     request = temp;
+}
+
+void    Response::setRequestStatus(int status)
+{
+    request.status = status;
 }
 
 void    Response::setLocationConfigData(LocationConfigData *locationConfigData)
@@ -297,6 +315,15 @@ std::string Response::setContent(string content_)
 void    Response::initRequest(Request msg)
 {
     request = msg;
+    // cout<<request.fin<<endl;
+    // cout<<request.status<<endl;
+    // cout<<request.port<<endl;
+    // cout<<request.clientFd<<endl;
+    // cout<<request.method<<endl;
+    // cout<<request.clientIp<<endl;
+    // cout<<request.url<<endl;
+    // cout<<request.location<<endl;
+    // cout<<request.version<<endl;
 }
 
 int Response::init()
@@ -309,6 +336,7 @@ int Response::init()
     content.clear();
     entity.clear();
     string host = request.header["host"].front();
+    cout << "host : " << host << endl;
 	cgiFlag = false;
     // cout << "host: " << host << endl;
     try
@@ -416,19 +444,17 @@ void    Response::makeDefaultHeader()
 
 void    Response::makeError()
 {
-    cout << "makeError\n";
+    cout << "makeError\n"<<request.status<<std::endl;
     if (request.status >= 300 && request.status < 400)
         return ;
     if (request.status == 100)
         return ;
-    cout << "makeError\n"<<request.status<<std::endl;
 	cout << request.clientFd << std::endl;
     LocationConfigData	*location = getLocationConfigData();
     map<int, string>	&errorPage = location->getErrorPage();
     string errorPath = errorPage[request.status];
 
     cout << "errorPath: " << errorPath << endl;
-    
     int fd = -1;
     if (errorPath != "")
         fd = open(errorPath.c_str(), O_RDONLY);
@@ -436,17 +462,11 @@ void    Response::makeError()
         makeContent(fd);
     else
     {
-        cout << "1cgi error page " << endl;
         CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
-        cout << "2cgi error page " << endl;
 		cgiProcessor.selectCgiCmd(CGI_ERROR_PAGE);
-        cout << "3cgi error page " << endl;
 		cgiProcessor.insertEnv("ERROR_CODE", toString(request.status));
-        cout << "4cgi error page " << endl;
         cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
-        cout << "5cgi error page " << endl;
 		content += cgiProcessor.getCgiContent();
-        cout << "6cgi error page " << endl;
         cout << cgiProcessor.getCgiContent() << '\n';
     }
     makeHeader("content-type", "text/html");
@@ -479,6 +499,9 @@ int Response::checkAllowedMethod()
 {
     LocationConfigData  *location = getLocationConfigData();
     vector<string>    &allowedMethods = location->getAllowedMethods();
+    cout << allowedMethods.size() << endl;
+    // for (auto iter = allowedMethods.begin(); iter != allowedMethods.end(); iter++)
+    //     cout << "allowed method : " << endl;
 
     if (find(allowedMethods.begin(), allowedMethods.end(),
         StartLine::methodString[request.method]) == allowedMethods.end())
@@ -558,7 +581,6 @@ void    Response::makeGet()
         cout << "directory listing" << endl;
     	cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
         makeHeader("content-type", "text/html");
-		std::cout << cgiProcessor.getCgiContent() << '\n';
     }
 	else if (cgiFlag)
 	{

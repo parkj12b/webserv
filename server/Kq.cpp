@@ -174,12 +174,6 @@ void    Kq::eventRead(struct kevent& store)
 			case ING:
 				break ;
 			case ERROR:
-				// std::cout<<"jer"<<std::endl;
-                // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-                // findServer[cgiFd[store.ident]] = 0;
-                // close(store.ident);
-                // // clientFin(store);
-                // break ;
 			case FINISH:
                 std::cout<<"finish\n"<<std::endl;
                 std::cout<<iter->first<<std::endl;
@@ -187,7 +181,7 @@ void    Kq::eventRead(struct kevent& store)
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
 				close(iter->first);
-				cgiFd.erase(iter->first);
+				cgiFd[iter->first] = 0;
 				break ;
 		}
 	}
@@ -298,7 +292,7 @@ void    Kq::mainLoop()
                 clientFin(store[i]);  //client 종료
             else if (store[i].filter == EVFILT_READ)
             {
-                // std::cout<<"read"<<std::endl;
+                std::cout<<"read"<<std::endl;
                 eventRead(store[i]);
             }
             else if (store[i].filter == EVFILT_WRITE)
