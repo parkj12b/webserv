@@ -101,6 +101,7 @@ class Response
         std::vector<std::string>    getKeyHeader() const;
         LocationConfigData *getLocationConfigData() const;
         //set function
+        void        setPort(int port);
         void        setRequest(Request &temp);
         void        setRequestStatus(int status);
         void        setLocationConfigData(LocationConfigData *locationConfig);

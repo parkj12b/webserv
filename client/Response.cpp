@@ -211,7 +211,7 @@ Response::~Response()
 {
 }
 
-Response::Response(int port) : port(port), contentLength(0)
+Response::Response(int port) : cgiFlag(false), port(port), contentLength(0)
 {}
 
 int Response::getPort() const
@@ -274,6 +274,11 @@ LocationConfigData *Response::getLocationConfigData() const
     return (locationConfig);
 }
 
+void        Response::setPort(int port)
+{
+    this->port = port;
+}
+
 void    Response::setRequest(Request &temp)
 {
     request = temp;
@@ -310,6 +315,15 @@ std::string Response::setContent(string content_)
 void    Response::initRequest(Request msg)
 {
     request = msg;
+    // cout<<request.fin<<endl;
+    // cout<<request.status<<endl;
+    // cout<<request.port<<endl;
+    // cout<<request.clientFd<<endl;
+    // cout<<request.method<<endl;
+    // cout<<request.clientIp<<endl;
+    // cout<<request.url<<endl;
+    // cout<<request.location<<endl;
+    // cout<<request.version<<endl;
 }
 
 int Response::init()
@@ -435,14 +449,12 @@ void    Response::makeError()
         return ;
     if (request.status == 100)
         return ;
-    cout << "makeError\n"<<request.status<<std::endl;
 	cout << request.clientFd << std::endl;
     LocationConfigData	*location = getLocationConfigData();
     map<int, string>	&errorPage = location->getErrorPage();
     string errorPath = errorPage[request.status];
 
     cout << "errorPath: " << errorPath << endl;
-    
     int fd = -1;
     if (errorPath != "")
         fd = open(errorPath.c_str(), O_RDONLY);
@@ -450,17 +462,11 @@ void    Response::makeError()
         makeContent(fd);
     else
     {
-        cout << "1cgi error page " << endl;
         CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
-        cout << "2cgi error page " << endl;
 		cgiProcessor.selectCgiCmd(CGI_ERROR_PAGE);
-        cout << "3cgi error page " << endl;
 		cgiProcessor.insertEnv("ERROR_CODE", toString(request.status));
-        cout << "4cgi error page " << endl;
         cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
-        cout << "5cgi error page " << endl;
 		content += cgiProcessor.getCgiContent();
-        cout << "6cgi error page " << endl;
         cout << cgiProcessor.getCgiContent() << '\n';
     }
     makeHeader("content-type", "text/html");
@@ -493,6 +499,9 @@ int Response::checkAllowedMethod()
 {
     LocationConfigData  *location = getLocationConfigData();
     vector<string>    &allowedMethods = location->getAllowedMethods();
+    cout << allowedMethods.size() << endl;
+    // for (auto iter = allowedMethods.begin(); iter != allowedMethods.end(); iter++)
+    //     cout << "allowed method : " << endl;
 
     if (find(allowedMethods.begin(), allowedMethods.end(),
         StartLine::methodString[request.method]) == allowedMethods.end())

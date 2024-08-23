@@ -181,7 +181,7 @@ void    Kq::eventRead(struct kevent& store)
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
 				close(iter->first);
-				cgiFd.erase(iter->first);
+				cgiFd[iter->first] = 0;
 				break ;
 		}
 	}

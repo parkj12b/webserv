@@ -94,7 +94,7 @@ EVENT Server::cgiRead(struct kevent& store)
 	char	buf[PIPE_BUFFER_SIZE + 1];
 	int     readSize;
 
-	cout << "fd: " << store.ident << endl;
+	cout << "cgiRead fd: " << store.ident << endl;
 	readSize = read(store.ident, buf, PIPE_BUFFER_SIZE);
     cout << &client[Kq::cgiFd[store.ident]].getResponse() << endl;
 	if (readSize <= 0)
@@ -102,14 +102,15 @@ EVENT Server::cgiRead(struct kevent& store)
         std::cout<<"Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl;
         client[Kq::cgiFd[store.ident]].getResponse().setRequestStatus(500);
         cout << Kq::cgiFd[store.ident] << endl;
-        client[Kq::cgiFd[store.ident]].getResponse().makeError();
-        cout << "fdsaf" << endl;
+        //static error page
+        // client[Kq::cgiFd[store.ident]].getResponse().makeError();
         client[Kq::cgiFd[store.ident]].setErrorMsg();
         cgiContent.clear();
         cgiContentLength = 0;
         return (ERROR);
 	}
     // close(1);
+    buf[readSize] = '\0';
     cgiContent.append(string(buf));
     // std::cout<<cgiContent<<std::endl;
     // std::cout<<cgiContentLength<<std::endl;
@@ -149,16 +150,18 @@ EVENT Server::clientRead(struct kevent& store)
         std::cout<<"read error or socket close\n";
         return (ERROR);
     }
+    std::cout<<"Client Read"<<std::endl;
     buffer[readSize] = '\0';
     client[store.ident].setMessage(buffer);
     client[store.ident].setConnection(true);
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
     {
+        std::cout<<"parsing complete"<<std::endl;
         client[store.ident].setResponseMessage();
         if (client[store.ident].getRequestStatus() == 100)
             return (EXPECT);
-        // if (client[store.ident].getRequestFin())
-        //     client[store.ident].showMessage();
+        if (client[store.ident].getRequestFin())
+            client[store.ident].showMessage();
         return (FINISH);
     }
     return (ING);

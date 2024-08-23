@@ -457,7 +457,7 @@ void    Client::setResponseMessage()
 {
     msg.clear();
     index = 0;
-    response = Response(port);
+    response.setPort(port);
     response.initRequest(request);
     response.responseMake();
     if (!response.getCgiFlag())
