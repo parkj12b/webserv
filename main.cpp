@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:33:06 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/21 18:10:58 by devpark          ###   ########.fr       */
+/*   Updated: 2024/08/23 13:55:55 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void    check()
 
 int main(int argc, char **argv)
 {
-    atexit(check);
+    // atexit(check);
     cout << "========parser========" << endl;
     Directives::init();
     string path = DEFAULT_CONFIG_PATH;
@@ -52,7 +52,7 @@ int main(int argc, char **argv)
         it++;
     }
     //fd를 닫지 않았을 가능성이 존재함
-    std::cout<<"========http message========"<<std::endl;
+    std::cout<<"\n\n========http message========"<<std::endl;
     // std::srand(std::time(0));  //cookie 값 정할 때에 사용할 예정
     Kq  kq;
     std::ios::sync_with_stdio(false);

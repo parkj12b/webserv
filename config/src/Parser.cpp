@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 18:48:59 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/21 13:23:54 by devpark          ###   ########.fr       */
+/*   Updated: 2024/08/22 15:30:02 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,6 +179,7 @@ void    Parser::context()
             path = dynamic_cast<Word *>(t)->lexeme;
             cout << "location: " << curLocation << endl;
             curLocation->setPath(path);
+                
             if (tempLocation == NULL)
             {
                 if (curServer->location.find(path) == curServer->location.end())

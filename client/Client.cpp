@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/20 14:57:03 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/23 16:55:05 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ extern int logs;
 LocationConfigData *Client::recurFindLocation(string url,
     LocationConfigData *locationConfigData)
 {
+    cout << "url: " << url << endl;
+
     LocationConfigData *configData = NULL;
 
     vector<string> &suffixMatch = locationConfigData->getSuffixMatch();
@@ -34,13 +36,18 @@ LocationConfigData *Client::recurFindLocation(string url,
         }
     }
  
+    // cout << locationConfigData->getPath() << endl;
     Trie &prefixTrie = locationConfigData->getPrefixTrie();
-    request.location = prefixTrie.find(url);
-    if (request.location == "")
+    string urlFound = prefixTrie.find(url);
+    cout << "temp: " << urlFound << endl;
+    // cout << "location: " << request.location << endl;
+    if (urlFound == "")
         return (locationConfigData);
     configData
-        = locationConfigData->getLocationConfigData(request.location, 0);
-    return (recurFindLocation(url, configData));
+        = locationConfigData->getLocationConfigData(urlFound, 0);
+    size_t i = url.find(configData->getPath());
+    string passURL = url.substr(i + configData->getPath().size());
+    return (recurFindLocation(passURL, configData));
 }
 
 Client::Client() : connect(true), connection(false), fd(0), port(0), index(0), responseAmount(0), startLine(0), headerLine(0), contentLine(0)
@@ -53,14 +60,13 @@ Client::Client() : connect(true), connection(false), fd(0), port(0), index(0), r
 
 Client::Client(int fd, int port) : connect(true), connection(false), fd(fd), port(port), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port)
 {
-    keepAlive = time(0);
     request.port = port;
     request.fin = false;
     request.status = 0;
 	request.clientFd = fd;
 }
 
-Client::Client(const Client& src) : connect(src.getConnect()), connection(src.getConnection()), fd(src.getFd()), port(src.getPort()), index(src.getIndex()), responseAmount(src.getResponseAmount()), standardTime(src.getStandardTime()), msg(src.getMsg()), keepAlive(src.getKeepAlive()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse())
+Client::Client(const Client& src) : connect(src.getConnect()), connection(src.getConnection()), fd(src.getFd()), port(src.getPort()), index(src.getIndex()), responseAmount(src.getResponseAmount()), standardTime(src.getStandardTime()), msg(src.getMsg()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse())
 {}
 
 Client& Client::operator=(const Client& src)
@@ -73,7 +79,6 @@ Client& Client::operator=(const Client& src)
     responseAmount = src.getResponseAmount();
     standardTime = src.getStandardTime();
     msg = src.getMsg();
-    keepAlive = src.getKeepAlive();
     request = src.getRequest();
     startLine = src.getStartLine();
     headerLine = src.getHeaderline();
@@ -127,11 +132,6 @@ std::string Client::getMsg() const
     return (msg.c_str() + index);
 }
 
-std::time_t Client::getKeepAlive() const
-{
-    return (keepAlive);
-}
-
 Request Client::getRequest() const
 {
     return (request);
@@ -150,6 +150,11 @@ HeaderLine  Client::getHeaderline() const
 ContentLine    Client::getContentLine() const
 {
     return (contentLine);
+}
+
+Response    &Client::getResponse()
+{
+    return (response);
 }
 
 Response    Client::getResponse() const
@@ -177,11 +182,6 @@ void    Client::setFd(uintptr_t fd)
     this->fd = fd;
 }
 
-void    Client::setKeepAlive(std::time_t time)
-{
-    keepAlive = time;
-}
-
 void    Client::setRequestStatus(int temp)
 {
     request.status = temp;
@@ -192,14 +192,27 @@ void    Client::setRequestFin(bool fin)
     request.fin = fin;
 }
 
-void	Client::setResponseContent(string content)
-{
-	response.setContent(content);
-}
-
 void	Client::setResponseContentLength(size_t contentLength)
 {
 	response.setContentLength(contentLength);
+}
+
+void	Client::setResponseContent(size_t cgiContentLength, string content)
+{
+	msg = response.setContent(content);
+    responseAmount = response.getStartHeaderLength() + cgiContentLength;
+    // std::cout<<"content: "<<content;
+}
+
+void    Client::setErrorMsg()
+{
+    msg = response.getEntity();
+    responseAmount = msg.size();
+}
+
+bool    Client::getResponseCgi()
+{
+    return (response.getCgiFlag());
 }
 
 void	Client::clientIP(struct sockaddr_in  clntAdr)
@@ -245,7 +258,6 @@ int Client::setStart(void)
         {
             //location && keep-alive
             standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
-            standardTime = 100;  //여기서 keep-alive setting
             request.status = 414;
             return (2);
         }
@@ -273,6 +285,7 @@ int Client::setHeader(void)
                 msg = msg.substr(flag + 2);
                 //keep-alive
                 standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
+                cout << "response in location: " << &response << endl;
                 if (setMatchingLocation(request.url))
                 {
                     request.status = 404;
@@ -402,14 +415,13 @@ int Client::setTrailer(void)
 
 void    Client::resetClient()
 {
-    Response    temp;
-
     request.fin = false;
     request.status = 0;
     connect = true;
     index = 0;
     msg.clear();
-    response = temp;
+    // 여기서 뭔가 ServerConfigData, LocationConfigData를 초기화해주는 기분이 듦
+    response = Response(port);
     startLine = StartLine(port);
     headerLine = HeaderLine(port);
     contentLine = ContentLine(port);
@@ -448,12 +460,19 @@ void    Client::setMessage(std::string msgRequest)
 
 void    Client::setResponseMessage()
 {
+    msg.clear();
     index = 0;
-    response = Response(port);
+    response.setPort(port);
     response.initRequest(request);
     response.responseMake();
-    msg = response.getEntity();
-    responseAmount = msg.size();
+    if (!response.getCgiFlag())
+    {
+        std::cout<<"NOtCGI"<<std::endl;
+        msg = response.getEntity();
+        responseAmount = response.getStartHeaderLength() + response.getContentLength();
+        return ;
+    }
+    std::cout<<"YES CGI"<<std::endl;
 }
 
 size_t  Client::responseIndex()
@@ -481,7 +500,7 @@ bool    Client::setMatchingLocation(string url)
         else
             serverConfigData = Server::serverConfig->getDefaultServer(port);
     }
-    
+
     LocationConfigData *location = NULL;
 
     vector<string> &suffixMatch = serverConfigData->getSuffixMatch();
@@ -496,12 +515,18 @@ bool    Client::setMatchingLocation(string url)
     }
     Trie &prefixTrie = serverConfigData->getPrefixTrie();
     request.location = prefixTrie.find(url);
+    cout << "location " << request.location << endl;
     if (request.location == "")
         return (true);
     location
         = serverConfigData->getLocationConfigData(request.location, 0);
-    response.setLocationConfigData(recurFindLocation(url, location));
-    cout << "location " << request.location << endl;
+    size_t i = url.find(location->getPath());
+    string temp = url.substr(i + location->getPath().size());
+    response.setLocationConfigData(recurFindLocation(temp, location));
+    cout << "path: " << response.getLocationConfigData()->getPath() << endl;
+    cout << "location " << location << endl;
+    cout << "lower location " << request.location << endl;
+    cout << "location here: " << location << endl;
     return (false);
 }
 

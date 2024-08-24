@@ -50,7 +50,9 @@ class Server;
 
 /**
  * @brief           request message
+ * @param cgiFlag   server cgi flag
  * @param port      server port
+ * @param contentLength response content length
  * @param path      server path
  * @param location  location block path
  * @param start     response startline
@@ -66,6 +68,7 @@ class Response
     private:
 		bool				cgiFlag;
         int                 port;
+        size_t              startHeaderLength;
 		size_t				contentLength;
         std::string         start;
         std::string         header;
@@ -86,27 +89,33 @@ class Response
         Response(int port);
         //get function
         int         getPort() const;
+        size_t      getStartHeaderLength() const;
+        size_t      getContentLength() const;
         std::string getStart() const;
         std::string getHeader() const;
         std::string getContent() const;
         std::string getEntity() const;
         Request     getRequest() const;
+        int         getRequestStatus() const;
 		bool		getCgiFlag() const;
-        LocationConfigData *getLocationConfigData();
+        std::vector<std::string>    getKeyHeader() const;
+        LocationConfigData *getLocationConfigData() const;
         //set function
-        void    setRequest(Request &temp);
-        void    setLocationConfigData(LocationConfigData *locationConfig);
-		void	setContent(string content_);
-		void	setContentLength(size_t contentLength_);
+        void        setPort(int port);
+        void        setRequest(Request &temp);
+        void        setRequestStatus(int status);
+        void        setLocationConfigData(LocationConfigData *locationConfig);
+		std::string setContent(string content_);
+		void	    setContentLength(size_t contentLength_);
         //sub logic
 		bool	isCgiScriptInURL(string& str);
         void    initRequest(Request msg);       //request msg init
-        void    init();                         //start, header, content, entity init
+        int     init();                         //start, header, content, entity init
         void    makeCookie(std::string& date);  //make cookie header
         void    makeDefaultHeader();            //date header make
         void    makeError();                    //error message make
-        void    checkRedirect();                //check redirect
-        void    checkAllowedMethod();           //check allowed method
+        int     checkRedirect();                //check redirect
+        int     checkAllowedMethod();           //check allowed method
         void    makeFilePath(std::string& str); //make real url
         int     getDefaultErrorPage(int statusCode); // returns fd of default error page
         void    makeHeader(std::string key, std::string value); //key -> value

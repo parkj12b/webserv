@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/21 17:12:45 by devpark          ###   ########.fr       */
+/*   Updated: 2024/08/23 16:50:01 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "Response.hpp"
 #include <algorithm>
 
 extern int logs;
@@ -23,7 +24,7 @@ Server::Server() : serverFd(0), port(0)
 Server::Server(int fd, int num) : serverFd(fd), port(num), cgiContentLength(0)
 {}
 
-Server::Server(const Server& src) : serverFd(src.getServerFd()), port(src.getPort()), client(src.getClient())
+Server::Server(const Server& src) : serverFd(src.getServerFd()), port(src.getPort()), cgiContentLength(src.getCgiContentLength()), client(src.getClient())
 {}
 
 Server&  Server::operator=(const Server& src)
@@ -31,6 +32,7 @@ Server&  Server::operator=(const Server& src)
     serverFd = src.getServerFd();
     port = src.getPort();
     client = src.getClient();
+    cgiContentLength = src.getCgiContentLength();
     return (*this);
 }
 
@@ -47,9 +49,28 @@ int Server::getPort(void) const
     return (port);
 }
 
+size_t  Server::getCgiContentLength(void) const
+{
+    return (cgiContentLength);
+}
+
 std::map<int, Client>  Server::getClient(void) const
 {
     return (client);
+}
+
+bool    Server::getResponseCgi(int fd)
+{
+    return (client[fd].getResponseCgi());
+}
+
+ssize_t Server::getStandardTime(int fd)
+{
+    ssize_t   standardTime = client[fd].getStandardTime();
+
+    if (standardTime < 0)
+        return (7500);
+    return (standardTime);
 }
 
 int Server::plusClient()
@@ -71,28 +92,44 @@ int Server::plusClient()
 EVENT Server::cgiRead(struct kevent& store)
 {
 	char	buf[PIPE_BUFFER_SIZE + 1];
-	int		readSize;
+	int     readSize;
 
-	cout << "" << endl;
+	cout << "cgiRead fd: " << store.ident << endl;
 	readSize = read(store.ident, buf, PIPE_BUFFER_SIZE);
 	if (readSize <= 0)
 	{
-		cout << "CGI Read End" << endl;
-		if (readSize < 0)
-		{
-			client[Kq::cgiFd[store.ident]].setRequestStatus(500);
-			cgiContent.clear();
-			cgiContentLength = 0;
-			return (ERROR);
-		}
-		client[Kq::cgiFd[store.ident]].setResponseContent(cgiContent);
+        std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl;
+        client[Kq::cgiFd[store.ident]].getResponse().setRequestStatus(500);
+        client[Kq::cgiFd[store.ident]].setResponseContentLength(cgiContentLength);
+        client[Kq::cgiFd[store.ident]].setResponseContent(cgiContentLength, cgiContent);
+        cout << Kq::cgiFd[store.ident] << endl;
+        // static error page
+        // client[Kq::cgiFd[store.ident]].getResponse().makeError();
+        client[Kq::cgiFd[store.ident]].setErrorMsg();
+        cgiContent.clear();
+        cgiContentLength = 0;
+        return (ERROR);
+	}
+    // close(1);
+    buf[readSize] = '\0';
+    cgiContent.append(string(buf));
+    // std::cout<<cgiContent<<std::endl;
+    // std::cout<<cgiContentLength<<std::endl;
+    cgiContentLength += readSize;
+    // cout << "hi: " <<cgiContentLength << endl;
+    // if (readSize < PIPE_BUFFER_SIZE)
+	if (readSize < PIPE_BUFFER_SIZE)
+    {
+        std::cout<<"FINISH Kq::cgiFd[store.ident]: "<<Kq::cgiFd[store.ident]<<std::endl;
+        //pipe fd를 갖는 새로운 client이므로 새로운 request.status를 갖는다. 따라서 쓰레기 값이 들어감(정답)
 		client[Kq::cgiFd[store.ident]].setResponseContentLength(cgiContentLength);
+        client[Kq::cgiFd[store.ident]].setResponseContent(cgiContentLength, cgiContent);
 		cgiContent.clear();
 		cgiContentLength = 0;
-		return (FINISH);
-	}
-	cgiContent.append(string(buf));
-	cgiContentLength += readSize;
+        // std::cout<<"msg\n"<<client[Kq::cgiFd[store.ident]].getMsg();
+        // std::cout<<"====================="<<std::endl;
+		return (ING);
+    }
 	return (ING);
 }
 
@@ -114,11 +151,13 @@ EVENT Server::clientRead(struct kevent& store)
         std::cout<<"read error or socket close\n";
         return (ERROR);
     }
+    std::cout<<"Client Read"<<std::endl;
     buffer[readSize] = '\0';
     client[store.ident].setMessage(buffer);
     client[store.ident].setConnection(true);
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
     {
+        std::cout<<"parsing complete"<<std::endl;
         client[store.ident].setResponseMessage();
         if (client[store.ident].getRequestStatus() == 100)
             return (EXPECT);

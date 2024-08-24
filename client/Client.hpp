@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:17 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/21 17:13:30 by devpark          ###   ########.fr       */
+/*   Updated: 2024/08/23 16:54:52 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ class Client
         size_t      responseAmount;
         ssize_t     standardTime;
         string		msg;
-        time_t		keepAlive;
         Request     request;
         StartLine   startLine;
         HeaderLine  headerLine;
@@ -82,6 +81,7 @@ class Client
         HeaderLine  getHeaderline() const;
         ContentLine getContentLine() const;
         Response    getResponse() const;
+        Response    &getResponse();
         bool        getRequestFin() const;
         int         getRequestStatus() const;
         //set function
@@ -90,9 +90,11 @@ class Client
         void    setKeepAlive(time_t time);
         void    setRequestStatus(int temp);
         void    setRequestFin(bool fin);
-		void	setResponseContent(string content);
+		void	setResponseContent(size_t cgiContentLength, string content);
 		void	setResponseContentLength(size_t contentLength);
+        void    setErrorMsg();
         //logic
+        bool        getResponseCgi();
 		void		clientIP(struct sockaddr_in clntAdr);
         size_t      responseIndex();    //response msg index(responseAmount - index)
         const char* respondMsgIndex();  //msg + index (const char*)
