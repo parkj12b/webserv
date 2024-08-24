@@ -58,11 +58,12 @@ class Client
         HeaderLine  headerLine;
         ContentLine contentLine;
         Response    response;
+		string		pathEnv;
         LocationConfigData
             *recurFindLocation(string url, LocationConfigData *locationConfigData);
     public:
-        Client();
-        Client(int fd, int port);
+		Client();
+        Client(int fd, int port, string pathEnv_);
         explicit Client(const Client& src);
         Client& operator=(const Client& src);
         ~Client();

@@ -58,7 +58,7 @@ Client::Client() : connect(true), connection(false), fd(0), port(0), index(0), r
 	request.clientFd = fd;
 }
 
-Client::Client(int fd, int port) : connect(true), connection(false), fd(fd), port(port), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port)
+Client::Client(int fd, int port, string pathEnv_) : connect(true), connection(false), fd(fd), port(port), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port), pathEnv(pathEnv_)
 {
     request.port = port;
     request.fin = false;
@@ -66,7 +66,7 @@ Client::Client(int fd, int port) : connect(true), connection(false), fd(fd), por
 	request.clientFd = fd;
 }
 
-Client::Client(const Client& src) : connect(src.getConnect()), connection(src.getConnection()), fd(src.getFd()), port(src.getPort()), index(src.getIndex()), responseAmount(src.getResponseAmount()), standardTime(src.getStandardTime()), msg(src.getMsg()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse())
+Client::Client(const Client& src) : connect(src.getConnect()), connection(src.getConnection()), fd(src.getFd()), port(src.getPort()), index(src.getIndex()), responseAmount(src.getResponseAmount()), standardTime(src.getStandardTime()), msg(src.getMsg()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse()), pathEnv(src.pathEnv)
 {}
 
 Client& Client::operator=(const Client& src)
@@ -84,6 +84,7 @@ Client& Client::operator=(const Client& src)
     headerLine = src.getHeaderline();
     contentLine = src.getContentLine();
     response = src.getResponse(); // 디폴트로 불리면서 포트 설정 안됨
+	pathEnv = src.pathEnv;
     return (*this);
 }
 
@@ -421,7 +422,7 @@ void    Client::resetClient()
     index = 0;
     msg.clear();
     // 여기서 뭔가 ServerConfigData, LocationConfigData를 초기화해주는 기분이 듦
-    response = Response(port);
+    response = Response(port, pathEnv);
     startLine = StartLine(port);
     headerLine = HeaderLine(port);
     contentLine = ContentLine(port);
@@ -463,6 +464,7 @@ void    Client::setResponseMessage()
     msg.clear();
     index = 0;
     response.setPort(port);
+	response.setPathEnv(pathEnv);
     response.initRequest(request);
     response.responseMake();
     if (!response.getCgiFlag())

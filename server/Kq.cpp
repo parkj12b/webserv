@@ -39,7 +39,7 @@ std::vector<pid_t>  Kq::processor = processorInit();
 std::vector<struct kevent> Kq::fdList = fdListInit();
 std::map<int, int>  Kq::cgiFd = cgiFdInit();
 
-Kq::Kq()
+Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
 {
     struct sockaddr_in  serverAdr;
     int                 option;
@@ -74,7 +74,7 @@ Kq::Kq()
     connectionCnt = Server::serverConfig->getWorkerConnections();
 }
 
-Kq::Kq(const Kq& src) : kq(src.getKq()), connectionCnt(Server::serverConfig->getWorkerConnections()), server(src.getServer()), findServer(src.getFindServer())
+Kq::Kq(const Kq& src) : kq(src.getKq()), connectionCnt(Server::serverConfig->getWorkerConnections()), pathEnv(src.pathEnv), server(src.getServer()), findServer(src.getFindServer())
 {}
 
 Kq& Kq::operator=(const Kq& src)
@@ -138,7 +138,7 @@ void    Kq::plusClient(int serverFd)
 {
     int clientFd;
 
-    clientFd = server[serverFd].plusClient();
+    clientFd = server[serverFd].plusClient(pathEnv);
     if (clientFd < 0)
         return ;
     std::cout<<"plus client "<<clientFd<<std::endl;
@@ -173,7 +173,7 @@ void    Kq::eventRead(struct kevent& store)
 		serverFd = findServer[cgiFd[store.ident]]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
 			return ;
-        std::cout<<"cgi here2\n";
+        std::cout<<"It's Detected CGI\n";
 		event = server[serverFd].cgiRead(store);
 		switch (event)
 		{
