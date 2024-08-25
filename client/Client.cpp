@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/25 14:47:11 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/25 19:46:09 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ extern int logs;
 LocationConfigData *Client::recurFindLocation(string url,
     LocationConfigData *locationConfigData)
 {
-    cout << "url: " << url << endl;
+    LOG(cout << "url: " << url << endl);
 
     LocationConfigData *configData = NULL;
 
@@ -36,11 +36,11 @@ LocationConfigData *Client::recurFindLocation(string url,
         }
     }
  
-    // cout << locationConfigData->getPath() << endl;
+    // LOG(cout << locationConfigData->getPath() << endl);
     Trie &prefixTrie = locationConfigData->getPrefixTrie();
     string urlFound = prefixTrie.find(url);
-    cout << "temp: " << urlFound << endl;
-    cout << "location: " << request.location << endl;
+    LOG(cout << "temp: " << urlFound << endl);
+    LOG(cout << "location: " << request.location << endl);
     if (urlFound == "")
         return (locationConfigData);
     configData
@@ -90,7 +90,7 @@ Client& Client::operator=(const Client& src)
 
 Client::~Client()
 {
-    std::cout<<fd<<" client close"<<std::endl;
+    LOG(std::cout<<fd<<" client close"<<std::endl);
 }
 
 bool    Client::getConnect() const
@@ -202,7 +202,7 @@ void	Client::setResponseContent(size_t cgiContentLength, string content)
 {
 	msg = response.setContent(content);
     responseAmount = response.getStartHeaderLength() + cgiContentLength;
-    // std::cout<<"content: "<<content;
+    // LOG(std::cout<<"content: "<<content);
 }
 
 void    Client::setErrorMsg()
@@ -222,7 +222,7 @@ void	Client::clientIP(struct sockaddr_in  clntAdr)
 
 	inet_ntop(AF_INET, &clntAdr.sin_addr, clientIp, INET_ADDRSTRLEN);
 	request.clientIp = clientIp;
-	// std::cout<<"client ip: "<<clientIp<<std::endl;
+	// LOG(std::cout<<"client ip: "<<clientIp<<std::endl);
 }
 
 const char* Client::respondMsgIndex()
@@ -236,7 +236,7 @@ int Client::setStart(void)
 
     if (startLine.getCompletion() || request.fin || request.status)
         return (0);
-    std::cout<<"...startline parsing...\n";
+    LOG(std::cout<<"...startline parsing...\n");
     flag = msg.find("\r\n");
     if (flag != std::string::npos)
     {
@@ -274,7 +274,7 @@ int Client::setHeader(void)
 
     if (!startLine.getCompletion() || headerLine.getCompletion() || request.fin || request.status)
         return (0);
-    std::cout<<"...headerline parsing..."<<std::endl;
+    LOG(std::cout<<"...headerline parsing..."<<std::endl);
     while (1)
     {
         flag = msg.find("\r\n");
@@ -286,7 +286,7 @@ int Client::setHeader(void)
                 msg = msg.substr(flag + 2);
                 //keep-alive
                 standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
-                cout << "response in location: " << &response << endl;
+                LOG(cout << "response in location: " << &response << endl);
                 if (setMatchingLocation(request.url))
                 {
                     request.status = 404;
@@ -299,7 +299,7 @@ int Client::setHeader(void)
                 }
                 if (request.status > 0)
                 {
-                    std::cout<<"default error"<<std::endl;
+                    LOG(std::cout<<"default error"<<std::endl);
                     return (2);
                 }
                 contentLine.initContentLine(headerLine.getContentLength(), headerLine.getContentType());
@@ -309,14 +309,14 @@ int Client::setHeader(void)
             str = msg.substr(0, flag);
             if ((request.status = headerLine.makeHeader(str)) > 0)
             {
-                std::cout<<str<<std::endl;
+                LOG(std::cout<<str<<std::endl);
                 return (1);  //400
             }
             msg = msg.substr(flag + 2);
             if (headerLine.getHeader().size() > 24576)
             {
                 request.status = 400;
-                std::cout<<"header size error"<<std::endl;
+                LOG(std::cout<<"header size error"<<std::endl);
                 return (2);  //400
             }
         }
@@ -351,7 +351,7 @@ int Client::setContent(size_t &readSize)
 {
     if (!headerLine.getCompletion() || contentLine.getCompletion() || request.fin || request.status)
         return (0);
-    std::cout<<"...setBodyLine parsing...\n";
+    LOG(std::cout<<"...setBodyLine parsing...\n");
     if (contentLine.makeContentLine(msg, readSize, request.status) < 0)
         return (1);
     request.content = contentLine.getContent();
@@ -361,6 +361,7 @@ int Client::setContent(size_t &readSize)
         {
             if (!msg.empty())
             {
+                LOG(cout << "getTe: " << msg << endl);
                 request.status = 400;
                 return (2);
             }
@@ -378,7 +379,7 @@ int Client::setTrailer(void)
 
     if (!contentLine.getCompletion() || headerLine.getTe() != YES || request.fin == true || request.status > 0)
         return (0);
-    std::cout<<"...setTrailer parsing...\n";
+    LOG(std::cout<<"...setTrailer parsing...\n");
     while (1)
     {
         if (msg.empty())
@@ -435,26 +436,26 @@ void    Client::setMessage(const char* msgRequest, size_t readSize)
     if (setStart())  //max size literal
     {
         request.fin = true;
-        std::cout<<fd<<" "<<request.status<<" ";
-        std::cout<<"Startline Error\n";
+        LOG(std::cout<<fd<<" "<<request.status<<" ");
+        LOG(std::cout<<"Startline Error\n");
         return ;
     }
     if (setHeader())  //max size literal, 헤더 파싱
     {
         request.fin = true;
-        std::cout<<"Header Error\n";
+        LOG(std::cout<<"Header Error\n");
         return ;
     }
     if (setContent(readSize)) // 바디 파싱
     {
         request.fin = true;
-        std::cout<<"Body Error\n";
+        LOG(std::cout<<"Body Error\n");
         return ;
     }
     if (setTrailer()) // 바디 마지막, 트레일러 파싱
     {
         request.fin = true;
-        std::cout<<"Trailer Error\n";
+        LOG(std::cout<<"Trailer Error\n");
         return ; 
     }
 }
@@ -469,12 +470,12 @@ void    Client::setResponseMessage()
     response.responseMake();
     if (!response.getCgiFlag())
     {
-        std::cout<<"NOtCGI"<<std::endl;
+        LOG(std::cout<<"NOtCGI"<<std::endl);
         msg = response.getEntity();
         responseAmount = response.getStartHeaderLength() + response.getContentLength();
         return ;
     }
-    std::cout<<"YES CGI"<<std::endl;
+    LOG(std::cout<<"YES CGI"<<std::endl);
 }
 
 size_t  Client::responseIndex()
@@ -491,7 +492,7 @@ void    Client::plusIndex(size_t plus)
 
 bool    Client::setMatchingLocation(string url)
 {
-    cout << "url " << url << endl;
+    LOG(cout << "url " << url << endl);
     string host = request.header["host"].front();
     ServerConfigData *serverConfigData;
     try {
@@ -517,7 +518,7 @@ bool    Client::setMatchingLocation(string url)
     }
     Trie &prefixTrie = serverConfigData->getPrefixTrie();
     request.location = prefixTrie.find(url);
-    cout << "location " << request.location << endl;
+    LOG(cout << "location " << request.location << endl);
     if (request.location == "")
         return (true);
     location
@@ -525,10 +526,10 @@ bool    Client::setMatchingLocation(string url)
     size_t i = url.find(location->getPath());
     string temp = url.substr(i + location->getPath().size());
     response.setLocationConfigData(recurFindLocation(temp, location));
-    cout << "path: " << response.getLocationConfigData()->getPath() << endl;
-    cout << "location " << location << endl;
-    cout << "lower location " << request.location << endl;
-    cout << "location here: " << location << endl;
+    LOG(cout << "path: " << response.getLocationConfigData()->getPath() << endl);
+    LOG(cout << "location " << location << endl);
+    LOG(cout << "lower location " << request.location << endl);
+    LOG(cout << "location here: " << location << endl);
     return (false);
 }
 
@@ -540,25 +541,27 @@ void    Client::showMessage(void)
     time_t now = time(0);
     // time_t 형식을 문자열로 변환합니다.
     char* dt = ctime(&now);
-    std::cout<<"time : "<<dt;
+
+    (void) dt;
+    LOG(std::cout<<"time : "<<dt);
     //request 출력
-    std::cout<<"=====strat line=====\n";
-    std::cout<<"fd : "<<fd<<std::endl;
-    std::cout<<request.method<<" "<<request.version<<" "<<request.url<<std::endl;
+    LOG(std::cout<<"=====strat line=====\n");
+    LOG(std::cout<<"fd : "<<fd<<std::endl);
+    LOG(std::cout<<request.method<<" "<<request.version<<" "<<request.url<<std::endl);
     for (std::map<std::string, std::string>::iterator it = request.query.begin(); it != request.query.end(); it++)
-        std::cout<<it->first<<"="<<it->second<<std::endl;
-    std::cout<<"=====header line=====\n";
+        LOG(std::cout<<it->first<<"="<<it->second<<std::endl);
+    LOG(std::cout<<"=====header line=====\n");
     for (std::map<std::string, std::deque<std::string> >::iterator it = request.header.begin(); it != request.header.end(); it++)
     {
-        std::cout<<it->first<<": ";
+        LOG(std::cout<<it->first<<": ");
         for (itd = request.header[it->first].begin(); itd != request.header[it->first].end(); itd++)
-            std::cout<<*itd<<"  ";
-        std::cout<<"\n";
+            LOG(std::cout<<*itd<<"  ");
+        LOG(std::cout<<"\n");
     }
-    std::cout<<"=====entity line=====\n";
+    LOG(std::cout<<"=====entity line=====\n");
     for (std::vector<std::string>::iterator it = request.content.begin(); it != request.content.end(); it++)
     {
-        std::cout<<*it;
+        LOG(std::cout<<*it);
     }
-    std::cout<<"\n\n";
+    LOG(std::cout<<"\n\n");
 }

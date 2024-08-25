@@ -23,7 +23,7 @@ def generate_html(query_params):
     print("<li>")
     # 쿼리 파라미터를 HTML 리스트로 변환
     print('*' * stars_cnt)
-    print("<li>")
+    print("</li>")
     print("</ul>")
     print("</body>")
     print("</html>")

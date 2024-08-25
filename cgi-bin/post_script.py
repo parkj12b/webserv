@@ -7,7 +7,7 @@ import cgitb
 import sys
 import json
 
-# Enable debugging
+# Enable LOGging
 cgitb.enable()
 
 # Read the HTTP content type
