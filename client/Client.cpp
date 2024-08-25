@@ -206,8 +206,11 @@ void	Client::setResponseContentLength(size_t contentLength)
 
 void	Client::setResponseContent(size_t cgiContentLength, string content)
 {
-	msg = response.setContent(content);
-    responseAmount = response.getStartHeaderLength() + cgiContentLength;
+	size_t  pos;
+
+    pos = response.setContent(content);
+    responseAmount = response.getStartHeaderLength() + cgiContentLength - pos;
+    response.setContentLength(cgiContentLength - pos);
     // std::cout<<"content: "<<content;
 }
 
