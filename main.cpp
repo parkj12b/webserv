@@ -47,7 +47,7 @@ bool	findPathEnv(char **envp, string& pathEnv)
 
 int main(int argc, char **argv, char **envp)
 {
-    // atexit(check);
+    atexit(check);
     cout << "========parser========" << endl;
     Directives::init();
     string path = DEFAULT_CONFIG_PATH;
