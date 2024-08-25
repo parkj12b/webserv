@@ -150,6 +150,7 @@ EVENT Server::clientRead(struct kevent& store)
     if (readSize <= 0) // read가 발생했는데 읽은게 없다면 에러
     {
         std::cout<<"read error or socket close\n";
+        client[store.ident].deleteContent();
         return (ERROR);
     }
     std::cout<<"Client Read" << " " << readSize << std::endl;
