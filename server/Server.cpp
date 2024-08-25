@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/25 14:20:24 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/25 14:50:10 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ EVENT Server::clientRead(struct kevent& store)
         std::cout<<"read error or socket close\n";
         return (ERROR);
     }
-    std::cout<<"Client Read"<<std::endl;
+    std::cout<<"Client Read" << " " << readSize << std::endl;
     buffer[readSize] = '\0';
     client[store.ident].setMessage(buffer);
     client[store.ident].setConnection(true);

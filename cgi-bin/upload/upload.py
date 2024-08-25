@@ -48,5 +48,12 @@ def process_file(file_item):
         
         print(f"<p>File '{filename}' uploaded successfully!</p>")
 
+def main():
+    handle_file_uploads()
+    
+
+if __name__ == "__main__":
+    main()
+
 # Handle file uploads
 handle_file_uploads()
