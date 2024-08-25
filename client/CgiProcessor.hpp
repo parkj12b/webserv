@@ -11,15 +11,13 @@ struct Request;
 class CgiProcessor
 {
 public:
-	CgiProcessor(Request &request_, ServerConfigData *serverConfig_, LocationConfigData *locationConfig_);
+	CgiProcessor(Request &request_, ServerConfigData *serverConfig_, LocationConfigData *locationConfig_, string pathEnv_);
 	~CgiProcessor();
 	string	getScriptFile();
 	string	getCgiContent();
 	size_t	getContentLength();
 	bool	getFin();
 	void	insertEnv(string key, string value);
-	void	setURLEnv();
-	void	setStartHeaderEnv();
 	void	selectCgiCmd(string url);
 	void	checkPostContentType();
 	void	executeCGIScript(const string path);
@@ -27,9 +25,15 @@ private:
 	CgiProcessor();
 	CgiProcessor(const CgiProcessor& rhs);
 	CgiProcessor&	operator=(const CgiProcessor& rhs);
+	void	setURLEnv();
+	void	setStartHeaderEnv();
+	bool	isDirectory(const char *binPath);
+	bool	checkErr(const char *binPath);
+	bool	findCgiCmdPath();
 	Request 			&request;
 	ServerConfigData	*serverConfig;
 	LocationConfigData	*locationConfig;
+	string				pathEnv;
 	string				scriptFile;
 	string				cgiCommand;
 	string				cgiContent;

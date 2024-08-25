@@ -70,6 +70,7 @@ class Response
         int                 port;
         size_t              startHeaderLength;
 		size_t				contentLength;
+		string				pathEnv;
         std::string         start;
         std::string         header;
         std::string         content;
@@ -86,7 +87,7 @@ class Response
         Response(const Response& src);
         Response&    operator=(const Response& src);
         ~Response();
-        Response(int port);
+        Response(int port, string pathEnv_);
         //get function
         int         getPort() const;
         size_t      getStartHeaderLength() const;
@@ -103,6 +104,7 @@ class Response
         //set function
         void        setCgiFlag(bool flag);
         void        setPort(int port);
+		void		setPathEnv(string pathEnv_);
         void        setRequest(Request &temp);
         void        setRequestStatus(int status);
         void        setLocationConfigData(LocationConfigData *locationConfig);

@@ -169,11 +169,6 @@ void    Response::makeFilePath(string& str)
         request.status = 404;
         return ;
     }
-	if (str.find("..") != std::string::npos)
-	{
-		request.status = 404;
-		return ;
-	}
 	if (isCgiScriptInURL(str))
 		cgiFlag = true;
     cout << "str: " << str << endl;
@@ -211,7 +206,7 @@ Response::~Response()
 {
 }
 
-Response::Response(int port) : cgiFlag(false), port(port), contentLength(0)
+Response::Response(int port, string pathEnv_) : cgiFlag(false), port(port), contentLength(0), pathEnv(pathEnv_)
 {}
 
 int Response::getPort() const
@@ -282,6 +277,11 @@ void    Response::setCgiFlag(bool flag)
 void        Response::setPort(int port)
 {
     this->port = port;
+}
+
+void	Response::setPathEnv(string pathEnv_)
+{
+	pathEnv = pathEnv_;
 }
 
 void    Response::setRequest(Request &temp)
@@ -468,7 +468,7 @@ void    Response::makeError()
         makeContent(fd);
     else
     {
-        CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
+        CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
 		cgiProcessor.selectCgiCmd(CGI_ERROR_PAGE);
 		cgiProcessor.insertEnv("ERROR_CODE", toString(request.status));
         cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
@@ -541,7 +541,7 @@ void    Response::makeContent(int fd)
         content.append(buffer, readSize);
         count += readSize;
     }
-    cout<<content.size()<<endl;
+    cout<<"Content Size: "<<content.size()<<endl;
     contentLength = count;
     makeHeader("content-length", to_string(count));
     close(fd);
@@ -569,7 +569,7 @@ void    Response::makeGet()
 
     std::cout<<"Method: GET"<<std::endl;
     std::cout<<request.url.c_str()<<std::endl;
-    CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
+    CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
     
     // cout << "is directory: " << isDirectory(request.url.c_str()) << endl;
     // cout << "location: " << getLocationConfigData()->getPath() << endl;
@@ -631,7 +631,7 @@ void    Response::makeGet()
 void    Response::makePost()
 {
     cout<<"Method: POST"<<endl;
-	CgiProcessor cgiProcessor(request, serverConfig, locationConfig);
+	CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
 	if (cgiFlag)
 	{
 		cgiProcessor.selectCgiCmd(request.url);
