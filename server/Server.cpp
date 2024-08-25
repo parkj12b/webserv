@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/23 16:50:01 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/25 14:50:10 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ EVENT Server::cgiRead(struct kevent& store)
 	if (readSize <= 0)
 	{
         std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl;
-        client[Kq::cgiFd[store.ident]].getResponse().setRequestStatus(500);
+        // client[Kq::cgiFd[store.ident]].getResponse().setRequestStatus(500);
         client[Kq::cgiFd[store.ident]].setResponseContentLength(cgiContentLength);
         client[Kq::cgiFd[store.ident]].setResponseContent(cgiContentLength, cgiContent);
         cout << Kq::cgiFd[store.ident] << endl;
@@ -152,9 +152,10 @@ EVENT Server::clientRead(struct kevent& store)
         std::cout<<"read error or socket close\n";
         return (ERROR);
     }
-    std::cout<<"Client Read"<<std::endl;
+    std::cout<<"Client Read" << " " << readSize << std::endl;
+    write(logs, buffer, readSize);
     buffer[readSize] = '\0';
-    client[store.ident].setMessage(buffer);
+    client[store.ident].setMessage(buffer, readSize);
     client[store.ident].setConnection(true);
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
     {
@@ -184,6 +185,7 @@ EVENT   Server::clientWrite(struct kevent& store)
         return (ING);
     if (client[store.ident].getRequestStatus() == 100)
         return (EXPECT);
+    client[store.ident].deleteContent();
     if (!client[store.ident].getConnect())
     {
         std::cout<<"connection fin"<<std::endl;

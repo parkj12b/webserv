@@ -43,7 +43,7 @@ typedef struct Request
     Version											version;    //http version
     std::map<std::string, std::string>				query;      //resource query
     std::map<std::string, std::deque<std::string> >	header;     //request header
-    std::vector<std::string>						content;    //request content
+    std::string						                contentFileName;    //request content
 }   Request;
 
 class Server;
@@ -102,6 +102,7 @@ class Response
         std::vector<std::string>    getKeyHeader() const;
         LocationConfigData *getLocationConfigData() const;
         //set function
+        void        setCgiFlag(bool flag);
         void        setPort(int port);
 		void		setPathEnv(string pathEnv_);
         void        setRequest(Request &temp);
