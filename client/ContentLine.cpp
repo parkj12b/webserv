@@ -14,16 +14,16 @@
 
 extern int logs;
 
-ContentLine::ContentLine() : completion(false), port(0), contentLength(0), maxSize(0)
+ContentLine::ContentLine() : completion(false), fd(0), port(0), contentLength(0), maxSize(0)
 {}
 
-ContentLine::ContentLine(const ContentLine& src) : completion(src.getCompletion()), contentType(src.getContentType()), port(src.getPort()), contentLength(src.getContentLength()), maxSize(src.getMaxSize()), chunked(src.getChunked()), content(src.getContent())
+ContentLine::ContentLine(const ContentLine& src) : completion(src.getCompletion()), contentType(src.getContentType()), fd(src.getFd()), port(src.getPort()), contentLength(src.getContentLength()), maxSize(src.getMaxSize()), chunked(src.getChunked()), content(src.getContent())
 {}
 
 ContentLine::~ContentLine()
 {}
 
-ContentLine::ContentLine(int port) : completion(false), port(port), contentLength(0), maxSize(0)
+ContentLine::ContentLine(int port) : completion(false), fd(0), port(port), contentLength(0), maxSize(0)
 {}
 
 ContentLine& ContentLine::operator=(const ContentLine& src)
@@ -47,6 +47,11 @@ CONTENTTYPE ContentLine::getContentType() const
     return (contentType);
 }
 
+int ContentLine::getFd() const
+{
+    return (fd);
+}
+
 int ContentLine::getContentLength() const
 {
     return (contentLength);
@@ -60,6 +65,11 @@ int ContentLine::getPort() const
 size_t  ContentLine::getMaxSize() const
 {
     return (maxSize);
+}
+
+std::string ContentLine::getFileName() const
+{
+    return (fileName);
 }
 
 std::string ContentLine::getChunked() const
@@ -76,6 +86,38 @@ void    ContentLine::initContentLine(int initLength, CONTENTTYPE initType)
 {
     contentLength = initLength;
     contentType = initType;
+}
+
+bool    ContentLine::fileExist(const char *fileName_)
+{
+    std::ifstream file(fileName_);
+
+    bool exists = file.is_open();
+    if (exists)
+        file.close();
+    return (exists);
+}
+
+bool    ContentLine::tempFileMake()
+{
+    std::string     fileName_ = "./tempContent";
+    size_t          num;
+
+    num = 1;
+    while (1)
+    {
+        if (!fileExist((fileName_ + toString(num)).c_str()))
+        {
+            std::cout<<(fileName_ + toString(num)).c_str()<<std::endl;
+            fileName = fileName_ + toString(num);
+            break ;
+        }
+        num++;
+    }
+    fd = open(fileName.c_str(), O_WRONLY | O_CREAT, 0777);
+    if (fd < 0)
+        return (false);
+    return (true);
 }
 
 int ContentLine::chunkedEntity()
@@ -108,13 +150,13 @@ int ContentLine::chunkedEntity()
         }
         else
         {
-            if (size != static_cast<int>(temp.size()))
-                return (2);
-            content.push_back(temp);
+            // content.push_back(temp);
+            write(fd, &temp[0], size);
         }
         ans++;
     }
     completion = true;
+    close(fd);
     return (0);
 }
 
@@ -134,21 +176,27 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
         if (contentLength >= static_cast<int>(readSize))
         {
             contentLength -= static_cast<int>(readSize);
-            if (contentLength == 0)
-                completion = true;
-            content.push_back(str);
+            // content.push_back(str);
+            write(fd, &str[0], readSize);
             str.clear();
+            if (contentLength == 0)
+            {
+                completion = true;
+                close(fd);
+            }
         }
         else
         {
-            content.push_back(str.substr(0, contentLength));
+            // content.push_back(str.substr(0, contentLength));
+            write(fd, &str[0], readSize);
             str = str.substr(contentLength);
             completion = true;
+            close(fd);
         }
     }
     else if (contentType == TRANSFER)
     {
-        chunked += str;
+        chunked.append(str, readSize);
         str.clear();
         flag = chunked.find("0\r\n\r\n");
         // flag = str.find("0\r\n");  //talnet 때문에 임시로 대체함

@@ -49,6 +49,7 @@ class Client
         bool        connection;
         int         fd;
         int         port;
+        size_t      msgSize;
         size_t      index;
         size_t      responseAmount;
         ssize_t     standardTime;
@@ -72,6 +73,7 @@ class Client
         bool        getConnection() const;
         int         getFd() const;
         int         getPort() const;
+        size_t      getMsgSize() const;
         size_t      getIndex() const;
         size_t      getResponseAmount() const;
         ssize_t     getStandardTime() const;
@@ -96,14 +98,15 @@ class Client
         void    setErrorMsg();
         //logic
         bool        getResponseCgi();
+        void        deleteContent();
 		void		clientIP(struct sockaddr_in clntAdr);
         size_t      responseIndex();    //response msg index(responseAmount - index)
         const char* respondMsgIndex();  //msg + index (const char*)
         int         setStart(void);     //startLine make
         int         setHeader(void);    //headerLine make
-        int         setContent(size_t &readSize);   //contentLine make
+        int         setContent(void);   //contentLine make
         int         setTrailer(void);   //trailer make
-        void        setMessage(const char* msgRequest, size_t readSize); //request msg setting
+        void        setMessage(const char* msgRequest, int &readSize); //request msg setting
         void        setResponseMessage();               //make response msg
         void        plusIndex(size_t plus);             //index plus
         void        resetClient();                      //reset client varidation

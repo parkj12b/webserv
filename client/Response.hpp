@@ -43,7 +43,7 @@ typedef struct Request
     Version											version;    //http version
     std::map<std::string, std::string>				query;      //resource query
     std::map<std::string, std::deque<std::string> >	header;     //request header
-    std::vector<std::string>						content;    //request content
+    std::string						                contentFileName;    //request content
 }   Request;
 
 class Server;

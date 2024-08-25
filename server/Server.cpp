@@ -153,6 +153,7 @@ EVENT Server::clientRead(struct kevent& store)
         return (ERROR);
     }
     std::cout<<"Client Read" << " " << readSize << std::endl;
+    write(logs, buffer, readSize);
     buffer[readSize] = '\0';
     client[store.ident].setMessage(buffer, readSize);
     client[store.ident].setConnection(true);
@@ -189,6 +190,7 @@ EVENT   Server::clientWrite(struct kevent& store)
         std::cout<<"connection fin"<<std::endl;
         return (ERROR);
     }
+    client[store.ident].deleteContent();
     client[store.ident].resetClient();
     std::cout<<"keep-alive"<<std::endl;
     return (FINISH);
