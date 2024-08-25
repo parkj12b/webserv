@@ -185,12 +185,12 @@ EVENT   Server::clientWrite(struct kevent& store)
         return (ING);
     if (client[store.ident].getRequestStatus() == 100)
         return (EXPECT);
+    client[store.ident].deleteContent();
     if (!client[store.ident].getConnect())
     {
         std::cout<<"connection fin"<<std::endl;
         return (ERROR);
     }
-    client[store.ident].deleteContent();
     client[store.ident].resetClient();
     std::cout<<"keep-alive"<<std::endl;
     return (FINISH);
