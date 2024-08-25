@@ -52,7 +52,7 @@ class ContentLine
         //logic
         void    initContentLine(int initLength, CONTENTTYPE initType);  //init
         int     chunkedEntity();                    //chunked message parsing
-        int     makeContentLine(std::string &str, int &status);  //contentLine make
+        int     makeContentLine(std::string &str, size_t readSize, int &status);  //contentLine make
 };
 
 #endif

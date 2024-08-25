@@ -427,10 +427,10 @@ void    Client::resetClient()
     contentLine = ContentLine(port);
 }
 
-void    Client::setMessage(std::string msgRequest)
+void    Client::setMessage(const char* msgRequest, size_t readSize)
 {
-    msg.append(msgRequest);
-    write(logs, &msgRequest[0], msgRequest.size());
+    msg.append(msgRequest, readSize);
+    write(logs, msgRequest, readSize);
     if (setStart())  //max size literal
     {
         request.fin = true;

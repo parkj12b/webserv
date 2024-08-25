@@ -102,7 +102,7 @@ class Client
         int         setHeader(void);    //headerLine make
         int         setContent(void);   //contentLine make
         int         setTrailer(void);   //trailer make
-        void        setMessage(string msgRequest); //request msg setting
+        void        setMessage(const char* msgRequest, size_t readSize); //request msg setting
         void        setResponseMessage();               //make response msg
         void        plusIndex(size_t plus);             //index plus
         void        resetClient();                      //reset client varidation
