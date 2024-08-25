@@ -49,6 +49,7 @@ class Client
         bool        connection;
         int         fd;
         int         port;
+        size_t      msgSize;
         size_t      index;
         size_t      responseAmount;
         ssize_t     standardTime;
@@ -71,6 +72,7 @@ class Client
         bool        getConnection() const;
         int         getFd() const;
         int         getPort() const;
+        size_t      getMsgSize() const;
         size_t      getIndex() const;
         size_t      getResponseAmount() const;
         ssize_t     getStandardTime() const;

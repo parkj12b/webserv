@@ -152,6 +152,7 @@ EVENT Server::clientRead(struct kevent& store)
         return (ERROR);
     }
     std::cout<<"Client Read" << " " << readSize << std::endl;
+    write(logs, buffer, readSize);
     buffer[readSize] = '\0';
     client[store.ident].setMessage(buffer, readSize);
     client[store.ident].setConnection(true);
