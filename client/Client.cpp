@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/25 14:04:15 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/25 14:12:20 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ LocationConfigData *Client::recurFindLocation(string url,
     Trie &prefixTrie = locationConfigData->getPrefixTrie();
     string urlFound = prefixTrie.find(url);
     cout << "temp: " << urlFound << endl;
-    // cout << "location: " << request.location << endl;
+    cout << "location: " << request.location << endl;
     if (urlFound == "")
         return (locationConfigData);
     configData
@@ -520,14 +520,9 @@ bool    Client::setMatchingLocation(string url)
         return (true);
     location
         = serverConfigData->getLocationConfigData(request.location, 0);
-    if (location->getPath() != "/")
-    {
-        size_t i = url.find(location->getPath());
-        string temp = url.substr(i + location->getPath().size());
-        response.setLocationConfigData(recurFindLocation(temp, location));
-    }
-    else
-        response.setLocationConfigData(recurFindLocation(url, location));
+    size_t i = url.find(location->getPath());
+    string temp = url.substr(i + location->getPath().size());
+    response.setLocationConfigData(recurFindLocation(temp, location));
     cout << "path: " << response.getLocationConfigData()->getPath() << endl;
     cout << "location " << location << endl;
     cout << "lower location " << request.location << endl;

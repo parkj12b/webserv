@@ -582,7 +582,6 @@ void    Response::makeGet()
         cgiProcessor.selectCgiCmd(AUTOINDEX_PATH);
         cout << "directory listing" << endl;
     	cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
-        makeHeader("content-type", "text/html");
     }
 	else if (cgiFlag)
 	{

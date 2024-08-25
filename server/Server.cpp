@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/23 21:46:03 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/25 14:20:24 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ EVENT Server::cgiRead(struct kevent& store)
 	if (readSize <= 0)
 	{
         std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl;
-        client[Kq::cgiFd[store.ident]].getResponse().setRequestStatus(500);
+        // client[Kq::cgiFd[store.ident]].getResponse().setRequestStatus(500);
         client[Kq::cgiFd[store.ident]].setResponseContentLength(cgiContentLength);
         client[Kq::cgiFd[store.ident]].setResponseContent(cgiContentLength, cgiContent);
         cout << Kq::cgiFd[store.ident] << endl;
@@ -118,18 +118,18 @@ EVENT Server::cgiRead(struct kevent& store)
     cgiContentLength += readSize;
     // cout << "hi: " <<cgiContentLength << endl;
     // if (readSize < PIPE_BUFFER_SIZE)
-	if (readSize < PIPE_BUFFER_SIZE)
-    {
-        std::cout<<"FINISH Kq::cgiFd[store.ident]: "<<Kq::cgiFd[store.ident]<<std::endl;
-        //pipe fd를 갖는 새로운 client이므로 새로운 request.status를 갖는다. 따라서 쓰레기 값이 들어감(정답)
-		client[Kq::cgiFd[store.ident]].setResponseContentLength(cgiContentLength);
-        client[Kq::cgiFd[store.ident]].setResponseContent(cgiContentLength, cgiContent);
-		cgiContent.clear();
-		cgiContentLength = 0;
-        // std::cout<<"msg\n"<<client[Kq::cgiFd[store.ident]].getMsg();
-        // std::cout<<"====================="<<std::endl;
-		return (ING);
-    }
+	// if (readSize < PIPE_BUFFER_SIZE)
+    // {
+    //     std::cout<<"FINISH Kq::cgiFd[store.ident]: "<<Kq::cgiFd[store.ident]<<std::endl;
+    //     //pipe fd를 갖는 새로운 client이므로 새로운 request.status를 갖는다. 따라서 쓰레기 값이 들어감(정답)
+	// 	client[Kq::cgiFd[store.ident]].setResponseContentLength(cgiContentLength);
+    //     client[Kq::cgiFd[store.ident]].setResponseContent(cgiContentLength, cgiContent);
+	// 	cgiContent.clear();
+	// 	cgiContentLength = 0;
+    //     // std::cout<<"msg\n"<<client[Kq::cgiFd[store.ident]].getMsg();
+    //     // std::cout<<"====================="<<std::endl;
+	// 	return (ING);
+    // }
 	return (ING);
 }
 
