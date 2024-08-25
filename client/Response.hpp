@@ -108,7 +108,7 @@ class Response
         void        setRequest(Request &temp);
         void        setRequestStatus(int status);
         void        setLocationConfigData(LocationConfigData *locationConfig);
-		std::string setContent(string content_);
+		size_t      setContent(string content_);
 		void	    setContentLength(size_t contentLength_);
         //sub logic
 		bool	isCgiScriptInURL(string& str);

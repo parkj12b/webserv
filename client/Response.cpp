@@ -302,29 +302,30 @@ void    Response::setLocationConfigData(LocationConfigData *locationConfigData)
     locationConfig = locationConfigData;
 }
 
+size_t  Response::setContent(string content_)
+{
+    size_t      crlfPos;
+    size_t      contentPos;
+    std::string contentType;
+
+    crlfPos = content_.find("\r\n");
+    contentType = content_.substr(0, crlfPos);
+	content = content_.substr(crlfPos + 2);
+    contentPos = contentType.find(":");
+    makeHeader("content-type", contentType.substr(contentPos + 1));
+    // std::cout<< "request.status: "<<request.status<<std::endl;
+    // std::cout<<entity<<std::endl<<std::endl;
+    // std::cout<<"================"<<std::endl;
+    return (crlfPos);
+}
+
 void	Response::setContentLength(size_t contentLength_)
 {
     contentLength = contentLength_;
     makeHeader("content-length", toString(contentLength));
+    makeEntity();
     // std::cout<<"header: \n\n"<<header;
     // std::cout<<"================"<<std::endl;
-}
-
-std::string Response::setContent(string content_)
-{
-    size_t      pos;
-    std::string contentType;
-
-    pos = content_.find("\r\n");
-    contentType = content_.substr(0, pos);
-    pos = contentType.find(":");
-    makeHeader("content-type", contentType.substr(pos + 1));
-	content = content_;
-    // std::cout<< "request.status: "<<request.status<<std::endl;
-    makeEntity();
-    // std::cout<<entity<<std::endl<<std::endl;
-    // std::cout<<"================"<<std::endl;
-    return (entity);
 }
 
 void    Response::initRequest(Request msg)
