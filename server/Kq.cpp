@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/23 21:48:27 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/25 14:05:43 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void    Kq::clientFin(struct kevent& store)
 
     std::cout<<"bye"<<std::endl;
     serverFd = findServer[store.ident];
-    // plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
+    plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
     findServer[store.ident] = 0;
@@ -164,10 +164,16 @@ void    Kq::eventRead(struct kevent& store)
 	}
 	if (iter != cgiFd.end())
 	{
-        std::cout<<"cgi"<<std::endl;
+        // std::cout<<"cgi here\n";
+        if (cgiFd[store.ident] == 0)
+        {
+            return ;
+            // std::cout<<"cgi here\n";
+        }
 		serverFd = findServer[cgiFd[store.ident]]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
 			return ;
+        std::cout<<"cgi here2\n";
 		event = server[serverFd].cgiRead(store);
 		switch (event)
 		{
@@ -176,19 +182,18 @@ void    Kq::eventRead(struct kevent& store)
 				break ;
 			case ERROR:
 			case FINISH:
-                std::cout<<"finish\n"<<std::endl;
-                std::cout<<iter->first<<std::endl;
-                std::cout<<"finish\n"<<std::endl;
+                std::cout<<"iter->first: "<<iter->first<<std::endl;
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
 				close(iter->first);
 				cgiFd[iter->first] = 0;
+                cgiFd.erase(iter->first);
 				break ;
 		}
 	}
 	else
 	{
-        std::cout<<"not cgi"<<std::endl;
+        std::cout<<"read here\n";
 		serverFd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
 			return ;
@@ -293,7 +298,7 @@ void    Kq::mainLoop()
                 clientFin(store[i]);  //client 종료
             else if (store[i].filter == EVFILT_READ)
             {
-                std::cout<<"read"<<std::endl;
+                // std::cout<<"read"<<std::endl;
                 eventRead(store[i]);
             }
             else if (store[i].filter == EVFILT_WRITE)
