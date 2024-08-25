@@ -58,7 +58,7 @@ Client::Client() : connect(true), connection(false), fd(0), port(0), msgSize(0),
 	request.clientFd = fd;
 }
 
-Client::Client(int fd, int port) : connect(true), connection(false), fd(fd), port(port), msgSize(0), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port)
+Client::Client(int fd, int port, string pathEnv_) : connect(true), connection(false), fd(fd), port(port), msgSize(0), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port), pathEnv(pathEnv_)
 {
     request.port = port;
     request.fin = false;
@@ -66,7 +66,7 @@ Client::Client(int fd, int port) : connect(true), connection(false), fd(fd), por
 	request.clientFd = fd;
 }
 
-Client::Client(const Client& src) : connect(src.getConnect()), connection(src.getConnection()), fd(src.getFd()), port(src.getPort()), msgSize(src.getMsgSize()), index(src.getIndex()), responseAmount(src.getResponseAmount()), standardTime(src.getStandardTime()), msg(src.getMsg()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse())
+Client::Client(const Client& src) : connect(src.getConnect()), connection(src.getConnection()), fd(src.getFd()), port(src.getPort()), msgSize(src.getMsgSize()), index(src.getIndex()), responseAmount(src.getResponseAmount()), standardTime(src.getStandardTime()), msg(src.getMsg()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse()), pathEnv(src.pathEnv)
 {}
 
 Client& Client::operator=(const Client& src)
@@ -85,6 +85,7 @@ Client& Client::operator=(const Client& src)
     headerLine = src.getHeaderline();
     contentLine = src.getContentLine();
     response = src.getResponse(); // 디폴트로 불리면서 포트 설정 안됨
+	pathEnv = src.pathEnv;
     return (*this);
 }
 
@@ -235,7 +236,7 @@ const char* Client::respondMsgIndex()
     return (msg.c_str() + index);
 }
 
-int Client::setStart(size_t &readSize)
+int Client::setStart()
 {
     size_t      flag;
 
@@ -250,7 +251,7 @@ int Client::setStart(size_t &readSize)
         standardTime = Server::serverConfig->getDefaultServer(port)->getHeaderTimeout();  //여기서 keep-alive setting
         if ((request.status = startLine.check(msg.substr(0, flag))))  //ingu test
             return (1);
-        readSize -= flag + 2;
+        msgSize -= flag + 2;
         msg = msg.substr(flag + 2);
         request.method = startLine.getMethod();
         request.url = startLine.getUrl();
@@ -272,7 +273,7 @@ int Client::setStart(size_t &readSize)
     return (0);
 }
 
-int Client::setHeader(size_t &readSize)
+int Client::setHeader()
 {
     size_t                                                    flag;
     std::string                                               str;
@@ -286,7 +287,7 @@ int Client::setHeader(size_t &readSize)
         flag = msg.find("\r\n");
         if (flag != std::string::npos)
         {
-            readSize -= flag + 2;
+            msgSize -= flag + 2;
             if (flag == 0)
             {
                 request.header = headerLine.getHeader();
@@ -354,12 +355,12 @@ int Client::setHeader(size_t &readSize)
     return (0);
 }
 
-int Client::setContent(size_t &readSize)
+int Client::setContent()
 {
     if (!headerLine.getCompletion() || contentLine.getCompletion() || request.fin || request.status)
         return (0);
     std::cout<<"...setBodyLine parsing...\n";
-    if (contentLine.makeContentLine(msg, readSize, request.status) < 0)
+    if (contentLine.makeContentLine(msg, msgSize, request.status) < 0)
         return (1);
     if (contentLine.getCompletion())
     {
@@ -430,30 +431,31 @@ void    Client::resetClient()
     index = 0;
     msg.clear();
     // 여기서 뭔가 ServerConfigData, LocationConfigData를 초기화해주는 기분이 듦
-    response = Response(port);
+    response = Response(port, pathEnv);
     startLine = StartLine(port);
     headerLine = HeaderLine(port);
     contentLine = ContentLine(port);
 }
 
-void    Client::setMessage(const char* msgRequest, size_t readSize)
+void    Client::setMessage(const char* msgRequest, int &readSize)
 {
     msg.append(msgRequest, readSize);
     // write(logs, msgRequest, readSize);
-    if (setStart(readSize))  //max size literal
+    msgSize += readSize;
+    if (setStart())  //max size literal
     {
         request.fin = true;
         std::cout<<fd<<" "<<request.status<<" ";
         std::cout<<"Startline Error\n";
         return ;
     }
-    if (setHeader(readSize))  //max size literal, 헤더 파싱
+    if (setHeader())  //max size literal, 헤더 파싱
     {
         request.fin = true;
         std::cout<<"Header Error\n";
         return ;
     }
-    if (setContent(readSize)) // 바디 파싱
+    if (setContent()) // 바디 파싱
     {
         request.fin = true;
         std::cout<<"Body Error\n";
@@ -472,6 +474,7 @@ void    Client::setResponseMessage()
     msg.clear();
     index = 0;
     response.setPort(port);
+	response.setPathEnv(pathEnv);
     response.initRequest(request);
     response.responseMake();
     if (!response.getCgiFlag())

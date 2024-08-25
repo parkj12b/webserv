@@ -1,10 +1,12 @@
 #include "CgiProcessor.hpp"
 #include "Kq.hpp"
+#include <sys/stat.h>
 
-CgiProcessor::CgiProcessor(Request &request_, ServerConfigData *serverConfig_, LocationConfigData *locationConfig_)
+CgiProcessor::CgiProcessor(Request &request_, ServerConfigData *serverConfig_, LocationConfigData *locationConfig_, string pathEnv_)
 	:request(request_)
 	, serverConfig(serverConfig_)
 	, locationConfig(locationConfig_)
+	, pathEnv(pathEnv_)
 	, contentLength(0)
 	, fin(false)
 {
@@ -131,14 +133,65 @@ void	CgiProcessor::checkPostContentType()
 		request.status = 400;
 }
 
+bool	CgiProcessor::isDirectory(const char *binPath)
+{
+	struct stat	file_info;
+
+	if (stat(binPath, &file_info) == -1)
+		return (true);
+	if (S_ISDIR(file_info.st_mode))
+		return (true);
+	return (false);
+}
+
+bool	CgiProcessor::checkErr(const char *binPath)
+{
+	if (binPath == 0)
+		return (true);
+	else if (access(binPath, F_OK))
+		return (true);
+	else if (isDirectory(binPath))
+		return (true);
+	else if (access(binPath, X_OK))
+		return (true);
+	return (false);
+}
+
+bool	CgiProcessor::findCgiCmdPath()
+{
+	vector<string> pathEnvList;
+	cout << "PATH ENV : " << pathEnv << endl;
+	istringstream iss(pathEnv);
+	string buffer;
+	while (getline(iss, buffer, ':'))
+	{
+		cout << buffer << endl;
+		pathEnvList.push_back(buffer);
+	}
+	for (vector<string>::iterator iter = pathEnvList.begin(); iter != pathEnvList.end(); iter++)
+	{
+		cout << "PATH : " << *iter << endl;
+		string cmdPath = (*iter).append("/").append(cgiCommand);
+		cout << cmdPath << endl;
+		if (!checkErr(cmdPath.c_str()))
+		{
+			cgiCommand = cmdPath;
+			return (true);
+		}
+	}
+	return (false);
+}
+
 void	CgiProcessor::executeCGIScript(const string path)
 {
 	scriptFile = path;
 	setURLEnv();
 	setStartHeaderEnv();
 	int pipefd[2];
-	if (pipe(pipefd) < 0)
+	if (!findCgiCmdPath() || pipe(pipefd) < 0)
 	{
+		cout << "No CGI Command " << cgiCommand << endl;
+		cout << "or pipe() error " << endl;
 		request.status = 500;
 		return ;
 	}
@@ -169,7 +222,6 @@ void	CgiProcessor::executeCGIScript(const string path)
 			strcpy(envp[idx++], env.c_str());
 		}
 		envp[metaVariables.size()] = 0;
-		cgiCommand = "/usr/local/bin/python3";
 		if (execve(&cgiCommand[0], argv, envp) == -1)
 		{
 			request.status = 500;

@@ -73,7 +73,7 @@ ssize_t Server::getStandardTime(int fd)
     return (standardTime);
 }
 
-int Server::plusClient()
+int Server::plusClient(string pathEnv)
 {
     int                 clntFd;
     struct sockaddr_in  clntAdr;
@@ -83,7 +83,7 @@ int Server::plusClient()
     //accept 무한 루프 && server 동기적 실패시 무한 루프 가능성 
     if ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0)
         return (-1);
-    client[clntFd] = Client(clntFd, port);
+    client[clntFd] = Client(clntFd, port, pathEnv);
 	client[clntFd].clientIP(clntAdr);
     std::cout<<"temp delete"<<std::endl;
     return (clntFd);
@@ -96,6 +96,7 @@ EVENT Server::cgiRead(struct kevent& store)
 
 	cout << "cgiRead fd: " << store.ident << endl;
 	readSize = read(store.ident, buf, PIPE_BUFFER_SIZE);
+	cout << "CGI Read Size : " << readSize << endl;
 	if (readSize <= 0)
 	{
         std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl;
@@ -118,18 +119,18 @@ EVENT Server::cgiRead(struct kevent& store)
     cgiContentLength += readSize;
     // cout << "hi: " <<cgiContentLength << endl;
     // if (readSize < PIPE_BUFFER_SIZE)
-	// if (readSize < PIPE_BUFFER_SIZE)
-    // {
-    //     std::cout<<"FINISH Kq::cgiFd[store.ident]: "<<Kq::cgiFd[store.ident]<<std::endl;
-    //     //pipe fd를 갖는 새로운 client이므로 새로운 request.status를 갖는다. 따라서 쓰레기 값이 들어감(정답)
-	// 	client[Kq::cgiFd[store.ident]].setResponseContentLength(cgiContentLength);
-    //     client[Kq::cgiFd[store.ident]].setResponseContent(cgiContentLength, cgiContent);
-	// 	cgiContent.clear();
-	// 	cgiContentLength = 0;
-    //     // std::cout<<"msg\n"<<client[Kq::cgiFd[store.ident]].getMsg();
-    //     // std::cout<<"====================="<<std::endl;
-	// 	return (ING);
-    // }
+	if (readSize < PIPE_BUFFER_SIZE)
+    {
+        std::cout<<"FINISH Kq::cgiFd[store.ident]: "<<Kq::cgiFd[store.ident]<<std::endl;
+        //pipe fd를 갖는 새로운 client이므로 새로운 request.status를 갖는다. 따라서 쓰레기 값이 들어감(정답)
+		client[Kq::cgiFd[store.ident]].setResponseContentLength(cgiContentLength);
+        client[Kq::cgiFd[store.ident]].setResponseContent(cgiContentLength, cgiContent);
+		cgiContent.clear();
+		cgiContentLength = 0;
+        // std::cout<<"msg\n"<<client[Kq::cgiFd[store.ident]].getMsg();
+        // std::cout<<"====================="<<std::endl;
+		return (FINISH);
+    }
 	return (ING);
 }
 

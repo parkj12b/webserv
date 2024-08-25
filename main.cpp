@@ -17,6 +17,7 @@
 #include "Validator.hpp"
 #include "Directives.hpp"
 #include "Server.hpp"
+#include <sstream>
 
 int logs = open("./log", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 
@@ -25,9 +26,28 @@ void    check()
     system("leaks webserv");
 }
 
-int main(int argc, char **argv)
+bool	findPathEnv(char **envp, string& pathEnv)
 {
-    // atexit(check);
+	int		idx = 0;
+	while (envp[idx])
+	{
+		string oneEnv(envp[idx++]);
+		size_t equalPos = oneEnv.find("=");
+		if (equalPos == string::npos)
+			break ;
+		string envKey = oneEnv.substr(0, equalPos);
+		if (!envKey.compare("PATH"))
+		{
+			pathEnv = oneEnv.substr(equalPos + 1);
+			return (true);
+		}
+	}
+	return (false);
+}
+
+int main(int argc, char **argv, char **envp)
+{
+    atexit(check);
     cout << "========parser========" << endl;
     Directives::init();
     string path = DEFAULT_CONFIG_PATH;
@@ -39,6 +59,9 @@ int main(int argc, char **argv)
         cerr << "Usage: ./webserv [config_file]" << endl;
         exit(1);
     }
+	string pathEnv;
+	if (!findPathEnv(envp, pathEnv))
+		exit(2);
     Lexer lex(path);
     Parser parser(lex, "main");
 
@@ -54,7 +77,7 @@ int main(int argc, char **argv)
     //fd를 닫지 않았을 가능성이 존재함
     std::cout<<"\n\n========http message========"<<std::endl;
     // std::srand(std::time(0));  //cookie 값 정할 때에 사용할 예정
-    Kq  kq;
+    Kq  kq(pathEnv);
     std::ios::sync_with_stdio(false);
     while (1)
         kq.mainLoop();
