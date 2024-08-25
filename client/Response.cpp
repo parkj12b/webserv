@@ -269,6 +269,11 @@ LocationConfigData *Response::getLocationConfigData() const
     return (locationConfig);
 }
 
+void    Response::setCgiFlag(bool flag)
+{
+    cgiFlag = flag;
+}
+
 void        Response::setPort(int port)
 {
     this->port = port;
@@ -329,6 +334,7 @@ void    Response::initRequest(Request msg)
 int Response::init()
 {
     cout << "port: " << port << endl;
+    cgiFlag = false;
     if (request.status != 0)
         return (0);
     start.clear();
@@ -466,11 +472,8 @@ void    Response::makeError()
 		cgiProcessor.selectCgiCmd(CGI_ERROR_PAGE);
 		cgiProcessor.insertEnv("ERROR_CODE", toString(request.status));
         cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
-		content += cgiProcessor.getCgiContent();
-        cout << cgiProcessor.getCgiContent() << '\n';
+        setCgiFlag(true);
     }
-    makeHeader("content-type", "text/html");
-    makeHeader("content-length", toString(content.size()));
 }
 
 int Response::checkRedirect()
@@ -580,7 +583,6 @@ void    Response::makeGet()
         cgiProcessor.selectCgiCmd(AUTOINDEX_PATH);
         cout << "directory listing" << endl;
     	cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
-        makeHeader("content-type", "text/html");
     }
 	else if (cgiFlag)
 	{

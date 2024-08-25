@@ -118,7 +118,7 @@ int ContentLine::chunkedEntity()
     return (0);
 }
 
-int ContentLine::makeContentLine(std::string &str, int &status)
+int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status)
 {
     size_t  flag;
 
@@ -130,10 +130,10 @@ int ContentLine::makeContentLine(std::string &str, int &status)
     }
     if (contentType == CONTENT)
     {
-        std::cout<<contentLength<<' '<<str.size()<<std::endl;
-        if (contentLength >= static_cast<int>(str.size()))
+        std::cout<<contentLength<<' '<<readSize<<std::endl;
+        if (contentLength >= static_cast<int>(readSize))
         {
-            contentLength -= static_cast<int>(str.size());
+            contentLength -= static_cast<int>(readSize);
             if (contentLength == 0)
                 completion = true;
             content.push_back(str);

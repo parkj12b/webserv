@@ -102,6 +102,7 @@ class Response
         std::vector<std::string>    getKeyHeader() const;
         LocationConfigData *getLocationConfigData() const;
         //set function
+        void        setCgiFlag(bool flag);
         void        setPort(int port);
 		void		setPathEnv(string pathEnv_);
         void        setRequest(Request &temp);

@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/23 16:55:05 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/25 14:47:11 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ LocationConfigData *Client::recurFindLocation(string url,
     Trie &prefixTrie = locationConfigData->getPrefixTrie();
     string urlFound = prefixTrie.find(url);
     cout << "temp: " << urlFound << endl;
-    // cout << "location: " << request.location << endl;
+    cout << "location: " << request.location << endl;
     if (urlFound == "")
         return (locationConfigData);
     configData
@@ -347,12 +347,12 @@ int Client::setHeader(void)
     return (0);
 }
 
-int Client::setContent(void)
+int Client::setContent(size_t &readSize)
 {
     if (!headerLine.getCompletion() || contentLine.getCompletion() || request.fin || request.status)
         return (0);
-    // std::cout<<"...setBodyLine parsing...\n";
-    if (contentLine.makeContentLine(msg, request.status) < 0)
+    std::cout<<"...setBodyLine parsing...\n";
+    if (contentLine.makeContentLine(msg, readSize, request.status) < 0)
         return (1);
     request.content = contentLine.getContent();
     if (contentLine.getCompletion())
@@ -428,10 +428,10 @@ void    Client::resetClient()
     contentLine = ContentLine(port);
 }
 
-void    Client::setMessage(std::string msgRequest)
+void    Client::setMessage(const char* msgRequest, size_t readSize)
 {
-    msg += msgRequest;
-    write(logs, &msgRequest[0], msgRequest.size());
+    msg.append(msgRequest, readSize);
+    write(logs, msgRequest, readSize);
     if (setStart())  //max size literal
     {
         request.fin = true;
@@ -445,7 +445,7 @@ void    Client::setMessage(std::string msgRequest)
         std::cout<<"Header Error\n";
         return ;
     }
-    if (setContent()) // 바디 파싱
+    if (setContent(readSize)) // 바디 파싱
     {
         request.fin = true;
         std::cout<<"Body Error\n";
