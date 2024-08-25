@@ -312,6 +312,13 @@ void	Response::setContentLength(size_t contentLength_)
 
 std::string Response::setContent(string content_)
 {
+    size_t      pos;
+    std::string contentType;
+
+    pos = content_.find("\r\n");
+    contentType = content_.substr(0, pos);
+    pos = contentType.find(":");
+    makeHeader("content-type", contentType.substr(pos + 1));
 	content = content_;
     // std::cout<< "request.status: "<<request.status<<std::endl;
     makeEntity();

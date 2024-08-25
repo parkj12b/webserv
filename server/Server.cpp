@@ -91,8 +91,8 @@ int Server::plusClient(string pathEnv)
 
 EVENT Server::cgiRead(struct kevent& store)
 {
-	char	buf[PIPE_BUFFER_SIZE + 1];
-	int     readSize;
+	char	    buf[PIPE_BUFFER_SIZE + 1];
+	int         readSize;
 
 	cout << "cgiRead fd: " << store.ident << endl;
 	readSize = read(store.ident, buf, PIPE_BUFFER_SIZE);
@@ -109,28 +109,27 @@ EVENT Server::cgiRead(struct kevent& store)
         client[Kq::cgiFd[store.ident]].setErrorMsg();
         cgiContent.clear();
         cgiContentLength = 0;
-        return (ERROR);
+        if (readSize < 0)
+            return (ERROR);
+        return (FINISH);
 	}
     // close(1);
     buf[readSize] = '\0';
     cgiContent.append(string(buf));
-    // std::cout<<cgiContent<<std::endl;
-    // std::cout<<cgiContentLength<<std::endl;
     cgiContentLength += readSize;
     // cout << "hi: " <<cgiContentLength << endl;
-    // if (readSize < PIPE_BUFFER_SIZE)
-	if (readSize < PIPE_BUFFER_SIZE)
-    {
-        std::cout<<"FINISH Kq::cgiFd[store.ident]: "<<Kq::cgiFd[store.ident]<<std::endl;
-        //pipe fd를 갖는 새로운 client이므로 새로운 request.status를 갖는다. 따라서 쓰레기 값이 들어감(정답)
-		client[Kq::cgiFd[store.ident]].setResponseContentLength(cgiContentLength);
-        client[Kq::cgiFd[store.ident]].setResponseContent(cgiContentLength, cgiContent);
-		cgiContent.clear();
-		cgiContentLength = 0;
-        // std::cout<<"msg\n"<<client[Kq::cgiFd[store.ident]].getMsg();
-        // std::cout<<"====================="<<std::endl;
-		return (FINISH);
-    }
+	// if (readSize < PIPE_BUFFER_SIZE)
+    // {
+    //     std::cout<<"FINISH Kq::cgiFd[store.ident]: "<<Kq::cgiFd[store.ident]<<std::endl;
+    //     //pipe fd를 갖는 새로운 client이므로 새로운 request.status를 갖는다. 따라서 쓰레기 값이 들어감(정답)
+	// 	client[Kq::cgiFd[store.ident]].setResponseContentLength(cgiContentLength);
+    //     client[Kq::cgiFd[store.ident]].setResponseContent(cgiContentLength, cgiContent);
+	// 	cgiContent.clear();
+	// 	cgiContentLength = 0;
+    //     // std::cout<<"msg\n"<<client[Kq::cgiFd[store.ident]].getMsg();
+    //     // std::cout<<"====================="<<std::endl;
+	// 	return (FINISH);
+    // }
 	return (ING);
 }
 
