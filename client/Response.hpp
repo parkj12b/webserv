@@ -43,7 +43,7 @@ typedef struct Request
     Version											version;    //http version
     std::map<std::string, std::string>				query;      //resource query
     std::map<std::string, std::deque<std::string> >	header;     //request header
-    std::vector<std::string>						content;    //request content
+    std::string						                contentFileName;    //request content
 }   Request;
 
 class Server;
@@ -108,7 +108,7 @@ class Response
         void        setRequest(Request &temp);
         void        setRequestStatus(int status);
         void        setLocationConfigData(LocationConfigData *locationConfig);
-		std::string setContent(string content_);
+		size_t      setContent(string content_);
 		void	    setContentLength(size_t contentLength_);
         //sub logic
 		bool	isCgiScriptInURL(string& str);

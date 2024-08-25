@@ -4,14 +4,16 @@ import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 import cgi
 import cgitb
+import os
 
 # 디버깅을 위한 설정
 cgitb.enable()
 
 def generate_html(query_params):
-    stars_cnt = 64 * 1024 * 12
+    stars_cnt = 64 * 12#64 * 1024 * 12
     """ 쿼리 파라미터에 기반한 HTML 페이지 생성 """
     # HTML 헤더 출력
+    print("Content-type: text/html\r\n")
     print("<html>")
     print("<head>")
     print("<title>CGI Query String Example</title>")
@@ -37,6 +39,7 @@ def main():
 
     # HTML 페이지 출력
     generate_html(query_params)
+    # os.close(1)
 
 if __name__ == "__main__":
     main()

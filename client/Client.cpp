@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/25 19:46:09 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/25 21:27:35 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ LocationConfigData *Client::recurFindLocation(string url,
     return (recurFindLocation(passURL, configData));
 }
 
-Client::Client() : connect(true), connection(false), fd(0), port(0), index(0), responseAmount(0), startLine(0), headerLine(0), contentLine(0)
+Client::Client() : connect(true), connection(false), fd(0), port(0), msgSize(0), index(0), responseAmount(0), startLine(0), headerLine(0), contentLine(0)
 {
     request.port = port;
     request.fin = false;
@@ -58,7 +58,7 @@ Client::Client() : connect(true), connection(false), fd(0), port(0), index(0), r
 	request.clientFd = fd;
 }
 
-Client::Client(int fd, int port, string pathEnv_) : connect(true), connection(false), fd(fd), port(port), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port), pathEnv(pathEnv_)
+Client::Client(int fd, int port, string pathEnv_) : connect(true), connection(false), fd(fd), port(port), msgSize(0), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port), pathEnv(pathEnv_)
 {
     request.port = port;
     request.fin = false;
@@ -66,7 +66,7 @@ Client::Client(int fd, int port, string pathEnv_) : connect(true), connection(fa
 	request.clientFd = fd;
 }
 
-Client::Client(const Client& src) : connect(src.getConnect()), connection(src.getConnection()), fd(src.getFd()), port(src.getPort()), index(src.getIndex()), responseAmount(src.getResponseAmount()), standardTime(src.getStandardTime()), msg(src.getMsg()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse()), pathEnv(src.pathEnv)
+Client::Client(const Client& src) : connect(src.getConnect()), connection(src.getConnection()), fd(src.getFd()), port(src.getPort()), msgSize(src.getMsgSize()), index(src.getIndex()), responseAmount(src.getResponseAmount()), standardTime(src.getStandardTime()), msg(src.getMsg()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse()), pathEnv(src.pathEnv)
 {}
 
 Client& Client::operator=(const Client& src)
@@ -75,6 +75,7 @@ Client& Client::operator=(const Client& src)
     connection = src.getConnection();
     fd = src.getFd();
     port = src.getPort();
+    msgSize = src.getMsgSize();
     index = src.getIndex();
     responseAmount = src.getResponseAmount();
     standardTime = src.getStandardTime();
@@ -111,6 +112,11 @@ int Client::getFd(void) const
 int Client::getPort(void) const
 {
     return (port);
+}
+
+size_t  Client::getMsgSize(void) const
+{
+    return (msgSize);
 }
 
 size_t  Client::getIndex() const
@@ -200,20 +206,37 @@ void	Client::setResponseContentLength(size_t contentLength)
 
 void	Client::setResponseContent(size_t cgiContentLength, string content)
 {
-	msg = response.setContent(content);
-    responseAmount = response.getStartHeaderLength() + cgiContentLength;
-    // LOG(std::cout<<"content: "<<content);
+	size_t  pos;
+
+    std::cout<<"cgiContentLength: "<<cgiContentLength<<std::endl;
+    pos = response.setContent(content);
+    std::cout<<"pos: "<<pos<<std::endl;
+    response.setContentLength(cgiContentLength - pos);
+    responseAmount = response.getStartHeaderLength() + cgiContentLength - pos;
+    index = 0;
+    std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl<<endl;
 }
 
 void    Client::setErrorMsg()
 {
     msg = response.getEntity();
-    responseAmount = msg.size();
+    // responseAmount = msg.size();
 }
 
 bool    Client::getResponseCgi()
 {
     return (response.getCgiFlag());
+}
+
+void    Client::deleteContent(void)
+{
+    std::ifstream file(request.contentFileName.c_str());
+
+    if (file.is_open())
+    {
+        file.close();
+        unlink(request.contentFileName.c_str());
+    }
 }
 
 void	Client::clientIP(struct sockaddr_in  clntAdr)
@@ -230,7 +253,7 @@ const char* Client::respondMsgIndex()
     return (msg.c_str() + index);
 }
 
-int Client::setStart(void)
+int Client::setStart()
 {
     size_t      flag;
 
@@ -245,6 +268,7 @@ int Client::setStart(void)
         standardTime = Server::serverConfig->getDefaultServer(port)->getHeaderTimeout();  //여기서 keep-alive setting
         if ((request.status = startLine.check(msg.substr(0, flag))))  //ingu test
             return (1);
+        msgSize -= flag + 2;
         msg = msg.substr(flag + 2);
         request.method = startLine.getMethod();
         request.url = startLine.getUrl();
@@ -266,7 +290,7 @@ int Client::setStart(void)
     return (0);
 }
 
-int Client::setHeader(void)
+int Client::setHeader()
 {
     size_t                                                    flag;
     std::string                                               str;
@@ -280,6 +304,7 @@ int Client::setHeader(void)
         flag = msg.find("\r\n");
         if (flag != std::string::npos)
         {
+            msgSize -= flag + 2;
             if (flag == 0)
             {
                 request.header = headerLine.getHeader();
@@ -347,16 +372,27 @@ int Client::setHeader(void)
     return (0);
 }
 
-int Client::setContent(size_t &readSize)
+int Client::setContent()
 {
+    static bool flag = true;
+
     if (!headerLine.getCompletion() || contentLine.getCompletion() || request.fin || request.status)
         return (0);
     LOG(std::cout<<"...setBodyLine parsing...\n");
-    if (contentLine.makeContentLine(msg, readSize, request.status) < 0)
+    if (flag)
+    {
+        if (!contentLine.tempFileMake())
+        {
+            request.status = 500;
+            return (2);
+        }
+        flag = false;
+    }
+    if (contentLine.makeContentLine(msg, msgSize, request.status) < 0)
         return (1);
-    request.content = contentLine.getContent();
     if (contentLine.getCompletion())
     {
+        request.contentFileName = contentLine.getFileName();
         if (headerLine.getTe() == NOT)
         {
             if (!msg.empty())
@@ -429,10 +465,11 @@ void    Client::resetClient()
     contentLine = ContentLine(port);
 }
 
-void    Client::setMessage(const char* msgRequest, size_t readSize)
+void    Client::setMessage(const char* msgRequest, int &readSize)
 {
     msg.append(msgRequest, readSize);
-    write(logs, msgRequest, readSize);
+    // write(logs, msgRequest, readSize);
+    msgSize += readSize;
     if (setStart())  //max size literal
     {
         request.fin = true;
@@ -446,7 +483,7 @@ void    Client::setMessage(const char* msgRequest, size_t readSize)
         LOG(std::cout<<"Header Error\n");
         return ;
     }
-    if (setContent(readSize)) // 바디 파싱
+    if (setContent()) // 바디 파싱
     {
         request.fin = true;
         LOG(std::cout<<"Body Error\n");
@@ -558,10 +595,10 @@ void    Client::showMessage(void)
             LOG(std::cout<<*itd<<"  ");
         LOG(std::cout<<"\n");
     }
-    LOG(std::cout<<"=====entity line=====\n");
-    for (std::vector<std::string>::iterator it = request.content.begin(); it != request.content.end(); it++)
-    {
-        LOG(std::cout<<*it);
-    }
+    //LOG(std::cout<<"=====entity line=====\n");
+    // for (std::vector<std::string>::iterator it = request.content.begin(); it != request.content.end(); it++)
+    // {
+    //     LOG(std::cout<<*it);
+    // }
     LOG(std::cout<<"\n\n");
 }

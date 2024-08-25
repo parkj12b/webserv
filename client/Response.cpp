@@ -159,7 +159,10 @@ void    Response::makeFilePath(string& str)
             if (location->getAutoindex())
                 str = temp + "/";
             else
+            {
+                cout << "403 2\n";
                 request.status = 403;
+            }
             return ;
         }
     }
@@ -299,22 +302,30 @@ void    Response::setLocationConfigData(LocationConfigData *locationConfigData)
     locationConfig = locationConfigData;
 }
 
+size_t  Response::setContent(string content_)
+{
+    size_t      crlfPos;
+    size_t      contentPos;
+    std::string contentType;
+
+    crlfPos = content_.find("\r\n");
+    contentType = content_.substr(0, crlfPos);
+	content = content_.substr(crlfPos + 2);
+    contentPos = contentType.find(":");
+    makeHeader("content-type", contentType.substr(contentPos + 1));
+    // LOG(std::cout<< "request.status: "<<request.status<<std::endl);
+    // LOG(std::cout<<entity<<std::endl<<std::endl);
+    // LOG(std::cout<<"================"<<std::endl);
+    return (crlfPos);
+}
+
 void	Response::setContentLength(size_t contentLength_)
 {
     contentLength = contentLength_;
     makeHeader("content-length", toString(contentLength));
+    makeEntity();
     // LOG(std::cout<<"header: \n\n"<<header);
     // LOG(std::cout<<"================"<<std::endl);
-}
-
-std::string Response::setContent(string content_)
-{
-	content = content_;
-    // LOG(std::cout<< "request.status: "<<request.status<<std::endl);
-    makeEntity();
-    // LOG(std::cout<<entity<<std::endl<<std::endl);
-    // LOG(std::cout<<"================"<<std::endl);
-    return (entity);
 }
 
 void    Response::initRequest(Request msg)
@@ -595,7 +606,7 @@ void    Response::makeGet()
 		}
 		// 나중에 content-length가 0일 때, 서버 에러 추가
 		start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
-		makeHeader("content-type", "text/html");
+		// makeHeader("content-type", "text/html");
 		// makeHeader("content-length", toString(contentLength)); //여기서 추가하고 나중에 또 추가함
 		makeHeader("status", toString(request.status));
 		content += cgiProcessor.getCgiContent();

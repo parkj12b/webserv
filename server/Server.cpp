@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/25 19:46:09 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/25 21:25:44 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,8 @@ int Server::plusClient(string pathEnv)
 
 EVENT Server::cgiRead(struct kevent& store)
 {
-	char	buf[PIPE_BUFFER_SIZE + 1];
-	int     readSize;
+	char	    buf[PIPE_BUFFER_SIZE + 1];
+	int         readSize;
 
 	LOG(cout << "cgiRead fd: " << store.ident << endl);
 	readSize = read(store.ident, buf, PIPE_BUFFER_SIZE);
@@ -102,7 +102,6 @@ EVENT Server::cgiRead(struct kevent& store)
 	{
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
         // client[Kq::cgiFd[store.ident]].getResponse().setRequestStatus(500);
-        client[Kq::cgiFd[store.ident]].setResponseContentLength(cgiContentLength);
         client[Kq::cgiFd[store.ident]].setResponseContent(cgiContentLength, cgiContent);
         LOG(cout << Kq::cgiFd[store.ident] << endl);
         // static error page
@@ -110,7 +109,9 @@ EVENT Server::cgiRead(struct kevent& store)
         client[Kq::cgiFd[store.ident]].setErrorMsg();
         cgiContent.clear();
         cgiContentLength = 0;
-        return (ERROR);
+        if (readSize < 0)
+            return (ERROR);
+        return (FINISH);
 	}
     // close(1);
     buf[readSize] = '\0';
@@ -119,19 +120,19 @@ EVENT Server::cgiRead(struct kevent& store)
     // LOG(std::cout<<cgiContentLength<<std::endl);
     cgiContentLength += readSize;
     // LOG(cout << "hi: " <<cgiContentLength << endl);
-    // if (readSize < PIPE_BUFFER_SIZE)
-	if (readSize < PIPE_BUFFER_SIZE)
-    {
-        LOG(std::cout<<"FINISH Kq::cgiFd[store.ident]: "<<Kq::cgiFd[store.ident]<<std::endl);
-        //pipe fd를 갖는 새로운 client이므로 새로운 request.status를 갖는다. 따라서 쓰레기 값이 들어감(정답)
-		client[Kq::cgiFd[store.ident]].setResponseContentLength(cgiContentLength);
-        client[Kq::cgiFd[store.ident]].setResponseContent(cgiContentLength, cgiContent);
-		cgiContent.clear();
-		cgiContentLength = 0;
-        // LOG(std::cout<<"msg\n"<<client[Kq::cgiFd[store.ident]].getMsg());
-        // LOG(std::cout<<"====================="<<std::endl);
-		return (FINISH);
-    }
+	// if (readSize < PIPE_BUFFER_SIZE)
+    // {
+    //     LOG(std::cout<<"FINISH Kq::cgiFd[store.ident]: "<<Kq::cgiFd[store.ident]<<std::endl);
+    //     //pipe fd를 갖는 새로운 client이므로 새로운 request.status를 갖는다. 따라서 쓰레기 값이 들어감(정답)
+        // 요거 지워야 함
+		// client[Kq::cgiFd[store.ident]].setResponseContentLength(cgiContentLength);
+    //     client[Kq::cgiFd[store.ident]].setResponseContent(cgiContentLength, cgiContent);
+	// 	cgiContent.clear();
+	// 	cgiContentLength = 0;
+    //     // LOG(std::cout<<"msg\n"<<client[Kq::cgiFd[store.ident]].getMsg());
+    //     // LOG(std::cout<<"====================="<<std::endl);
+	// 	return (FINISH);
+    // }
 	return (ING);
 }
 
@@ -151,9 +152,11 @@ EVENT Server::clientRead(struct kevent& store)
     if (readSize <= 0) // read가 발생했는데 읽은게 없다면 에러
     {
         LOG(std::cout<<"read error or socket close\n");
+        client[store.ident].deleteContent();
         return (ERROR);
     }
     LOG(std::cout<<"Client Read" << " " << readSize << std::endl);
+    write(logs, buffer, readSize);
     buffer[readSize] = '\0';
     client[store.ident].setMessage(buffer, readSize);
     client[store.ident].setConnection(true);
@@ -178,6 +181,7 @@ EVENT   Server::clientWrite(struct kevent& store)
 
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
+    std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl;
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     client[store.ident].plusIndex(index);
     client[store.ident].setConnection(true);
@@ -185,6 +189,7 @@ EVENT   Server::clientWrite(struct kevent& store)
         return (ING);
     if (client[store.ident].getRequestStatus() == 100)
         return (EXPECT);
+    client[store.ident].deleteContent();
     if (!client[store.ident].getConnect())
     {
         LOG(std::cout<<"connection fin"<<std::endl);

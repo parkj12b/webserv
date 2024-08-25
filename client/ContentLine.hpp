@@ -13,7 +13,12 @@
 #ifndef CONTENTLINE_HPP
 # define CONTENTLINE_HPP
 
+# include <fstream> 
+# include <fcntl.h>
+# include <unistd.h>
 # include "HeaderLine.hpp"
+# include "UtilTemplate.hpp"
+
 /**
  * @brief reqeust contentLine class
  * @param completion request contentline 완료 상태
@@ -28,9 +33,11 @@ class ContentLine
     private:
         bool                        completion;
         CONTENTTYPE                 contentType;
+        int                         fd;
         int                         port;
         int                         contentLength;
         size_t                      maxSize;
+        std::string                 fileName;
         std::string                 chunked;
         std::vector<std::string>    content;
     public:
@@ -44,12 +51,16 @@ class ContentLine
         //get function
         bool                        getCompletion() const;
         CONTENTTYPE                 getContentType() const;
+        int                         getFd() const;
         int                         getPort() const;
         int                         getContentLength() const;
         size_t                      getMaxSize() const;
+        std::string                 getFileName() const;
         std::string                 getChunked() const;
         std::vector<std::string>    getContent() const;
         //logic
+        bool    fileExist(const char *fileName_);   //tempFileName exist
+        bool    tempFileMake(); //temp file make
         void    initContentLine(int initLength, CONTENTTYPE initType);  //init
         int     chunkedEntity();                    //chunked message parsing
         int     makeContentLine(std::string &str, size_t &readSize, int &status);  //contentLine make

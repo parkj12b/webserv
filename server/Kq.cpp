@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/25 19:46:09 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/25 20:37:04 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ void    Kq::eventRead(struct kevent& store)
                 LOG(std::cout<<"iter->first: "<<iter->first<<std::endl);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
-				close(iter->first);
+				// close(iter->first);
 				cgiFd[iter->first] = 0;
                 cgiFd.erase(iter->first);
 				break ;
