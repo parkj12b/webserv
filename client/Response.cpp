@@ -334,6 +334,7 @@ void    Response::initRequest(Request msg)
 int Response::init()
 {
     cout << "port: " << port << endl;
+    cgiFlag = false;
     if (request.status != 0)
         return (0);
     start.clear();
