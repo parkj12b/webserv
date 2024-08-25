@@ -127,7 +127,7 @@ void	CgiProcessor::checkPostContentType()
 	{
 		if (!request.header["content-type"].front().compare("multipart/form-data"))
 			scriptFile = "/upload/upload.py";
-		insertEnv("CONTENT_FILENAME", request.content);
+		insertEnv("CONTENT_FILENAME", request.contentFileName);
 		executeCGIScript(scriptFile);
 	}
 	else
@@ -136,11 +136,11 @@ void	CgiProcessor::checkPostContentType()
 
 bool	CgiProcessor::isDirectory(const char *binPath)
 {
-	struct stat	file_info;
+	struct stat	fileInfo;
 
-	if (stat(binPath, &file_info) == -1)
+	if (stat(binPath, &fileInfo) == -1)
 		return (true);
-	if (S_ISDIR(file_info.st_mode))
+	if (S_ISDIR(fileInfo.st_mode))
 		return (true);
 	return (false);
 }
