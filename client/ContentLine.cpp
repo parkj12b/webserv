@@ -118,7 +118,7 @@ int ContentLine::chunkedEntity()
     return (0);
 }
 
-int ContentLine::makeContentLine(std::string &str, size_t& readSize, int &status)
+int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status)
 {
     size_t  flag;
 

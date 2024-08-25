@@ -100,7 +100,7 @@ class Client
         const char* respondMsgIndex();  //msg + index (const char*)
         int         setStart(void);     //startLine make
         int         setHeader(void);    //headerLine make
-        int         setContent(void);   //contentLine make
+        int         setContent(size_t &readSize);   //contentLine make
         int         setTrailer(void);   //trailer make
         void        setMessage(const char* msgRequest, size_t readSize); //request msg setting
         void        setResponseMessage();               //make response msg

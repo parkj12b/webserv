@@ -346,12 +346,12 @@ int Client::setHeader(void)
     return (0);
 }
 
-int Client::setContent(void)
+int Client::setContent(size_t &readSize)
 {
     if (!headerLine.getCompletion() || contentLine.getCompletion() || request.fin || request.status)
         return (0);
     std::cout<<"...setBodyLine parsing...\n";
-    if (contentLine.makeContentLine(msg, request.status) < 0)
+    if (contentLine.makeContentLine(msg, readSize, request.status) < 0)
         return (1);
     request.content = contentLine.getContent();
     if (contentLine.getCompletion())
@@ -444,7 +444,7 @@ void    Client::setMessage(const char* msgRequest, size_t readSize)
         std::cout<<"Header Error\n";
         return ;
     }
-    if (setContent()) // 바디 파싱
+    if (setContent(readSize)) // 바디 파싱
     {
         request.fin = true;
         std::cout<<"Body Error\n";
