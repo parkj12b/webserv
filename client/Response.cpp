@@ -159,7 +159,10 @@ void    Response::makeFilePath(string& str)
             if (location->getAutoindex())
                 str = temp + "/";
             else
+            {
+                cout << "403 2\n";
                 request.status = 403;
+            }
             return ;
         }
     }
