@@ -122,11 +122,12 @@ void	CgiProcessor::checkPostContentType()
 		return ;
 	}
 	if (!request.header["content-type"].front().compare("application/x-www-form-urlencoded")
-		|| !request.header["content-type"].front().compare("application/json"))
-		executeCGIScript(scriptFile);
-	else if (!request.header["content-type"].front().compare("multipart/form-data"))
+		|| !request.header["content-type"].front().compare("application/json")
+		|| !request.header["content-type"].front().compare("multipart/form-data"))
 	{
-		scriptFile = "/upload/upload.py";
+		if (!request.header["content-type"].front().compare("multipart/form-data"))
+			scriptFile = "/upload/upload.py";
+		insertEnv("CONTENT_FILENAME", request.content);
 		executeCGIScript(scriptFile);
 	}
 	else
