@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/23 16:55:05 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/25 14:04:15 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -520,9 +520,14 @@ bool    Client::setMatchingLocation(string url)
         return (true);
     location
         = serverConfigData->getLocationConfigData(request.location, 0);
-    size_t i = url.find(location->getPath());
-    string temp = url.substr(i + location->getPath().size());
-    response.setLocationConfigData(recurFindLocation(temp, location));
+    if (location->getPath() != "/")
+    {
+        size_t i = url.find(location->getPath());
+        string temp = url.substr(i + location->getPath().size());
+        response.setLocationConfigData(recurFindLocation(temp, location));
+    }
+    else
+        response.setLocationConfigData(recurFindLocation(url, location));
     cout << "path: " << response.getLocationConfigData()->getPath() << endl;
     cout << "location " << location << endl;
     cout << "lower location " << request.location << endl;

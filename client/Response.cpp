@@ -274,6 +274,11 @@ LocationConfigData *Response::getLocationConfigData() const
     return (locationConfig);
 }
 
+void    Response::setCgiFlag(bool flag)
+{
+    cgiFlag = flag;
+}
+
 void        Response::setPort(int port)
 {
     this->port = port;
@@ -466,6 +471,7 @@ void    Response::makeError()
 		cgiProcessor.selectCgiCmd(CGI_ERROR_PAGE);
 		cgiProcessor.insertEnv("ERROR_CODE", toString(request.status));
         cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+        setCgiFlag(true);
     }
 }
 

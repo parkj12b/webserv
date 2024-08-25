@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/23 15:27:26 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/23 21:48:27 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,6 +164,7 @@ void    Kq::eventRead(struct kevent& store)
 	}
 	if (iter != cgiFd.end())
 	{
+        std::cout<<"cgi"<<std::endl;
 		serverFd = findServer[cgiFd[store.ident]]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
 			return ;
@@ -187,10 +188,10 @@ void    Kq::eventRead(struct kevent& store)
 	}
 	else
 	{
+        std::cout<<"not cgi"<<std::endl;
 		serverFd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
 			return ;
-        std::cout<<"not cgi"<<std::endl;
 		event = server[serverFd].clientRead(store);
 		switch (event)
 		{
