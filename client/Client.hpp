@@ -98,6 +98,7 @@ class Client
         void    setErrorMsg();
         //logic
         bool        getResponseCgi();
+        void        deleteContent();
 		void		clientIP(struct sockaddr_in clntAdr);
         size_t      responseIndex();    //response msg index(responseAmount - index)
         const char* respondMsgIndex();  //msg + index (const char*)

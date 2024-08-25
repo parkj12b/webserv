@@ -190,6 +190,7 @@ EVENT   Server::clientWrite(struct kevent& store)
         std::cout<<"connection fin"<<std::endl;
         return (ERROR);
     }
+    client[store.ident].deleteContent();
     client[store.ident].resetClient();
     std::cout<<"keep-alive"<<std::endl;
     return (FINISH);
