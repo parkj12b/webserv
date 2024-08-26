@@ -143,7 +143,7 @@ void    Kq::plusClient(int serverFd)
     if (clientFd < 0)
         return ;
     LOG(std::cout<<"plus client "<<clientFd<<std::endl);
-    plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 75000, 0);  //50초
+    plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 75000, 0);  //75초
     plusEvent(clientFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     findServer[clientFd] = serverFd;
 }
@@ -186,7 +186,7 @@ void    Kq::eventRead(struct kevent& store)
                 LOG(std::cout<<"iter->first: "<<iter->first<<std::endl);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
-				// close(iter->first);
+				close(iter->first);  //cgi에서 사용한 fd를 닫지 않음
 				cgiFd[iter->first] = 0;
                 cgiFd.erase(iter->first);
 				break ;
@@ -299,7 +299,7 @@ void    Kq::mainLoop()
                 clientFin(store[i]);  //client 종료
             else if (store[i].filter == EVFILT_READ)
             {
-                // LOG(std::cout<<"read"<<std::endl);
+                LOG(std::cout<<"read"<<std::endl);
                 eventRead(store[i]);
             }
             else if (store[i].filter == EVFILT_WRITE)
