@@ -1,1 +1,4 @@
-username=john_doe&password=secret123
+{
+	"name": "jonghofdaf",
+	"age": 30
+}
