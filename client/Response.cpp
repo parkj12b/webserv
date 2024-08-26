@@ -173,7 +173,7 @@ void    Response::makeFilePath(string& str)
         return ;
     }
 	if (isCgiScriptInURL(str))
-		cgiFlag = true;
+		cgiFlag = true;  //flag 껴짐
     LOG(cout << "str: " << str << endl);
 }
 
@@ -664,8 +664,12 @@ void    Response::makePost()
 	}
 	if (request.status >= 400)
 	{
-		while (!cgiProcessor.getFin())
-			cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
+        makeError();
+		// while (!cgiProcessor.getFin())
+        // {
+        //     LOG(cout<<"Method: POST CGI ERROR"<<endl);
+		// 	cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
+        // }
 	}
 }
 
