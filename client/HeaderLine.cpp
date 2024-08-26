@@ -104,7 +104,7 @@ std::vector<std::string>    singleHeaderInit()
     v.push_back("transfer-encoding");
     v.push_back("upgrade-insecure-requests");
     v.push_back("x-content-type-options");
-    v.push_back("content-type");
+    // v.push_back("content-type");  //원래에는 있어야 하나 cgi쪽에서 잘 안 돼서 없앰
     v.push_back("x-dns-prefetch-control");
     v.push_back("x-forwarded-host");
     v.push_back("x-forwarded-proto");
@@ -380,14 +380,35 @@ int HeaderLine::makeHeader(std::string& temp)
 
 int HeaderLine::headerError()
 {
-    std::vector<std::string>::iterator                                  itv;
-    std::map<std::string, std::deque<std::string> >::iterator itm;
+    std::vector<std::string>::iterator                          itv;
+    std::map<std::string, std::deque<std::string> >::iterator   itm;
+    std::string                                                 typeStr;
+    size_t                                                      pos;
 
     for (itv = vitalHeader.begin(); itv != vitalHeader.end(); itv++)
     {
         itm = header.find(*itv);
         if (itm == header.end())
             return (400);
+    }
+    itm = header.find("content-type");
+    if (itm != header.end())
+    {
+        LOG(cout << "cotnent-type" << endl);
+        typeStr = header["content-type"].front();
+        header["content-type"].pop_front();
+        pos = typeStr.find(";");
+        if (pos != std::string::npos)
+        {
+            LOG(cout << "cotnent-type: " << typeStr.substr(0, pos) << endl);
+            header["content-type"].push_back(typeStr.substr(0, pos));
+            pos = typeStr.find("boundary=");
+            if (pos != std::string::npos)
+            {
+                LOG(cout << "boundary: " << typeStr.substr(pos + 9) << endl);
+                header["content-type"].push_back(typeStr.substr(pos + 9));
+            }
+        }
     }
     itm = header.find("content-length");
     if (itm != header.end())
