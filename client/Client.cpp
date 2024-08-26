@@ -377,7 +377,7 @@ int Client::setContent()
     LOG(std::cout<<"...setBodyLine parsing...\n");
     if (flag)
     {
-        if (!contentLine.tempFileMake())
+        if (!contentLine.tempFileMake(fd))
         {
             request.status = 500;
             return (2);
