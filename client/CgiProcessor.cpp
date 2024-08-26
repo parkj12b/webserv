@@ -128,8 +128,8 @@ void	CgiProcessor::checkPostContentType()
 		|| !request.header["content-type"].front().compare("application/json")
 		|| !request.header["content-type"].front().compare("multipart/form-data"))
 	{
-		if (!request.header["content-type"].front().compare("multipart/form-data"))
-			scriptFile = "/upload/upload.py";
+		// if (!request.header["content-type"].front().compare("multipart/form-data"))
+		// 	scriptFile = "/upload/upload.py";
 		insertEnv("CONTENT_FILENAME", request.contentFileName);
 		executeCGIScript(scriptFile);
 	}
