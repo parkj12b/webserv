@@ -90,7 +90,6 @@ class Client
         //set function
         void    setConnection(bool ycdi);
         void    setFd(uintptr_t fd);
-        void    setKeepAlive(time_t time);
         void    setRequestStatus(int temp);
         void    setRequestFin(bool fin);
 		void	setCgiResponseEntity(size_t cgiContentLength, string content);
