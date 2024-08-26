@@ -139,7 +139,6 @@ EVENT Server::cgiRead(struct kevent& store)
 EVENT Server::clientRead(struct kevent& store)
 {
     //buffer 문제인지 생각해보기
-    std::vector<Client*>::iterator   it;
     char    buffer[BUFFER_SIZE + 1];
     int     readSize;
 
