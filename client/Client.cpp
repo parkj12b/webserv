@@ -462,9 +462,17 @@ void    Client::resetClient()
 
 void    Client::setMessage(const char* msgRequest, int &readSize)
 {
-    msg.append(msgRequest, readSize);
-    // write(logs, msgRequest, readSize);
     msgSize += readSize;
+    msg.append(msgRequest, readSize);
+    // if (msg.empty() && headerLine.getCompletion() && !contentLine.getCompletion())
+    // {
+    //     contentLine.makeContentLine(msg, msgSize, request.status);
+    // }
+    // else
+    // {
+    //     msg.append(msgRequest, readSize);
+    // }
+    // write(logs, msgRequest, readSize);
     if (setStart())  //max size literal
     {
         request.fin = true;
