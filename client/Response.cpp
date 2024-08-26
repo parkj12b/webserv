@@ -120,6 +120,7 @@ bool	Response::isCgiScriptInURL(string& str)
 {
 	const string	availCgiExtensions[2] = {".py", ".php"};
 	size_t			cgiFilePos;
+    LOG(cout << "str: " << str << endl);
 	for (int i=0; i<2; i++)
 	{
 		cgiFilePos = str.find(availCgiExtensions[i]);
@@ -660,12 +661,13 @@ void    Response::makePost()
 	if (cgiFlag)
 	{
 		cgiProcessor.selectCgiCmd(request.url);
+        cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
 		cgiProcessor.checkPostContentType();
 	}
 	if (request.status >= 400)
 	{
-		while (!cgiProcessor.getFin())
-			cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
+		// while (!cgiProcessor.getFin())
+		// 	cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
 	}
 }
 
