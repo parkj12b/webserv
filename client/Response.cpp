@@ -598,7 +598,7 @@ void    Response::makeGet()
     LOG(std::cout<<"Method: GET"<<std::endl);
     LOG(std::cout<<request.url.c_str()<<std::endl);
     CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
-    
+  
     // LOG(cout << "is directory: " << isDirectory(request.url.c_str()) << endl);
     // LOG(cout << "location: " << getLocationConfigData()->getPath() << endl);
     // LOG(cout << "autoindex: " << getLocationConfigData()->getAutoindex() << endl);
