@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 15:26:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/25 19:46:09 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/26 14:40:28 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,14 +163,14 @@ bool    isWithinBasePath(const string &basePath, const string &requestPath)
     char *realBasePath;
     char *resolvedPathCstr;
     
-    // LOG(cout << "requestPath: " << requestPath << endl);
+    LOG(cout << "requestPath: " << requestPath << endl);
     realBasePath = realpath(basePath.c_str(), NULL);
     if (!realBasePath)
         return false;
     resolvedPathCstr = realpath(requestPath.c_str(), NULL);
     if (!resolvedPathCstr)
         return false;
-    // LOG(cout << "resolved path: " << resolvedPathCstr << endl);
+    LOG(cout << "resolved path: " << resolvedPathCstr << endl);
     resolvedPath = resolvedPathCstr;
     delete resolvedPathCstr;
     if (resolvedPath.find(realBasePath) == 0)
