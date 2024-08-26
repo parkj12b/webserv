@@ -92,21 +92,20 @@ int Server::plusClient(string pathEnv)
 
 EVENT Server::cgiRead(struct kevent& store)
 {
-	char	    buf[PIPE_BUFFER_SIZE + 1];
+	char	    buf[BUFFER_SIZE + 1];  //BUFFER_SIZE의 크기를 65536로 조절하였습니다. 
 	int         readSize;
 
 	LOG(cout << "cgiRead fd: " << store.ident << endl);
-	readSize = read(store.ident, buf, PIPE_BUFFER_SIZE);
+	readSize = read(store.ident, buf, BUFFER_SIZE);
 	LOG(cout << "CGI Read Size : " << readSize << endl);
 	if (readSize <= 0)
 	{
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
         // client[Kq::cgiFd[store.ident]].getResponse().setRequestStatus(500);
-        client[Kq::cgiFd[store.ident]].setResponseContent(cgiContentLength, cgiContent);
+        client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength, cgiContent);
         LOG(cout << Kq::cgiFd[store.ident] << endl);
         // static error page
         // client[Kq::cgiFd[store.ident]].getResponse().makeError();
-        client[Kq::cgiFd[store.ident]].setErrorMsg();
         cgiContent.clear();
         cgiContentLength = 0;
         if (readSize < 0)

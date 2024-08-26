@@ -199,12 +199,7 @@ void    Client::setRequestFin(bool fin)
     request.fin = fin;
 }
 
-void	Client::setResponseContentLength(size_t contentLength)
-{
-	response.setContentLength(contentLength);
-}
-
-void	Client::setResponseContent(size_t cgiContentLength, string content)
+void	Client::setCgiResponseEntity(size_t cgiContentLength, string content)
 {
 	size_t  pos;
 
@@ -215,12 +210,7 @@ void	Client::setResponseContent(size_t cgiContentLength, string content)
     responseAmount = response.getStartHeaderLength() + cgiContentLength - pos;
     index = 0;
     std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl<<endl;
-}
-
-void    Client::setErrorMsg()
-{
     msg = response.getEntity();
-    // responseAmount = msg.size();
 }
 
 bool    Client::getResponseCgi()
@@ -268,7 +258,7 @@ int Client::setStart()
         standardTime = Server::serverConfig->getDefaultServer(port)->getHeaderTimeout();  //여기서 keep-alive setting
         if ((request.status = startLine.check(msg.substr(0, flag))))  //ingu test
             return (1);
-        msgSize -= flag + 2;
+        msgSize -= (flag + 2);
         msg = msg.substr(flag + 2);
         request.method = startLine.getMethod();
         request.url = startLine.getUrl();
@@ -304,7 +294,7 @@ int Client::setHeader()
         flag = msg.find("\r\n");
         if (flag != std::string::npos)
         {
-            msgSize -= flag + 2;
+            msgSize -= (flag + 2);
             if (flag == 0)
             {
                 request.header = headerLine.getHeader();
