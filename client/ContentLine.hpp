@@ -16,6 +16,7 @@
 # include <fstream> 
 # include <fcntl.h>
 # include <unistd.h>
+# include <sys/stat.h>
 # include "HeaderLine.hpp"
 # include "UtilTemplate.hpp"
 
@@ -60,7 +61,7 @@ class ContentLine
         std::vector<std::string>    getContent() const;
         //logic
         bool    fileExist(const char *fileName_);   //tempFileName exist
-        bool    tempFileMake(); //temp file make
+        bool    tempFileMake(int &num); //temp file make
         void    initContentLine(int initLength, CONTENTTYPE initType);  //init
         int     chunkedEntity();                    //chunked message parsing
         int     makeContentLine(std::string &str, size_t &readSize, int &status);  //contentLine make
