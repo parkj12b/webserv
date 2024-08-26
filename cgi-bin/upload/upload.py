@@ -15,7 +15,9 @@ cgitb.enable()
 #__init__(self, fp=None, headers=None, outerboundary='', environ={'LESS': '-X -i -Psline %l/%L$ -Pmline %l/%L (%p)$', 'DPKG_ARC..., keep_blank_values=0, strict_parsing=0)
 #fd = 
 
-form = cgi.FieldStorage()
+
+
+form = cgi.FieldStorage(FP=file_name)
 
 # Define the directory where uploaded files will be stored
 upload_dir = './'
