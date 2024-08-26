@@ -75,22 +75,29 @@ void	CgiProcessor::setStartHeaderEnv()
 	else if (request.method == POST)
 		method = "POST";
 	insertEnv("REQUEST_METHOD", method);
-	if (request.header.find("Content-length") != request.header.end()
-		&& request.header["Content-length"].size() > 0)
+	if (request.header.find("content-length") != request.header.end()
+		&& request.header["content-length"].size() > 0)
 	{
-		insertEnv("CONTENT_LENGTH", request.header["Content-length"].front());
+		insertEnv("CONTENT_LENGTH", request.header["content-length"].front());
 	}
-	if (request.header.find("Content-type") != request.header.end()
-		&& request.header["Content-type"].size() > 0)
+	if (request.header.find("content-type") != request.header.end()
+		&& request.header["content-type"].size() > 0)
 	{
-		insertEnv("CONTENT_TYPE", request.header["Content-type"].front());
+		if (request.header["content-type"].size() > 1)
+		{
+			cout << "boundary here\n";
+			insertEnv("CONTENT_TYPE", request.header["content-type"][0] + "; boundary=" + request.header["content-type"][1]);
+		}
+		else
+			insertEnv("CONTENT_TYPE", request.header["content-type"].front());
+		LOG(cout << "content_type : " << request.header["content-type"][0] + request.header["content-type"][1] << endl);
 	}
-	if (request.header.find("Authorization") != request.header.end()
-		&& request.header["Authorization"].size())
+	if (request.header.find("authorization") != request.header.end()
+		&& request.header["authorization"].size())
 	{
-		insertEnv("AUTH_TYPE", request.header["Authorization"][0]);
-		if (request.header["Authorization"].size() <= 2)
-			insertEnv("REMOTE_USER", request.header["Authorization"][1]);
+		insertEnv("AUTH_TYPE", request.header["authorization"][0]);
+		if (request.header["authorization"].size() <= 2)
+			insertEnv("REMOTE_USER", request.header["authorization"][1]);
 	}
 	insertEnv("REMOTE_ADDR", request.clientIp);
 }

@@ -1,10 +1,10 @@
 HTTP/1.1 200 OK
-Date: Mon, 26 Aug 2024 18:57:52 GMT
+Date: Mon, 26 Aug 2024 21:28:53 GMT
 Server: inghwang/0.0
 connection: keep-alive
-session: Mon, 26 Aug 2024 18:57:52 GMT
+session: Mon, 26 Aug 2024 21:28:53 GMT
 Content-Type: text/html
-content-length: 410
+content-length: 420
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,19 +16,19 @@ content-length: 410
 <body>
     <h1>Upload Files</h1>
     <form action="/upload/" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" multiple>
+        <input type="file" name="file" id="file" multiple>
         <button type="submit">Upload</button>
     </form>
 </body>
 </html>
 HTTP/1.1 200 OK
-Date: Mon, 26 Aug 2024 18:57:56 GMT
+Date: Mon, 26 Aug 2024 21:29:00 GMT
 Server: inghwang/0.0
 connection: keep-alive
-session: Mon, 26 Aug 2024 18:57:52 GMT
+session: Mon, 26 Aug 2024 21:29:00 GMT
 content-type:  text/html
-content-length: 71
+content-length: 145
 
 
-<h2>No file field in the form</h2>
-<h2>No file field in the form</h2>
+<p>File '전자서명.png' uploaded successfully!</p>
+<p>File '전자서명.png' uploaded successfully!</p>

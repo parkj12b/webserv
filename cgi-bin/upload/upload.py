@@ -5,6 +5,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 import cgi
 import cgitb
 import os
+import sys
 
 # Enable CGI error reporting
 cgitb.enable()
@@ -17,7 +18,7 @@ cgitb.enable()
 
 filename = os.environ['CONTENT_FILENAME']
 file = open(filename, 'r')
-form = cgi.FieldStorage(fp=file)
+form = cgi.FieldStorage(fp=file, environ=os.environ)
 
 # Define the directory where uploaded files will be stored
 upload_dir = './'
