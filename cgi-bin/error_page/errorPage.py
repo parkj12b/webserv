@@ -52,6 +52,9 @@ http_status_codes = {
     510: "Not Extended"
 }
 
+# Header
+print("Content-Type: text/html\r\n")
+
 # Start HTML output
 print("<!DOCTYPE html>")
 print("<html lang='en'>")

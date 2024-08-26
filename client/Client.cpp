@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/25 21:27:35 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/26 14:21:56 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -557,7 +557,10 @@ bool    Client::setMatchingLocation(string url)
     request.location = prefixTrie.find(url);
     LOG(cout << "location " << request.location << endl);
     if (request.location == "")
+    {
+        response.setLocationConfigData(NULL);
         return (true);
+    }
     location
         = serverConfigData->getLocationConfigData(request.location, 0);
     size_t i = url.find(location->getPath());
