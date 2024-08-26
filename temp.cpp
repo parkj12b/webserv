@@ -60,69 +60,69 @@ int main()
     while (std::getline(test, str, ' '))
     {
         if (m[str] == "\0")
-            std::cout<<"here";
-        std::cout<<str<<": "<<m[str]<<std::endl;
+            LOG(std::cout<<"here");
+        LOG(std::cout<<str<<": "<<m[str]<<std::endl);
     }
-    std::cout<<"\n\n======test2=======\n";
+    LOG(std::cout<<"\n\n======test2=======\n");
     std::istringstream  test2("hi   ");
     while (std::getline(test2, str, ':'))
     {
-        std::cout<<str<<"\n";
+        LOG(std::cout<<str<<"\n");
     }
-    std::cout<<"\n\n=======test3=======\n";
+    LOG(std::cout<<"\n\n=======test3=======\n");
     std::string test3 = "HI,";
     test3.erase(2);
-    std::cout<<test3<<std::endl;
+    LOG(std::cout<<test3<<std::endl);
     test3.clear();
-    std::cout<<test3<<"here"<<std::endl;
-    std::cout<<"\n\n=======test4=======\n";
+    LOG(std::cout<<test3<<"here"<<std::endl);
+    LOG(std::cout<<"\n\n=======test4=======\n");
     std::string test4 = "HI HellPo World";
     size_t  pos = test4.find('P');
-    std::cout<<"find: P"<<std::endl;
-    std::cout<<test4.substr(0, pos)<<std::endl;
-    std::cout<<test4.substr(pos)<<std::endl;
+    LOG(std::cout<<"find: P"<<std::endl);
+    LOG(std::cout<<test4.substr(0, pos)<<std::endl);
+    LOG(std::cout<<test4.substr(pos)<<std::endl);
     while (test>>str)
     {
-        std::cout<<str<<std::endl;
+        LOG(std::cout<<str<<std::endl);
     }
-    std::cout<<"\n\n=======test5=======\n";
+    LOG(std::cout<<"\n\n=======test5=======\n");
     std::string test5 = "Hi Hello\r";
     size_t  test5_f = test5.find("\r\n");
     if (test5_f == std::string::npos)
-        std::cout<<"here\n";
-    std::cout<<test5_f<<std::endl;
-    std::cout<<"\n\n=======test6=======\n";
+        LOG(std::cout<<"here\n");
+    LOG(std::cout<<test5_f<<std::endl);
+    LOG(std::cout<<"\n\n=======test6=======\n");
     std::vector<int>    v;
     v.push_back(1);
     v.push_back(2);
     v.push_back(3);
     v.push_back(4);
     v.pop_back();
-    std::cout<<v.front()<<"\n";
-    std::cout<<"\n\n=======test7=======\n";
+    LOG(std::cout<<v.front()<<"\n");
+    LOG(std::cout<<"\n\n=======test7=======\n");
     int temp;
     while ((temp = 3) == 3)
     {
-        std::cout<<"here\n";
+        LOG(std::cout<<"here\n");
         break ;
     }
-    std::cout<<"\n\n=========test8=========\n";
+    LOG(std::cout<<"\n\n=========test8=========\n");
     temp = 10;
     std::string str1;
     str1 = std::to_string(temp);
-    std::cout<<str1<<" "<<str1.size()<<std::endl;
-    std::cout<<"\n\n=========test9=========\n";
+    LOG(std::cout<<str1<<" "<<str1.size()<<std::endl);
+    LOG(std::cout<<"\n\n=========test9=========\n");
     std::string str9 = "hI, My naMe is HwanG inGyUU. s";
-    std::cout<<str9<<std::endl;
+    LOG(std::cout<<str9<<std::endl);
     for (std::string::iterator it = str9.begin(); it != str9.end(); it++)
         *it = std::tolower(*it);
-    std::cout<<str9<<std::endl;
+    LOG(std::cout<<str9<<std::endl);
 
-    std::cout<<"\n\n=========test9=========\n";
+    LOG(std::cout<<"\n\n=========test9=========\n");
     Test    *TTT = new Test();
     delete TTT;
 
-    std::cout<<"\n\n=========test10=========\n";
+    LOG(std::cout<<"\n\n=========test10=========\n");
     std::string test10 = "\"Good,,,,\", \"Hi\", good, ";
     std::string ans;
     int comma = true;
@@ -137,21 +137,21 @@ int main()
             ans += *it;
     }
     if (!comma)
-        std::cout<<"ERROR\n";
+        LOG(std::cout<<"ERROR\n");
     for (std::string::iterator it = ans.begin(); it != ans.end(); it++)
     {
         if (*it != '\0')
-            std::cout<<*it;
+            LOG(std::cout<<*it);
         else
-            std::cout<<"EOF"<<std::endl;
+            LOG(std::cout<<"EOF"<<std::endl);
     }
-    std::cout<<"\ncomma parsing"<<std::endl;
+    LOG(std::cout<<"\ncomma parsing"<<std::endl);
     std::istringstream  strStream(ans);
     while (std::getline(strStream, str, '\0'))
     {
-        std::cout<<str<<std::endl;
+        LOG(std::cout<<str<<std::endl);
     }
-    std::cout<<"\n\n=========test11=========\n";
+    LOG(std::cout<<"\n\n=========test11=========\n");
     std::string file_path = "goodtester";
     std::ifstream goodTester(file_path);
     if (!goodTester)
@@ -161,43 +161,43 @@ int main()
     }
     std::string line;
     while (std::getline(goodTester, line)) {
-        std::cout << line << std::endl;
+        LOG(std::cout << line << std::endl);
     }
     goodTester.close();
-    std::cout<<"\n\n=========test12=========\n";
+    LOG(std::cout<<"\n\n=========test12=========\n");
     Client  test12;
     const char* strstr = test12.getMsg();
-    std::cout<<strstr;
-    std::cout<<"\n\n=========test13=========\n";
+    LOG(std::cout<<strstr);
+    LOG(std::cout<<"\n\n=========test13=========\n");
     std::string test13Str = "       Hi        ";
 
     pos = test13Str.find_first_not_of(' ');
     test13Str.erase(0, pos);
     pos = test13Str.find_last_not_of(' ');
     test13Str.erase(pos + 1);
-    std::cout<<"test13Str: "<<test13Str;
-    std::cout<<"\n\n=========test14=========\n";
+    LOG(std::cout<<"test13Str: "<<test13Str);
+    LOG(std::cout<<"\n\n=========test14=========\n");
     int test14Fd = open("./favico.ico", O_RDONLY);
     char    test14Buffer[4096];
-    std::cout<<test14Fd<<std::endl;
+    LOG(std::cout<<test14Fd<<std::endl);
     read(test14Fd, test14Buffer, sizeof(test14Buffer));
-    std::cout<<test14Buffer<<std::endl;
-    std::cout<<"\n\n=========test15=========\n";
+    LOG(std::cout<<test14Buffer<<std::endl);
+    LOG(std::cout<<"\n\n=========test15=========\n");
     ssize_t stand = 3;
     std::time_t start = std::time(0);
     // sleep(4);
-    std::cout<<difftime(std::time(0), start)<<std::endl;
+    LOG(std::cout<<difftime(std::time(0), start)<<std::endl);
     if (difftime(std::time(0), start) < stand)
-        std::cout<<"good\n"<<std::endl;
-    std::cout<<"\n\n=========test16=========\n";
+        LOG(std::cout<<"good\n"<<std::endl);
+    LOG(std::cout<<"\n\n=========test16=========\n");
     int                 ai = 2147483647;
     long                al = 2147483648;
     std::stringstream is;
     std::stringstream is2;
     is << 2147483648;
-    std::cout<<is.str()<<std::endl;
+    LOG(std::cout<<is.str()<<std::endl);
     is2 << al;
-    std::cout<<is2.str()<<std::endl;
+    LOG(std::cout<<is2.str()<<std::endl);
     return 0;
 }
 

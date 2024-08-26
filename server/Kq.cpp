@@ -6,11 +6,12 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/25 14:17:20 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/25 20:37:04 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Kq.hpp"
+#include "UtilTemplate.hpp" 
 
 extern int logs;
 
@@ -70,7 +71,7 @@ Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
         server[serverFd] = Server(serverFd, port);  //config parser
         serverConfigIt++;
     }
-    std::cout<<"server port open.\n";
+    LOG(std::cout<<"server port open.\n");
     connectionCnt = Server::serverConfig->getWorkerConnections();
 }
 
@@ -108,7 +109,7 @@ void    Kq::clientFin(struct kevent& store)
 {
     int     serverFd;
 
-    std::cout<<"bye"<<std::endl;
+    LOG(std::cout<<"bye"<<std::endl);
     serverFd = findServer[store.ident];
     plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
@@ -141,7 +142,7 @@ void    Kq::plusClient(int serverFd)
     clientFd = server[serverFd].plusClient(pathEnv);
     if (clientFd < 0)
         return ;
-    std::cout<<"plus client "<<clientFd<<std::endl;
+    LOG(std::cout<<"plus client "<<clientFd<<std::endl);
     plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 75000, 0);  //50초
     plusEvent(clientFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     findServer[clientFd] = serverFd;
@@ -164,16 +165,16 @@ void    Kq::eventRead(struct kevent& store)
 	}
 	if (iter != cgiFd.end())
 	{
-        // std::cout<<"cgi here\n";
+        // LOG(std::cout<<"cgi here\n");
         if (cgiFd[store.ident] == 0)
         {
             return ;
-            // std::cout<<"cgi here\n";
+            // LOG(std::cout<<"cgi here\n");
         }
 		serverFd = findServer[cgiFd[store.ident]]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
 			return ;
-        std::cout<<"It's Detected CGI\n";
+        LOG(std::cout<<"It's Detected CGI\n");
 		event = server[serverFd].cgiRead(store);
 		switch (event)
 		{
@@ -182,10 +183,10 @@ void    Kq::eventRead(struct kevent& store)
 				break ;
 			case ERROR:
 			case FINISH:
-                std::cout<<"iter->first: "<<iter->first<<std::endl;
+                LOG(std::cout<<"iter->first: "<<iter->first<<std::endl);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
-				close(iter->first);
+				// close(iter->first);
 				cgiFd[iter->first] = 0;
                 cgiFd.erase(iter->first);
 				break ;
@@ -193,7 +194,7 @@ void    Kq::eventRead(struct kevent& store)
 	}
 	else
 	{
-        std::cout<<"read here\n";
+        LOG(std::cout<<"read here\n");
 		serverFd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
 			return ;
@@ -293,22 +294,22 @@ void    Kq::mainLoop()
         }
         else
         {
-            // std::cout<<"store[i].ident: "<<store[i].ident<<std::endl;
+            // LOG(std::cout<<"store[i].ident: "<<store[i].ident<<std::endl);
             if (store[i].flags == EV_ERROR)
                 clientFin(store[i]);  //client 종료
             else if (store[i].filter == EVFILT_READ)
             {
-                // std::cout<<"read"<<std::endl;
+                // LOG(std::cout<<"read"<<std::endl);
                 eventRead(store[i]);
             }
             else if (store[i].filter == EVFILT_WRITE)
             {
-                std::cout<<"write"<<std::endl;
+                LOG(std::cout<<"write"<<std::endl);
                 eventWrite(store[i]);
             }
             else if (store[i].filter == EVFILT_TIMER)
             {
-                std::cout<<"timer"<<std::endl;
+                LOG(std::cout<<"timer"<<std::endl);
                 eventTimer(store[i]);
             }
         }

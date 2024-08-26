@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:30:28 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/22 14:55:18 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/25 19:46:09 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ HTTPServer    *Validator::validate()
 
     checkWorkerConnections();
     map<int, map<string, ServerConfigData *> > &serverConfigData = _httpServer->getServerConfigData();
-    cout << "num server: " << serverConfig.size() << endl;
+    LOG(cout << "num server: " << serverConfig.size() << endl);
     set<ServerConfigData *> &serverSet = _httpServer->getServerSet();
     for (size_t i = 0, size = serverConfig.size(); i < size; i++) {
         ServerConfigData *server = checkServer(serverConfig[i]);

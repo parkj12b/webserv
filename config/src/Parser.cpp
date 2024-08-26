@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 18:48:59 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/22 15:30:02 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/25 19:46:09 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ void Parser::move() {
     _look = _lex->scan();
     Word *w;
     if ((w = dynamic_cast<Word *>(_look)))
-        cout << "lexeme: " << w->lexeme << endl;
-    cout << "tag: " << _look->tag << endl;
+        LOG(cout << "lexeme: " << w->lexeme << endl);
+    LOG(cout << "tag: " << _look->tag << endl);
 }
 
 void    Parser::recover()
@@ -138,15 +138,15 @@ void    Parser::include(string &path)
 void    Parser::server()
 {
     curServer = new ServerConfig(_top);
-    cout << "in server" << endl;
+    LOG(cout << "in server" << endl);
     _serverConfig.push_back(curServer);
 }
 
 void    Parser::context()
 {
-    cout << "in context" << endl;
+    LOG(cout << "in context" << endl);
     Word *w = dynamic_cast<Word *>(_look->clone());
-    cout << _top->getContext() << endl;
+    LOG(cout << _top->getContext() << endl);
     if (!Directives::containsContext(_top->getContext(), w->lexeme))
         error("invalid context");
     Env *temp = _top;
@@ -177,14 +177,14 @@ void    Parser::context()
         case LOCATION:
             t = _top->getHeadDirectiveByIndex(1)[0]->clone();
             path = dynamic_cast<Word *>(t)->lexeme;
-            cout << "location: " << curLocation << endl;
+            LOG(cout << "location: " << curLocation << endl);
             curLocation->setPath(path);
                 
             if (tempLocation == NULL)
             {
                 if (curServer->location.find(path) == curServer->location.end())
                 {
-                    cout << curServer << " : " << curLocation << endl;
+                    LOG(cout << curServer << " : " << curLocation << endl);
                     curServer->location[path].insert(make_pair(prePostNum, curLocation));
                 }
             }
@@ -192,14 +192,14 @@ void    Parser::context()
             {
                 if (tempLocation->location.find(path) == tempLocation->location.end())
                 {
-                    cout << tempLocation << " : " << curLocation << endl;
+                    LOG(cout << tempLocation << " : " << curLocation << endl);
                     tempLocation->location[path].insert(make_pair(prePostNum, curLocation));
                 }
             }
             delete t;
             break;
         case LIMIT_EXCEPT:
-            cout << "limit_except: " << curLocation << endl;
+            LOG(cout << "limit_except: " << curLocation << endl);
             t = curLocation->getEnv()->getHeadDirectiveByIndex(1)[0]->clone();
             path = dynamic_cast<Word *>(t)->lexeme;
             if (curLocation == NULL)
@@ -216,7 +216,7 @@ void    Parser::context()
 
 void    Parser::headDirective()
 {
-    cout << "in headDirective" << endl;
+    LOG(cout << "in headDirective" << endl);
     string context = _top->getContext();
     vector<Syntax> syntaxList = _directiveSyntax[context];
     size_t i = 0;

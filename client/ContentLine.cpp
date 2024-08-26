@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ContentLine.hpp"
+#include "UtilTemplate.hpp" 
 
 extern int logs;
 
@@ -172,7 +173,7 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
     }
     if (contentType == CONTENT)
     {
-        std::cout<<contentLength<<' '<<readSize<<std::endl;
+        LOG(std::cout<<contentLength<<' '<<readSize<<std::endl);
         if (contentLength >= static_cast<int>(readSize))
         {
             contentLength -= static_cast<int>(readSize);

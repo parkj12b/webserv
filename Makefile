@@ -56,7 +56,7 @@ BIN_DIR = ./bin
 
 CPP = c++
 
-FLAGS = -Wall -Wextra -Werror -std=c++11 -g -fsanitize=address
+FLAGS = -std=c++11 -Wall -Wextra -Werror -fsanitize=address -g -O3 -DDEBUG
 
 NAME = webserv
 

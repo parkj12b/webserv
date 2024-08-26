@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Lexer.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 20:03:36 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/21 13:22:50 by devpark          ###   ########.fr       */
+/*   Updated: 2024/08/25 19:46:09 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,7 @@ Token *Lexer::scan() {
         }
         if (isspace(peek) || peek == ';')
             return new Num(stoi(b));
-        cout << lookahead << endl;
+        LOG(cout << lookahead << endl);
         if (lookahead == "client_max_body_size" && isByteUnit(peek))
         {
             b += peek;
@@ -244,7 +244,7 @@ Token *Lexer::scan() {
                     readch();
                 }
                 b += segment;
-                cout << "segment: " << segment << endl;
+                LOG(cout << "segment: " << segment << endl);
                 segmentNum = stoi(segment);
                 if (segmentNum < 0 || segmentNum > 255)
                     break;
