@@ -99,25 +99,28 @@ bool    ContentLine::fileExist(const char *fileName_)
     return (exists);
 }
 
-bool    ContentLine::tempFileMake()
+bool    ContentLine::tempFileMake(int &num)
 {
-    std::string     fileName_ = "./tempContent";
-    size_t          num;
+    std::string     fileName_ = "./.tempContent/";
+    // size_t          num;
 
-    num = 1;
-    while (1)
-    {
-        if (!fileExist((fileName_ + toString(num)).c_str()))
-        {
-            std::cout<<(fileName_ + toString(num)).c_str()<<std::endl;
-            fileName = fileName_ + toString(num);
-            break ;
-        }
-        num++;
-    }
+    // num = 1;
+    // while (1)
+    // {
+    //     if (!fileExist((fileName_ + toString(num)).c_str()))
+    //     {
+    //         std::cout<<(fileName_ + toString(num)).c_str()<<std::endl;
+    //         fileName = fileName_ + toString(num);
+    //         break ;
+    //     }
+    //     num++;
+    // }
+    mkdir(".tempContent", 0777);
+    fileName = fileName_ + toString(num);
     fd = open(fileName.c_str(), O_WRONLY | O_CREAT, 0777);
     if (fd < 0)
         return (false);
+    LOG(std::cout<<"fileName: "<<fileName<<std::endl);
     return (true);
 }
 
