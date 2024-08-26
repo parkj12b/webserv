@@ -166,7 +166,7 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
 {
     size_t  flag;
 
-    maxSize += str.size();
+    maxSize += readSize;
     if (maxSize > 8000000000)
     {
         status = 413;

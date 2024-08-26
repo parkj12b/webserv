@@ -130,7 +130,9 @@ bool	Response::isCgiScriptInURL(string& str)
 	if (cgiFilePos == string::npos)
 	{
 		if (request.method == POST)
+        {
 			request.status = 400;
+        }
 		return (false);
 	}
 	return (true);
@@ -658,6 +660,7 @@ void    Response::makePost()
 {
     LOG(cout<<"Method: POST"<<endl);
 	CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
+
 	if (cgiFlag)
 	{
 		cgiProcessor.selectCgiCmd(request.url);
