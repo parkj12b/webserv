@@ -21,6 +21,7 @@
 #include <streambuf>
 
 int logs = open("./log", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+int writeLogs = open("./writeLog", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 
 void    check()
 {

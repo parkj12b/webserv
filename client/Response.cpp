@@ -316,7 +316,7 @@ size_t  Response::setContent(string content_)
     // LOG(std::cout<< "request.status: "<<request.status<<std::endl);
     // LOG(std::cout<<entity<<std::endl<<std::endl);
     // LOG(std::cout<<"================"<<std::endl);
-    return (crlfPos);
+    return (crlfPos + 2);
 }
 
 void	Response::setContentLength(size_t contentLength_)
