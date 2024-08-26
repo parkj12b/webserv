@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+import cgi
+import cgitb
 import os
 
 fp = open("/Users/devpark/Desktop/abc.png", 'rb')
