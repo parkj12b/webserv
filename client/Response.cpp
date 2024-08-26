@@ -661,7 +661,6 @@ void    Response::makePost()
 	if (cgiFlag)
 	{
 		cgiProcessor.selectCgiCmd(request.url);
-        cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
 		cgiProcessor.checkPostContentType();
 	}
 	if (request.status >= 400)

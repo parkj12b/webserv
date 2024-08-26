@@ -122,6 +122,7 @@ void	CgiProcessor::checkPostContentType()
 		request.status = 400;
 		return ;
 	}
+	LOG(cout << "content-type: " << request.header["content-type"].front() << endl);
 	if (!request.header["content-type"].front().compare("application/x-www-form-urlencoded")
 		|| !request.header["content-type"].front().compare("application/json"))
 		executeCGIScript(scriptFile);
@@ -131,7 +132,9 @@ void	CgiProcessor::checkPostContentType()
 		executeCGIScript(scriptFile);
 	}
 	else
+	{
 		request.status = 400;
+	}
 }
 
 bool	CgiProcessor::isDirectory(const char *binPath)
