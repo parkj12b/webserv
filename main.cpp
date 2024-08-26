@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:33:06 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/23 13:55:55 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/25 19:39:36 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,10 @@
 #include "Directives.hpp"
 #include "Server.hpp"
 #include <sstream>
+#include <streambuf>
 
 int logs = open("./log", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+int writeLogs = open("./writeLog", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 
 void    check()
 {
@@ -47,7 +49,7 @@ bool	findPathEnv(char **envp, string& pathEnv)
 
 int main(int argc, char **argv, char **envp)
 {
-    atexit(check);
+    // atexit(check);
     cout << "========parser========" << endl;
     Directives::init();
     string path = DEFAULT_CONFIG_PATH;
@@ -82,4 +84,5 @@ int main(int argc, char **argv, char **envp)
     while (1)
         kq.mainLoop();
     close(logs);
+    close(writeLogs);
 }

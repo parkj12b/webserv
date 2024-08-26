@@ -6,13 +6,14 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 12:55:24 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/16 14:49:59 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/25 19:46:09 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "StartLine.hpp"
 #include "HTTPServer.hpp"
 #include "Server.hpp"
+#include "UtilTemplate.hpp" 
 
 extern int logs;
 
@@ -135,7 +136,7 @@ int     StartLine::check(std::string firstLine)
     int                 answer;
 
     answer = 0;
-    std::cout<<port<<std::endl;
+    LOG(std::cout<<port<<std::endl);
     while (getline(strStream, str, ' '))
     {
         switch (answer)

@@ -1,6 +1,7 @@
+#include <sys/stat.h>
 #include "CgiProcessor.hpp"
 #include "Kq.hpp"
-#include <sys/stat.h>
+#include "UtilTemplate.hpp" 
 
 CgiProcessor::CgiProcessor(Request &request_, ServerConfigData *serverConfig_, LocationConfigData *locationConfig_, string pathEnv_)
 	:request(request_)
@@ -113,6 +114,8 @@ void	CgiProcessor::selectCgiCmd(string url)
 
 void	CgiProcessor::checkPostContentType()
 {
+    LOG(cout<<"content-length: "<<request.header["content-length"].front()<<endl);
+    LOG(cout<<"content-type: "<<request.header["content-type"].front()<<endl);
 	if (request.header.find("content-type") == request.header.end()
 		|| request.header.find("content-length") == request.header.end()
 		|| atol(request.header["content-length"].front().c_str()) <= 0
@@ -131,7 +134,10 @@ void	CgiProcessor::checkPostContentType()
 		executeCGIScript(scriptFile);
 	}
 	else
+	{
 		request.status = 400;
+	}
+	LOG(cout << "good: " << request.status << endl);
 }
 
 bool	CgiProcessor::isDirectory(const char *binPath)
@@ -161,19 +167,19 @@ bool	CgiProcessor::checkErr(const char *binPath)
 bool	CgiProcessor::findCgiCmdPath()
 {
 	vector<string> pathEnvList;
-	cout << "PATH ENV : " << pathEnv << endl;
+	LOG(cout << "PATH ENV : " << pathEnv << endl);
 	istringstream iss(pathEnv);
 	string buffer;
 	while (getline(iss, buffer, ':'))
 	{
-		cout << buffer << endl;
+		LOG(cout << buffer << endl);
 		pathEnvList.push_back(buffer);
 	}
 	for (vector<string>::iterator iter = pathEnvList.begin(); iter != pathEnvList.end(); iter++)
 	{
-		cout << "PATH : " << *iter << endl;
+		LOG(cout << "PATH : " << *iter << endl);
 		string cmdPath = (*iter).append("/").append(cgiCommand);
-		cout << cmdPath << endl;
+		LOG(cout << cmdPath << endl);
 		if (!checkErr(cmdPath.c_str()))
 		{
 			cgiCommand = cmdPath;
@@ -191,8 +197,8 @@ void	CgiProcessor::executeCGIScript(const string path)
 	int pipefd[2];
 	if (!findCgiCmdPath() || pipe(pipefd) < 0)
 	{
-		cout << "No CGI Command " << cgiCommand << endl;
-		cout << "or pipe() error " << endl;
+		LOG(cout << "No CGI Command " << cgiCommand << endl);
+		LOG(cout << "or pipe() error " << endl);
 		request.status = 500;
 		return ;
 	}
@@ -207,7 +213,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 	Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 	if (pid == 0)
 	{
-		std::cout<<"pipe fd: "<<pipefd[0]<<", "<<pipefd[1]<<std::endl;
+		LOG(std::cout<<"pipe fd: "<<pipefd[0]<<", "<<pipefd[1]<<std::endl);
 		close(pipefd[0]);
 		dup2(pipefd[1], STDOUT_FILENO);
 		// dup2(pipefd[1], STDERR_FILENO);
@@ -226,7 +232,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 		if (execve(&cgiCommand[0], argv, envp) == -1)
 		{
 			request.status = 500;
-			std::cout<<"execve error"<<endl;
+			LOG(std::cout<<"execve error"<<endl);
 			exit(1);
 		}
 	}

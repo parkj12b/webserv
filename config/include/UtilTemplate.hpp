@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 17:27:22 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/20 15:28:45 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/25 19:46:13 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,12 @@
 #include <string>
 
 using namespace std;
+
+#ifdef DEBUG
+    #define LOG(x) x
+#else
+    #define LOG(x)
+#endif
 
 set<string> createSet(const char *str[]);
 bool        isString(char peek);

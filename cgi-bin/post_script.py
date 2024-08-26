@@ -6,7 +6,7 @@ import cgi
 import cgitb
 import os
 
-# 에러 로깅 활성화
+# Enable LOGging
 cgitb.enable()
 
 # HTML 응답 생성

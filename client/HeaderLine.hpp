@@ -20,6 +20,7 @@
 # include <sstream>
 # include <algorithm>
 # include <cctype>
+# include "UtilTemplate.hpp"
 
 enum    CONTENTTYPE 
 {

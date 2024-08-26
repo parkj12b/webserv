@@ -80,7 +80,7 @@ int main()
     size_t  pos = test4.find('P');
     std::cout<<"find: P"<<std::endl;
     std::cout<<test4.substr(0, pos)<<std::endl;
-    std::cout<<test4.substr(pos)<<std::endl;
+    std::cout<<test4.substr(pos + 1)<<std::endl;
     while (test>>str)
     {
         std::cout<<str<<std::endl;
@@ -151,19 +151,19 @@ int main()
     {
         std::cout<<str<<std::endl;
     }
-    std::cout<<"\n\n=========test11=========\n";
-    std::string file_path = "goodtester";
-    std::ifstream goodTester(file_path);
-    if (!goodTester)
-    {
-        std::cerr << "Error: File '" << file_path << "' could not be opened." << std::endl;
-        return 1; // 프로그램을 비정상적으로 종료합니다.
-    }
-    std::string line;
-    while (std::getline(goodTester, line)) {
-        std::cout << line << std::endl;
-    }
-    goodTester.close();
+    // std::cout<<"\n\n=========test11=========\n";
+    // std::string file_path = "goodtester";
+    // std::ifstream goodTester(file_path);
+    // if (!goodTester)
+    // {
+    //     std::cerr << "Error: File '" << file_path << "' could not be opened." << std::endl;
+    //     return 1; // 프로그램을 비정상적으로 종료합니다.
+    // }
+    // std::string line;
+    // while (std::getline(goodTester, line)) {
+    //     std::cout << line << std::endl;
+    // }
+    // goodTester.close();
     std::cout<<"\n\n=========test12=========\n";
     Client  test12;
     const char* strstr = test12.getMsg();

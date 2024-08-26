@@ -10,6 +10,11 @@ import os
 cgitb.enable()
 
 # Create an instance of FieldStorage to parse the form data
+# 여기에서 file 이름 가져와서 fp=넣으면 될듯
+
+#__init__(self, fp=None, headers=None, outerboundary='', environ={'LESS': '-X -i -Psline %l/%L$ -Pmline %l/%L (%p)$', 'DPKG_ARC..., keep_blank_values=0, strict_parsing=0)
+#fd = 
+
 form = cgi.FieldStorage()
 
 # Define the directory where uploaded files will be stored
@@ -49,6 +54,7 @@ def process_file(file_item):
         print(f"<p>File '{filename}' uploaded successfully!</p>")
 
 def main():
+    print("Content-Type: text/html\r\n")
     handle_file_uploads()
     
 
