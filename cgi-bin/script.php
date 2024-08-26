@@ -5,7 +5,8 @@ ini_set('display_errors', 1);
 
 function generate_html($query_params, $headers) {
     // HTML 헤더 출력
-    echo "Content-Type: text/html\r\n";
+    echo "content-type: text/html\r\n";
+	echo "status: 200\r\n";
     echo "<html>\r\n";
     echo "<head>\r\n";
     echo "<title>CGI Query String Example</title>\r\n";

@@ -1,3 +1,8 @@
 import os
 
-print(os.environ.get("QUERY_STRING"))
+fp = open("/Users/devpark/Desktop/abc.png", 'rb')
+fp2 = open("tempContent1", 'wb')
+for line in fp.readlines():
+	fp2.write(line)
+fp.close()
+fp2.close()
