@@ -4,48 +4,61 @@ import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 import cgi
 import cgitb
-import sys
-import json
+import os
 
 # Enable LOGging
 cgitb.enable()
 
-# Read the HTTP content type
-content_type = os.environ.get('CONTENT_TYPE')
+# HTML 응답 생성
 
-# Function to handle 'application/x-www-form-urlencoded'
-def handle_urlencoded():
-    form = cgi.FieldStorage()
-    print("<html><body>")
-    print("<h2>Received Form Data (application/x-www-form-urlencoded)</h2>")
-    for key in form.keys():
-        print(f"<p>{key}: {form.getvalue(key)}</p>")
-    print("</body></html>")
+def print_result(name, age):
+	print("content-type: text/html\r\n", end="")
+	print("<html>\r\n", end="")
+	print("<head>\r\n", end="")
+	print("<title>Form Response</title>\r\n", end="")
+	print("</head>\r\n", end="")
+	print("<body>\r\n", end="")
+	print("<h1>Form Submitted</h1>\r\n", end="")
+	print(f"<p>Name: {name}</p>\r\n", end="")
+	print(f"<p>Age: {age}</p>\r\n", end="")
+	print("</body>\r\n", end="")
+	print("</html>\r\n", end="")
 
-# Function to handle 'application/json'
-def handle_json():
-    try:
-        # Get the content length
-        content_length = int(os.environ.get('CONTENT_LENGTH', 0))
-        # Read the JSON data from stdin
-        json_data = sys.stdin.read(content_length)
-        # Parse the JSON data
-        data = json.loads(json_data)
-        print("<html><body>")
-        print("<h2>Received JSON Data (application/json)</h2>")
-        print("<pre>")
-        print(json.dumps(data, indent=4))
-        print("</pre>")
-        print("</body></html>")
-    except json.JSONDecodeError:
-        print("<html><body>")
-        print("<h2>Error: Invalid JSON Data</h2>")
-        print("</body></html>")
+def process_x_www_form_urlencoded_content():
+	form = cgi.FieldStorage()
+	name = form.getvalue('name')
+	age = form.getvalue('age')
+	print_result(name, age)
 
-# Main logic based on content type
-if content_type == 'application/x-www-form-urlencoded':
-    handle_urlencoded()
-elif content_type == 'application/json':
-    handle_json()
-else:
-	sys.exit(1)
+def process_json_content(f):
+	try:
+        # 요청 본문을 읽기
+		input_data = ""
+		for line in f.readlines():
+			input_data += line
+        json_data = json.loads(input_data)
+
+        name = json_data.get('name')
+        age = json_data.get('age')
+
+        print_result(name, age)
+
+    except (ValueError, json.JSONDecodeError):
+        exit(1)
+
+def main():
+	content_type = os.environ.get("CONTENT_TYPE")
+	if content_type != "application/x-www-form-urlencoded" and content_type != "application/json":
+		exit(1)
+	if content_type == "application/x-www-form-urlencoded":
+		process_x_www_form_urlencoded_content()
+	else:
+		content_filename = os.environ.get("CONTENT_FILENAME")
+		if os.path.isfile(content_filename):
+			exit(1)
+		f = open(content_filename, 'r')
+		process_json_content(f)
+		f.close()
+
+if __name__ == "__main__":
+	main()
