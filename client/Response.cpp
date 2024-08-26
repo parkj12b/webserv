@@ -309,14 +309,23 @@ size_t  Response::setContent(string content_)
     std::string contentType;
 
     crlfPos = content_.find("\r\n");
-    contentType = content_.substr(0, crlfPos);
-	content = content_.substr(crlfPos + 2);
-    contentPos = contentType.find(":");
-    makeHeader("content-type", contentType.substr(contentPos + 1));
+    if (crlfPos != std::string::npos)
+    {
+        contentType = content_.substr(0, crlfPos);
+        content = content_.substr(crlfPos + 2);
+        contentPos = contentType.find(":");
+        if (contentPos != std::string::npos)
+            makeHeader("content-type", contentType.substr(contentPos + 1));
+    }
+    else
+    {
+        content = content_;
+        return (0);
+    }
     // LOG(std::cout<< "request.status: "<<request.status<<std::endl);
     // LOG(std::cout<<entity<<std::endl<<std::endl);
     // LOG(std::cout<<"================"<<std::endl);
-    return (crlfPos);
+    return (crlfPos + 2);
 }
 
 void	Response::setContentLength(size_t contentLength_)
