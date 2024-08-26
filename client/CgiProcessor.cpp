@@ -129,11 +129,13 @@ void	CgiProcessor::checkPostContentType()
 		executeCGIScript(scriptFile);
 	else if (!request.header["content-type"].front().compare("multipart/form-data"))
 	{
-		scriptFile = "/upload/upload.py";
+		// scriptFile = "/upload/upload.py";
 		executeCGIScript(scriptFile);
 	}
 	else
+	{
 		request.status = 400;
+	}
 	LOG(cout << "good: " << request.status << endl);
 }
 
