@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kq.cpp                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/25 20:37:04 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/26 12:46:29 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ void    Kq::plusClient(int serverFd)
     clientFd = server[serverFd].plusClient(pathEnv);
     if (clientFd < 0)
         return ;
-    LOG(std::cout<<"plus client "<<clientFd<<std::endl);
+    LOG(std::cout<<"Plus Client FD : "<<clientFd<<std::endl);
     plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 75000, 0);  //50초
     plusEvent(clientFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     findServer[clientFd] = serverFd;
@@ -183,10 +183,10 @@ void    Kq::eventRead(struct kevent& store)
 				break ;
 			case ERROR:
 			case FINISH:
-                LOG(std::cout<<"iter->first: "<<iter->first<<std::endl);
+                LOG(std::cout<<"[CGI Read FD, not Client FD] : "<<iter->first<<std::endl);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
-				// close(iter->first);
+				close(iter->first); // 이 부분 close 안 해줘서 FD가 증가하는 것으로 보임
 				cgiFd[iter->first] = 0;
                 cgiFd.erase(iter->first);
 				break ;

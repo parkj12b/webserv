@@ -469,6 +469,7 @@ void    Response::makeError()
 	LOG(cout << request.clientFd << std::endl);
     LocationConfigData	*location = getLocationConfigData();
     map<int, string>	&errorPage = location->getErrorPage();
+	cout << "Check ErrorPage : " << &errorPage << endl;
     string errorPath = errorPage[request.status];
 
     LOG(cout << "errorPath: " << errorPath << endl);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/25 21:25:44 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/26 12:17:20 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int Server::plusClient(string pathEnv)
         return (-1);
     client[clntFd] = Client(clntFd, port, pathEnv);
 	client[clntFd].clientIP(clntAdr);
-    LOG(std::cout<<"temp delete"<<std::endl);
+    LOG(std::cout<<"New Client FD : " << clntFd <<std::endl);
     return (clntFd);
 }
 
@@ -95,7 +95,7 @@ EVENT Server::cgiRead(struct kevent& store)
 	char	    buf[PIPE_BUFFER_SIZE + 1];
 	int         readSize;
 
-	LOG(cout << "cgiRead fd: " << store.ident << endl);
+	LOG(cout << "[PIPE Read FD in 'Server::cgiRead' function]: " << store.ident << endl);
 	readSize = read(store.ident, buf, PIPE_BUFFER_SIZE);
 	LOG(cout << "CGI Read Size : " << readSize << endl);
 	if (readSize <= 0)
@@ -111,6 +111,7 @@ EVENT Server::cgiRead(struct kevent& store)
         cgiContentLength = 0;
         if (readSize < 0)
             return (ERROR);
+		LOG(cout << "CGI Read Processing is SUCCESS 🐱" << endl);
         return (FINISH);
 	}
     // close(1);

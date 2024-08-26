@@ -162,19 +162,19 @@ bool	CgiProcessor::checkErr(const char *binPath)
 bool	CgiProcessor::findCgiCmdPath()
 {
 	vector<string> pathEnvList;
-	LOG(cout << "PATH ENV : " << pathEnv << endl);
+	// LOG(cout << "PATH ENV : " << pathEnv << endl);
 	istringstream iss(pathEnv);
 	string buffer;
 	while (getline(iss, buffer, ':'))
 	{
-		LOG(cout << buffer << endl);
+		// LOG(cout << buffer << endl);
 		pathEnvList.push_back(buffer);
 	}
 	for (vector<string>::iterator iter = pathEnvList.begin(); iter != pathEnvList.end(); iter++)
 	{
-		LOG(cout << "PATH : " << *iter << endl);
+		// LOG(cout << "PATH : " << *iter << endl);
 		string cmdPath = (*iter).append("/").append(cgiCommand);
-		LOG(cout << cmdPath << endl);
+		// LOG(cout << cmdPath << endl);
 		if (!checkErr(cmdPath.c_str()))
 		{
 			cgiCommand = cmdPath;
@@ -208,7 +208,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 	Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 	if (pid == 0)
 	{
-		LOG(std::cout<<"pipe fd: "<<pipefd[0]<<", "<<pipefd[1]<<std::endl);
+		LOG(std::cout<<"[PIPE FD] - (Read FD) : "<<pipefd[0]<<", (Write FD) : "<<pipefd[1]<<std::endl);
 		close(pipefd[0]);
 		dup2(pipefd[1], STDOUT_FILENO);
 		// dup2(pipefd[1], STDERR_FILENO);

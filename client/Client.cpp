@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/25 21:27:35 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/26 12:21:58 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,9 +212,10 @@ void	Client::setResponseContent(size_t cgiContentLength, string content)
     pos = response.setContent(content);
     std::cout<<"pos: "<<pos<<std::endl;
     response.setContentLength(cgiContentLength - pos);
+	std::cout << "Response StartLine Plus Header Size : " << response.getStartHeaderLength() << endl;
     responseAmount = response.getStartHeaderLength() + cgiContentLength - pos;
     index = 0;
-    std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl<<endl;
+    std::cout << "responseAmount: " << responseAmount << std::endl << endl;
 }
 
 void    Client::setErrorMsg()
