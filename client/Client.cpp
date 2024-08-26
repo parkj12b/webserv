@@ -206,7 +206,8 @@ void	Client::setCgiResponseEntity(size_t cgiContentLength, string content)
     std::cout<<"cgiContentLength: "<<cgiContentLength<<std::endl;
     pos = response.setContent(content);
     std::cout<<"cgi pos: "<<pos<<std::endl;
-    response.setContentLength(cgiContentLength - pos);
+    if (cgiContentLength - pos > 0)
+        response.setContentLength(cgiContentLength - pos);
     responseAmount = response.getStartHeaderLength() + cgiContentLength - pos;
     index = 0;
     std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl<<endl;
@@ -466,13 +467,13 @@ void    Client::setMessage(const char* msgRequest, int &readSize)
     msg.append(msgRequest, readSize);
     // if (msg.empty() && headerLine.getCompletion() && !contentLine.getCompletion())
     // {
-    //     contentLine.makeContentLine(msg, msgSize, request.status);
+    //     contentLine.makeContentLine(std::string(msgRequest), msgSize, request.status);
     // }
     // else
     // {
     //     msg.append(msgRequest, readSize);
     // }
-    // write(logs, msgRequest, readSize);
+    write(logs, msgRequest, readSize);
     if (setStart())  //max size literal
     {
         request.fin = true;
