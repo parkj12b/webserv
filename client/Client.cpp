@@ -50,7 +50,7 @@ LocationConfigData *Client::recurFindLocation(string url,
     return (recurFindLocation(passURL, configData));
 }
 
-Client::Client() : connect(true), connection(false), fd(0), port(0), msgSize(0), index(0), responseAmount(0), startLine(0), headerLine(0), contentLine(0)
+Client::Client() : connect(true), connection(false), fd(0), port(0), msgSize(0), index(0), responseAmount(0), standardTime(7500), startLine(0), headerLine(0), contentLine(0)
 {
     request.port = port;
     request.fin = false;
@@ -300,7 +300,6 @@ int Client::setHeader()
                 request.header = headerLine.getHeader();
                 msg = msg.substr(flag + 2);
                 //keep-alive
-                standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
                 LOG(cout << "response in location: " << &response << endl);
                 if (setMatchingLocation(request.url))
                 {
@@ -317,6 +316,12 @@ int Client::setHeader()
                     LOG(std::cout<<"default error"<<std::endl);
                     return (2);
                 }
+                request.header = headerLine.getHeader();
+                if (request.header.find("content-type") != request.header.end())
+                {
+                    LOG(cout<<"content-type: "<<request.header["content-type"].front()<<endl);
+                }
+                standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
                 contentLine.initContentLine(headerLine.getContentLength(), headerLine.getContentType());
                 connect = headerLine.getConnect();
                 break ;
