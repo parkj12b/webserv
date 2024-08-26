@@ -16,6 +16,7 @@
 #include "UtilTemplate.hpp" 
 
 extern int logs;
+extern int writeLogs;
 
 HTTPServer *Server::serverConfig = NULL;
 
@@ -180,6 +181,7 @@ EVENT   Server::clientWrite(struct kevent& store)
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
     std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl;
+    // write(writeLogs, buffer, client[store.ident].responseIndex());
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     client[store.ident].plusIndex(index);
     client[store.ident].setConnection(true);
