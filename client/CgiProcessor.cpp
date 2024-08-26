@@ -124,18 +124,18 @@ void	CgiProcessor::checkPostContentType()
 		request.status = 400;
 		return ;
 	}
-	LOG(cout << "content-type: " << request.header["content-type"].front() << endl);
 	if (!request.header["content-type"].front().compare("application/x-www-form-urlencoded")
 		|| !request.header["content-type"].front().compare("application/json"))
 		executeCGIScript(scriptFile);
 	else if (!request.header["content-type"].front().compare("multipart/form-data"))
 	{
-		scriptFile = "/upload/upload.py";
+		// scriptFile = "/upload/upload.py";
 		executeCGIScript(scriptFile);
 	}
 	else
 	{
 		request.status = 400;
+	}
 	LOG(cout << "good: " << request.status << endl);
 }
 
