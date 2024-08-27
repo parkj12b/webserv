@@ -1,11 +1,29 @@
 HTTP/1.1 200 OK
-Date: Tue, 27 Aug 2024 14:25:41 GMT
+Date: Tue, 27 Aug 2024 14:35:34 GMT
 Server: inghwang/0.0
 connection: keep-alive
-session: Tue, 27 Aug 2024 14:25:41 GMT
+session: Tue, 27 Aug 2024 14:35:34 GMT
 content-type:  text/html
 content-length: 93
 
 
 <p>File 'data.pdf' uploaded successfully!</p>
 <p>File 'data.pdf' uploaded successfully!</p>
+HTTP/1.1 200 OK
+Date: Tue, 27 Aug 2024 14:35:40 GMT
+Server: inghwang/0.0
+connection: keep-alive
+session: Tue, 27 Aug 2024 14:35:34 GMT
+content-length: 556
+
+<!--: spam
+Content-Type: text/html
+
+<body bgcolor="#f0f0f8"><font color="#f0f0f8" size="-5"> -->
+<body bgcolor="#f0f0f8"><font color="#f0f0f8" size="-5"> --> -->
+</font> </font> </font> </script> </object> </blockquote> </pre>
+</table> </table> </table> </table> </table> </font> </font> </font><pre>Traceback (most recent call last):
+  File "/Users/inghwang/Documents/42seoul/together/cgi-bin//upload//upload.py", line 21, in &lt;module&gt;
+    file = open(filename, 'r')
+FileNotFoundError: [Errno 2] No such file or directory: './.tempContent/11'
+</pre>
