@@ -36,7 +36,8 @@ function generate_html($query_params, $headers) {
 function main() {
     // CGI 환경에서 쿼리 문자열을 가져오기
     $query_params = [];
-    if (isset($_SERVER['QUERY_STRING'])) {
+    if (isset($_SERVER['QUERY_STRING']))
+    {
         parse_str($_SERVER['QUERY_STRING'], $query_params);
     }
 
