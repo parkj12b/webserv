@@ -40,7 +40,6 @@ function main() {
     {
         parse_str($_SERVER['QUERY_STRING'], $query_params);
     }
-
     // 헤더를 배열 형태로 저장
     $headers = [];
     foreach ($_SERVER as $key => $value) {
