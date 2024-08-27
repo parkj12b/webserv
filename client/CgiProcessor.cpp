@@ -243,6 +243,8 @@ void	CgiProcessor::executeCGIScript(const string path)
 			strcpy(envp[idx++], env.c_str());
 		}
 		envp[metaVariables.size()] = 0;
+		int fd = open(request.contentFileName.c_str(), O_RDONLY, 0644);
+		dup2(fd, STDIN_FILENO);
 		if (execve(&cgiCommand[0], argv, envp) == -1)
 		{
 			request.status = 500;

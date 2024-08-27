@@ -1,68 +1,55 @@
 <?php
 echo "Content-Type: text/html\r\n";
 echo "Status: 200\r\n";
+echo "<html>\r\n";
+echo "<head>\r\n";
+echo "<title>Form Response</title>\r\n";
+echo "<meta charset=\"utf-8\">\r\n";
+echo "</head>\r\n";
+echo "<body>\r\n";
 
+// $content_filename = getenv("CONTENT_FILENAME");
+// if ($content_filename === false || !is_file($content_filename)) {
+//     echo "status: 400\r\n";
+//     exit(1);
+// }
 
-$content_filename = getenv("CONTENT_FILENAME");
-if ($content_filename === false || !is_file($content_filename)) {
-    echo "status: 400\r\n";
-    exit(1);
-}
+// // 파일 내용을 읽어오기
+// $file_content = file_get_contents($content_filename);
+// if ($file_content === false) {
+//     echo "status: 400\r\n";
+//     exit(1);
+// }
 
-// 파일 내용을 읽어오기
-$file_content = file_get_contents($content_filename);
-if ($file_content === false) {
-    echo "status: 400\r\n";
-    exit(1);
-}
-
-$content_filename = getenv("CONTENT_FILENAME");
-$file_content = file_get_contents($content_filename);
-
-
-$_FILES['files'] = [
-    'name' => getenv("CONTENT_FILENAME"),
-    'type' => getenv("CONTENT_TYPE"),
-    'tmp_name' => $file_content,
-    'error' => UPLOAD_ERR_OK,
-    'size' => getenv("CONTENT_LENGTH"),
-];
+// $content_filename = getenv("CONTENT_FILENAME");
+// $file_content = file_get_contents($content_filename);
 
 // print_r($_POST);
 // print_r($_SERVER);
 print_r($_FILES);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+$uploadDir = './uploads/';
 
-    // Check if a file has been uploaded
-    if (isset($_FILES['files'])) {
-        // Loop through the uploaded files
-        $fileCount = count($_FILES['files']['name']);
-        
-        for ($i = 0; $i < $fileCount; $i++) {
-            // Temporary file path
-            $tmpFile = $_FILES['files']['tmp_name'][$i];
-            // Original file name
-            $fileName = $_FILES['files']['name'][$i];
-            // Path where the file will be saved
-            $uploadFile = $uploadDir . basename($fileName);
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_FILES['file_php']) && is_array($_FILES['file_php']['name'])) {
+        foreach ($_FILES['file_php']['name'] as $key => $name) {
+            if ($_FILES['file_php']['error'][$key] == UPLOAD_ERR_OK) {
+                $tmp_name = $_FILES['file_php']['tmp_name'][$key];
+                $destination = '../../uploads/' . basename($name);
 
-            // Check if the file was uploaded without errors
-            if ($_FILES['files']['error'][$i] === UPLOAD_ERR_OK) {
-                // Move the file from temporary location to the destination
-                if (move_uploaded_file($tmpFile, $uploadFile)) {
-                    echo "File successfully uploaded: $fileName<br>";
+                // Move the uploaded file to the desired directory
+                if (move_uploaded_file($tmp_name, $destination)) {
+                    echo "File $name uploaded successfully.<br>";
                 } else {
-                    echo "Failed to move uploaded file: $fileName<br>";
+                    echo "Failed to upload file $name.<br>";
                 }
             } else {
-                echo "Error uploading file: $fileName<br>";
+                echo "Error uploading file $name.<br>";
             }
         }
     } else {
         echo "No files were uploaded.";
     }
-} else {
-    echo "Invalid request method.";
 }
+echo "</body>\r\n";
 ?>

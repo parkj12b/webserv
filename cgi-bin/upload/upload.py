@@ -16,10 +16,11 @@ cgitb.enable()
 #__init__(self, fp=None, headers=None, outerboundary='', environ={'LESS': '-X -i -Psline %l/%L$ -Pmline %l/%L (%p)$', 'DPKG_ARC..., keep_blank_values=0, strict_parsing=0)
 #fd = 
 
-filename = os.environ['CONTENT_FILENAME']
+# filename = os.environ['CONTENT_FILENAME']
 # filename = "/Users/devpark/Documents/mini/tempContent1"
-file = open(filename, 'r')
-form = cgi.FieldStorage(fp=file, environ=os.environ)
+# file = open(filename, 'r')
+# form = cgi.FieldStorage(fp=file, environ=os.environ)
+form = cgi.FieldStorage(environ=os.environ)
 
 # Define the directory where uploaded files will be stored
 upload_dir = './uploads'
