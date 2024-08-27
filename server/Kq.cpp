@@ -272,7 +272,7 @@ void    Kq::mainLoop()
     struct kevent       store[connectionCnt];
     int                 count;
 
-    //waitpid(complete) 복사 생성자를 한번 호출하기는 하지만 이게 best임
+    //waitpid(complete) 복사 생성자를 없앰 다만 erase를 진행할 때의 오히려 비용이 조금 더 들 수도 있을 수도 있다. 
     for (std::vector<pid_t>::iterator it = Kq::processor.begin(); it != Kq::processor.end();)
     {
         if (waitpid(*it, NULL, WNOHANG) <= 0)
