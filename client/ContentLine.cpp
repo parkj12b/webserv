@@ -121,6 +121,7 @@ bool    ContentLine::tempFileMake(int &num)
     if (fd < 0)
         return (false);
     LOG(std::cout<<"fileName: "<<fileName<<std::endl);
+    // contentLength = 0;
     return (true);
 }
 
@@ -195,10 +196,11 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
         else
         {
             // content.push_back(str.substr(0, contentLength));
-            write(fd, &str[0], readSize);
+            flag = write(fd, &str[0], contentLength);
             // contentLength = 0;
-            str = str.substr(contentLength);
+            str = str.substr(flag);
             completion = true;
+            readSize -= flag;
             close(fd);
         }
     }
