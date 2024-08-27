@@ -670,6 +670,7 @@ void    Response::makePost()
 	if (cgiFlag)
 	{
 		cgiProcessor.selectCgiCmd(request.url);
+        // cgiProcessor.insertEnv("CONTENT_FILE", request.contentFileName);
 		cgiProcessor.checkPostContentType();
 	}
 	if (request.status >= 400)

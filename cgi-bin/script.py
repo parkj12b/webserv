@@ -12,7 +12,8 @@ cgitb.enable()
 def generate_html(query_params, headers):
 	""" 쿼리 파라미터와 헤더에 기반한 HTML 페이지 생성 """
 	# HTML 헤더 출력
-	print("Content-type: text/html\r\n", end="")
+	print("content-type: text/html\r\n", end="")
+	print("status: 200\r\n", end="")
 	print("<html>\r\n", end="")
 	print("<head>\r\n", end="")
 	print("<title>CGI Query String Example</title>\r\n", end="")

@@ -6,7 +6,7 @@
 /*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/27 11:15:56 by devpark          ###   ########.fr       */
+/*   Updated: 2024/08/27 11:17:01 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,7 +229,7 @@ void    Client::deleteContent(void)
     if (file.is_open())
     {
         file.close();
-        unlink(request.contentFileName.c_str());
+        // unlink(request.contentFileName.c_str());
     }
 }
 
@@ -380,7 +380,7 @@ int Client::setContent()
     LOG(std::cout<<"...setBodyLine parsing...\n");
     if (flag)
     {
-        if (!contentLine.tempFileMake())
+        if (!contentLine.tempFileMake(fd))
         {
             request.status = 500;
             return (2);
