@@ -90,7 +90,6 @@ void	CgiProcessor::setStartHeaderEnv()
 		}
 		else
 			insertEnv("CONTENT_TYPE", request.header["content-type"].front());
-		LOG(cout << "content_type : " << request.header["content-type"][0] + request.header["content-type"][1] << endl);
 	}
 	if (request.header.find("authorization") != request.header.end()
 		&& request.header["authorization"].size())
@@ -100,6 +99,8 @@ void	CgiProcessor::setStartHeaderEnv()
 			insertEnv("REMOTE_USER", request.header["authorization"][1]);
 	}
 	insertEnv("REMOTE_ADDR", request.clientIp);
+	insertEnv("REDIRECT_STATUS", "false");
+	insertEnv("SCRIPT_FILENAME", scriptFile);
 }
 
 void	CgiProcessor::selectCgiCmd(string url)
@@ -125,10 +126,16 @@ void	CgiProcessor::checkPostContentType()
     LOG(cout<<"content-type: "<<request.header["content-type"].front()<<endl);
 	if (request.header.find("content-type") == request.header.end()
 		|| request.header.find("content-length") == request.header.end()
-		|| atol(request.header["content-length"].front().c_str()) <= 0
-		|| atol(request.header["content-length"].front().c_str()) > locationConfig->getClientMaxBodySize())
+		|| atol(request.header["content-length"].front().c_str()) <= 0)
 	{
 		request.status = 400;
+		return ;
+	}
+	if (atol(request.header["content-length"].front().c_str()) > locationConfig->getClientMaxBodySize())
+	{
+		LOG(cout << "location path : " << locationConfig->getPath() << endl);
+		LOG(cout << "client_max_body_size : " << locationConfig->getClientMaxBodySize() << endl);
+		request.status = 413;
 		return ;
 	}
 	if (!request.header["content-type"].front().compare("application/x-www-form-urlencoded")

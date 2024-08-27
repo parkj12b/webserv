@@ -35,7 +35,11 @@ function generate_html($query_params, $headers) {
 
 function main() {
     // CGI 환경에서 쿼리 문자열을 가져오기
-    $query_params = $_GET;
+    $query_params = [];
+    if (isset($_SERVER['QUERY_STRING']))
+    {
+        parse_str($_SERVER['QUERY_STRING'], $query_params);
+    }
 
     // 헤더를 배열 형태로 저장
     $headers = [];
