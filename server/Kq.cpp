@@ -268,17 +268,19 @@ void    Kq::eventTimer(struct kevent& store)
 
 void    Kq::mainLoop()
 {
-    std::vector<pid_t>  notFin;
+    // std::vector<pid_t>  notFin;
     struct kevent       store[connectionCnt];
     int                 count;
 
-    //waitpid
-    for (std::vector<pid_t>::iterator it = Kq::processor.begin(); it != Kq::processor.end(); it++)
+    //waitpid(complete) 복사 생성자를 한번 호출하기는 하지만 이게 best임
+    for (std::vector<pid_t>::iterator it = Kq::processor.begin(); it != Kq::processor.end();)
     {
-        if (waitpid(*it, NULL, WNOHANG) == 0)
-            notFin.push_back(*it);
+        if (waitpid(*it, NULL, WNOHANG) <= 0)
+            it++;
+        else
+            it = Kq::processor.erase(it);
     }
-    Kq::processor = notFin;
+    // Kq::processor = notFin;
     //changed EVENTCNT to connectionCnt
     if ((count = kevent(kq, &fdList[0], fdList.size(), store, connectionCnt, NULL)) <= 0)
         return ;
