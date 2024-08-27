@@ -298,12 +298,12 @@ void    Kq::mainLoop()
         }
         else
         {
-            // LOG(std::cout<<"store[i].ident: "<<store[i].ident<<std::endl);
+            LOG(std::cout<<"store[i].ident: "<<store[i].ident<<std::endl);
             if (store[i].flags == EV_ERROR)
                 clientFin(store[i]);  //client 종료
             else if (store[i].filter == EVFILT_READ)
             {
-                // LOG(std::cout<<"read"<<" "<<store[i].ident<<std::endl);
+                LOG(std::cout<<"read"<<std::endl);
                 eventRead(store[i]);
             }
             else if (store[i].filter == EVFILT_WRITE)

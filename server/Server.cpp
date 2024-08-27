@@ -110,8 +110,6 @@ EVENT Server::cgiRead(struct kevent& store)
         cgiContent[store.ident].clear();  //이부분은 말이 안됨 동시에 여러개를 처리할 가능성이 있음
         // cgiContentLength[store.ident] = 0;
         cgiContentLength.erase(store.ident);
-        if (readSize < 0)
-            return (ERROR);
         return (FINISH);
 	}
     // close(1);
