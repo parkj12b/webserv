@@ -7,6 +7,7 @@ function print_result($name, $age) {
     echo "<title>Form Response</title>\r\n";
     echo "</head>\r\n";
     echo "<body>\r\n";
+    print_r($_POST);
     echo "<h1>Form Submitted</h1>\r\n";
     echo "<p>Name: " . htmlspecialchars($name) . "</p>\r\n";
     echo "<p>Age: " . htmlspecialchars($age) . "</p>\r\n";
