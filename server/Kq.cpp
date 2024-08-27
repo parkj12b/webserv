@@ -143,7 +143,7 @@ void    Kq::plusClient(int serverFd)
     if (clientFd < 0)
         return ;
     LOG(std::cout<<"plus client "<<clientFd<<std::endl);
-    plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 75000, 0);  //75초
+    plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 75000, 0);  //75초 default값
     plusEvent(clientFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     findServer[clientFd] = serverFd;
 }
@@ -166,15 +166,13 @@ void    Kq::eventRead(struct kevent& store)
 	if (iter != cgiFd.end())
 	{
         // LOG(std::cout<<"cgi here\n");
-        if (cgiFd[store.ident] == 0)
-        {
-            return ;
-            // LOG(std::cout<<"cgi here\n");
-        }
+        LOG(std::cout<<"READ EVENT CGI"<<store.ident<<endl);
 		serverFd = findServer[cgiFd[store.ident]]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
+        {
+            // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
 			return ;
-        LOG(std::cout<<"It's Detected CGI\n");
+        }
 		event = server[serverFd].cgiRead(store);
 		switch (event)
 		{
@@ -187,17 +185,21 @@ void    Kq::eventRead(struct kevent& store)
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
 				close(iter->first);  //cgi에서 사용한 fd를 닫지 않음
-				cgiFd[iter->first] = 0;
                 cgiFd.erase(iter->first);
 				break ;
 		}
 	}
 	else
 	{
-        LOG(std::cout<<"read here\n");
+        LOG(std::cout<<"READ EVENT CLIENT"<<store.ident<<endl);
 		serverFd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
+        {
+            LOG(std::cout<<"good"<<std::endl);
+            // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+            // clientFin(store);
 			return ;
+        }
 		event = server[serverFd].clientRead(store);
 		switch (event)
 		{
@@ -268,17 +270,19 @@ void    Kq::eventTimer(struct kevent& store)
 
 void    Kq::mainLoop()
 {
-    std::vector<pid_t>  notFin;
+    // std::vector<pid_t>  notFin;
     struct kevent       store[connectionCnt];
     int                 count;
 
-    //waitpid
-    for (std::vector<pid_t>::iterator it = Kq::processor.begin(); it != Kq::processor.end(); it++)
+    //waitpid(complete) 복사 생성자를 없앰 다만 erase를 진행할 때의 오히려 비용이 조금 더 들 수도 있을 수도 있다. 
+    for (std::vector<pid_t>::iterator it = Kq::processor.begin(); it != Kq::processor.end();)
     {
-        if (waitpid(*it, NULL, WNOHANG) == 0)
-            notFin.push_back(*it);
+        if (waitpid(*it, NULL, WNOHANG) <= 0)
+            it++;
+        else
+            it = Kq::processor.erase(it);
     }
-    Kq::processor = notFin;
+    // Kq::processor = notFin;
     //changed EVENTCNT to connectionCnt
     if ((count = kevent(kq, &fdList[0], fdList.size(), store, connectionCnt, NULL)) <= 0)
         return ;
@@ -289,7 +293,7 @@ void    Kq::mainLoop()
         {
             if (store[i].flags == EV_ERROR)
                 serverError(store[i]);  //server에 연결된 모든 client 종료
-            else if (store[i].filter == EVFILT_READ) //read 발생시 client 추가
+            else if (store[i].filter == EVFILT_READ) //read event(complete)
                 plusClient(static_cast<int>(store[i].ident));
         }
         else
@@ -299,7 +303,7 @@ void    Kq::mainLoop()
                 clientFin(store[i]);  //client 종료
             else if (store[i].filter == EVFILT_READ)
             {
-                LOG(std::cout<<"read"<<std::endl);
+                // LOG(std::cout<<"read"<<" "<<store[i].ident<<std::endl);
                 eventRead(store[i]);
             }
             else if (store[i].filter == EVFILT_WRITE)

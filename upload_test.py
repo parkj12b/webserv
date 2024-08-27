@@ -5,7 +5,6 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 import cgi
 import cgitb
 import os
-import sys
 
 # Enable CGI error reporting
 cgitb.enable()
@@ -16,10 +15,9 @@ cgitb.enable()
 #__init__(self, fp=None, headers=None, outerboundary='', environ={'LESS': '-X -i -Psline %l/%L$ -Pmline %l/%L (%p)$', 'DPKG_ARC..., keep_blank_values=0, strict_parsing=0)
 #fd = 
 
-filename = os.environ['CONTENT_FILENAME']
-# filename = "/Users/devpark/Documents/mini/tempContent1"
-file = open(filename, 'r')
-form = cgi.FieldStorage(fp=file, environ=os.environ)
+# filename = os.environ['CONTENT_FILENAME']
+file = open("./tempContent1", 'r')
+form = cgi.FieldStorage(fp=file)
 
 # Define the directory where uploaded files will be stored
 upload_dir = './'
@@ -59,7 +57,6 @@ def process_file(file_item):
 
 def main():
     print("Content-Type: text/html\r\n")
-    print("status: 200\r\n")
     handle_file_uploads()
     
 

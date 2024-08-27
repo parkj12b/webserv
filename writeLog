@@ -1,92 +1,72 @@
 HTTP/1.1 403 Forbidden Date: Tue, 27 Aug 2024 13:19:57 GMT Server: inghwang/0.0
 connection: keep-alive session: Tue, 27 Aug 2024 13:19:57 GMT content-type:
 text/html content-length: 624
+HTTP/1.1 200 OK
+Date: Tue, 27 Aug 2024 15:59:57 GMT
+Server: inghwang/0.0
+connection: keep-alive
+session: Tue, 27 Aug 2024 15:59:57 GMT
+Content-Type: text/html
+content-length: 420
 
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <title>Error Page</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                margin: 20px;
-            }
-            .container {
-                max-width: 800px;
-                margin: auto;
-            }
-            h1 {
-                color: #d9534f;
-            }
-            p {
-                font-size: 18px;
-            }
-            .error-code {
-                font-size: 24px;
-                font-weight: bold;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>Error Page</h1>
-            <p>We're sorry, but something went wrong.</p>
-            <p>Error code: 403</p>
-            <p class="error-code">403 Forbidden</p>
-            <p>Time of error: 2024-08-27 13:19:57</p>
-            <div>
-                <img
-                    src="https://http.cat/403"
-                    alt="HTTPCats error img"
-                    width="100%" />
-            </div>
-        </div>
-    </body>
+<html lang='en'>
+<head>
+<meta charset='UTF-8'>
+<title>Error Page</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; }
+.container { max-width: 800px; margin: auto; }
+h1 { color: #d9534f; }
+p { font-size: 18px; }
+.error-code { font-size: 24px; font-weight: bold; }
+</style>
+</head>
+<body>
+<div class='container'>
+<h1>Error Page</h1>
+<p>We're sorry, but something went wrong.</p>
+<p>Error code: 403</p>
+<p class='error-code'>403 Forbidden</p>
+<p>Time of error: 2024-08-27 11:14:55</p>
+<div>
+<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
+</div>
+</div>
+</body>
 </html>
-HTTP/1.1 403 Forbidden Date: Tue, 27 Aug 2024 13:19:57 GMT Server: inghwang/0.0
-connection: keep-alive session: Tue, 27 Aug 2024 13:19:57 GMT content-type:
-text/html content-length: 624
+HTTP/1.1 403 Forbidden
+Date: Tue, 27 Aug 2024 11:14:56 GMT
+Server: inghwang/0.0
+connection: keep-alive
+session: Tue, 27 Aug 2024 11:14:55 GMT
+content-type:  text/html
+content-length: 624
+
 
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <title>Error Page</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                margin: 20px;
-            }
-            .container {
-                max-width: 800px;
-                margin: auto;
-            }
-            h1 {
-                color: #d9534f;
-            }
-            p {
-                font-size: 18px;
-            }
-            .error-code {
-                font-size: 24px;
-                font-weight: bold;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>Error Page</h1>
-            <p>We're sorry, but something went wrong.</p>
-            <p>Error code: 403</p>
-            <p class="error-code">403 Forbidden</p>
-            <p>Time of error: 2024-08-27 13:19:58</p>
-            <div>
-                <img
-                    src="https://http.cat/403"
-                    alt="HTTPCats error img"
-                    width="100%" />
-            </div>
-        </div>
-    </body>
+<html lang='en'>
+<head>
+<meta charset='UTF-8'>
+<title>Error Page</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; }
+.container { max-width: 800px; margin: auto; }
+h1 { color: #d9534f; }
+p { font-size: 18px; }
+.error-code { font-size: 24px; font-weight: bold; }
+</style>
+</head>
+<body>
+<div class='container'>
+<h1>Error Page</h1>
+<p>We're sorry, but something went wrong.</p>
+<p>Error code: 403</p>
+<p class='error-code'>403 Forbidden</p>
+<p>Time of error: 2024-08-27 11:14:56</p>
+<div>
+<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
+</div>
+</div>
+</body>
 </html>

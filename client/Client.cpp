@@ -199,15 +199,15 @@ void    Client::setRequestFin(bool fin)
     request.fin = fin;
 }
 
-void	Client::setCgiResponseEntity(size_t cgiContentLength, string content)
+void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content)
 {
 	size_t  pos;
 
     std::cout<<"cgiContentLength: "<<cgiContentLength<<std::endl;
-    pos = response.setContent(content);
+    pos = response.setCgiContent(content);
     std::cout<<"cgi pos: "<<pos<<std::endl;
     if (cgiContentLength - pos > 0)
-        response.setContentLength(cgiContentLength - pos);
+        response.setCgiContentLength(cgiContentLength - pos);
     responseAmount = response.getStartHeaderLength() + cgiContentLength - pos;
     index = 0;
     std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl<<endl;
@@ -226,7 +226,7 @@ void    Client::deleteContent(void)
     if (file.is_open())
     {
         file.close();
-        // unlink(request.contentFileName.c_str());
+        unlink(request.contentFileName.c_str());
     }
 }
 
@@ -370,21 +370,10 @@ int Client::setHeader()
 
 int Client::setContent()
 {
-    static bool flag = true;
-
     if (!headerLine.getCompletion() || contentLine.getCompletion() || request.fin || request.status)
         return (0);
     LOG(std::cout<<"...setBodyLine parsing...\n");
-    if (flag)
-    {
-        if (!contentLine.tempFileMake(fd))
-        {
-            request.status = 500;
-            return (2);
-        }
-        flag = false;
-    }
-    if (contentLine.makeContentLine(msg, msgSize, request.status) < 0)
+    if (contentLine.makeContentLine(msg, msgSize, request.status, fd) < 0)
         return (1);
     if (contentLine.getCompletion())
     {

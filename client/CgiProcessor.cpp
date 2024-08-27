@@ -125,10 +125,16 @@ void	CgiProcessor::checkPostContentType()
     LOG(cout<<"content-type: "<<request.header["content-type"].front()<<endl);
 	if (request.header.find("content-type") == request.header.end()
 		|| request.header.find("content-length") == request.header.end()
-		|| atol(request.header["content-length"].front().c_str()) <= 0
-		|| atol(request.header["content-length"].front().c_str()) > locationConfig->getClientMaxBodySize())
+		|| atol(request.header["content-length"].front().c_str()) <= 0)
 	{
 		request.status = 400;
+		return ;
+	}
+	if (atol(request.header["content-length"].front().c_str()) > locationConfig->getClientMaxBodySize())
+	{
+		LOG(cout << "location path : " << locationConfig->getPath() << endl);
+		LOG(cout << "client_max_body_size : " << locationConfig->getClientMaxBodySize() << endl);
+		request.status = 413;
 		return ;
 	}
 	if (!request.header["content-type"].front().compare("application/x-www-form-urlencoded")
