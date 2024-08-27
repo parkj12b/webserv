@@ -396,10 +396,10 @@ int HeaderLine::headerError()
     {
         LOG(cout << "cotnent-type" << endl);
         typeStr = header["content-type"].front();
-        header["content-type"].pop_front();
         pos = typeStr.find(";");
         if (pos != std::string::npos)
         {
+            header["content-type"].pop_front();
             LOG(cout << "cotnent-type: " << typeStr.substr(0, pos) << endl);
             header["content-type"].push_back(typeStr.substr(0, pos));
             pos = typeStr.find("boundary=");

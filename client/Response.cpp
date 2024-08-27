@@ -305,33 +305,58 @@ void    Response::setLocationConfigData(LocationConfigData *locationConfigData)
     locationConfig = locationConfigData;
 }
 
-size_t  Response::setContent(string content_)
+size_t  Response::setCgiHeader(string &content_, string headerKey)
 {
-    size_t      crlfPos;
-    size_t      contentPos;
-    std::string contentType;
+    size_t  crlfPos;
+    size_t  headerPos;
+    string  headerName;
 
     crlfPos = content_.find("\r\n");
-    if (crlfPos != std::string::npos)
+    if (crlfPos != string::npos)
     {
-        contentType = content_.substr(0, crlfPos);
-        content = content_.substr(crlfPos + 2);
-        contentPos = contentType.find(":");
-        if (contentPos != std::string::npos)
-            makeHeader("content-type", contentType.substr(contentPos + 1));
+        headerName = content_.substr(0, crlfPos);
+        content_ = content_.substr(crlfPos + 2);
+        headerPos = headerName.find(":");
+        if (headerPos != string::npos)
+            makeHeader(headerKey, headerName.substr(headerPos + 1));
     }
-    else
-    {
-        content = content_;
-        return (0);
-    }
-    // LOG(std::cout<< "request.status: "<<request.status<<std::endl);
-    // LOG(std::cout<<entity<<std::endl<<std::endl);
-    // LOG(std::cout<<"================"<<std::endl);
     return (crlfPos + 2);
 }
 
-void	Response::setContentLength(size_t contentLength_)
+size_t  Response::setCgiContent(string &content_)
+{
+    size_t  pos;
+
+    pos = 0;
+    pos += setCgiHeader(content_, "content-type");
+    pos += setCgiHeader(content_, "status");
+    content = content_;
+    return (pos);
+    // size_t      crlfPos;
+    // size_t      contentPos;
+    // std::string contentType;
+
+    // crlfPos = content_.find("\r\n");
+    // if (crlfPos != std::string::npos)
+    // {
+    //     contentType = content_.substr(0, crlfPos);
+    //     content = content_.substr(crlfPos + 2);
+    //     contentPos = contentType.find(":");
+    //     if (contentPos != std::string::npos)
+    //         makeHeader("content-type", contentType.substr(contentPos + 1));
+    // }
+    // else
+    // {
+    //     content = content_;
+    //     return (0);
+    // }
+    // // LOG(std::cout<< "request.status: "<<request.status<<std::endl);
+    // // LOG(std::cout<<entity<<std::endl<<std::endl);
+    // // LOG(std::cout<<"================"<<std::endl);
+    // return (crlfPos + 2);
+}
+
+void	Response::setCgiContentLength(size_t contentLength_)
 {
     contentLength = contentLength_;
     makeHeader("content-length", toString(contentLength));

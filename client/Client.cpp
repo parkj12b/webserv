@@ -6,7 +6,7 @@
 /*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/27 11:28:43 by devpark          ###   ########.fr       */
+/*   Updated: 2024/08/27 18:53:09 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,14 +199,15 @@ void    Client::setRequestFin(bool fin)
     request.fin = fin;
 }
 
-void	Client::setCgiResponseEntity(size_t cgiContentLength, string content)
+void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content)
 {
 	size_t  pos;
 
     std::cout<<"cgiContentLength: "<<cgiContentLength<<std::endl;
     pos = response.setContent(content);
-    std::cout<<"pos: "<<pos<<std::endl;
-    response.setContentLength(cgiContentLength - pos);
+    std::cout<<"cgi pos: "<<pos<<std::endl;
+    if (cgiContentLength - pos > 0)
+        response.setContentLength(cgiContentLength - pos);
     responseAmount = response.getStartHeaderLength() + cgiContentLength - pos;
     index = 0;
     std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl<<endl;
@@ -373,21 +374,10 @@ int Client::setHeader()
 
 int Client::setContent()
 {
-    static bool flag = true;
-
     if (!headerLine.getCompletion() || contentLine.getCompletion() || request.fin || request.status)
         return (0);
     LOG(std::cout<<"...setBodyLine parsing...\n");
-    if (flag)
-    {
-        if (!contentLine.tempFileMake(fd))
-        {
-            request.status = 500;
-            return (2);
-        }
-        flag = false;
-    }
-    if (contentLine.makeContentLine(msg, msgSize, request.status) < 0)
+    if (contentLine.makeContentLine(msg, msgSize, request.status, fd) < 0)
         return (1);
     if (contentLine.getCompletion())
     {

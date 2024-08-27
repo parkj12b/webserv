@@ -32,6 +32,7 @@
 class ContentLine
 {
     private:
+        bool                        first;
         bool                        completion;
         CONTENTTYPE                 contentType;
         int                         fd;
@@ -50,6 +51,7 @@ class ContentLine
         ContentLine(int port);
         ContentLine& operator=(const ContentLine& src);
         //get function
+        bool                        getFirst() const;
         bool                        getCompletion() const;
         CONTENTTYPE                 getContentType() const;
         int                         getFd() const;
@@ -64,7 +66,7 @@ class ContentLine
         bool    tempFileMake(int &num); //temp file make
         void    initContentLine(int initLength, CONTENTTYPE initType);  //init
         int     chunkedEntity();                    //chunked message parsing
-        int     makeContentLine(std::string &str, size_t &readSize, int &status);  //contentLine make
+        int     makeContentLine(std::string &str, size_t &readSize, int &status, int &fd_);  //contentLine make
 };
 
 #endif
