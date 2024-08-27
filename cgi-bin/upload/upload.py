@@ -59,6 +59,7 @@ def process_file(file_item):
 
 def main():
     print("Content-Type: text/html\r\n")
+    print("status: 200\r\n")
     handle_file_uploads()
     
 
