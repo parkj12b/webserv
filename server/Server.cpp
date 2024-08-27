@@ -110,8 +110,6 @@ EVENT Server::cgiRead(struct kevent& store)
         cgiContent[store.ident].clear();  //이부분은 말이 안됨 동시에 여러개를 처리할 가능성이 있음
         // cgiContentLength[store.ident] = 0;
         cgiContentLength.erase(store.ident);
-        if (readSize < 0)
-            return (ERROR);
         return (FINISH);
 	}
     // close(1);
@@ -147,8 +145,8 @@ EVENT Server::clientRead(struct kevent& store)
     //eof신호를 못 받게 됨
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
-    if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 100)
-        return (ING);
+    // if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 100)
+    //     return (ING);
     readSize = read(store.ident, buffer, BUFFER_SIZE);
     if (readSize <= 0) // read가 발생했는데 읽은게 없다면 에러
     {
@@ -156,9 +154,9 @@ EVENT Server::clientRead(struct kevent& store)
         client[store.ident].deleteContent();
         return (ERROR);
     }
-    LOG(std::cout<<"Client Read" << " " << readSize << std::endl);
-    write(logs, buffer, readSize);
+    LOG(std::cout<<"Client Read " << readSize << std::endl);
     buffer[readSize] = '\0';
+    write(logs, buffer, readSize);
     client[store.ident].setMessage(buffer, readSize);
     client[store.ident].setConnection(true);
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)

@@ -203,14 +203,14 @@ void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content)
 {
 	size_t  pos;
 
-    std::cout<<"cgiContentLength: "<<cgiContentLength<<std::endl;
+    LOG(std::cout<<"cgiContentLength: "<<cgiContentLength<<std::endl);
     pos = response.setCgiContent(content);
-    std::cout<<"cgi pos: "<<pos<<std::endl;
+    LOG(std::cout<<"cgi pos: "<<pos<<std::endl);
     if (cgiContentLength - pos > 0)
         response.setCgiContentLength(cgiContentLength - pos);
     responseAmount = response.getStartHeaderLength() + cgiContentLength - pos;
     index = 0;
-    std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl<<endl;
+    LOG(std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl);
     msg = response.getEntity();
 }
 
@@ -226,7 +226,7 @@ void    Client::deleteContent(void)
     if (file.is_open())
     {
         file.close();
-        // unlink(request.contentFileName.c_str());
+        unlink(request.contentFileName.c_str());
     }
 }
 
@@ -301,6 +301,7 @@ int Client::setHeader()
                 request.header = headerLine.getHeader();
                 msg = msg.substr(flag + 2);
                 //keep-alive
+                standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
                 LOG(cout << "response in location: " << &response << endl);
                 if (setMatchingLocation(request.url))
                 {
@@ -318,11 +319,6 @@ int Client::setHeader()
                     return (2);
                 }
                 request.header = headerLine.getHeader();
-                if (request.header.find("content-type") != request.header.end())
-                {
-                    LOG(cout<<"content-type: "<<request.header["content-type"].front()<<endl);
-                }
-                standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
                 contentLine.initContentLine(headerLine.getContentLength(), headerLine.getContentType());
                 connect = headerLine.getConnect();
                 break ;
@@ -441,13 +437,16 @@ void    Client::resetClient()
     request.fin = false;
     request.status = 0;
     connect = true;
+    msgSize = 0;
     index = 0;
+    responseAmount = 0;
+    standardTime = 7500;
     msg.clear();
     // 여기서 뭔가 ServerConfigData, LocationConfigData를 초기화해주는 기분이 듦
-    response = Response(port, pathEnv);
     startLine = StartLine(port);
     headerLine = HeaderLine(port);
     contentLine = ContentLine(port);
+    response = Response(port, pathEnv);
 }
 
 void    Client::setMessage(const char* msgRequest, int &readSize)

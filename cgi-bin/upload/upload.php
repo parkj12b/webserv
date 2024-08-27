@@ -16,6 +16,9 @@ if ($file_content === false) {
     exit(1);
 }
 
+$content_filename = getenv("CONTENT_FILENAME");
+$file_content = file_get_contents($content_filename);
+
 
 $_FILES['files'] = [
     'name' => getenv("CONTENT_FILENAME"),
@@ -30,6 +33,7 @@ $_FILES['files'] = [
 print_r($_FILES);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     // Check if a file has been uploaded
     if (isset($_FILES['files'])) {
         // Loop through the uploaded files

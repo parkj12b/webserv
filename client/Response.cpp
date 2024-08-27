@@ -379,16 +379,16 @@ void    Response::initRequest(Request msg)
     // LOG(cout<<request.version<<endl);
 }
 
-int Response::init()
+bool    Response::init()
 {
     LOG(cout << "port: " << port << endl);
     cgiFlag = false;
-    if (request.status != 0)
-        return (0);
     start.clear();
     header.clear();
     content.clear();
     entity.clear();
+    if (request.status != 0)
+        return (false);
     string host = request.header["host"].front();
     LOG(cout << "host : " << host << endl);
 	cgiFlag = false;
@@ -402,11 +402,9 @@ int Response::init()
         serverConfig = Server::serverConfig->getDefaultServer(port);
         if (serverConfig == NULL)
             request.status = 400;
-        makeError();
-        makeEntity();
-        return (1);
+        return (true);
     }
-    return (0);
+    return (false);
 }
 
 int Response::getDefaultErrorPage(int statusCode)
@@ -428,20 +426,22 @@ int Response::getDefaultErrorPage(int statusCode)
 
 void    Response::makeCookie(string& date)
 {
-    const string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    const size_t charactersSize = characters.size();
-    string result;
-    size_t      index;
-    string value;
-    string cookieValue;
+    const string    characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const size_t    charactersSize = characters.size();
+    string          result;
+    size_t          index;
+    string          value;
+    string          cookieValue;
 
     if (request.header["cookie"].empty())
     {
-        for (size_t i = 0; i < 12; ++i)
-        {
-            index = rand() % charactersSize;
-            result += characters[index];
-        }
+        do {
+            for (size_t i = 0; i < 12; ++i)
+            {
+                index = rand() % charactersSize;
+                result += characters[index];
+            }
+        } while (session.find(cookieValue) != session.end());
         session[result] = date;
         value = "session_id=" + result + "; Max-Age=3600";  //1시간
         // value = "session_id=" + result + "; Max-Age=60";  //1분
@@ -470,18 +470,16 @@ void    Response::makeDefaultHeader()
 {
     time_t              now;
     char*               dt;
-
-    now = time(0);
-    dt = ctime(&now);
     std::string         date;
-    std::string         str(dt);
-    std::ostringstream  oss(str);
-    std::istringstream  strStream(str);
+    int                 order;
     std::string         temp;
     std::string         day[5];
     size_t              pos;
-    int                 order;
 
+    now = time(0);
+    dt = ctime(&now);
+    std::string         str(dt);
+    std::istringstream  strStream(str);
     order = 0;
     while (getline(strStream, temp, ' '))
     {
@@ -490,8 +488,8 @@ void    Response::makeDefaultHeader()
         day[order++] = temp;
     }
     date = day[0] + ", " + day[2] + " " + day[1] + " " + day[4] + " " + day[3] + " GMT";
-    makeHeader("Date", date);
-    makeHeader("Server", "inghwang/0.0");
+    makeHeader("date", date);
+    makeHeader("server", "inghwang/0.0");
     makeHeader("connection", "keep-alive");
     makeCookie(date);
 }
@@ -719,14 +717,12 @@ void    Response::makeDelete()
 
 void    Response::responseMake()
 {
-    if (request.status > 0)
+    if (request.status > 0 || init())
     {
         makeError();
         makeEntity();
         return ;
     }
-    if (init())
-        return ;
     // LOG(cout << "request.status: " << request.status << endl);
     makeDefaultHeader();
     if (checkAllowedMethod())
