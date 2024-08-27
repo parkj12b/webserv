@@ -199,7 +199,7 @@ void    Client::setRequestFin(bool fin)
     request.fin = fin;
 }
 
-void	Client::setCgiResponseEntity(size_t cgiContentLength, string content)
+void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content)
 {
 	size_t  pos;
 

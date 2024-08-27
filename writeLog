@@ -1,70 +1,49 @@
-HTTP/1.1 403 Forbidden
-Date: Tue, 27 Aug 2024 11:14:55 GMT
+HTTP/1.1 200 OK
+Date: Tue, 27 Aug 2024 12:57:35 GMT
 Server: inghwang/0.0
 connection: keep-alive
-session: Tue, 27 Aug 2024 11:14:55 GMT
-content-type:  text/html
-content-length: 624
-
+Set-Cookie: session_id=FZXC0wg0LvaJ; Max-Age=3600
+Content-Type: text/html
+content-length: 420
 
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 <head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
 </head>
 <body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-27 11:14:55</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
+    <h1>Upload Files</h1>
+    <form action="/upload/" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" id="file" multiple>
+        <button type="submit">Upload</button>
+    </form>
 </body>
 </html>
-HTTP/1.1 403 Forbidden
-Date: Tue, 27 Aug 2024 11:14:56 GMT
+HTTP/1.1 200 OK
+Date: Tue, 27 Aug 2024 12:57:37 GMT
 Server: inghwang/0.0
 connection: keep-alive
-session: Tue, 27 Aug 2024 11:14:55 GMT
-content-type:  text/html
-content-length: 624
-
+session: Tue, 27 Aug 2024 12:57:35 GMT
+Content-Type: text/html
+content-length: 565
 
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 <head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGI Script POST Form</title>
 </head>
 <body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-27 11:14:56</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
+    <h1>CGI Script Query Form</h1>
+    <form action="./cgi-bin/post_script.php" method="POST">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name"><br><br>
+        <label for="age">Age:</label><br>
+        <input type="text" id="age" name="age"><br><br>
+        <input type="submit" value="Submit">
+    </form>
 </body>
 </html>
