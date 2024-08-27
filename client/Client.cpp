@@ -370,21 +370,10 @@ int Client::setHeader()
 
 int Client::setContent()
 {
-    static bool flag = true;
-
     if (!headerLine.getCompletion() || contentLine.getCompletion() || request.fin || request.status)
         return (0);
     LOG(std::cout<<"...setBodyLine parsing...\n");
-    if (flag)
-    {
-        if (!contentLine.tempFileMake(fd))
-        {
-            request.status = 500;
-            return (2);
-        }
-        flag = false;
-    }
-    if (contentLine.makeContentLine(msg, msgSize, request.status) < 0)
+    if (contentLine.makeContentLine(msg, msgSize, request.status, fd) < 0)
         return (1);
     if (contentLine.getCompletion())
     {
