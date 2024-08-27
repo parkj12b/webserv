@@ -23,10 +23,10 @@ HTTPServer *Server::serverConfig = NULL;
 Server::Server() : serverFd(0), port(0)
 {}
 
-Server::Server(int fd, int num) : serverFd(fd), port(num), cgiContentLength(0)
+Server::Server(int fd, int num) : serverFd(fd), port(num)
 {}
 
-Server::Server(const Server& src) : serverFd(src.getServerFd()), port(src.getPort()), cgiContentLength(src.getCgiContentLength()), client(src.getClient())
+Server::Server(const Server& src) : serverFd(src.getServerFd()), port(src.getPort()), cgiContentLength(src.cgiContentLength), client(src.getClient())
 {}
 
 Server&  Server::operator=(const Server& src)
@@ -51,7 +51,7 @@ int Server::getPort(void) const
     return (port);
 }
 
-size_t  Server::getCgiContentLength(void) const
+std::map<int, size_t>   Server::getCgiContentLength(void) const
 {
     return (cgiContentLength);
 }
@@ -97,6 +97,9 @@ EVENT Server::cgiRead(struct kevent& store)
 	int         readSize;
 
 	LOG(cout << "cgiRead fd: " << store.ident << endl);
+    //초기 세팅
+    if (cgiContentLength.find(store.ident) == cgiContentLength.end())
+        cgiContentLength[store.ident] = 0;
 	readSize = read(store.ident, buf, BUFFER_SIZE);
 	LOG(cout << "CGI Read Size : " << readSize << endl);
 	if (readSize <= 0)
@@ -105,15 +108,16 @@ EVENT Server::cgiRead(struct kevent& store)
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident]);
         LOG(cout << Kq::cgiFd[store.ident] << endl);
         cgiContent[store.ident].clear();  //이부분은 말이 안됨 동시에 여러개를 처리할 가능성이 있음
-        cgiContentLength[store.ident] = 0;
+        // cgiContentLength[store.ident] = 0;
+        cgiContentLength.erase(store.ident);
         if (readSize < 0)
             return (ERROR);
         return (FINISH);
 	}
     // close(1);
     buf[readSize] = '\0';
-    cgiContent[store.ident].append(string(buf));
-    LOG(std::cout<<"cgiContent: "<<cgiContent<<std::endl);
+    cgiContent[store.ident].append(buf, readSize);  //인자값으로 const char이 가능함
+    LOG(std::cout<<"cgiContent: "<<cgiContent[store.ident]<<std::endl);
     // LOG(std::cout<<cgiContent<<std::endl);
     // LOG(std::cout<<cgiContentLength<<std::endl);
     cgiContentLength[store.ident] += readSize;

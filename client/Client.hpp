@@ -92,7 +92,7 @@ class Client
         void    setFd(uintptr_t fd);
         void    setRequestStatus(int temp);
         void    setRequestFin(bool fin);
-		void	setCgiResponseEntity(size_t cgiContentLength, string content);
+		void	setCgiResponseEntity(size_t &cgiContentLength, string &content);
         //logic
         bool        getResponseCgi();
         void        deleteContent();
