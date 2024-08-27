@@ -16,31 +16,47 @@ if ($file_content === false) {
     exit(1);
 }
 
-print_r($_POST);
-print_r($_SERVER);
+
+$_FILES['files'] = [
+    'name' => getenv("CONTENT_FILENAME"),
+    'type' => getenv("CONTENT_TYPE"),
+    'tmp_name' => $file_content,
+    'error' => UPLOAD_ERR_OK,
+    'size' => getenv("CONTENT_LENGTH"),
+];
+
+// print_r($_POST);
+// print_r($_SERVER);
 print_r($_FILES);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if a file has been uploaded
-    if (isset($_FILES['file'])) {
-        $file = $_FILES['file'];
+    if (isset($_FILES['files'])) {
+        // Loop through the uploaded files
+        $fileCount = count($_FILES['files']['name']);
+        
+        for ($i = 0; $i < $fileCount; $i++) {
+            // Temporary file path
+            $tmpFile = $_FILES['files']['tmp_name'][$i];
+            // Original file name
+            $fileName = $_FILES['files']['name'][$i];
+            // Path where the file will be saved
+            $uploadFile = $uploadDir . basename($fileName);
 
-        // Check for upload errors
-        if ($file['error'] === UPLOAD_ERR_OK) {
-            // Move the file to the desired directory
-            $uploadDir = './uploads';
-            $uploadFile = $uploadDir . basename($file['name']);
-
-            if (move_uploaded_file($file['tmp_name'], $uploadFile)) {
-                echo "File successfully uploaded.";
+            // Check if the file was uploaded without errors
+            if ($_FILES['files']['error'][$i] === UPLOAD_ERR_OK) {
+                // Move the file from temporary location to the destination
+                if (move_uploaded_file($tmpFile, $uploadFile)) {
+                    echo "File successfully uploaded: $fileName<br>";
+                } else {
+                    echo "Failed to move uploaded file: $fileName<br>";
+                }
             } else {
-                echo "Failed to move uploaded file.";
+                echo "Error uploading file: $fileName<br>";
             }
-        } else {
-            echo "File upload error: " . $file['error'];
         }
     } else {
-        echo "No file uploaded.";
+        echo "No files were uploaded.";
     }
 } else {
     echo "Invalid request method.";

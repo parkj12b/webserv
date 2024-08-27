@@ -116,7 +116,7 @@ void	CgiProcessor::selectCgiCmd(string url)
 		if (cgiFilePos != string::npos)
 			break ;
 	}
-	cgiCommand = (!cgiExtension.compare(".py")) ? "python3" : "php";
+	cgiCommand = (!cgiExtension.compare(".py")) ? "python3" : "php-cgi";
 	scriptFile = url.substr(0, cgiFilePos + cgiExtension.size());
 }
 

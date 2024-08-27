@@ -1,8 +1,8 @@
 HTTP/1.1 200 OK
-Date: Tue, 27 Aug 2024 18:06:12 GMT
+Date: Tue, 27 Aug 2024 21:25:17 GMT
 Server: inghwang/0.0
 connection: keep-alive
-session: Tue, 27 Aug 2024 18:06:12 GMT
+Set-Cookie: session_id=FZXC0wg0LvaJ; Max-Age=3600
 Content-Type: text/html
 content-length: 684
 
@@ -28,47 +28,3 @@ content-length: 684
     </form>
 </body>
 </html>
-HTTP/1.1 200 OK
-Date: Tue, 27 Aug 2024 18:06:16 GMT
-Server: inghwang/0.0
-connection: keep-alive
-session: Tue, 27 Aug 2024 18:06:12 GMT
-content-type:  text/html
-status:  200
-content-length: 1055
-
-Array
-(
-)
-Array
-(
-    [CONTENT_FILENAME] => ./.tempContent/28
-    [CONTENT_LENGTH] => 10314
-    [CONTENT_TYPE] => multipart/form-data; boundary=----WebKitFormBoundaryqB8G2AqayzqgTTHd
-    [PATH_INFO] => /Users/minsepar/webserv/cgi-bin//upload/upload.php
-    [QUERY_STRING] => 
-    [REDIRECT_STATUS] => false
-    [REMOTE_ADDR] => 127.0.0.1
-    [REQUEST_METHOD] => POST
-    [SCRIPT_FILENAME] => /Users/minsepar/webserv/cgi-bin//upload/upload.php
-    [SCRIPT_NAME] => /Users/minsepar/webserv/cgi-bin//upload/upload.php
-    [SERVER_NAME] => localhost
-    [SERVER_PORT] => 80
-    [SERVER_PROTOCOL] => HTTP/1.1
-    [__CF_USER_TEXT_ENCODING] => 0x1A0A3:0x0:0x0
-    [PHP_SELF] => /Users/minsepar/webserv/cgi-bin//upload/upload.php
-    [PATH_TRANSLATED] => /Users/minsepar/webserv/cgi-bin//upload/upload.php
-    [DOCUMENT_ROOT] => 
-    [REQUEST_TIME_FLOAT] => 1724749576.3247
-    [REQUEST_TIME] => 1724749576
-    [argv] => Array
-        (
-            [0] => /Users/minsepar/webserv/cgi-bin//upload/upload.php
-        )
-
-    [argc] => 1
-)
-Array
-(
-)
-No file uploaded.
