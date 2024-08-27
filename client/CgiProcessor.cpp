@@ -90,7 +90,6 @@ void	CgiProcessor::setStartHeaderEnv()
 		}
 		else
 			insertEnv("CONTENT_TYPE", request.header["content-type"].front());
-		LOG(cout << "content_type : " << request.header["content-type"][0] + request.header["content-type"][1] << endl);
 	}
 	if (request.header.find("authorization") != request.header.end()
 		&& request.header["authorization"].size())
