@@ -1,49 +1,36 @@
 HTTP/1.1 200 OK
-Date: Tue, 27 Aug 2024 12:57:35 GMT
+Date: Tue, 27 Aug 2024 13:08:59 GMT
 Server: inghwang/0.0
 connection: keep-alive
-Set-Cookie: session_id=FZXC0wg0LvaJ; Max-Age=3600
-Content-Type: text/html
-content-length: 420
+session: Tue, 27 Aug 2024 13:08:59 GMT
+content-length: 581
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload</title>
-</head>
-<body>
-    <h1>Upload Files</h1>
-    <form action="/upload/" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" id="file" multiple>
-        <button type="submit">Upload</button>
-    </form>
-</body>
-</html>
+<!--: spam
+Content-Type: text/html
+
+<body bgcolor="#f0f0f8"><font color="#f0f0f8" size="-5"> -->
+<body bgcolor="#f0f0f8"><font color="#f0f0f8" size="-5"> --> -->
+</font> </font> </font> </script> </object> </blockquote> </pre>
+</table> </table> </table> </table> </table> </font> </font> </font><pre>Traceback (most recent call last):
+  File "/Users/inghwang/Documents/42seoul/together/cgi-bin//upload//upload.py", line 21, in &lt;module&gt;
+    file = open(filename, 'r')
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/devpark/Documents/mini/tempContent1'
+</pre>
 HTTP/1.1 200 OK
-Date: Tue, 27 Aug 2024 12:57:37 GMT
+Date: Tue, 27 Aug 2024 13:09:05 GMT
 Server: inghwang/0.0
 connection: keep-alive
-session: Tue, 27 Aug 2024 12:57:35 GMT
-Content-Type: text/html
-content-length: 565
+session: Tue, 27 Aug 2024 13:08:59 GMT
+content-length: 581
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CGI Script POST Form</title>
-</head>
-<body>
-    <h1>CGI Script Query Form</h1>
-    <form action="./cgi-bin/post_script.php" method="POST">
-        <label for="name">Name:</label><br>
-        <input type="text" id="name" name="name"><br><br>
-        <label for="age">Age:</label><br>
-        <input type="text" id="age" name="age"><br><br>
-        <input type="submit" value="Submit">
-    </form>
-</body>
-</html>
+<!--: spam
+Content-Type: text/html
+
+<body bgcolor="#f0f0f8"><font color="#f0f0f8" size="-5"> -->
+<body bgcolor="#f0f0f8"><font color="#f0f0f8" size="-5"> --> -->
+</font> </font> </font> </script> </object> </blockquote> </pre>
+</table> </table> </table> </table> </table> </font> </font> </font><pre>Traceback (most recent call last):
+  File "/Users/inghwang/Documents/42seoul/together/cgi-bin//upload//upload.py", line 21, in &lt;module&gt;
+    file = open(filename, 'r')
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/devpark/Documents/mini/tempContent1'
+</pre>
