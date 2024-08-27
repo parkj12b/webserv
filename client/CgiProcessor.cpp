@@ -116,7 +116,7 @@ void	CgiProcessor::selectCgiCmd(string url)
 		if (cgiFilePos != string::npos)
 			break ;
 	}
-	cgiCommand = (!cgiExtension.compare(".py")) ? "python3" : "php";
+	cgiCommand = (!cgiExtension.compare(".py")) ? "python3" : "php-cgi";
 	scriptFile = url.substr(0, cgiFilePos + cgiExtension.size());
 }
 
@@ -243,6 +243,8 @@ void	CgiProcessor::executeCGIScript(const string path)
 			strcpy(envp[idx++], env.c_str());
 		}
 		envp[metaVariables.size()] = 0;
+		int fd = open(request.contentFileName.c_str(), O_RDONLY, 0644);
+		dup2(fd, STDIN_FILENO);
 		if (execve(&cgiCommand[0], argv, envp) == -1)
 		{
 			request.status = 500;
