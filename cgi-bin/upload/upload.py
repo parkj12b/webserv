@@ -22,7 +22,7 @@ file = open(filename, 'r')
 form = cgi.FieldStorage(fp=file, environ=os.environ)
 
 # Define the directory where uploaded files will be stored
-upload_dir = './'
+upload_dir = './uploads'
 
 # Function to handle file uploads
 def handle_file_uploads():
@@ -58,13 +58,18 @@ def process_file(file_item):
         print(f"<p>File '{filename}' uploaded successfully!</p>")
 
 def main():
-    print("Content-Type: text/html\r\n")
+    print("Content-Type: text/html\r\n") 
     print("status: 200\r\n")
+    print("<html>")
+    print("<head>")
+    print("<title>File Upload</title>")
+    print("<meta charset=\"utf-8\">")
+    print("</head>")
+    print("</html>")
+    
     handle_file_uploads()
     
 
 if __name__ == "__main__":
     main()
 
-# Handle file uploads
-handle_file_uploads()

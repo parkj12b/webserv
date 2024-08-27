@@ -99,6 +99,8 @@ void	CgiProcessor::setStartHeaderEnv()
 			insertEnv("REMOTE_USER", request.header["authorization"][1]);
 	}
 	insertEnv("REMOTE_ADDR", request.clientIp);
+	insertEnv("REDIRECT_STATUS", "false");
+	insertEnv("SCRIPT_FILENAME", scriptFile);
 }
 
 void	CgiProcessor::selectCgiCmd(string url)

@@ -1,13 +1,13 @@
 <?php
 // HTML 응답 생성 함수
 function print_result($name, $age) {
-    echo "content-type: text/html\r\n";
     echo "status: 200\r\n";
     echo "<html>\r\n";
     echo "<head>\r\n";
     echo "<title>Form Response</title>\r\n";
     echo "</head>\r\n";
     echo "<body>\r\n";
+    print_r($_POST);
     echo "<h1>Form Submitted</h1>\r\n";
     echo "<p>Name: " . htmlspecialchars($name) . "</p>\r\n";
     echo "<p>Age: " . htmlspecialchars($age) . "</p>\r\n";
@@ -44,6 +44,8 @@ function process_x_www_form_urlencoded_content() {
 function main() {
     // 콘텐츠 타입 가져오기
     $content_type = isset($_SERVER["CONTENT_TYPE"]) ? $_SERVER["CONTENT_TYPE"] : null;
+
+    echo "Content-Type: text/html\r\n";
 
     if ($content_type != "application/x-www-form-urlencoded" && $content_type != "application/json") {
         echo "status: 400\r\n";
