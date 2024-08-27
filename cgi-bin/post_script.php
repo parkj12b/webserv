@@ -5,7 +5,6 @@ ini_set('display_errors', 1);
 
 // HTML 응답 생성 함수
 function print_result($name, $age) {
-    echo "content-type: text/html\r\n";
     echo "status: 200\r\n";
     echo "<html>\r\n";
     echo "<head>\r\n";
@@ -41,6 +40,8 @@ function process_json_content() {
 
 function main() {
     $content_type = isset($_SERVER["CONTENT_TYPE"]) ? $_SERVER["CONTENT_TYPE"] : '';
+
+    echo "Content-Type: text/html\r\n";
 
     if ($content_type != "application/x-www-form-urlencoded" && $content_type != "application/json") {
         echo "status: 400\r\n";
