@@ -16,11 +16,18 @@ if ($file_content === false) {
     exit(1);
 }
 
+$content_filename = getenv("CONTENT_FILENAME");
+$file_content = file_get_contents($content_filename);
+
 print_r($_POST);
 print_r($_SERVER);
-print_r($_FILES);
+print_r($_POST);
+print_r($file_content);
+parse_str($file_content, $_POST);
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     // Check if a file has been uploaded
     if (isset($_FILES['file'])) {
         $file = $_FILES['file'];

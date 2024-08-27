@@ -114,7 +114,7 @@ class Response
         //sub logic
 		bool	isCgiScriptInURL(string& str);
         void    initRequest(Request msg);       //request msg init
-        int     init();                         //start, header, content, entity init
+        bool    init();                         //start, header, content, entity init
         void    makeCookie(std::string& date);  //make cookie header
         void    makeDefaultHeader();            //date header make
         void    makeError();                    //error message make
