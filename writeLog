@@ -1,9 +1,45 @@
 HTTP/1.1 200 OK
-Date: Tue, 27 Aug 2024 14:25:41 GMT
+Date: Tue, 27 Aug 2024 15:59:57 GMT
 Server: inghwang/0.0
 connection: keep-alive
-session: Tue, 27 Aug 2024 14:25:41 GMT
+session: Tue, 27 Aug 2024 15:59:57 GMT
+Content-Type: text/html
+content-length: 420
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+</head>
+<body>
+    <h1>Upload Files</h1>
+    <form action="/upload/" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" id="file" multiple>
+        <button type="submit">Upload</button>
+    </form>
+</body>
+</html>
+HTTP/1.1 200 OK
+Date: Tue, 27 Aug 2024 16:00:03 GMT
+Server: inghwang/0.0
+connection: keep-alive
+session: Tue, 27 Aug 2024 16:00:03 GMT
 content-type:  text/html
+status:  200
+content-length: 93
+
+
+<p>File 'data.pdf' uploaded successfully!</p>
+<p>File 'data.pdf' uploaded successfully!</p>
+HTTP/1.1 200 OK
+Date: Tue, 27 Aug 2024 16:00:06 GMT
+Server: inghwang/0.0
+connection: keep-alive
+session: Tue, 27 Aug 2024 16:00:03 GMT
+content-type:  text/html
+status:  200
 content-length: 93
 
 

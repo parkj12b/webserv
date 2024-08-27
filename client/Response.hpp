@@ -108,8 +108,9 @@ class Response
         void        setRequest(Request &temp);
         void        setRequestStatus(int status);
         void        setLocationConfigData(LocationConfigData *locationConfig);
-		size_t      setContent(string content_);
-		void	    setContentLength(size_t contentLength_);
+        size_t      setCgiHeader(string &content_, string headerKey);
+		size_t      setCgiContent(string &content_);
+		void	    setCgiContentLength(size_t contentLength_);
         //sub logic
 		bool	isCgiScriptInURL(string& str);
         void    initRequest(Request msg);       //request msg init

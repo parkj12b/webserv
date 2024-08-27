@@ -167,12 +167,6 @@ void    Kq::eventRead(struct kevent& store)
 	{
         // LOG(std::cout<<"cgi here\n");
         LOG(std::cout<<"READ EVENT CGI"<<store.ident<<endl);
-        if (cgiFd[store.ident] == 0)
-        {
-            // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-            return ;
-            // LOG(std::cout<<"cgi here\n");
-        }
 		serverFd = findServer[cgiFd[store.ident]]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
         {
@@ -191,7 +185,6 @@ void    Kq::eventRead(struct kevent& store)
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
 				close(iter->first);  //cgi에서 사용한 fd를 닫지 않음
-				cgiFd[iter->first] = 0;
                 cgiFd.erase(iter->first);
 				break ;
 		}
@@ -201,7 +194,12 @@ void    Kq::eventRead(struct kevent& store)
         LOG(std::cout<<"READ EVENT CLIENT"<<store.ident<<endl);
 		serverFd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
+        {
+            LOG(std::cout<<"good"<<std::endl);
+            // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+            // clientFin(store);
 			return ;
+        }
 		event = server[serverFd].clientRead(store);
 		switch (event)
 		{
