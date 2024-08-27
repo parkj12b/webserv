@@ -51,7 +51,6 @@ def process_json_content(file):
 
 def main():
 	content_type = os.environ.get("CONTENT_TYPE")
-	print(content_type)
 	if content_type != "application/x-www-form-urlencoded" and content_type != "application/json":
 		print("status: 400\r\n", end="")
 		exit(1)
@@ -63,7 +62,7 @@ def main():
 		'CONTENT_LENGTH': content_length,
 	}
 	content_filename = os.environ.get("CONTENT_FILENAME")
-	if content_filename is None or os.path.isfile(content_filename):
+	if content_filename is None or os.path.isfile(content_filename) is False:
 		print("status: 400\r\n", end="")
 		exit(1)
 	f = open(content_filename, 'r')
