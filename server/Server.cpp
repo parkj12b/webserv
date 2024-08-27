@@ -85,7 +85,7 @@ int Server::plusClient(string pathEnv)
     //accept 무한 루프 && server 동기적 실패시 무한 루프 가능성 
     if ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0)
         return (-1);
-    client[clntFd] = Client(clntFd, port, pathEnv);
+    client[clntFd] = Client(clntFd, port, pathEnv);  //생성자 및 대입 연산자 호출
 	client[clntFd].clientIP(clntAdr);
     LOG(std::cout<<"temp delete"<<std::endl);
     return (clntFd);
@@ -102,24 +102,21 @@ EVENT Server::cgiRead(struct kevent& store)
 	if (readSize <= 0)
 	{
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
-        // client[Kq::cgiFd[store.ident]].getResponse().setRequestStatus(500);
-        client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength, cgiContent);
+        client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident]);
         LOG(cout << Kq::cgiFd[store.ident] << endl);
-        // static error page
-        // client[Kq::cgiFd[store.ident]].getResponse().makeError();
-        cgiContent.clear();
-        cgiContentLength = 0;
+        cgiContent[store.ident].clear();  //이부분은 말이 안됨 동시에 여러개를 처리할 가능성이 있음
+        cgiContentLength[store.ident] = 0;
         if (readSize < 0)
             return (ERROR);
         return (FINISH);
 	}
     // close(1);
     buf[readSize] = '\0';
-    cgiContent.append(string(buf));
+    cgiContent[store.ident].append(string(buf));
     LOG(std::cout<<"cgiContent: "<<cgiContent<<std::endl);
     // LOG(std::cout<<cgiContent<<std::endl);
     // LOG(std::cout<<cgiContentLength<<std::endl);
-    cgiContentLength += readSize;
+    cgiContentLength[store.ident] += readSize;
     // LOG(cout << "hi: " <<cgiContentLength << endl);
 	// if (readSize < PIPE_BUFFER_SIZE)
     // {

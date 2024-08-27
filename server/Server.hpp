@@ -58,8 +58,8 @@ class Server
     private:
         int                     serverFd;
         int                     port;
-		string					cgiContent;
-		size_t					cgiContentLength;
+		std::map<int, string>   cgiContent;
+		std::map<int, size_t>   cgiContentLength;
         std::map<int, Client>   client;  //client을 선언할때에 default 생성자가 필요한듯
         //여기에 파싱된 data가 들어가 있을 것 - 아래 서버 스태틱으로 설정되어 있음
     public:
