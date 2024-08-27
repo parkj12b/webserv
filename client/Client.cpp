@@ -226,7 +226,7 @@ void    Client::deleteContent(void)
     if (file.is_open())
     {
         file.close();
-        // unlink(request.contentFileName.c_str());
+        unlink(request.contentFileName.c_str());
     }
 }
 

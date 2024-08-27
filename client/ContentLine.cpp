@@ -118,6 +118,7 @@ bool    ContentLine::tempFileMake(int &num)
     mkdir(".tempContent", 0777);
     fileName = fileName_ + toString(num);
     fd = open(fileName.c_str(), O_WRONLY | O_CREAT, 0777);
+    LOG(std::cout<<"MAkE FILE"<<std::endl);
     if (fd < 0)
         return (false);
     LOG(std::cout<<"fileName: "<<fileName<<std::endl);
@@ -184,7 +185,7 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
             contentLength -= static_cast<int>(readSize);
             // content.push_back(str);
             flag = write(fd, &str[0], readSize);
-            readSize -= flag;
+            readSize -= readSize;
             str.clear();
             if (contentLength == 0)
             {
@@ -206,6 +207,7 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
     {
         chunked.append(str, readSize);
         str.clear();
+        readSize = 0;
         flag = chunked.find("0\r\n\r\n");
         // flag = str.find("0\r\n");  //talnet 때문에 임시로 대체함
         //에러 발생시 중간에 빠져 나왔을 떄
@@ -220,6 +222,7 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
                 status = 400;
                 return (-1);
             }
+            readSize = str.size();
         }
     }
     return (0);

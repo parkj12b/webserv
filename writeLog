@@ -1,112 +1,11 @@
 HTTP/1.1 200 OK
-Date: Tue, 27 Aug 2024 13:18:20 GMT
+Date: Tue, 27 Aug 2024 14:25:41 GMT
 Server: inghwang/0.0
 connection: keep-alive
-session: Tue, 27 Aug 2024 13:18:20 GMT
-Content-Type: text/html
-content-length: 420
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload</title>
-</head>
-<body>
-    <h1>Upload Files</h1>
-    <form action="/upload/" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" id="file" multiple>
-        <button type="submit">Upload</button>
-    </form>
-</body>
-</html>
-HTTP/1.1 200 OK
-Date: Tue, 27 Aug 2024 13:18:25 GMT
-Server: inghwang/0.0
-connection: keep-alive
-session: Tue, 27 Aug 2024 13:18:20 GMT
+session: Tue, 27 Aug 2024 14:25:41 GMT
 content-type:  text/html
-content-length: 121
+content-length: 93
 
 
-<p>File 'script (6).py' is not allowed and was skipped.</p>
-<p>File 'script (6).py' is not allowed and was skipped.</p>
-HTTP/1.1 200 OK
-Date: Tue, 27 Aug 2024 13:18:31 GMT
-Server: inghwang/0.0
-connection: keep-alive
-session: Tue, 27 Aug 2024 13:18:20 GMT
-content-type:  text/html
-content-length: 71
-
-
-<h2>No file field in the form</h2>
-<h2>No file field in the form</h2>
-HTTP/1.1 200 OK
-Date: Tue, 27 Aug 2024 13:18:36 GMT
-Server: inghwang/0.0
-connection: keep-alive
-session: Tue, 27 Aug 2024 13:18:20 GMT
-content-type:  text/html
-content-length: 71
-
-
-<h2>No file field in the form</h2>
-<h2>No file field in the form</h2>
-HTTP/1.1 200 OK
-Date: Tue, 27 Aug 2024 13:18:41 GMT
-Server: inghwang/0.0
-connection: keep-alive
-session: Tue, 27 Aug 2024 13:18:20 GMT
-content-type:  text/html
-content-length: 71
-
-
-<h2>No file field in the form</h2>
-<h2>No file field in the form</h2>
-HTTP/1.1 200 OK
-Date: Tue, 27 Aug 2024 13:18:46 GMT
-Server: inghwang/0.0
-connection: keep-alive
-session: Tue, 27 Aug 2024 13:18:20 GMT
-content-type:  text/html
-content-length: 71
-
-
-<h2>No file field in the form</h2>
-<h2>No file field in the form</h2>
-HTTP/1.1 200 OK
-Date: Tue, 27 Aug 2024 13:18:54 GMT
-Server: inghwang/0.0
-connection: keep-alive
-session: Tue, 27 Aug 2024 13:18:20 GMT
-Content-Type: text/html
-content-length: 420
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload</title>
-</head>
-<body>
-    <h1>Upload Files</h1>
-    <form action="/upload/" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" id="file" multiple>
-        <button type="submit">Upload</button>
-    </form>
-</body>
-</html>
-HTTP/1.1 200 OK
-Date: Tue, 27 Aug 2024 13:18:59 GMT
-Server: inghwang/0.0
-connection: keep-alive
-session: Tue, 27 Aug 2024 13:18:20 GMT
-content-type:  text/html
-content-length: 71
-
-
-<h2>No file field in the form</h2>
-<h2>No file field in the form</h2>
+<p>File 'data.pdf' uploaded successfully!</p>
+<p>File 'data.pdf' uploaded successfully!</p>
