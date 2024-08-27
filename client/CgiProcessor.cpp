@@ -114,6 +114,8 @@ void	CgiProcessor::selectCgiCmd(string url)
 
 void	CgiProcessor::checkPostContentType()
 {
+    LOG(cout<<"content-length: "<<request.header["content-length"].front()<<endl);
+    LOG(cout<<"content-type: "<<request.header["content-type"].front()<<endl);
 	if (request.header.find("content-type") == request.header.end()
 		|| request.header.find("content-length") == request.header.end()
 		|| atol(request.header["content-length"].front().c_str()) <= 0
@@ -132,7 +134,10 @@ void	CgiProcessor::checkPostContentType()
 		executeCGIScript(scriptFile);
 	}
 	else
+	{
 		request.status = 400;
+	}
+	LOG(cout << "good: " << request.status << endl);
 }
 
 bool	CgiProcessor::isDirectory(const char *binPath)

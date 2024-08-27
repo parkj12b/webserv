@@ -25,7 +25,7 @@
 # include "HTTPServer.hpp"
 # include "Kq.hpp"
 
-# define BUFFER_SIZE 4095
+# define BUFFER_SIZE 65536
 # define PIPE_BUFFER_SIZE 65536
 # define DEFAULT_400_ERROR_PAGE "./resource/html/error/40x.html"
 # define DEFAULT_500_ERROR_PAGE "./resource/html/error/50x.html"

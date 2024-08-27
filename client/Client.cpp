@@ -6,7 +6,7 @@
 /*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/26 12:21:58 by devpark          ###   ########.fr       */
+/*   Updated: 2024/08/27 11:11:33 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ LocationConfigData *Client::recurFindLocation(string url,
     return (recurFindLocation(passURL, configData));
 }
 
-Client::Client() : connect(true), connection(false), fd(0), port(0), msgSize(0), index(0), responseAmount(0), startLine(0), headerLine(0), contentLine(0)
+Client::Client() : connect(true), connection(false), fd(0), port(0), msgSize(0), index(0), responseAmount(0), standardTime(7500), startLine(0), headerLine(0), contentLine(0)
 {
     request.port = port;
     request.fin = false;
@@ -199,12 +199,7 @@ void    Client::setRequestFin(bool fin)
     request.fin = fin;
 }
 
-void	Client::setResponseContentLength(size_t contentLength)
-{
-	response.setContentLength(contentLength);
-}
-
-void	Client::setResponseContent(size_t cgiContentLength, string content)
+void	Client::setCgiResponseEntity(size_t cgiContentLength, string content)
 {
 	size_t  pos;
 
@@ -212,16 +207,14 @@ void	Client::setResponseContent(size_t cgiContentLength, string content)
     pos = response.setContent(content);
     std::cout<<"pos: "<<pos<<std::endl;
     response.setContentLength(cgiContentLength - pos);
-	std::cout << "Response StartLine Plus Header Size : " << response.getStartHeaderLength() << endl;
     responseAmount = response.getStartHeaderLength() + cgiContentLength - pos;
     index = 0;
-    std::cout << "responseAmount: " << responseAmount << std::endl << endl;
+    std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl<<endl;
 }
 
 void    Client::setErrorMsg()
 {
     msg = response.getEntity();
-    // responseAmount = msg.size();
 }
 
 bool    Client::getResponseCgi()
@@ -269,7 +262,7 @@ int Client::setStart()
         standardTime = Server::serverConfig->getDefaultServer(port)->getHeaderTimeout();  //여기서 keep-alive setting
         if ((request.status = startLine.check(msg.substr(0, flag))))  //ingu test
             return (1);
-        msgSize -= flag + 2;
+        msgSize -= (flag + 2);
         msg = msg.substr(flag + 2);
         request.method = startLine.getMethod();
         request.url = startLine.getUrl();
@@ -305,13 +298,12 @@ int Client::setHeader()
         flag = msg.find("\r\n");
         if (flag != std::string::npos)
         {
-            msgSize -= flag + 2;
+            msgSize -= (flag + 2);
             if (flag == 0)
             {
                 request.header = headerLine.getHeader();
                 msg = msg.substr(flag + 2);
                 //keep-alive
-                standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
                 LOG(cout << "response in location: " << &response << endl);
                 if (setMatchingLocation(request.url))
                 {
@@ -328,6 +320,12 @@ int Client::setHeader()
                     LOG(std::cout<<"default error"<<std::endl);
                     return (2);
                 }
+                request.header = headerLine.getHeader();
+                if (request.header.find("content-type") != request.header.end())
+                {
+                    LOG(cout<<"content-type: "<<request.header["content-type"].front()<<endl);
+                }
+                standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
                 contentLine.initContentLine(headerLine.getContentLength(), headerLine.getContentType());
                 connect = headerLine.getConnect();
                 break ;
@@ -468,9 +466,17 @@ void    Client::resetClient()
 
 void    Client::setMessage(const char* msgRequest, int &readSize)
 {
-    msg.append(msgRequest, readSize);
-    // write(logs, msgRequest, readSize);
     msgSize += readSize;
+    msg.append(msgRequest, readSize);
+    // if (msg.empty() && headerLine.getCompletion() && !contentLine.getCompletion())
+    // {
+    //     contentLine.makeContentLine(std::string(msgRequest), msgSize, request.status);
+    // }
+    // else
+    // {
+    //     msg.append(msgRequest, readSize);
+    // }
+    write(logs, msgRequest, readSize);
     if (setStart())  //max size literal
     {
         request.fin = true;
@@ -558,7 +564,10 @@ bool    Client::setMatchingLocation(string url)
     request.location = prefixTrie.find(url);
     LOG(cout << "location " << request.location << endl);
     if (request.location == "")
+    {
+        response.setLocationConfigData(NULL);
         return (true);
+    }
     location
         = serverConfigData->getLocationConfigData(request.location, 0);
     size_t i = url.find(location->getPath());

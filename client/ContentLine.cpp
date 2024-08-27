@@ -161,11 +161,12 @@ int ContentLine::chunkedEntity()
     return (0);
 }
 
+//readSize 가 msg 사이즈임
 int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status)
 {
     size_t  flag;
 
-    maxSize += str.size();
+    maxSize += readSize;
     if (maxSize > 8000000000)
     {
         status = 413;
@@ -173,12 +174,14 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
     }
     if (contentType == CONTENT)
     {
-        LOG(std::cout<<contentLength<<' '<<readSize<<std::endl);
+        //TODO: readSize 에 계속 쌓임
+        LOG(std::cout<< "content Length: " << contentLength<<' '<<readSize<<std::endl);
         if (contentLength >= static_cast<int>(readSize))
         {
             contentLength -= static_cast<int>(readSize);
             // content.push_back(str);
-            write(fd, &str[0], readSize);
+            flag = write(fd, &str[0], readSize);
+            readSize -= flag;
             str.clear();
             if (contentLength == 0)
             {
@@ -190,6 +193,7 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
         {
             // content.push_back(str.substr(0, contentLength));
             write(fd, &str[0], readSize);
+            // contentLength = 0;
             str = str.substr(contentLength);
             completion = true;
             close(fd);

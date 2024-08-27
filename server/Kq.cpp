@@ -6,7 +6,7 @@
 /*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/26 12:46:29 by devpark          ###   ########.fr       */
+/*   Updated: 2024/08/27 11:14:39 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ void    Kq::eventRead(struct kevent& store)
                 LOG(std::cout<<"[CGI Read FD, not Client FD] : "<<iter->first<<std::endl);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
-				close(iter->first); // 이 부분 close 안 해줘서 FD가 증가하는 것으로 보임
+				// close(iter->first);
 				cgiFd[iter->first] = 0;
                 cgiFd.erase(iter->first);
 				break ;
@@ -299,7 +299,7 @@ void    Kq::mainLoop()
                 clientFin(store[i]);  //client 종료
             else if (store[i].filter == EVFILT_READ)
             {
-                // LOG(std::cout<<"read"<<std::endl);
+                LOG(std::cout<<"read"<<std::endl);
                 eventRead(store[i]);
             }
             else if (store[i].filter == EVFILT_WRITE)

@@ -6,7 +6,7 @@
 /*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/26 12:17:20 by devpark          ###   ########.fr       */
+/*   Updated: 2024/08/27 11:15:14 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "UtilTemplate.hpp" 
 
 extern int logs;
+extern int writeLogs;
 
 HTTPServer *Server::serverConfig = NULL;
 
@@ -92,7 +93,7 @@ int Server::plusClient(string pathEnv)
 
 EVENT Server::cgiRead(struct kevent& store)
 {
-	char	    buf[PIPE_BUFFER_SIZE + 1];
+	char	    buf[BUFFER_SIZE + 1];  //BUFFER_SIZE의 크기를 65536로 조절하였습니다. 
 	int         readSize;
 
 	LOG(cout << "[PIPE Read FD in 'Server::cgiRead' function]: " << store.ident << endl);
@@ -102,11 +103,10 @@ EVENT Server::cgiRead(struct kevent& store)
 	{
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
         // client[Kq::cgiFd[store.ident]].getResponse().setRequestStatus(500);
-        client[Kq::cgiFd[store.ident]].setResponseContent(cgiContentLength, cgiContent);
+        client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength, cgiContent);
         LOG(cout << Kq::cgiFd[store.ident] << endl);
         // static error page
         // client[Kq::cgiFd[store.ident]].getResponse().makeError();
-        client[Kq::cgiFd[store.ident]].setErrorMsg();
         cgiContent.clear();
         cgiContentLength = 0;
         if (readSize < 0)
@@ -117,6 +117,7 @@ EVENT Server::cgiRead(struct kevent& store)
     // close(1);
     buf[readSize] = '\0';
     cgiContent.append(string(buf));
+    LOG(std::cout<<"cgiContent: "<<cgiContent<<std::endl);
     // LOG(std::cout<<cgiContent<<std::endl);
     // LOG(std::cout<<cgiContentLength<<std::endl);
     cgiContentLength += readSize;
@@ -140,7 +141,6 @@ EVENT Server::cgiRead(struct kevent& store)
 EVENT Server::clientRead(struct kevent& store)
 {
     //buffer 문제인지 생각해보기
-    std::vector<Client*>::iterator   it;
     char    buffer[BUFFER_SIZE + 1];
     int     readSize;
 
@@ -183,6 +183,7 @@ EVENT   Server::clientWrite(struct kevent& store)
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
     std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl;
+    write(writeLogs, buffer, client[store.ident].responseIndex());
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     client[store.ident].plusIndex(index);
     client[store.ident].setConnection(true);
@@ -217,6 +218,7 @@ EVENT   Server::clientTimer(struct kevent& store)
 
 void    Server::clientFin(int clientFd)
 {
+    client[clientFd].deleteContent();
     close(clientFd);
     client.erase(clientFd);
 }

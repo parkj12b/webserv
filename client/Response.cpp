@@ -120,6 +120,7 @@ bool	Response::isCgiScriptInURL(string& str)
 {
 	const string	availCgiExtensions[2] = {".py", ".php"};
 	size_t			cgiFilePos;
+    LOG(cout << "str: " << str << endl);
 	for (int i=0; i<2; i++)
 	{
 		cgiFilePos = str.find(availCgiExtensions[i]);
@@ -129,7 +130,9 @@ bool	Response::isCgiScriptInURL(string& str)
 	if (cgiFilePos == string::npos)
 	{
 		if (request.method == POST)
+        {
 			request.status = 400;
+        }
 		return (false);
 	}
 	return (true);
@@ -173,7 +176,7 @@ void    Response::makeFilePath(string& str)
         return ;
     }
 	if (isCgiScriptInURL(str))
-		cgiFlag = true;
+		cgiFlag = true;  //flag 껴짐
     LOG(cout << "str: " << str << endl);
 }
 
@@ -309,14 +312,23 @@ size_t  Response::setContent(string content_)
     std::string contentType;
 
     crlfPos = content_.find("\r\n");
-    contentType = content_.substr(0, crlfPos);
-	content = content_.substr(crlfPos + 2);
-    contentPos = contentType.find(":");
-    makeHeader("content-type", contentType.substr(contentPos + 1));
+    if (crlfPos != std::string::npos)
+    {
+        contentType = content_.substr(0, crlfPos);
+        content = content_.substr(crlfPos + 2);
+        contentPos = contentType.find(":");
+        if (contentPos != std::string::npos)
+            makeHeader("content-type", contentType.substr(contentPos + 1));
+    }
+    else
+    {
+        content = content_;
+        return (0);
+    }
     // LOG(std::cout<< "request.status: "<<request.status<<std::endl);
     // LOG(std::cout<<entity<<std::endl<<std::endl);
     // LOG(std::cout<<"================"<<std::endl);
-    return (crlfPos);
+    return (crlfPos + 2);
 }
 
 void	Response::setContentLength(size_t contentLength_)
@@ -468,9 +480,13 @@ void    Response::makeError()
         return ;
 	LOG(cout << request.clientFd << std::endl);
     LocationConfigData	*location = getLocationConfigData();
-    map<int, string>	&errorPage = location->getErrorPage();
-	cout << "Check ErrorPage : " << &errorPage << endl;
-    string errorPath = errorPage[request.status];
+    map<int, string>	errorPage;
+    string              errorPath = "";
+    if (location != NULL)
+    {
+        errorPage = location->getErrorPage();
+        errorPath = errorPage[request.status];
+    }
 
     LOG(cout << "errorPath: " << errorPath << endl);
     int fd = -1;
@@ -582,6 +598,12 @@ void    Response::makeGet()
     LOG(std::cout<<"Method: GET"<<std::endl);
     LOG(std::cout<<request.url.c_str()<<std::endl);
     CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
+<<<<<<<<< Temporary merge branch 1
+
+    // cout << "is directory: " << isDirectory(request.url.c_str()) << endl;
+    // cout << "location: " << getLocationConfigData()->getPath() << endl;
+    // cout << "autoindex: " << getLocationConfigData()->getAutoindex() << endl;
+=========
     
     // LOG(cout << "is directory: " << isDirectory(request.url.c_str()) << endl);
     // LOG(cout << "location: " << getLocationConfigData()->getPath() << endl);
@@ -644,6 +666,7 @@ void    Response::makePost()
 {
     LOG(cout<<"Method: POST"<<endl);
 	CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
+
 	if (cgiFlag)
 	{
 		cgiProcessor.selectCgiCmd(request.url);
@@ -651,8 +674,12 @@ void    Response::makePost()
 	}
 	if (request.status >= 400)
 	{
-		while (!cgiProcessor.getFin())
-			cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
+        makeError();
+		// while (!cgiProcessor.getFin())
+        // {
+        //     LOG(cout<<"Method: POST CGI ERROR"<<endl);
+		// 	cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
+        // }
 	}
 }
 
