@@ -6,6 +6,8 @@ import cgi
 import cgitb
 import os
 import json
+import sys
+from io import BytesIO
 
 # Enable LOGging
 cgitb.enable()
@@ -26,19 +28,17 @@ def print_result(name, age):
 	print("</body>\r\n", end="")
 	print("</html>\r\n", end="")
 
-def process_x_www_form_urlencoded_content(file, env):
-	form = cgi.FieldStorage(fp=file, environ=env)
+def process_x_www_form_urlencoded_content(data, env):
+	fake_data = BytesIO(data.encode('utf-8'))
+	form = cgi.FieldStorage(fp=fake_data, environ=env)
 	name = form.getvalue('name')
 	age = form.getvalue('age')
 	print_result(name, age)
 
-def process_json_content(file):
+def process_json_content(data):
 	try:
 		# 요청 본문을 읽기
-		input_data = ""
-		for line in file.readlines():
-			input_data += line
-		json_data = json.loads(input_data)
+		json_data = json.loads(data)
 
 		name = json_data.get('name')
 		age = json_data.get('age')
@@ -56,21 +56,17 @@ def main():
 		exit(1)
 	request_method = os.environ.get("REQUEST_METHOD")
 	content_length = os.environ.get("CONTENT_LENGTH")
+
+	content_data = sys.stdin.read()
 	environ = {
 		'REQUEST_METHOD': request_method,
 		'CONTENT_TYPE': content_type,
 		'CONTENT_LENGTH': content_length,
 	}
-	content_filename = os.environ.get("CONTENT_FILENAME")
-	if content_filename is None or os.path.isfile(content_filename) is False:
-		print("status: 400\r\n", end="")
-		exit(1)
-	f = open(content_filename, 'r')
 	if content_type == "application/x-www-form-urlencoded":
-		process_x_www_form_urlencoded_content(f, environ)
+		process_x_www_form_urlencoded_content(content_data, environ)
 	else:
-		process_json_content(f)
-	f.close()
+		process_json_content(content_data)
 
 if __name__ == "__main__":
 	main()
