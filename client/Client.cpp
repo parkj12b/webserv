@@ -199,19 +199,22 @@ void    Client::setRequestFin(bool fin)
     request.fin = fin;
 }
 
-void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content)
+void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content, size_t &status)
 {
 	size_t  pos;
 
     LOG(std::cout<<"cgiContentLength: "<<cgiContentLength<<std::endl);
-    pos = response.setCgiContent(content);
+    pos = response.setCgiContent(content, status);
     LOG(std::cout<<"cgi pos: "<<pos<<std::endl);
-    if (cgiContentLength - pos > 0)
-        response.setCgiContentLength(cgiContentLength - pos);
+    if (status >= 400)
+        return ;
+    // if (cgiContentLength - pos > 0)
+    response.setCgiContentLength(cgiContentLength - pos);
     responseAmount = response.getStartHeaderLength() + cgiContentLength - pos;
     index = 0;
     LOG(std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl);
     msg = response.getEntity();
+    LOG(std::cout<<"msg: "<<msg<<std::endl);
 }
 
 bool    Client::getResponseCgi()
@@ -522,6 +525,8 @@ void    Client::plusIndex(size_t plus)
 bool    Client::setMatchingLocation(string url)
 {
     LOG(cout << "url " << url << endl);
+    // size_t lastSlash = url.find_last_of('/');
+    // url = url.substr(0, lastSlash);
     string host = request.header["host"].front();
     ServerConfigData *serverConfigData;
     try {

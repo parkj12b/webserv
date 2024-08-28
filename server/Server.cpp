@@ -115,8 +115,12 @@ EVENT Server::cgiRead(struct kevent& store)
 	LOG(cout << "CGI Read Size : " << readSize << endl);
 	if (readSize <= 0)
 	{
+        size_t  status = 0;
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
-        client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident]);
+        client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
+        LOG(cout<<"status: "<<status<<endl);
+        if (status >= 400)
+            return (ERROR);
         LOG(cout << Kq::cgiFd[store.ident] << endl);
         cgiContent[store.ident].clear();  //이부분은 말이 안됨 동시에 여러개를 처리할 가능성이 있음
         // cgiContentLength[store.ident] = 0;
@@ -126,7 +130,8 @@ EVENT Server::cgiRead(struct kevent& store)
     // close(1);
     buf[readSize] = '\0';
     cgiContent[store.ident].append(buf, readSize);  //인자값으로 const char이 가능함
-    LOG(std::cout<<"cgiContent: "<<cgiContent[store.ident]<<std::endl);
+    // LOG(std::cout<<"cgiContent: "<<cgiContent[store.ident]<<std::endl);
+
     // LOG(std::cout<<cgiContent<<std::endl);
     // LOG(std::cout<<cgiContentLength<<std::endl);
     cgiContentLength[store.ident] += readSize;
@@ -172,10 +177,10 @@ EVENT Server::clientRead(struct kevent& store)
     client[store.ident].setConnection(true);
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
     {
-        LOG(std::cout<<"parsing complete"<<std::endl);
         client[store.ident].setResponseMessage();
         if (client[store.ident].getRequestStatus() == 100)
             return (EXPECT);
+        //debug
         if (client[store.ident].getRequestFin())
             client[store.ident].showMessage();
         return (FINISH);
@@ -193,6 +198,7 @@ EVENT   Server::clientWrite(struct kevent& store)
         return (ING);
     LOG(std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl);
     write(writeLogs, buffer, client[store.ident].responseIndex());
+    // write(1, buffer, client[store.ident].responseIndex());
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     client[store.ident].plusIndex(index);
     client[store.ident].setConnection(true);

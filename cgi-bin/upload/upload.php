@@ -31,17 +31,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 // Move the uploaded file to the desired directory
                 if (move_uploaded_file($tmp_name, $destination)) {
-                    echo "Status: 302\r\n";
-                    echo "Location: /html/upload_success.html\r\n";
+                    echo "status: 302\r\n";
+                    echo "location: /upload_success.html\r\n";
                 } else {
-                    echo "Status: 400\r\n";
+                    echo "status: 400\r\n";
                 }
             } else {
-                echo "Status: 400\r\n";
+                echo "status: 400\r\n";
             }
         }
     } else {
-        echo "Status: 400\r\n";
+        echo "status: 400\r\n";
     }
 }
 ?>
