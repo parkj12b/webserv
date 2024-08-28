@@ -206,6 +206,8 @@ void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content, siz
     LOG(std::cout<<"cgiContentLength: "<<cgiContentLength<<std::endl);
     pos = response.setCgiContent(content, status);
     LOG(std::cout<<"cgi pos: "<<pos<<std::endl);
+    if (status >= 400)
+        return ;
     if (cgiContentLength - pos > 0)
         response.setCgiContentLength(cgiContentLength - pos);
     responseAmount = response.getStartHeaderLength() + cgiContentLength - pos;

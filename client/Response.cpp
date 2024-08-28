@@ -362,9 +362,9 @@ size_t  Response::setCgiContent(string &content_, size_t &status)
     do
     {
         temp = setCgiHeader(content_, status);
-        pos += temp;
         if (status >= 400)
             return (0);
+        pos += temp;
     } while (temp != 0);
     // pos += setCgiHeader(content_);
     // pos += setCgiHeader(content_);
