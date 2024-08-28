@@ -13,7 +13,6 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <algorithm>
 #include "Response.hpp"
 #include "Server.hpp"
 #include "LocationConfigData.hpp"
@@ -113,8 +112,19 @@ map<string, string>  sessionInit()
     return (m);
 }
 
-map<int, string>  Response::statusContent = statusContentInit();
-map<string, string>  Response::session = sessionInit();
+vector<std::string> cgiHeaderInit()
+{
+    std::vector<std::string>    v;
+
+    v.push_back("content-type");
+    v.push_back("location");
+    v.push_back("status");
+    return (v);
+}
+
+map<int, string>    Response::statusContent = statusContentInit();
+map<string, string> Response::session = sessionInit();
+vector<std::string> Response::cgiHeader = cgiHeaderInit();
 
 bool	Response::isCgiScriptInURL(string& str)
 {
@@ -305,31 +315,65 @@ void    Response::setLocationConfigData(LocationConfigData *locationConfigData)
     locationConfig = locationConfigData;
 }
 
-size_t  Response::setCgiHeader(string &content_, string headerKey)
+size_t  Response::setCgiHeader(string &content_, size_t &status)
 {
     size_t  crlfPos;
     size_t  headerPos;
-    string  headerName;
+    string  headerNamePull;
+    string  headerNameKey;
+    string  headerNameValue;
 
     crlfPos = content_.find("\r\n");
     if (crlfPos != string::npos)
     {
-        headerName = content_.substr(0, crlfPos);
-        content_ = content_.substr(crlfPos + 2);
-        headerPos = headerName.find(":");
+        headerNamePull = content_.substr(0, crlfPos);
+        LOG(cout << "cgi crlf READ: "<<headerNamePull<<endl);
+        headerPos = headerNamePull.find(":");
         if (headerPos != string::npos)
-            makeHeader(headerKey, headerName.substr(headerPos + 1));
+        {
+            headerNameKey = headerNamePull.substr(0, headerPos);
+            if (std::find(cgiHeader.begin(), cgiHeader.end(), headerNameKey) != cgiHeader.end())
+            {
+                LOG(std::cout<<"heeh"<<std::endl);
+                if (headerNameKey == "status")
+                {
+                    std::stringstream ss(headerNamePull.substr(headerPos + 1));
+                    ss >> status;
+                    request.status = status;
+                    LOG(cout<<request.status<<endl);
+                    LOG(std::cout<<"status satt"<<std::endl);
+                    if (status >= 400)
+                    {
+                        LOG(cout<<"ERROROR"<<endl);
+                        makeError();
+                        return (0);
+                    }
+                }
+                content_ = content_.substr(crlfPos + 2);
+                makeHeader(headerNameKey, headerNamePull.substr(headerPos + 1));
+                LOG(cout<<headerNameKey<<" : "<<headerNamePull.substr(headerPos + 1));
+                return (crlfPos + 2);
+            }
+        }
     }
-    return (crlfPos + 2);
+    return (0);
 }
 
-size_t  Response::setCgiContent(string &content_)
+size_t  Response::setCgiContent(string &content_, size_t &status)
 {
     size_t  pos;
+    size_t  temp;
 
     pos = 0;
-    pos += setCgiHeader(content_, "content-type");
-    pos += setCgiHeader(content_, "status");
+    do
+    {
+        temp = setCgiHeader(content_, status);
+        if (status >= 400)
+            return (0);
+        pos += temp;
+    } while (temp != 0);
+    // pos += setCgiHeader(content_);
+    // pos += setCgiHeader(content_);
     content = content_;
     return (pos);
     // size_t      crlfPos;
@@ -358,6 +402,7 @@ size_t  Response::setCgiContent(string &content_)
 
 void	Response::setCgiContentLength(size_t contentLength_)
 {
+    std::cout<<"dhjasfkljlasdk"<<std::endl;
     contentLength = contentLength_;
     makeHeader("content-length", toString(contentLength));
     makeEntity();
@@ -436,7 +481,7 @@ void    Response::makeCookie(string& date)
     if (request.header["cookie"].empty())
     {
         do {
-            for (size_t i = 0; i < 12; ++i)
+            for (size_t i = 0; i < 20; ++i)
             {
                 index = rand() % charactersSize;
                 result += characters[index];
@@ -458,9 +503,7 @@ void    Response::makeCookie(string& date)
             cookieValue = cookieValue.substr(index + 1);
         HeaderLine::eraseSpace(cookieValue, 0);
         if (session.find(cookieValue) == session.end())
-        {
             session[cookieValue] = date;
-        }
         // LOG(std::cout<<"cookieValue: "<<cookieValue<<std::endl<<std::endl);
         makeHeader("session", session[cookieValue]);
     }
@@ -659,10 +702,10 @@ void    Response::makeGet()
 		if (fd < 0)
 		{
 			request.status = 404;
-			start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
+			// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 			while (!cgiProcessor.getFin())
 				cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
-            makeHeader("Content-Type", "text/html");
+            makeHeader("Content-Type", "text/html");  //why???
 			content += cgiProcessor.getCgiContent();
             LOG(cout << cgiProcessor.getCgiContent() << '\n');
             // fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);

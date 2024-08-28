@@ -1,12 +1,4 @@
 <?php
-echo "content-type: text/html\r\n";
-echo "status: 200\r\n";
-echo "<html>\r\n";
-echo "<head>\r\n";
-echo "<title>Form Response</title>\r\n";
-echo "<meta charset=\"utf-8\">\r\n";
-echo "</head>\r\n";
-echo "<body>\r\n";
 
 // $content_filename = getenv("CONTENT_FILENAME");
 // if ($content_filename === false || !is_file($content_filename)) {
@@ -39,17 +31,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 // Move the uploaded file to the desired directory
                 if (move_uploaded_file($tmp_name, $destination)) {
-                    echo "File $name uploaded successfully.<br>";
+                    echo "status: 302\r\n";
+                    echo "location: /upload_success.html\r\n";
                 } else {
-                    echo "Failed to upload file $name.<br>";
+                    echo "status: 400\r\n";
                 }
             } else {
-                echo "Error uploading file $name.<br>";
+                echo "status: 400\r\n";
             }
         }
     } else {
-        echo "No files were uploaded.";
+        echo "status: 400\r\n";
     }
 }
-echo "</body>\r\n";
 ?>

@@ -40,7 +40,6 @@ function process_x_www_form_urlencoded_content() {
     // name과 age 변수 설정
     $name = isset($_POST['name']) ? $_POST['name'] : null;
     $age = isset($_POST['age']) ? $_POST['age'] : null;
-
     // 결과 출력 함수 호출
     print_result($name, $age);
 }
