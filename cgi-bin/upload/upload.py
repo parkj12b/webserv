@@ -5,7 +5,6 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 import cgi
 import cgitb
 import os
-import sys
 
 # Enable CGI error reporting
 cgitb.enable()
@@ -41,7 +40,7 @@ def process_file(file_item):
 
         # Check if the file has a .py or .php extension
         if filename.endswith('.py') or filename.endswith('.php'):
-            print(f"<p>File '{filename}' is not allowed and was skipped.</p>")
+            print(f"Status: 403\r\n")
             return
 
         # Define the path where the file will be saved
@@ -50,19 +49,11 @@ def process_file(file_item):
         # Save the uploaded file
         with open(filepath, 'wb') as output_file:
             output_file.write(file_item.file.read())
-
-        print(f"<p>File '{filename}' uploaded successfully!</p>")
+        
+        print(f"Status: 302\r\n")
+        print(f"Location: /html/upload_success.html\r\n")
 
 def main():
-    print("Content-Type: text/html\r\n") 
-    print("status: 200\r\n")
-    print("<html>")
-    print("<head>")
-    print("<title>File Upload</title>")
-    print("<meta charset=\"utf-8\">")
-    print("</head>")
-    print("</html>")
-    
     handle_file_uploads()
     
 
