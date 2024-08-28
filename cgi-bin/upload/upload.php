@@ -28,7 +28,7 @@ echo "<body>\r\n";
 // print_r($_SERVER);
 print_r($_FILES);
 
-$uploadDir = './uploads/';
+$uploadDir = getenv("UPLOAD_PATH");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_FILES['file_php']) && is_array($_FILES['file_php']['name'])) {

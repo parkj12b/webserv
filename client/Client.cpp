@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/27 21:54:53 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/28 13:04:09 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,7 +226,7 @@ void    Client::deleteContent(void)
     if (file.is_open())
     {
         file.close();
-        //unlink(request.contentFileName.c_str());
+        unlink(request.contentFileName.c_str());
     }
 }
 

@@ -101,6 +101,9 @@ void	CgiProcessor::setStartHeaderEnv()
 	insertEnv("REMOTE_ADDR", request.clientIp);
 	insertEnv("REDIRECT_STATUS", "false");
 	insertEnv("SCRIPT_FILENAME", scriptFile);
+	string uploadPath = locationConfig->getFastcgiParam()["UPLOAD_PATH"];
+	LOG(cout << "upload path: " << uploadPath << endl);
+	insertEnv("UPLOAD_PATH", uploadPath);
 }
 
 void	CgiProcessor::selectCgiCmd(string url)
