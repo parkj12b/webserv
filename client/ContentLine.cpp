@@ -116,7 +116,7 @@ bool    ContentLine::tempFileMake(int &fd_)
     {
         if (!fileExist((fileName_ + toString(num)).c_str()))
         {
-            std::cout<<(fileName_ + toString(num)).c_str()<<std::endl;
+            LOG(std::cout<<(fileName_ + toString(num)).c_str()<<std::endl);
             fileName = fileName_ + toString(num);
             break ;
         }
