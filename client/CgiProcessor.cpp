@@ -123,7 +123,7 @@ void	CgiProcessor::selectCgiCmd(string url)
 	scriptFile = url.substr(0, cgiFilePos + cgiExtension.size());
 }
 
-void	CgiProcessor::checkPostContentType()
+void	CgiProcessor::checkPostContentType(const string path)
 {
     LOG(cout<<"content-length: "<<request.header["content-length"].front()<<endl);
     LOG(cout<<"content-type: "<<request.header["content-type"].front()<<endl);
@@ -148,7 +148,7 @@ void	CgiProcessor::checkPostContentType()
 		// if (!request.header["content-type"].front().compare("multipart/form-data"))
 		// 	scriptFile = "/upload/upload.py";
 		insertEnv("CONTENT_FILENAME", request.contentFileName);
-		executeCGIScript(scriptFile);
+		executeCGIScript(path);
 	}
 	else
 	{
@@ -208,7 +208,7 @@ bool	CgiProcessor::findCgiCmdPath()
 
 void	CgiProcessor::executeCGIScript(const string path)
 {
-	scriptFile = path;
+	selectCgiCmd(path);
 	setURLEnv();
 	setStartHeaderEnv();
 	int pipefd[2];

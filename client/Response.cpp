@@ -563,9 +563,8 @@ void    Response::makeError()
     else
     {
         CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
-		cgiProcessor.selectCgiCmd(CGI_ERROR_PAGE);
 		cgiProcessor.insertEnv("ERROR_CODE", toString(request.status));
-        cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+        cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
         setCgiFlag(true);
     }
 }
@@ -674,14 +673,12 @@ void    Response::makeGet()
     if (isDirectory(request.url.c_str()))
     {
         cgiFlag = true;
-        cgiProcessor.selectCgiCmd(AUTOINDEX_PATH);
         LOG(cout << "directory listing" << endl);
-    	cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+    	cgiProcessor.executeCGIScript(AUTOINDEX_PATH);
     }
 	else if (cgiFlag)
 	{
-		cgiProcessor.selectCgiCmd(request.url);
-		cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+		cgiProcessor.executeCGIScript(request.url);
 		if (request.status >= 400)
 		{
 			while (!cgiProcessor.getFin())
@@ -729,9 +726,8 @@ void    Response::makePost()
 
 	if (cgiFlag)
 	{
-		cgiProcessor.selectCgiCmd(request.url);
         // cgiProcessor.insertEnv("CONTENT_FILE", request.contentFileName);
-		cgiProcessor.checkPostContentType();
+		cgiProcessor.checkPostContentType(request.url);
 	}
 	if (request.status >= 400)
 	{

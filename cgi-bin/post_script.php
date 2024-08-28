@@ -63,7 +63,7 @@ function main() {
     // Content-Type에 따라 적절한 함수 호출
     if ($content_type == "application/x-www-form-urlencoded") {
         process_x_www_form_urlencoded_content();
-    } elseif ($content_type == "application/json") {
+    } else if ($content_type == "application/json") {
         process_json_content($content_data);
     }
 }
