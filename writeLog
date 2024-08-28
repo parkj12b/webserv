@@ -1,8 +1,8 @@
 HTTP/1.1 200 OK
-date: Wed, 28 Aug 2024 16:41:36 GMT
+date: Wed, 28 Aug 2024 20:23:13 GMT
 server: inghwang/0.0
 connection: keep-alive
-session: Wed, 28 Aug 2024 16:41:36 GMT
+session: Wed, 28 Aug 2024 20:23:13 GMT
 Content-Type: text/html
 content-length: 694
 
@@ -28,38 +28,87 @@ content-length: 694
     </form>
 </body>
 </html>
-HTTP/1.1 403 Forbidden
-date: Wed, 28 Aug 2024 16:41:36 GMT
+HTTP/1.1 302 Found
+date: Wed, 28 Aug 2024 20:23:20 GMT
 server: inghwang/0.0
 connection: keep-alive
-session: Wed, 28 Aug 2024 16:41:36 GMT
-content-type:  text/html
-content-length: 623
+session: Wed, 28 Aug 2024 20:23:13 GMT
+status: 302
+location: /upload_success.html
+content-length: 0
 
+HTTP/1.1 200 OK
+date: Wed, 28 Aug 2024 20:23:20 GMT
+server: inghwang/0.0
+connection: keep-alive
+session: Wed, 28 Aug 2024 20:23:13 GMT
+Content-Type: text/html
+content-length: 1726
 
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 <head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Success</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e9f5f4;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #4caf50;
+            margin-bottom: 20px;
+        }
+        .message {
+            padding: 15px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            margin-right: 30px;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+            margin-top: 20px;
+            display: inline-block;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-28 16:41:36</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
+    <div class="container">
+        <h1>File Upload Result</h1>
+        <div class="message success">
+            <!-- Success message here -->
+            File uploaded successfully!
+        </div>
+        <a href="/upload/">Upload Another File</a>
+    </div>
 </body>
 </html>
