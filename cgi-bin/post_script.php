@@ -44,7 +44,7 @@ function main() {
     // 콘텐츠 타입 가져오기
     $content_type = isset($_SERVER["CONTENT_TYPE"]) ? $_SERVER["CONTENT_TYPE"] : null;
 
-    echo "Content-Type: text/html\r\n";
+    echo "content-type: text/html\r\n";
 
     if ($content_type != "application/x-www-form-urlencoded" && $content_type != "application/json") {
         echo "status: 400\r\n";
