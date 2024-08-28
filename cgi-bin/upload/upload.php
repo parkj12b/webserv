@@ -1,6 +1,6 @@
 <?php
-echo "Content-Type: text/html\r\n";
-echo "Status: 200\r\n";
+echo "content-type: text/html\r\n";
+echo "status: 200\r\n";
 echo "<html>\r\n";
 echo "<head>\r\n";
 echo "<title>Form Response</title>\r\n";

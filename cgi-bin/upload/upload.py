@@ -54,7 +54,7 @@ def process_file(file_item):
         print(f"<p>File '{filename}' uploaded successfully!</p>")
 
 def main():
-    print("Content-Type: text/html\r\n") 
+    print("content-type: text/html\r\n") 
     print("status: 200\r\n")
     print("<html>")
     print("<head>")
