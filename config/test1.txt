@@ -1,7 +1,0 @@
-server {
-    listen 85;
-}
-
-server {
-    listen 84;
-}

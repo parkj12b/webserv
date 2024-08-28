@@ -14,16 +14,11 @@ cgitb.enable()
 # 여기에서 file 이름 가져와서 fp=넣으면 될듯
 
 #__init__(self, fp=None, headers=None, outerboundary='', environ={'LESS': '-X -i -Psline %l/%L$ -Pmline %l/%L (%p)$', 'DPKG_ARC..., keep_blank_values=0, strict_parsing=0)
-#fd = 
 
-# filename = os.environ['CONTENT_FILENAME']
-# filename = "/Users/devpark/Documents/mini/tempContent1"
-# file = open(filename, 'r')
-# form = cgi.FieldStorage(fp=file, environ=os.environ)
 form = cgi.FieldStorage(environ=os.environ)
 
 # Define the directory where uploaded files will be stored
-upload_dir = './uploads'
+upload_dir = os.environ['UPLOAD_PATH']
 
 # Function to handle file uploads
 def handle_file_uploads():
@@ -59,7 +54,7 @@ def process_file(file_item):
         print(f"<p>File '{filename}' uploaded successfully!</p>")
 
 def main():
-    print("Content-Type: text/html\r\n") 
+    print("content-type: text/html\r\n") 
     print("status: 200\r\n")
     print("<html>")
     print("<head>")

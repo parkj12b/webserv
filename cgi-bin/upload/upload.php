@@ -1,6 +1,6 @@
 <?php
-echo "Content-Type: text/html\r\n";
-echo "Status: 200\r\n";
+echo "content-type: text/html\r\n";
+echo "status: 200\r\n";
 echo "<html>\r\n";
 echo "<head>\r\n";
 echo "<title>Form Response</title>\r\n";
@@ -28,7 +28,7 @@ echo "<body>\r\n";
 // print_r($_SERVER);
 print_r($_FILES);
 
-$uploadDir = './uploads/';
+$uploadDir = getenv("UPLOAD_PATH");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_FILES['file_php']) && is_array($_FILES['file_php']['name'])) {
