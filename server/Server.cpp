@@ -104,8 +104,11 @@ EVENT Server::cgiRead(struct kevent& store)
 	LOG(cout << "CGI Read Size : " << readSize << endl);
 	if (readSize <= 0)
 	{
+        size_t  status = 0;
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
-        client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident]);
+        client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
+        if (status >= 400)
+            return (ERROR);
         LOG(cout << Kq::cgiFd[store.ident] << endl);
         cgiContent[store.ident].clear();  //이부분은 말이 안됨 동시에 여러개를 처리할 가능성이 있음
         // cgiContentLength[store.ident] = 0;
@@ -161,10 +164,10 @@ EVENT Server::clientRead(struct kevent& store)
     client[store.ident].setConnection(true);
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
     {
-        LOG(std::cout<<"parsing complete"<<std::endl);
         client[store.ident].setResponseMessage();
         if (client[store.ident].getRequestStatus() == 100)
             return (EXPECT);
+        //debug
         if (client[store.ident].getRequestFin())
             client[store.ident].showMessage();
         return (FINISH);

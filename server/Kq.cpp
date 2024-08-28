@@ -182,6 +182,11 @@ void    Kq::eventRead(struct kevent& store)
 			case ING:
 				break ;
 			case ERROR:
+                LOG(std::cout<<"iter->first cgi error: "<<iter->first<<std::endl);
+                plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+                close(iter->first);
+                cgiFd.erase(iter->first);
+                break ;
 			case FINISH:
                 LOG(std::cout<<"iter->first: "<<iter->first<<std::endl);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);

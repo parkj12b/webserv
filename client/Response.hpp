@@ -82,6 +82,7 @@ class Response
     public:
         static std::map<int, std::string>           statusContent;
         static std::map<std::string, std::string>   session;
+        static std::vector<std::string>             cgiHeader;
         //oocf
         Response();
         Response(const Response& src);
@@ -108,8 +109,8 @@ class Response
         void        setRequest(Request &temp);
         void        setRequestStatus(int status);
         void        setLocationConfigData(LocationConfigData *locationConfig);
-        size_t      setCgiHeader(string &content_, string headerKey);
-		size_t      setCgiContent(string &content_);
+        size_t      setCgiHeader(string &content_, size_t &status);
+		size_t      setCgiContent(string &content_, size_t &status);
 		void	    setCgiContentLength(size_t contentLength_);
         //sub logic
 		bool	isCgiScriptInURL(string& str);

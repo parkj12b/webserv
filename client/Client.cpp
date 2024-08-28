@@ -199,12 +199,12 @@ void    Client::setRequestFin(bool fin)
     request.fin = fin;
 }
 
-void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content)
+void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content, size_t &status)
 {
 	size_t  pos;
 
     LOG(std::cout<<"cgiContentLength: "<<cgiContentLength<<std::endl);
-    pos = response.setCgiContent(content);
+    pos = response.setCgiContent(content, status);
     LOG(std::cout<<"cgi pos: "<<pos<<std::endl);
     if (cgiContentLength - pos > 0)
         response.setCgiContentLength(cgiContentLength - pos);
@@ -226,7 +226,7 @@ void    Client::deleteContent(void)
     if (file.is_open())
     {
         file.close();
-        //unlink(request.contentFileName.c_str());
+        unlink(request.contentFileName.c_str());
     }
 }
 
