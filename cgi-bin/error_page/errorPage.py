@@ -53,7 +53,7 @@ http_status_codes = {
 }
 
 # Header
-print("content-type: text/html\r\n")
+print("content-type: text/html\r")
 
 # Start HTML output
 print("<!DOCTYPE html>")

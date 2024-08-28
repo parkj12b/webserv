@@ -327,25 +327,31 @@ size_t  Response::setCgiHeader(string &content_, size_t &status)
     if (crlfPos != string::npos)
     {
         headerNamePull = content_.substr(0, crlfPos);
+        LOG(cout << "cgi crlf READ: "<<headerNamePull<<endl);
         headerPos = headerNamePull.find(":");
         if (headerPos != string::npos)
         {
             headerNameKey = headerNamePull.substr(0, headerPos);
             if (std::find(cgiHeader.begin(), cgiHeader.end(), headerNameKey) != cgiHeader.end())
             {
+                LOG(std::cout<<"heeh"<<std::endl);
                 if (headerNameKey == "status")
                 {
                     std::stringstream ss(headerNamePull.substr(headerPos + 1));
                     ss >> status;
+                    request.status = status;
+                    LOG(cout<<request.status<<endl);
+                    LOG(std::cout<<"status satt"<<std::endl);
                     if (status >= 400)
                     {
-                        request.status = status;
+                        LOG(cout<<"ERROROR"<<endl);
                         makeError();
                         return (0);
                     }
                 }
                 content_ = content_.substr(crlfPos + 2);
                 makeHeader(headerNameKey, headerNamePull.substr(headerPos + 1));
+                LOG(cout<<headerNameKey<<" : "<<headerNamePull.substr(headerPos + 1));
                 return (crlfPos + 2);
             }
         }
@@ -396,6 +402,7 @@ size_t  Response::setCgiContent(string &content_, size_t &status)
 
 void	Response::setCgiContentLength(size_t contentLength_)
 {
+    std::cout<<"dhjasfkljlasdk"<<std::endl;
     contentLength = contentLength_;
     makeHeader("content-length", toString(contentLength));
     makeEntity();

@@ -40,7 +40,7 @@ def process_file(file_item):
 
         # Check if the file has a .py or .php extension
         if filename.endswith('.py') or filename.endswith('.php'):
-            print(f"Status: 403\r\n")
+            print(f"status: 403\r")
             return
 
         # Define the path where the file will be saved
@@ -50,8 +50,8 @@ def process_file(file_item):
         with open(filepath, 'wb') as output_file:
             output_file.write(file_item.file.read())
         
-        print(f"Status: 302\r\n")
-        print(f"Location: /html/upload_success.html\r\n")
+        print(f"status:302\r")
+        print(f"location:/upload_success.html\r")
 
 def main():
     handle_file_uploads()

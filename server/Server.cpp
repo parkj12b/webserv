@@ -107,6 +107,7 @@ EVENT Server::cgiRead(struct kevent& store)
         size_t  status = 0;
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
+        LOG(cout<<"status: "<<status<<endl);
         if (status >= 400)
             return (ERROR);
         LOG(cout << Kq::cgiFd[store.ident] << endl);
@@ -118,7 +119,8 @@ EVENT Server::cgiRead(struct kevent& store)
     // close(1);
     buf[readSize] = '\0';
     cgiContent[store.ident].append(buf, readSize);  //인자값으로 const char이 가능함
-    LOG(std::cout<<"cgiContent: "<<cgiContent[store.ident]<<std::endl);
+    // LOG(std::cout<<"cgiContent: "<<cgiContent[store.ident]<<std::endl);
+
     // LOG(std::cout<<cgiContent<<std::endl);
     // LOG(std::cout<<cgiContentLength<<std::endl);
     cgiContentLength[store.ident] += readSize;
@@ -185,6 +187,7 @@ EVENT   Server::clientWrite(struct kevent& store)
         return (ING);
     std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl;
     write(writeLogs, buffer, client[store.ident].responseIndex());
+    // write(1, buffer, client[store.ident].responseIndex());
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     client[store.ident].plusIndex(index);
     client[store.ident].setConnection(true);
