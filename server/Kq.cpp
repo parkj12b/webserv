@@ -190,13 +190,9 @@ void    Kq::eventRead(struct kevent& store)
 			case FINISH:
                 LOG(std::cout<<"iter->first: "<<iter->first<<std::endl);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-                if (findServer[cgiFd[store.ident]] != 0)
-                    plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
-                std::cout<<"good1 "<<cgiFd[store.ident]<<std::endl;
-				close(iter->first);  //cgi에서 사용한 fd를 닫지 않음
-                std::cout<<"good2 "<<findServer[cgiFd[store.ident]]<<std::endl;
+                plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
+				close(iter->first);
                 cgiFd.erase(iter->first);
-                std::cout<<"good3"<<std::endl;
 				break ;
 		}
 	}
