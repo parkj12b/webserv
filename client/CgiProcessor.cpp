@@ -123,7 +123,7 @@ void	CgiProcessor::selectCgiCmd(string url)
 	scriptFile = url.substr(0, cgiFilePos + cgiExtension.size());
 }
 
-void	CgiProcessor::checkPostContentType()
+void	CgiProcessor::checkPostContentType(const string path)
 {
     LOG(cout<<"content-length: "<<request.header["content-length"].front()<<endl);
     LOG(cout<<"content-type: "<<request.header["content-type"].front()<<endl);
@@ -148,7 +148,7 @@ void	CgiProcessor::checkPostContentType()
 		// if (!request.header["content-type"].front().compare("multipart/form-data"))
 		// 	scriptFile = "/upload/upload.py";
 		insertEnv("CONTENT_FILENAME", request.contentFileName);
-		executeCGIScript(scriptFile);
+		executeCGIScript(path);
 	}
 	else
 	{
@@ -208,7 +208,7 @@ bool	CgiProcessor::findCgiCmdPath()
 
 void	CgiProcessor::executeCGIScript(const string path)
 {
-	scriptFile = path;
+	selectCgiCmd(path);
 	setURLEnv();
 	setStartHeaderEnv();
 	int pipefd[2];
@@ -233,7 +233,6 @@ void	CgiProcessor::executeCGIScript(const string path)
 		LOG(std::cout<<"pipe fd: "<<pipefd[0]<<", "<<pipefd[1]<<std::endl);
 		close(pipefd[0]);
 		dup2(pipefd[1], STDOUT_FILENO);
-		// dup2(pipefd[1], STDERR_FILENO);
 		close(pipefd[1]);
 		char *argv[] = {const_cast<char *>(&cgiCommand[0]), const_cast<char *>(&path[0]), NULL};
 		char **envp = new char*[metaVariables.size() + 1];
@@ -247,6 +246,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 		}
 		envp[metaVariables.size()] = 0;
 		int fd = open(request.contentFileName.c_str(), O_RDONLY, 0644);
+		
 		dup2(fd, STDIN_FILENO);
 		if (execve(&cgiCommand[0], argv, envp) == -1)
 		{

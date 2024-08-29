@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/26 18:03:00 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/28 22:01:31 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,16 @@ ssize_t Server::getStandardTime(int fd)
     return (standardTime);
 }
 
+void setLinger(int sockfd, int linger_time) {
+    struct linger linger_opt;
+    linger_opt.l_onoff = 1;  // Enable linger option
+    linger_opt.l_linger = linger_time;  // Set linger time in seconds
+
+    if (setsockopt(sockfd, SOL_SOCKET, SO_LINGER, &linger_opt, sizeof(linger_opt)) < 0) {
+        perror("setsockopt(SO_LINGER) failed");
+    }
+}
+
 int Server::plusClient(string pathEnv)
 {
     int                 clntFd;
@@ -85,6 +95,7 @@ int Server::plusClient(string pathEnv)
     //accept 무한 루프 && server 동기적 실패시 무한 루프 가능성 
     if ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0)
         return (-1);
+    setLinger(clntFd, 0);
     client[clntFd] = Client(clntFd, port, pathEnv);  //생성자 및 대입 연산자 호출
 	client[clntFd].clientIP(clntAdr);
     LOG(std::cout<<"temp delete"<<std::endl);
@@ -185,7 +196,7 @@ EVENT   Server::clientWrite(struct kevent& store)
 
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
-    std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl;
+    LOG(std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl);
     write(writeLogs, buffer, client[store.ident].responseIndex());
     // write(1, buffer, client[store.ident].responseIndex());
     index = write(store.ident, buffer, client[store.ident].responseIndex());
