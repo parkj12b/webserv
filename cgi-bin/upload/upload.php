@@ -35,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 // Move the uploaded file to the desired directory
                 if (move_uploaded_file($tmp_name, $destination)) {
-                    ob_start();
                     echo "status: 302\r\n";
                     echo "location: /upload_success.html\r\n";
                 } else {
