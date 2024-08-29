@@ -131,7 +131,7 @@ EVENT Server::cgiRead(struct kevent& store)
     buf[readSize] = '\0';
     cgiContent[store.ident].append(buf, readSize);  //인자값으로 const char이 가능함
     // LOG(std::cout<<"cgiContent: "<<cgiContent[store.ident]<<std::endl);
-
+    std::cout<<"cgiContent: "<<cgiContent[store.ident]<<std::endl;
     // LOG(std::cout<<cgiContent<<std::endl);
     // LOG(std::cout<<cgiContentLength<<std::endl);
     cgiContentLength[store.ident] += readSize;

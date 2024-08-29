@@ -364,6 +364,9 @@ size_t  Response::setCgiContent(string &content_, size_t &status)
     size_t  pos;
     size_t  temp;
 
+    pos = content_.find("\r\n");
+    if (pos != string::npos && pos == 0)
+        content_ = content_.substr(pos + 2);
     pos = 0;
     do
     {
@@ -402,7 +405,6 @@ size_t  Response::setCgiContent(string &content_, size_t &status)
 
 void	Response::setCgiContentLength(size_t contentLength_)
 {
-    std::cout<<"dhjasfkljlasdk"<<std::endl;
     contentLength = contentLength_;
     makeHeader("content-length", toString(contentLength));
     makeEntity();
