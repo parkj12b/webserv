@@ -1,42 +1,110 @@
-HTTP/1.1 403 Forbidden
-date: Thu, 29 Aug 2024 18:41:37 GMT
+HTTP/1.1 200 OK
+date: Thu, 29 Aug 2024 19:43:30 GMT
 server: inghwang/0.0
 connection: keep-alive
 Set-Cookie: session_id=FZXC0wg0LvaJ6atJJx2a; Max-Age=3600
-content-type:  text/html
-content-length: 623
+Content-Type: text/html
+content-length: 2549
 
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 <head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP Method Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ddd;
+        }
+
+        button#get {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button#post {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        button#delete {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+    <script>
+        function sendRequest(method) {
+            const url = '/test';
+            const xhr = new XMLHttpRequest();
+
+            xhr.open(method, url, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        alert('Response: ' + xhr.responseText);
+                    } else {
+                        alert('Error: ' + xhr.status + ' ' + xhr.statusText);
+                    }
+                }
+            };
+
+            if (method === 'POST') {
+                xhr.send('data=example');
+            } else {
+                xhr.send();
+            }
+        }
+    </script>
 </head>
 <body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:37</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
+    <div class="container">
+        <h1>HTTP Method Test</h1>
+        <button id="get" onclick="sendRequest('GET')">GET</button>
+        <button id="post" onclick="sendRequest('POST')">POST</button>
+        <button id="delete" onclick="sendRequest('DELETE')">DELETE</button>
+    </div>
 </body>
-</html>
-HTTP/1.1 403 Forbidden
-date: Thu, 29 Aug 2024 18:41:38 GMT
+</html>HTTP/1.1 403 Forbidden
+date: Thu, 29 Aug 2024 19:43:30 GMT
 server: inghwang/0.0
 connection: keep-alive
-session: Thu, 29 Aug 2024 18:41:37 GMT
+session: Thu, 29 Aug 2024 19:43:30 GMT
 content-type:  text/html
 content-length: 623
 
@@ -59,675 +127,7 @@ p { font-size: 18px; }
 <p>We're sorry, but something went wrong.</p>
 <p>Error code: 403</p>
 <p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:38</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
-</body>
-</html>
-HTTP/1.1 403 Forbidden
-date: Thu, 29 Aug 2024 18:41:38 GMT
-server: inghwang/0.0
-connection: keep-alive
-session: Thu, 29 Aug 2024 18:41:37 GMT
-content-type:  text/html
-content-length: 623
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:38</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
-</body>
-</html>
-HTTP/1.1 32766
-content-type:  text/html
-content-length: 623
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:38</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
-</body>
-</html>
-HTTP/1.1 32766
-content-type:  text/html
-content-length: 623
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:38</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
-</body>
-</html>
-HTTP/1.1 403 Forbidden
-date: Thu, 29 Aug 2024 18:41:38 GMT
-server: inghwang/0.0
-connection: keep-alive
-session: Thu, 29 Aug 2024 18:41:37 GMT
-content-type:  text/html
-content-length: 623
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:38</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
-</body>
-</html>
-HTTP/1.1 403 Forbidden
-date: Thu, 29 Aug 2024 18:41:38 GMT
-server: inghwang/0.0
-connection: keep-alive
-session: Thu, 29 Aug 2024 18:41:37 GMT
-content-type:  text/html
-content-length: 623
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:38</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
-</body>
-</html>
-HTTP/1.1 403 Forbidden
-date: Thu, 29 Aug 2024 18:41:38 GMT
-server: inghwang/0.0
-connection: keep-alive
-session: Thu, 29 Aug 2024 18:41:37 GMT
-content-type:  text/html
-content-length: 623
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:38</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
-</body>
-</html>
-HTTP/1.1 403 Forbidden
-date: Thu, 29 Aug 2024 18:41:38 GMT
-server: inghwang/0.0
-connection: keep-alive
-session: Thu, 29 Aug 2024 18:41:37 GMT
-content-type:  text/html
-content-length: 623
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:38</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
-</body>
-</html>
-HTTP/1.1 403 Forbidden
-date: Thu, 29 Aug 2024 18:41:38 GMT
-server: inghwang/0.0
-connection: keep-alive
-session: Thu, 29 Aug 2024 18:41:37 GMT
-content-type:  text/html
-content-length: 623
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:38</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
-</body>
-</html>
-HTTP/1.1 403 Forbidden
-date: Thu, 29 Aug 2024 18:41:39 GMT
-server: inghwang/0.0
-connection: keep-alive
-session: Thu, 29 Aug 2024 18:41:37 GMT
-content-type:  text/html
-content-length: 623
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:39</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
-</body>
-</html>
-HTTP/1.1 403 Forbidden
-date: Thu, 29 Aug 2024 18:41:39 GMT
-server: inghwang/0.0
-connection: keep-alive
-session: Thu, 29 Aug 2024 18:41:37 GMT
-content-type:  text/html
-content-length: 623
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:39</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
-</body>
-</html>
-HTTP/1.1 403 Forbidden
-date: Thu, 29 Aug 2024 18:41:39 GMT
-server: inghwang/0.0
-connection: keep-alive
-session: Thu, 29 Aug 2024 18:41:37 GMT
-content-type:  text/html
-content-length: 623
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:39</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
-</body>
-</html>
-HTTP/1.1 403 Forbidden
-date: Thu, 29 Aug 2024 18:41:39 GMT
-server: inghwang/0.0
-connection: keep-alive
-session: Thu, 29 Aug 2024 18:41:37 GMT
-content-type:  text/html
-content-length: 623
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:39</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
-</body>
-</html>
-HTTP/1.1 403 Forbidden
-date: Thu, 29 Aug 2024 18:41:39 GMT
-server: inghwang/0.0
-connection: keep-alive
-session: Thu, 29 Aug 2024 18:41:37 GMT
-content-type:  text/html
-content-length: 623
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:39</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
-</body>
-</html>
-HTTP/1.1 403 Forbidden
-date: Thu, 29 Aug 2024 18:41:39 GMT
-server: inghwang/0.0
-connection: keep-alive
-session: Thu, 29 Aug 2024 18:41:37 GMT
-content-type:  text/html
-content-length: 623
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:39</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
-</body>
-</html>
-HTTP/1.1 403 Forbidden
-date: Thu, 29 Aug 2024 18:41:39 GMT
-server: inghwang/0.0
-connection: keep-alive
-session: Thu, 29 Aug 2024 18:41:37 GMT
-content-type:  text/html
-content-length: 623
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:39</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
-</body>
-</html>
-HTTP/1.1 403 Forbidden
-date: Thu, 29 Aug 2024 18:41:39 GMT
-server: inghwang/0.0
-connection: keep-alive
-session: Thu, 29 Aug 2024 18:41:37 GMT
-content-type:  text/html
-content-length: 623
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:39</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
-</body>
-</html>
-HTTP/1.1 403 Forbidden
-date: Thu, 29 Aug 2024 18:41:39 GMT
-server: inghwang/0.0
-connection: keep-alive
-session: Thu, 29 Aug 2024 18:41:37 GMT
-content-type:  text/html
-content-length: 623
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:39</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
-</body>
-</html>
-HTTP/1.1 403 Forbidden
-date: Thu, 29 Aug 2024 18:41:39 GMT
-server: inghwang/0.0
-connection: keep-alive
-session: Thu, 29 Aug 2024 18:41:37 GMT
-content-type:  text/html
-content-length: 623
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:39</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
-</body>
-</html>
-HTTP/1.1 200 OK
-content-type:  text/html
-content-length: 623
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:39</p>
-<div>
-<img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
-</div>
-</div>
-</body>
-</html>
-HTTP/1.1 403 Forbidden
-date: Thu, 29 Aug 2024 18:41:39 GMT
-server: inghwang/0.0
-connection: keep-alive
-session: Thu, 29 Aug 2024 18:41:37 GMT
-content-type:  text/html
-content-length: 623
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='UTF-8'>
-<title>Error Page</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.container { max-width: 800px; margin: auto; }
-h1 { color: #d9534f; }
-p { font-size: 18px; }
-.error-code { font-size: 24px; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class='container'>
-<h1>Error Page</h1>
-<p>We're sorry, but something went wrong.</p>
-<p>Error code: 403</p>
-<p class='error-code'>403 Forbidden</p>
-<p>Time of error: 2024-08-29 18:41:40</p>
+<p>Time of error: 2024-08-29 19:43:30</p>
 <div>
 <img src='https://http.cat/403' alt='HTTPCats error img' width='100%'>
 </div>

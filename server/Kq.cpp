@@ -222,6 +222,7 @@ void    Kq::eventRead(struct kevent& store)
                     plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
 				plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
 				plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, server[serverFd].getStandardTime(store.ident), 0);  //75초
+                std::cout<<"keep-alive: "<<server[serverFd].getStandardTime(store.ident)<<endl;
 				break ;
 		}
 	}

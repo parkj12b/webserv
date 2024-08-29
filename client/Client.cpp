@@ -50,7 +50,7 @@ LocationConfigData *Client::recurFindLocation(string url,
     return (recurFindLocation(passURL, configData));
 }
 
-Client::Client() : connect(true), connection(false), fd(0), port(0), msgSize(0), index(0), responseAmount(0), standardTime(7500), startLine(0), headerLine(0), contentLine(0)
+Client::Client() : connect(true), connection(false), fd(0), port(0), msgSize(0), index(0), responseAmount(0), standardTime(75), startLine(0), headerLine(0), contentLine(0)
 {
     request.port = port;
     request.fin = false;
@@ -260,6 +260,7 @@ int Client::setStart()
         //keepa-alive
         // standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
         standardTime = Server::serverConfig->getDefaultServer(port)->getHeaderTimeout();  //여기서 keep-alive setting
+        std::cout<<"standardTime: " <<standardTime<<std::endl;
         if ((request.status = startLine.check(msg.substr(0, flag))))  //ingu test
             return (1);
         msgSize -= (flag + 2);
@@ -305,6 +306,8 @@ int Client::setHeader()
                 msg = msg.substr(flag + 2);
                 //keep-alive
                 standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
+                std::cout<<"standardTime: " <<standardTime<<std::endl;
+                std::cout<<"server name: "<<Server::serverConfig->getDefaultServer(port)->getServerName()[0]<<endl;
                 LOG(cout << "response in location: " << &response << endl);
                 if (setMatchingLocation(request.url))
                 {
@@ -443,7 +446,7 @@ void    Client::resetClient()
     msgSize = 0;
     index = 0;
     responseAmount = 0;
-    standardTime = 7500;
+    standardTime = 75;
     msg.clear();
     // 여기서 뭔가 ServerConfigData, LocationConfigData를 초기화해주는 기분이 듦
     startLine = StartLine(port);
