@@ -552,7 +552,7 @@ bool    Client::setMatchingLocation(string url)
     }
     Trie &prefixTrie = serverConfigData->getPrefixTrie();
     request.location = prefixTrie.find(url);
-    LOG(cout << "location " << request.location << endl);
+    LOG(cout << "location: " << request.location << endl);
     if (request.location == "")
     {
         response.setLocationConfigData(NULL);

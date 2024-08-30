@@ -402,7 +402,6 @@ size_t  Response::setCgiContent(string &content_, size_t &status)
 
 void	Response::setCgiContentLength(size_t contentLength_)
 {
-    std::cout<<"dhjasfkljlasdk"<<std::endl;
     contentLength = contentLength_;
     makeHeader("content-length", toString(contentLength));
     makeEntity();
