@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/28 13:04:09 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/30 16:54:23 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,7 +260,7 @@ int Client::setStart()
         //keepa-alive
         // standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
         standardTime = Server::serverConfig->getDefaultServer(port)->getHeaderTimeout();  //여기서 keep-alive setting
-        std::cout<<"standardTime: " <<standardTime<<std::endl;
+        LOG(std::cout<<"standardTime: " <<standardTime<<std::endl);
         if ((request.status = startLine.check(msg.substr(0, flag))))  //ingu test
             return (1);
         msgSize -= (flag + 2);
@@ -306,8 +306,8 @@ int Client::setHeader()
                 msg = msg.substr(flag + 2);
                 //keep-alive
                 standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
-                std::cout<<"standardTime: " <<standardTime<<std::endl;
-                std::cout<<"server name: "<<Server::serverConfig->getDefaultServer(port)->getServerName()[0]<<endl;
+                LOG(std::cout<<"standardTime: " <<standardTime<<std::endl);
+                LOG(std::cout<<"server name: "<<Server::serverConfig->getDefaultServer(port)->getServerName()[0]<<endl;)
                 LOG(cout << "response in location: " << &response << endl);
                 if (setMatchingLocation(request.url))
                 {

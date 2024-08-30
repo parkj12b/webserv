@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/30 14:40:53 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/30 16:56:14 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,7 +200,7 @@ EVENT   Server::clientWrite(struct kevent& store)
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
     LOG(std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl);
-    write(writeLogs, buffer, client[store.ident].responseIndex());
+    // write(writeLogs, buffer, client[store.ident].responseIndex());
     // write(1, buffer, client[store.ident].responseIndex());
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     client[store.ident].plusIndex(index);
