@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/29 18:18:14 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/30 14:40:53 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,10 @@ EVENT Server::cgiRead(struct kevent& store)
 	LOG(cout << "cgiRead fd: " << store.ident << endl);
     //초기 세팅
     if (cgiContentLength.find(store.ident) == cgiContentLength.end())
+    {
         cgiContentLength[store.ident] = 0;
+        cgiContent[store.ident].clear();
+    }
 	readSize = read(store.ident, buf, BUFFER_SIZE);
 	LOG(cout << "CGI Read Size : " << readSize << endl);
 	if (readSize <= 0)

@@ -1,6 +1,6 @@
 <?php
 // 디버깅을 위한 설정
-error_reporting(E_ALL);
+// error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 function generate_html($query_params, $headers) {

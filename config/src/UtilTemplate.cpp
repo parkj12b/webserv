@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 15:26:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/26 14:40:28 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/30 13:38:39 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,4 +197,12 @@ bool    isFile(const char *path)
     if (S_ISREG(statbuf.st_mode))
         return true;
     return false;
+}
+
+string  getDir(string path)
+{
+    size_t pos = path.find_last_of("/");
+    if (pos == string::npos)
+        return path;
+    return path.substr(0, pos);
 }

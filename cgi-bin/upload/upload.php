@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         foreach ($_FILES['file_php']['name'] as $key => $name) {
             if ($_FILES['file_php']['error'][$key] == UPLOAD_ERR_OK) {
                 $tmp_name = $_FILES['file_php']['tmp_name'][$key];
-                $destination = '../../uploads/' . basename($name);
+                $destination = $uploadDir . basename($name);  //전자서명.png
 
                 // Move the uploaded file to the desired directory
                 if (move_uploaded_file($tmp_name, $destination)) {
@@ -16,7 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 } else {
                     echo "status: 400\r\n";
                 }
-            } else {
+            }
+            else {
                 echo "status: 400\r\n";
             }
         }

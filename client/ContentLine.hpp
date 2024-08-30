@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   EntityLine.hpp                                     :+:      :+:    :+:   */
+/*   ContentLine.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: inghwang <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 16:24:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/07/20 16:24:15 by inghwang         ###   ########.fr       */
+/*   Updated: 2024/08/30 14:21:12 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <sys/stat.h>
 # include "HeaderLine.hpp"
 # include "UtilTemplate.hpp"
+# include "CgiProcessor.hpp"
 
 /**
  * @brief reqeust contentLine class
