@@ -128,13 +128,15 @@ EVENT Server::cgiRead(struct kevent& store)
         cgiContentLength.erase(store.ident);
         if (status >= 400)
             return (ERROR);
+        cout<<"status: "<<status<<endl;
         LOG(cout << Kq::cgiFd[store.ident] << endl);
+        std::cout<<client[Kq::cgiFd[store.ident]].getMsg()<<endl;
         return (FINISH);
 	}
     // close(1);
     buf[readSize] = '\0';
     cgiContent[store.ident].append(buf, readSize);  //인자값으로 const char이 가능함
-    LOG(std::cout<<"cgiContent: "<<cgiContent[store.ident]<<std::endl);
+    std::cout<<"cgiContent: "<<cgiContent[store.ident]<<std::endl;
 
     // LOG(std::cout<<cgiContent<<std::endl);
     // LOG(std::cout<<cgiContentLength<<std::endl);
@@ -201,7 +203,7 @@ EVENT   Server::clientWrite(struct kevent& store)
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
     LOG(std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl);
-    write(writeLogs, buffer, client[store.ident].responseIndex());
+    // write(writeLogs, buffer, client[store.ident].responseIndex());
     // write(1, buffer, client[store.ident].responseIndex());
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     client[store.ident].plusIndex(index);
