@@ -333,9 +333,9 @@ size_t  Response::setCgiHeader(string &content_, size_t &status)
         if (headerPos != string::npos)
         {
             headerNameKey = headerNamePull.substr(0, headerPos);
+            HeaderLine::eraseSpace(headerNameKey, 1);
             if (std::find(cgiHeader.begin(), cgiHeader.end(), headerNameKey) != cgiHeader.end())
             {
-                LOG(std::cout<<"heeh"<<std::endl);
                 if (headerNameKey == "status")
                 {
                     std::stringstream ss(headerNamePull.substr(headerPos + 1));
