@@ -198,7 +198,9 @@ void    Response::makeFilePath(string& str)
     LOG(cout << "str: " << str << endl);
 }
 
-Response::Response() : cgiFlag(false)
+Response::Response() : cgiFlag(false), port(0), startHeaderLength(0), contentLength(0),
+    pathEnv(""), start(""), header(""), content(""), entity(""),
+    serverConfig(NULL), locationConfig(NULL)
 {
 }
 
@@ -565,7 +567,7 @@ void    Response::makeError()
         errorPage = location->getErrorPage();
         errorPath = errorPage[request.status];
     }
-    else
+    else if (serverConfig != NULL)
     {
         errorPage = serverConfig->getErrorPage();
         errorPath = errorPage[request.status];
