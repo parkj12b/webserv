@@ -9,5 +9,5 @@ testCase
 .DS_Store
 ./config/default.conf
 *.conf
-writeLog
+./writeLog
 

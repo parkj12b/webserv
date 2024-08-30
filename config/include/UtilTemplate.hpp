@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 17:27:22 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/25 19:46:13 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/30 13:38:56 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,6 @@ bool        endsWith(const string& text, const string& suffix);
 bool        isWithinBasePath(const string &basePath, const string &requestPath);
 
 bool        isFile(const char *path);
+string      getDir(string path);
+
 #endif
