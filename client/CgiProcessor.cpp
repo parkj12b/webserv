@@ -262,5 +262,6 @@ void	CgiProcessor::executeCGIScript(const string path)
 		Kq::processor.push_back(pid);
 		Kq::cgiFd[pipefd[0]] = request.clientFd;
 		Kq::cgiFd.insert(make_pair(pipefd[0], request.clientFd));
+		Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 	}
 }

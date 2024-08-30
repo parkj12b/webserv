@@ -173,8 +173,8 @@ void    Kq::eventRead(struct kevent& store)
 		if (serverFd == 0)
         {
             LOG(std::cout<<"No enroll cgi: "<<store.ident << std::endl);
+            cgiFd.erase(iter->first);
             plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-            cgiFd.erase(store.ident);
             close(store.ident);
 			return ;
         }
@@ -205,7 +205,9 @@ void    Kq::eventRead(struct kevent& store)
 		serverFd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
         {
-            LOG(std::cout<<"No enroll client: "<< store.ident << std::endl);
+            LOG(std::cout<<"No enroll read: "<<store.ident << std::endl);
+            // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+            // clientFin(store);
 			return ;
         }
 		event = server[serverFd].clientRead(store);
@@ -219,10 +221,11 @@ void    Kq::eventRead(struct kevent& store)
 				break ;
 			case EXPECT:
 			case FINISH:
-                if (!server[serverFd].getResponseCgi(store.ident))  //cgi임을 체크하기 cgi임을 확인하고 write를 완료하면 response를 초기화를 진행한다. 그렇게 되면 여태까지 만들어놓은 response는 사라진다. 
+                if (!server[serverFd].getResponseCgi(store.ident) && findServer[store.ident] != 0)  //cgi임을 체크하기 cgi임을 확인하고 write를 완료하면 response를 초기화를 진행한다. 그렇게 되면 여태까지 만들어놓은 response는 사라진다. 
                     plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
 				plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
 				plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, server[serverFd].getStandardTime(store.ident), 0);  //75초
+                std::cout<<"keep-alive: "<<server[serverFd].getStandardTime(store.ident)<<endl;
 				break ;
 		}
 	}
