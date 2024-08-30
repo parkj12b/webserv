@@ -166,10 +166,16 @@ bool    isWithinBasePath(const string &basePath, const string &requestPath)
     LOG(cout << "requestPath: " << requestPath << endl);
     realBasePath = realpath(basePath.c_str(), NULL);
     if (!realBasePath)
+    {
+        LOG(cout<<"403 1 1"<<endl);
         return false;
+    }
     resolvedPathCstr = realpath(requestPath.c_str(), NULL);
     if (!resolvedPathCstr)
+    {
+        LOG(cout<<"403 1 2"<<endl);
         return false;
+    }
     LOG(cout << "resolved path: " << resolvedPathCstr << endl);
     resolvedPath = resolvedPathCstr;
     delete resolvedPathCstr;
@@ -178,6 +184,7 @@ bool    isWithinBasePath(const string &basePath, const string &requestPath)
         delete realBasePath;
         return true;
     }
+    LOG(cout<<"403 1 3"<<endl);
     return false;
 }
 

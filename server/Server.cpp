@@ -71,8 +71,8 @@ ssize_t Server::getStandardTime(int fd)
     ssize_t   standardTime = client[fd].getStandardTime();
 
     if (standardTime < 0)
-        return (7500);
-    return (standardTime);
+        return (75000);
+    return (standardTime * 1000);
 }
 
 void setLinger(int sockfd, int linger_time) {
@@ -119,12 +119,12 @@ EVENT Server::cgiRead(struct kevent& store)
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
         // LOG(cout<<"status: "<<status<<endl);
-        if (status >= 400)
-            return (ERROR);
-        LOG(cout << Kq::cgiFd[store.ident] << endl);
         cgiContent[store.ident].clear();  //이부분은 말이 안됨 동시에 여러개를 처리할 가능성이 있음
         // cgiContentLength[store.ident] = 0;
         cgiContentLength.erase(store.ident);
+        if (status >= 400)
+            return (ERROR);
+        LOG(cout << Kq::cgiFd[store.ident] << endl);
         return (FINISH);
 	}
     // close(1);

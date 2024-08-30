@@ -155,6 +155,7 @@ void    Response::makeFilePath(string& str)
     // LOG(cout << "host: " << request.header["host"].front() << endl);
     LOG(cout << "str before: " << str << endl);
     str = location->getRoot() + "/" + str;
+    LOG(cout<<"str: "<<str<<endl);
     if (isWithinBasePath(location->getRoot(), str) == false)
     {
         request.status = 403;
@@ -448,8 +449,10 @@ bool    Response::init()
     {
         serverConfig = Server::serverConfig->getDefaultServer(port);
         if (serverConfig == NULL)
+        {
             request.status = 400;
-        return (true);
+            return (true);
+        }
     }
     return (false);
 }
