@@ -744,7 +744,7 @@ void    Response::makePost()
     LOG(cout<<"Method: POST"<<endl);
 	CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
 
-	// if (cgiFlag)
+    chdir(request.url.c_str());
 	if (isValidUploadPath() && cgiFlag)
 	{
         // cgiProcessor.insertEnv("CONTENT_FILE", request.contentFileName);

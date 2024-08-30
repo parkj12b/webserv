@@ -250,7 +250,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 		int fd = open(request.contentFileName.c_str(), O_RDONLY, 0644);
 		dup2(fd, STDIN_FILENO);
 		close(fd);
-		chdir()
+		// chdir()
 		if (execve(&cgiCommand[0], argv, envp) == -1)
 		{
 			request.status = 500;
