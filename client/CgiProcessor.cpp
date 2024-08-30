@@ -222,6 +222,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 	pid_t pid = fork();
 	if (pid == -1)
 	{
+		cout << "fork() error" << endl;
 		close(pipefd[0]);
 		close(pipefd[1]);
 		request.status = 500;
@@ -245,8 +246,8 @@ void	CgiProcessor::executeCGIScript(const string path)
 		}
 		envp[metaVariables.size()] = 0;
 		int fd = open(request.contentFileName.c_str(), O_RDONLY, 0644);
-		
 		dup2(fd, STDIN_FILENO);
+		close(fd);
 		if (execve(&cgiCommand[0], argv, envp) == -1)
 		{
 			request.status = 500;
@@ -256,6 +257,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 	}
 	else
 	{
+		Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 		close(pipefd[1]);
 		Kq::processor.push_back(pid);
 		Kq::cgiFd[pipefd[0]] = request.clientFd;

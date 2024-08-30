@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/28 22:01:31 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/29 18:18:14 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,13 +118,13 @@ EVENT Server::cgiRead(struct kevent& store)
         size_t  status = 0;
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
-        LOG(cout<<"status: "<<status<<endl);
-        if (status >= 400)
-            return (ERROR);
-        LOG(cout << Kq::cgiFd[store.ident] << endl);
+        // LOG(cout<<"status: "<<status<<endl);
         cgiContent[store.ident].clear();  //이부분은 말이 안됨 동시에 여러개를 처리할 가능성이 있음
         // cgiContentLength[store.ident] = 0;
         cgiContentLength.erase(store.ident);
+        if (status >= 400)
+            return (ERROR);
+        LOG(cout << Kq::cgiFd[store.ident] << endl);
         return (FINISH);
 	}
     // close(1);

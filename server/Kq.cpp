@@ -6,12 +6,14 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/28 21:57:53 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/29 18:23:30 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Kq.hpp"
 #include "UtilTemplate.hpp" 
+
+using namespace std;
 
 extern int logs;
 
@@ -192,8 +194,8 @@ void    Kq::eventRead(struct kevent& store)
                 LOG(std::cout<<"iter->first: "<<iter->first<<std::endl);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
-				close(iter->first);
-                cgiFd.erase(iter->first);
+				close(store.ident);  //cgi에서 사용한 fd를 닫지 않음
+                cgiFd.erase(store.ident);
 				break ;
 		}
 	}
@@ -301,7 +303,10 @@ void    Kq::mainLoop()
         if (server.find(static_cast<int>(store[i].ident)) != server.end())
         {
             if (store[i].flags == EV_ERROR)
+            {
+                cout << "server EV_ERROR" << endl;
                 serverError(store[i]);  //server에 연결된 모든 client 종료
+            }
             else if (store[i].filter == EVFILT_READ) //read event(complete)
                 plusClient(static_cast<int>(store[i].ident));
         }
@@ -309,7 +314,10 @@ void    Kq::mainLoop()
         {
             LOG(std::cout<<"store[i].ident: "<<store[i].ident<<std::endl);
             if (store[i].flags == EV_ERROR)
+            {
+                LOG(cout << "client EV_ERROR" << endl);
                 clientFin(store[i]);  //client 종료
+            }
             else if (store[i].filter == EVFILT_READ)
             {
                 LOG(std::cout<<"read"<<std::endl);
