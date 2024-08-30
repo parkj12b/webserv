@@ -112,6 +112,7 @@ void	CgiProcessor::selectCgiCmd(string url)
 	const string	availCgiExtensions[2] = {".py", ".php"};
 	string			cgiExtension;
 	size_t			cgiFilePos;
+	cout << "Url: " << url << endl;
 	for (int i=0; i<2; i++)
 	{
 		cgiExtension = availCgiExtensions[i];
@@ -119,6 +120,7 @@ void	CgiProcessor::selectCgiCmd(string url)
 		if (cgiFilePos != string::npos)
 			break ;
 	}
+	cout << "cgiExtension: " << cgiExtension << endl;
 	cgiCommand = (!cgiExtension.compare(".py")) ? "python3" : "php-cgi";
 	scriptFile = url.substr(0, cgiFilePos + cgiExtension.size());
 }
@@ -248,6 +250,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 		int fd = open(request.contentFileName.c_str(), O_RDONLY, 0644);
 		dup2(fd, STDIN_FILENO);
 		close(fd);
+		chdir()
 		if (execve(&cgiCommand[0], argv, envp) == -1)
 		{
 			request.status = 500;

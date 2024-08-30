@@ -40,7 +40,7 @@ def process_file(file_item):
 
         # Check if the file has a .py or .php extension
         if filename.endswith('.py') or filename.endswith('.php'):
-            print(f"status: 403\r")
+            print(f"status: 400\r")
             return
 
         # Define the path where the file will be saved

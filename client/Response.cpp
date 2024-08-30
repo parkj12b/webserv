@@ -642,6 +642,21 @@ void    Response::makeContent(int fd)
     close(fd);
 }
 
+bool    Response::isValidUploadPath()
+{
+    string              uploadPath = locationConfig->getFastcgiParam()["UPLOAD_PATH"];
+    string              url = request.url;
+
+    LOG(cout << "upload path : " << uploadPath << endl;)
+
+    if (uploadPath == "" || isDirectory(uploadPath.c_str()) == false)
+    {
+        request.status = 404;
+        return (false);
+    }
+    return (true);
+}
+
 void    Response::makeEntity()
 {
     entity.clear();
@@ -726,7 +741,8 @@ void    Response::makePost()
     LOG(cout<<"Method: POST"<<endl);
 	CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
 
-	if (cgiFlag)
+	// if (cgiFlag)
+	if (isValidUploadPath() && cgiFlag)
 	{
         // cgiProcessor.insertEnv("CONTENT_FILE", request.contentFileName);
 		cgiProcessor.checkPostContentType(request.url);
