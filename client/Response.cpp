@@ -155,6 +155,7 @@ void    Response::makeFilePath(string& str)
     // LOG(cout << "host: " << request.header["host"].front() << endl);
     LOG(cout << "str before: " << str << endl);
     str = location->getRoot() + "/" + str;
+    LOG(cout<<"str: "<<str<<endl);
     if (isWithinBasePath(location->getRoot(), str) == false)
     {
         request.status = 403;
@@ -332,9 +333,9 @@ size_t  Response::setCgiHeader(string &content_, size_t &status)
         if (headerPos != string::npos)
         {
             headerNameKey = headerNamePull.substr(0, headerPos);
+            HeaderLine::eraseSpace(headerNameKey, 1);
             if (std::find(cgiHeader.begin(), cgiHeader.end(), headerNameKey) != cgiHeader.end())
             {
-                LOG(std::cout<<"heeh"<<std::endl);
                 if (headerNameKey == "status")
                 {
                     std::stringstream ss(headerNamePull.substr(headerPos + 1));
@@ -364,6 +365,9 @@ size_t  Response::setCgiContent(string &content_, size_t &status)
     size_t  pos;
     size_t  temp;
 
+    pos = content_.find("\r\n");
+    if (pos != string::npos && pos == 0)
+        content_ = content_.substr(pos + 2);
     pos = 0;
     do
     {
@@ -445,8 +449,10 @@ bool    Response::init()
     {
         serverConfig = Server::serverConfig->getDefaultServer(port);
         if (serverConfig == NULL)
+        {
             request.status = 400;
-        return (true);
+            return (true);
+        }
     }
     return (false);
 }
@@ -639,6 +645,21 @@ void    Response::makeContent(int fd)
     close(fd);
 }
 
+bool    Response::isValidUploadPath()
+{
+    string              uploadPath = locationConfig->getFastcgiParam()["UPLOAD_PATH"];
+    string              url = request.url;
+
+    LOG(cout << "upload path : " << uploadPath << endl;)
+
+    if (uploadPath == "" || isDirectory(uploadPath.c_str()) == false)
+    {
+        request.status = 404;
+        return (false);
+    }
+    return (true);
+}
+
 void    Response::makeEntity()
 {
     entity.clear();
@@ -723,7 +744,8 @@ void    Response::makePost()
     LOG(cout<<"Method: POST"<<endl);
 	CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
 
-	if (cgiFlag)
+    chdir(request.url.c_str());
+	if (isValidUploadPath() && cgiFlag)
 	{
         // cgiProcessor.insertEnv("CONTENT_FILE", request.contentFileName);
 		cgiProcessor.checkPostContentType(request.url);

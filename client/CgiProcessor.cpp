@@ -112,6 +112,7 @@ void	CgiProcessor::selectCgiCmd(string url)
 	const string	availCgiExtensions[2] = {".py", ".php"};
 	string			cgiExtension;
 	size_t			cgiFilePos;
+	cout << "Url: " << url << endl;
 	for (int i=0; i<2; i++)
 	{
 		cgiExtension = availCgiExtensions[i];
@@ -119,6 +120,7 @@ void	CgiProcessor::selectCgiCmd(string url)
 		if (cgiFilePos != string::npos)
 			break ;
 	}
+	cout << "cgiExtension: " << cgiExtension << endl;
 	cgiCommand = (!cgiExtension.compare(".py")) ? "python3" : "php-cgi";
 	scriptFile = url.substr(0, cgiFilePos + cgiExtension.size());
 }
@@ -222,12 +224,12 @@ void	CgiProcessor::executeCGIScript(const string path)
 	pid_t pid = fork();
 	if (pid == -1)
 	{
+		cout << "fork() error" << endl;
 		close(pipefd[0]);
 		close(pipefd[1]);
 		request.status = 500;
 		return ;
 	}
-	Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 	if (pid == 0)
 	{
 		LOG(std::cout<<"pipe fd: "<<pipefd[0]<<", "<<pipefd[1]<<std::endl);
@@ -246,8 +248,9 @@ void	CgiProcessor::executeCGIScript(const string path)
 		}
 		envp[metaVariables.size()] = 0;
 		int fd = open(request.contentFileName.c_str(), O_RDONLY, 0644);
-		
 		dup2(fd, STDIN_FILENO);
+		close(fd);
+		// chdir()
 		if (execve(&cgiCommand[0], argv, envp) == -1)
 		{
 			request.status = 500;
@@ -257,9 +260,11 @@ void	CgiProcessor::executeCGIScript(const string path)
 	}
 	else
 	{
+		Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 		close(pipefd[1]);
 		Kq::processor.push_back(pid);
 		Kq::cgiFd[pipefd[0]] = request.clientFd;
 		Kq::cgiFd.insert(make_pair(pipefd[0], request.clientFd));
+		Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 	}
 }

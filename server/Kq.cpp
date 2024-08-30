@@ -6,12 +6,14 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/28 21:57:53 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/29 18:23:30 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Kq.hpp"
 #include "UtilTemplate.hpp" 
+
+using namespace std;
 
 extern int logs;
 
@@ -170,9 +172,10 @@ void    Kq::eventRead(struct kevent& store)
 		serverFd = findServer[cgiFd[store.ident]]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
         {
-            LOG(std::cout<<"No enroll: "<<store.ident << std::endl);
+            LOG(std::cout<<"No enroll cgi: "<<store.ident << std::endl);
+            cgiFd.erase(iter->first);
             plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-            // close(store.ident);
+            close(store.ident);
 			return ;
         }
 		event = server[serverFd].cgiRead(store);
@@ -191,8 +194,8 @@ void    Kq::eventRead(struct kevent& store)
                 LOG(std::cout<<"iter->first: "<<iter->first<<std::endl);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
-				close(iter->first);  //cgi에서 사용한 fd를 닫지 않음
-                cgiFd.erase(iter->first);
+				close(store.ident);  //cgi에서 사용한 fd를 닫지 않음
+                cgiFd.erase(store.ident);
 				break ;
 		}
 	}
@@ -202,7 +205,7 @@ void    Kq::eventRead(struct kevent& store)
 		serverFd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
         {
-            LOG(std::cout<<"No enroll: "<<store.ident << std::endl);
+            LOG(std::cout<<"No enroll read: "<<store.ident << std::endl);
             // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
             // clientFin(store);
 			return ;
@@ -218,10 +221,11 @@ void    Kq::eventRead(struct kevent& store)
 				break ;
 			case EXPECT:
 			case FINISH:
-                if (!server[serverFd].getResponseCgi(store.ident))  //cgi임을 체크하기 cgi임을 확인하고 write를 완료하면 response를 초기화를 진행한다. 그렇게 되면 여태까지 만들어놓은 response는 사라진다. 
+                if (!server[serverFd].getResponseCgi(store.ident) && findServer[store.ident] != 0)  //cgi임을 체크하기 cgi임을 확인하고 write를 완료하면 response를 초기화를 진행한다. 그렇게 되면 여태까지 만들어놓은 response는 사라진다. 
                     plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
 				plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
 				plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, server[serverFd].getStandardTime(store.ident), 0);  //75초
+                std::cout<<"keep-alive: "<<server[serverFd].getStandardTime(store.ident)<<endl;
 				break ;
 		}
 	}
@@ -299,7 +303,10 @@ void    Kq::mainLoop()
         if (server.find(static_cast<int>(store[i].ident)) != server.end())
         {
             if (store[i].flags == EV_ERROR)
+            {
+                cout << "server EV_ERROR" << endl;
                 serverError(store[i]);  //server에 연결된 모든 client 종료
+            }
             else if (store[i].filter == EVFILT_READ) //read event(complete)
                 plusClient(static_cast<int>(store[i].ident));
         }
@@ -307,7 +314,10 @@ void    Kq::mainLoop()
         {
             LOG(std::cout<<"store[i].ident: "<<store[i].ident<<std::endl);
             if (store[i].flags == EV_ERROR)
+            {
+                LOG(cout << "client EV_ERROR" << endl);
                 clientFin(store[i]);  //client 종료
+            }
             else if (store[i].filter == EVFILT_READ)
             {
                 LOG(std::cout<<"read"<<std::endl);

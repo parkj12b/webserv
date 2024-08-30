@@ -125,6 +125,7 @@ class Response
         int     getDefaultErrorPage(int statusCode); // returns fd of default error page
         void    makeHeader(std::string key, std::string value); //key -> value
         void    makeContent(int fd);                            //make content
+        bool    isValidUploadPath();                            //check upload path
         //logic
         void    makeEntity();               //plus start, header, content
         void    makeGet();                  //GET method make response
