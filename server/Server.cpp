@@ -120,6 +120,7 @@ EVENT Server::cgiRead(struct kevent& store)
 	{
         size_t  status = 0;
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
+        std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl;
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
         // LOG(cout<<"status: "<<status<<endl);
         cgiContent[store.ident].clear();  //이부분은 말이 안됨 동시에 여러개를 처리할 가능성이 있음
@@ -127,14 +128,16 @@ EVENT Server::cgiRead(struct kevent& store)
         cgiContentLength.erase(store.ident);
         if (status >= 400)
             return (ERROR);
+        cout<<"status: "<<status<<endl;
         LOG(cout << Kq::cgiFd[store.ident] << endl);
+        std::cout<<client[Kq::cgiFd[store.ident]].getMsg()<<endl;
         return (FINISH);
 	}
     // close(1);
     buf[readSize] = '\0';
     cgiContent[store.ident].append(buf, readSize);  //인자값으로 const char이 가능함
-    // LOG(std::cout<<"cgiContent: "<<cgiContent[store.ident]<<std::endl);
     std::cout<<"cgiContent: "<<cgiContent[store.ident]<<std::endl;
+
     // LOG(std::cout<<cgiContent<<std::endl);
     // LOG(std::cout<<cgiContentLength<<std::endl);
     cgiContentLength[store.ident] += readSize;

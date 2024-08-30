@@ -206,8 +206,6 @@ void    Kq::eventRead(struct kevent& store)
 		if (serverFd == 0)
         {
             LOG(std::cout<<"No enroll read: "<<store.ident << std::endl);
-            // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-            // clientFin(store);
 			return ;
         }
 		event = server[serverFd].clientRead(store);

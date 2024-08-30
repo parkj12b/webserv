@@ -52,14 +52,13 @@ function main() {
 	
     // 지원하지 않는 Content-Type 처리
     if ($content_type != "application/x-www-form-urlencoded" && $content_type != "application/json") {
-		echo "status: 400\r\n"; // 상태 코드 400 반환
+        echo "status: 400\r\n"; // 상태 코드 400 반환
         exit(1);
     }
 	
     // 요청 데이터 읽기
     $content_data = file_get_contents('php://stdin');
-    print_r($content_data . "\r\n");
-
+    
     // Content-Type에 따라 적절한 함수 호출
     if ($content_type == "application/x-www-form-urlencoded") {
         process_x_www_form_urlencoded_content();

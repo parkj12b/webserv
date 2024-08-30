@@ -203,9 +203,9 @@ void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content, siz
 {
 	size_t  pos;
 
-    LOG(std::cout<<"cgiContentLength: "<<cgiContentLength<<std::endl);
+    LOG(std::cout << "cgiContentLength: " << cgiContentLength<<std::endl);
     pos = response.setCgiContent(content, status);
-    LOG(std::cout<<"cgi pos: "<<pos<<std::endl);
+    LOG(std::cout << "cgi pos: " << pos << std::endl);
     if (status >= 400)
         return ;
     // if (cgiContentLength - pos > 0)
@@ -555,7 +555,7 @@ bool    Client::setMatchingLocation(string url)
     }
     Trie &prefixTrie = serverConfigData->getPrefixTrie();
     request.location = prefixTrie.find(url);
-    LOG(cout << "location " << request.location << endl);
+    LOG(cout << "location: " << request.location << endl);
     if (request.location == "")
     {
         response.setLocationConfigData(NULL);
