@@ -20,6 +20,7 @@ public:
 	void	insertEnv(string key, string value);
 	void	checkPostContentType(const string path);
 	void	executeCGIScript(const string path);
+	static  string EXECUTE_PATH;
 private:
 	CgiProcessor();
 	CgiProcessor(const CgiProcessor& rhs);
