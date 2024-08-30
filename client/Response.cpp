@@ -336,6 +336,9 @@ size_t  Response::setCgiHeader(string &content_, size_t &status)
             HeaderLine::eraseSpace(headerNameKey, 1);
             if (std::find(cgiHeader.begin(), cgiHeader.end(), headerNameKey) != cgiHeader.end())
             {
+                content_ = content_.substr(crlfPos + 2);
+                makeHeader(headerNameKey, headerNamePull.substr(headerPos + 1));
+                LOG(cout<<headerNameKey<<" : "<<headerNamePull.substr(headerPos + 1));
                 if (headerNameKey == "status")
                 {
                     std::stringstream ss(headerNamePull.substr(headerPos + 1));
@@ -350,9 +353,6 @@ size_t  Response::setCgiHeader(string &content_, size_t &status)
                         return (0);
                     }
                 }
-                content_ = content_.substr(crlfPos + 2);
-                makeHeader(headerNameKey, headerNamePull.substr(headerPos + 1));
-                LOG(cout<<headerNameKey<<" : "<<headerNamePull.substr(headerPos + 1));
                 return (crlfPos + 2);
             }
         }
@@ -708,7 +708,7 @@ void    Response::makeGet()
 		start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 		// makeHeader("content-type", "text/html");
 		// makeHeader("content-length", toString(contentLength)); //여기서 추가하고 나중에 또 추가함
-		makeHeader("status", toString(request.status));
+		// makeHeader("status", toString(request.status));  //이걸 왜 넣으신 거죠??
 		content += cgiProcessor.getCgiContent();
 		LOG(cout << cgiProcessor.getCgiContent() << '\n');
         // LOG(std::cout<<header);
@@ -722,7 +722,7 @@ void    Response::makeGet()
 			// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 			while (!cgiProcessor.getFin())
 				cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
-            makeHeader("Content-Type", "text/html");  //why???
+            // makeHeader("Content-Type", "text/html");  //이걸 왜 넣으신 거죠??
 			content += cgiProcessor.getCgiContent();
             LOG(cout << cgiProcessor.getCgiContent() << '\n');
             // fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);
