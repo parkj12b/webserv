@@ -651,7 +651,7 @@ bool    Response::isValidUploadPath()
     string              url = request.url;
 
     LOG(cout << "upload path : " << uploadPath << endl;)
-
+    
     if (uploadPath == "" || isDirectory(uploadPath.c_str()) == false)
     {
         request.status = 404;
@@ -744,7 +744,10 @@ void    Response::makePost()
     LOG(cout<<"Method: POST"<<endl);
 	CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
 
-    chdir(request.url.c_str());
+
+    chdir(getDir(request.url).c_str());
+    cout << "request url: " << request.url << endl;
+    system("pwd");
 	if (isValidUploadPath() && cgiFlag)
 	{
         // cgiProcessor.insertEnv("CONTENT_FILE", request.contentFileName);
