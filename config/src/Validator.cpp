@@ -69,6 +69,7 @@ ServerConfigData    *Validator::checkServer(ServerConfig *serverConfig)
     
     checkServerName(serverData, serverConfig);
     checkPort(serverData, serverConfig);
+    checkServerKeepaliveTimeout(serverData, serverConfig);
     // checkDuplicateServerConfig(serverData);
     map<string, map<int, LocationConfig *> > &location = serverConfig->location;
     Trie &prefixTrie = serverData->getPrefixTrie();

@@ -71,8 +71,8 @@ ssize_t Server::getStandardTime(int fd)
     ssize_t   standardTime = client[fd].getStandardTime();
 
     if (standardTime < 0)
-        return (7500);
-    return (standardTime);
+        return (75000);
+    return (standardTime * 1000);
 }
 
 void setLinger(int sockfd, int linger_time) {

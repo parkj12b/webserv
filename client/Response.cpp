@@ -449,8 +449,10 @@ bool    Response::init()
     {
         serverConfig = Server::serverConfig->getDefaultServer(port);
         if (serverConfig == NULL)
+        {
             request.status = 400;
-        return (true);
+            return (true);
+        }
     }
     return (false);
 }
