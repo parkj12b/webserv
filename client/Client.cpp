@@ -440,8 +440,11 @@ int Client::setTrailer(void)
 
 void    Client::resetClient()
 {
+    LOG(cout<<"reset fd: "<<fd<<endl);
     request.fin = false;
     request.status = 0;
+    // request.header.clear();
+    // request.query.clear();
     connect = true;
     msgSize = 0;
     index = 0;
@@ -470,6 +473,7 @@ void    Client::setMessage(const char* msgRequest, int &readSize)
     write(logs, msgRequest, readSize);
     if (setStart())  //max size literal
     {
+        request.header["host"].push_back(Server::serverConfig->getDefaultServer(port)->getServerName()[0]);
         request.fin = true;
         LOG(std::cout<<fd<<" "<<request.status<<" ");
         LOG(std::cout<<"Startline Error\n");
@@ -478,6 +482,7 @@ void    Client::setMessage(const char* msgRequest, int &readSize)
     if (setHeader())  //max size literal, 헤더 파싱
     {
         request.fin = true;
+        request.header["host"].push_back(Server::serverConfig->getDefaultServer(port)->getServerName()[0]);
         LOG(std::cout<<"Header Error\n");
         return ;
     }

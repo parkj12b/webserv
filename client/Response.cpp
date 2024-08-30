@@ -202,6 +202,7 @@ Response::Response() : cgiFlag(false), port(0), startHeaderLength(0), contentLen
     pathEnv(""), start(""), header(""), content(""), entity(""),
     serverConfig(NULL), locationConfig(NULL)
 {
+    request.status = 0;
 }
 
 Response::Response(const Response& src)
@@ -347,17 +348,18 @@ size_t  Response::setCgiHeader(string &content_, size_t &status)
             {
                 content_ = content_.substr(crlfPos + 2);
                 makeHeader(headerNameKey, headerNamePull.substr(headerPos + 1));
-                LOG(cout<<headerNameKey<<" : "<<headerNamePull.substr(headerPos + 1));
+                LOG(cout<<headerNameKey<<" : "<<headerNamePull.substr(headerPos + 1)<<endl);
                 if (headerNameKey == "status")
                 {
                     std::stringstream ss(headerNamePull.substr(headerPos + 1));
                     ss >> status;
                     request.status = status;
                     LOG(cout<<request.status<<endl);
-                    LOG(std::cout<<"status satt"<<std::endl);
+                    LOG(std::cout<<"status status"<<std::endl);
+                    request.status = status;
                     if (status >= 400)
                     {
-                        LOG(cout<<"ERROROR"<<endl);
+                        LOG(cout<<"ERROROR "<<request.header["host"].size()<<endl);
                         makeError();
                         return (0);
                     }
@@ -719,10 +721,9 @@ void    Response::makeGet()
 				cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
 		}
 		// 나중에 content-length가 0일 때, 서버 에러 추가
-		start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
+		// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 		// makeHeader("content-type", "text/html");
 		// makeHeader("content-length", toString(contentLength)); //여기서 추가하고 나중에 또 추가함
-		// makeHeader("status", toString(request.status));  //이걸 왜 넣으신 거죠??
 		content += cgiProcessor.getCgiContent();
 		LOG(cout << cgiProcessor.getCgiContent() << '\n');
         // LOG(std::cout<<header);
@@ -736,7 +737,6 @@ void    Response::makeGet()
 			// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 			while (!cgiProcessor.getFin())
 				cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
-            // makeHeader("Content-Type", "text/html");  //이걸 왜 넣으신 거죠??
 			content += cgiProcessor.getCgiContent();
             LOG(cout << cgiProcessor.getCgiContent() << '\n');
             // fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);
