@@ -565,6 +565,11 @@ void    Response::makeError()
         errorPage = location->getErrorPage();
         errorPath = errorPage[request.status];
     }
+    else
+    {
+        errorPage = serverConfig->getErrorPage();
+        errorPath = errorPage[request.status];
+    }
 
     LOG(cout << "errorPath: " << errorPath << endl);
     int fd = -1;
