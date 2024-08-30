@@ -1,7 +1,15 @@
 #include <sys/stat.h>
+#include <dirent.h>
 #include "CgiProcessor.hpp"
 #include "Kq.hpp"
 #include "UtilTemplate.hpp" 
+
+string initEXCUTEPATH()
+{
+	return (realpath(".", NULL));
+}
+
+string CgiProcessor::EXECUTE_PATH = initEXCUTEPATH();
 
 CgiProcessor::CgiProcessor(Request &request_, ServerConfigData *serverConfig_, LocationConfigData *locationConfig_, string pathEnv_)
 	:request(request_)
@@ -230,6 +238,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 		request.status = 500;
 		return ;
 	}
+
 	if (pid == 0)
 	{
 		LOG(std::cout<<"pipe fd: "<<pipefd[0]<<", "<<pipefd[1]<<std::endl);
@@ -260,11 +269,12 @@ void	CgiProcessor::executeCGIScript(const string path)
 	}
 	else
 	{
+		chdir(EXECUTE_PATH.c_str());
 		Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 		close(pipefd[1]);
 		Kq::processor.push_back(pid);
 		Kq::cgiFd[pipefd[0]] = request.clientFd;
-		Kq::cgiFd.insert(make_pair(pipefd[0], request.clientFd));
-		Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
+		// Kq::cgiFd.insert(make_pair(pipefd[0], request.clientFd));
+		// Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 	}
 }

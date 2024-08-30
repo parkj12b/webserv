@@ -10,15 +10,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $destination = $uploadDir . basename($name);  //전자서명.png
 
                 // Move the uploaded file to the desired directory
-                try{
-                    if (move_uploaded_file($tmp_name, $destination)) {
-                        echo "status: 302\r\n";
-                        echo "location: /upload_success.html\r\n";
-                    } else {
-                        echo "status: 400\r\n";
-                    }
-                }
-                catch (Exception $e) {
+                if (move_uploaded_file($tmp_name, $destination)) {
+                    echo "status: 302\r\n";
+                    echo "location: /upload_success.html\r\n";
+                } else {
                     echo "status: 400\r\n";
                 }
             }
