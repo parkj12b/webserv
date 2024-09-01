@@ -762,7 +762,7 @@ void    Response::makePost()
 
 
     chdir(getDir(request.url).c_str());
-    cout << "request url: " << request.url << endl;
+    LOG(cout << "request url: " << request.url << endl);
     system("pwd");
 	if (isValidUploadPath() && cgiFlag)
 	{
