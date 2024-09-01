@@ -3,93 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTTP Method Test</title>
+    <title>Back to Home Button</title>
     <style>
+        /* General Styles */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
         }
 
         .container {
             text-align: center;
-            background-color: #fff;
-            padding: 20px 40px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
         }
 
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        button {
-            padding: 10px 20px;
-            margin: 10px;
+        .back-home-button {
+            display: inline-block;
+            padding: 15px 30px;
             font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
             border: none;
             border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s, transform 0.3s;
         }
 
-        button:hover {
-            background-color: #ddd;
+        .back-home-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-3px);
         }
 
-        button#get {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        button#post {
-            background-color: #2196F3;
-            color: white;
-        }
-
-        button#delete {
-            background-color: #f44336;
-            color: white;
+        .back-home-button:active {
+            background-color: #00408d;
+            transform: translateY(0);
         }
     </style>
-    <script>
-        function sendRequest(method) {
-            const url = '/test';
-            const xhr = new XMLHttpRequest();
-
-            xhr.open(method, url, true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status >= 200 && xhr.status < 300) {
-                        alert('Response: ' + xhr.responseText);
-                    } else {
-                        alert('Error: ' + xhr.status + ' ' + xhr.statusText);
-                    }
-                }
-            };
-
-            if (method === 'POST') {
-                xhr.send('data=example');
-            } else {
-                xhr.send();
-            }
-        }
-    </script>
 </head>
 <body>
     <div class="container">
-        <h1>HTTP Method Test</h1>
-        <button id="get" onclick="sendRequest('GET')">GET</button>
-        <button id="post" onclick="sendRequest('POST')">POST</button>
-        <button id="delete" onclick="sendRequest('DELETE')">DELETE</button>
+        <a href="index.html" class="back-home-button">Back to Home</a>
     </div>
 </body>
 </html>

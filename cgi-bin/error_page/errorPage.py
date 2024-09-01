@@ -94,6 +94,7 @@ print(f"<p>Time of error: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>")
 print("<div>")
 print(f"<img src='https://http.cat/{error_code}' alt='HTTPCats error img' width='100%'>")
 print("</div>")
+print("<a href='/'>&larr; Back to Home</a>")
 
 # End HTML output
 print("</div>")
