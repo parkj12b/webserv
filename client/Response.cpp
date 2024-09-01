@@ -347,23 +347,21 @@ size_t  Response::setCgiHeader(string &content_, size_t &status)
             if (std::find(cgiHeader.begin(), cgiHeader.end(), headerNameKey) != cgiHeader.end())
             {
                 content_ = content_.substr(crlfPos + 2);
-                makeHeader(headerNameKey, headerNamePull.substr(headerPos + 1));
-                LOG(cout<<headerNameKey<<" : "<<headerNamePull.substr(headerPos + 1)<<endl);
                 if (headerNameKey == "status")
                 {
                     std::stringstream ss(headerNamePull.substr(headerPos + 1));
                     ss >> status;
-                    request.status = status;
-                    LOG(cout<<request.status<<endl);
-                    LOG(std::cout<<"status status"<<std::endl);
-                    request.status = status;
+                    if (status != 200)
+                        request.status = status;
+                    LOG(cout<<"request.status: " << request.status<<endl);
                     if (status >= 400)
                     {
-                        LOG(cout<<"ERROROR "<<request.header["host"].size()<<endl);
                         makeError();
                         return (0);
                     }
                 }
+                makeHeader(headerNameKey, headerNamePull.substr(headerPos + 1));
+                LOG(cout<<headerNameKey<<" : "<<headerNamePull.substr(headerPos + 1)<<endl);
                 return (crlfPos + 2);
             }
         }
@@ -376,6 +374,12 @@ size_t  Response::setCgiContent(string &content_, size_t &status)
     size_t  pos;
     size_t  temp;
 
+    if (status == 600)
+    {
+        request.status = 500;
+        makeError();
+        return (0);
+    }
     pos = content_.find("\r\n");
     if (pos != string::npos && pos == 0)
         content_ = content_.substr(pos + 2);
@@ -387,32 +391,8 @@ size_t  Response::setCgiContent(string &content_, size_t &status)
             return (0);
         pos += temp;
     } while (temp != 0);
-    // pos += setCgiHeader(content_);
-    // pos += setCgiHeader(content_);
     content = content_;
     return (pos);
-    // size_t      crlfPos;
-    // size_t      contentPos;
-    // std::string contentType;
-
-    // crlfPos = content_.find("\r\n");
-    // if (crlfPos != std::string::npos)
-    // {
-    //     contentType = content_.substr(0, crlfPos);
-    //     content = content_.substr(crlfPos + 2);
-    //     contentPos = contentType.find(":");
-    //     if (contentPos != std::string::npos)
-    //         makeHeader("content-type", contentType.substr(contentPos + 1));
-    // }
-    // else
-    // {
-    //     content = content_;
-    //     return (0);
-    // }
-    // // LOG(std::cout<< "request.status: "<<request.status<<std::endl);
-    // // LOG(std::cout<<entity<<std::endl<<std::endl);
-    // // LOG(std::cout<<"================"<<std::endl);
-    // return (crlfPos + 2);
 }
 
 void	Response::setCgiContentLength(size_t contentLength_)

@@ -42,15 +42,17 @@ class Kq
 {
     private:
 		Kq();
-        int                         kq;
-        int                         connectionCnt;
-		string						pathEnv;
+        int                                 kq;
+        int                                 connectionCnt;
+		string						        pathEnv;
         static std::vector<struct kevent> 	fdList;
-        std::map<int, Server>       server;
-        std::map<int, int>          findServer;
+        std::map<int, Server>               server;
+        std::map<int, int>                  findServer;
     public:
         static std::vector<pid_t>   processor;
 		static std::map<int, int>	cgiFd;
+        static std::map<int, pid_t> pidPipe;
+        static std::vector<pid_t>   errorPid;
         Kq(string pathEnv_);
         Kq(const Kq& src);
         Kq& operator=(const Kq& src);
