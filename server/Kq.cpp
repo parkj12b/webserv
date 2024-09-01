@@ -152,7 +152,7 @@ void    Kq::plusClient(int serverFd)
     if (clientFd < 0)
         return ;
     LOG(std::cout<<"plus client "<<clientFd<<std::endl);
-    plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 75000, 0);  //75초 default값
+    plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, Server::serverConfig->getDefaultServer(server[serverFd].getPort())->getHeaderTimeout() * 1000, 0);  //75초 default값
     plusEvent(clientFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     findServer[clientFd] = serverFd;
 }
