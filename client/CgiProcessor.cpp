@@ -236,7 +236,6 @@ void	CgiProcessor::executeCGIScript(const string path)
 		return ;
 	}
 	fcntl(pipefd[0], F_SETFL, O_NONBLOCK);
-	// fcntl(pipefd[1], F_SETFL, O_NONBLOCK);
 	pid_t pid = fork();
 	if (pid == -1)
 	{

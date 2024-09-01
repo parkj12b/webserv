@@ -83,6 +83,9 @@ Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
                 std::exit(1);
             }
         }
+        //fcntl temp
+        int flags = fcntl(serverFd, F_GETFL, 0);
+        fcntl(serverFd, F_SETFL, flags | O_NONBLOCK);
         while (listen(serverFd, CLIENT_CNT) < 0);
         plusEvent(serverFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
         server[serverFd] = Server(serverFd, port);  //config parser
@@ -257,7 +260,12 @@ void    Kq::eventWrite(struct kevent& store)
         return ;
     serverFd = findServer[store.ident];
     if (serverFd == 0)
+    {
+        LOG(std::cout<<"No enroll write: "<<store.ident << std::endl);
+        plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
+        close(store.ident);
         return ;
+    }
     event = server[serverFd].clientWrite(store);
     switch (event)
     {
@@ -351,6 +359,10 @@ void    Kq::mainLoop()
             {
                 LOG(std::cout<<"timer"<<std::endl);
                 eventTimer(store[i]);
+            }
+            else
+            {
+                std::cout<<"bad new "<<std::endl;
             }
         }
     }
