@@ -52,7 +52,16 @@ http_status_codes = {
     510: "Not Extended"
 }
 
+if 'ERROR_CODE' in os.environ:
+    error_code = os.environ.get("ERROR_CODE")
+else:
+    error_code = 500
 # Header
+if error_code == None:
+    print(f"Status: 500\r")
+    exit(0)
+else:
+    print(f"Status: 200\r")
 print("content-type: text/html\r")
 
 # Start HTML output
@@ -77,7 +86,6 @@ print("<h1>Error Page</h1>")
 print("<p>We're sorry, but something went wrong.</p>")
 
 # Capture the error details from the environment
-error_code = os.environ.get("ERROR_CODE")
 print(f"<p>Error code: {error_code}</p>")
 error_msg = f"{error_code} {http_status_codes[int(error_code)]}"  # Default error code
 

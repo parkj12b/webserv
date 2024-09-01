@@ -43,6 +43,12 @@ def main():
     
     directory = os.environ.get('PATH_INFO')
     
+    if directory == None:
+        print("Status: 500\r")
+        exit(0)
+
+    print("Content-Type: text/html\r")
+    print("Status: 200\r")
     # Generate the directory listing HTML
     html = list_directory(directory)
     print(html)
