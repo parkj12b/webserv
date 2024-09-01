@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 19:19:23 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/16 22:13:29 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/30 19:08:46 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,10 @@ LocationConfig *ServerConfig::getLocationConfig(string key, int prePost) {
     if (it2 == it->second.end())
         return NULL;
     return it2->second;
+}
+
+Env *ServerConfig::getEnv() {
+    return _env;
 }
 
 ServerConfig::ServerConfig(Env *env) : _env(env) {}

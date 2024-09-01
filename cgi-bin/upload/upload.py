@@ -23,7 +23,6 @@ upload_dir = os.environ['UPLOAD_PATH']
 q = queue.Queue()
 
 def make_error():
-    files = form['file']
     print(f"status: 400\r")
     while not q.empty():
         file = q.get()

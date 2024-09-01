@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:09:01 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/30 14:02:36 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/30 19:30:32 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 class HTTPServer;
 
 # define PORT 8000
-# define CLIENT_CNT 10
+# define CLIENT_CNT 500
 # define EVENTCNT 10
 
 class Server;
