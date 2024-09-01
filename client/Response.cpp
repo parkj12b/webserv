@@ -542,6 +542,8 @@ void    Response::makeDefaultHeader()
     order = 0;
     while (getline(strStream, temp, ' '))
     {
+        if (temp == "")
+            continue;
         pos = temp.find_last_not_of('\n');
         temp.erase(pos + 1);
         day[order++] = temp;
