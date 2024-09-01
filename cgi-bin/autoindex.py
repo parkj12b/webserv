@@ -18,7 +18,7 @@ def list_directory(directory):
     
     # Create HTML content
     html = '<!doctype html>'
-    html += '<html><head><title>Directory Listing</title><style></head>'
+    html += '<html><head><title>Directory Listing</title></head>'
     html += '<body><h1>Directory Listing</h1><ul>'
     
     # Parent directory link

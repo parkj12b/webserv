@@ -377,7 +377,7 @@ size_t  Response::setCgiContent(string &content_, size_t &status)
     if (status == 600)
     {
         request.status = 500;
-        std::cout<<"good good"<<std::endl;
+        // std::cout<<"good good"<<std::endl;
         makeError();
         return (0);
     }

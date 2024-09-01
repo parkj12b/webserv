@@ -215,7 +215,7 @@ void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content, siz
     index = 0;
     LOG(std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl);
     msg = response.getEntity();
-    LOG(std::cout<<"msg: "<<msg<<std::endl);
+    // LOG(std::cout<<"msg: "<<msg<<std::endl);
 }
 
 bool    Client::getResponseCgi()

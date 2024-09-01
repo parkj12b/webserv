@@ -114,19 +114,25 @@ EVENT Server::cgiRead(struct kevent& store)
         cgiContentLength[store.ident] = 0;
         cgiContent[store.ident].clear();
     }
-	readSize = read(store.ident, buf, BUFFER_SIZE);
+    readSize = read(store.ident, buf, BUFFER_SIZE);
     if (readSize < 0 || readSize > BUFFER_SIZE)
     {
         cout << "broken pipe" << endl;
     }
+    cout << "Broken Pipe Error"<<endl;
 	LOG(cout << "CGI Read Size : " << readSize << endl);
 	if (readSize <= 0)
 	{
         size_t  status = 0;
-        int     waitStatus;
-        waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
+        int     waitStatus = 0;
+        do {
+            cout << "waitpid: " << waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG) << endl;
+        } while (!WIFEXITED(waitStatus));
         if (waitStatus != 0)
+        {
+            cout<<"good good "<<waitStatus<<endl;
             status = 600;
+        }
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
         // LOG(cout<<"status: "<<status<<endl);
@@ -137,13 +143,13 @@ EVENT Server::cgiRead(struct kevent& store)
         if (status >= 400)
             return (ERROR);
         LOG(cout << "status: " << status << endl);
-        LOG(std::cout << "msg: " << client[Kq::cgiFd[store.ident]].getMsg() << endl);
+        // LOG(std::cout << "msg: " << client[Kq::cgiFd[store.ident]].getMsg() << endl);
         return (FINISH);
 	}
     buf[readSize] = '\0';
     cgiContent[store.ident].append(buf, readSize);
     cgiContentLength[store.ident] += readSize;
-    LOG(std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl;)
+    // LOG(std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl;)
 	return (ING);
 }
 
