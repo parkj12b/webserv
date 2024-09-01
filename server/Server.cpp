@@ -83,6 +83,9 @@ void setLinger(int sockfd, int linger_time) {
     if (setsockopt(sockfd, SOL_SOCKET, SO_LINGER, &linger_opt, sizeof(linger_opt)) < 0) {
         perror("setsockopt(SO_LINGER) failed");
     }
+    //fcntl temp
+    int flags = fcntl(sockfd, F_GETFL, 0);
+    fcntl(sockfd, F_SETFL, flags | O_NONBLOCK);
 }
 
 int Server::plusClient(string pathEnv)
@@ -120,7 +123,7 @@ EVENT Server::cgiRead(struct kevent& store)
 	{
         size_t  status = 0;
         int     waitStatus = 0;
-        waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
+        while (waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG) == 0);
         if (waitStatus != 0)
             status = 600;
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
@@ -187,12 +190,15 @@ EVENT   Server::clientWrite(struct kevent& store)
 
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
+    // int flags = fcntl(store.ident, F_GETFL, 0);
+    // if (!(flags & O_RDWR))
+    //     return (ERROR);
     LOG(std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl);
     // write(writeLogs, buffer, client[store.ident].responseIndex());
     // write(1, buffer, client[store.ident].responseIndex());
-    if (fcntl(store.ident, F_GETFD, 0) != 0)
-        return (ERROR);
     index = write(store.ident, buffer, client[store.ident].responseIndex());
+    if (index > client[store.ident].responseIndex())
+        return (ERROR);
     std::cout<<index<<endl;
     // if (index > client[store.ident].responseIndex())
     // {
