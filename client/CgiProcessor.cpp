@@ -235,6 +235,8 @@ void	CgiProcessor::executeCGIScript(const string path)
 		request.status = 500;
 		return ;
 	}
+	// int flags = fcntl(pipefd[1], F_GETFL, 0);
+    // fcntl(pipefd[1], F_SETFL, O_NONBLOCK);
 	pid_t pid = fork();
 	if (pid == -1)
 	{
