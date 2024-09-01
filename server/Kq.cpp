@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/30 16:55:12 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/01 13:33:11 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,7 +223,8 @@ void    Kq::eventRead(struct kevent& store)
                     plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
 				plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
 				plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, server[serverFd].getStandardTime(store.ident), 0);  //75초
-                LOG(std::cout<<"keep-alive: "<<server[serverFd].getStandardTime(store.ident)<<endl;)
+                plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+                std::cout<<"keep-alive: "<<server[serverFd].getStandardTime(store.ident)<<endl;
 				break ;
 		}
 	}
@@ -250,6 +251,7 @@ void    Kq::eventWrite(struct kevent& store)
             break ;
         case FINISH:
         case EXPECT:
+            plusEvent(store.ident, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
             plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
             break ;
     }
