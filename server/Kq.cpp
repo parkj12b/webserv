@@ -48,18 +48,10 @@ std::map<pid_t, int>    pidPipeInit()
     return (m);
 }
 
-std::vector<pid_t>  errorPidInit()
-{
-    std::vector<pid_t>  v;
-
-    return (v);
-}
-
 std::vector<pid_t>  Kq::processor = processorInit();
 std::vector<struct kevent> Kq::fdList = fdListInit();
 std::map<int, int>  Kq::cgiFd = cgiFdInit();
 std::map<pid_t, int>    Kq::pidPipe = pidPipeInit();
-std::vector<pid_t>  Kq::errorPid = errorPidInit();
 
 Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
 {
@@ -318,14 +310,7 @@ void    Kq::mainLoop()
         if (waitpid(*it, &status, WNOHANG) <= 0)
             it++;
         else
-        {
-            if (status != 0)
-            {
-                cout<<"pid status: "<<status<<endl;
-                errorPid.push_back(*it);
-            }
             it = Kq::processor.erase(it);
-        }
     }
     // Kq::processor = notFin;
     //changed EVENTCNT to connectionCnt
