@@ -119,6 +119,11 @@ EVENT Server::cgiRead(struct kevent& store)
 	if (readSize <= 0)
 	{
         size_t  status = 0;
+        if (std::find(Kq::errorPid.begin(), Kq::errorPid.end(), Kq::pidPipe[store.ident]) != Kq::errorPid.end())
+        {
+            Kq::pidPipe.erase(Kq::pidPipe[store.ident]);
+            status = 600;
+        }
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
         // LOG(cout<<"status: "<<status<<endl);
@@ -134,6 +139,7 @@ EVENT Server::cgiRead(struct kevent& store)
     buf[readSize] = '\0';
     cgiContent[store.ident].append(buf, readSize);
     cgiContentLength[store.ident] += readSize;
+    std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl;
 	return (ING);
 }
 

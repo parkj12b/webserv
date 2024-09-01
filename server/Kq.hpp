@@ -51,6 +51,8 @@ class Kq
     public:
         static std::vector<pid_t>   processor;
 		static std::map<int, int>	cgiFd;
+        static std::map<int, pid_t> pidPipe;
+        static std::vector<pid_t>   errorPid;
         Kq(string pathEnv_);
         Kq(const Kq& src);
         Kq& operator=(const Kq& src);

@@ -347,20 +347,21 @@ size_t  Response::setCgiHeader(string &content_, size_t &status)
             if (std::find(cgiHeader.begin(), cgiHeader.end(), headerNameKey) != cgiHeader.end())
             {
                 content_ = content_.substr(crlfPos + 2);
-                makeHeader(headerNameKey, headerNamePull.substr(headerPos + 1));
-                LOG(cout<<headerNameKey<<" : "<<headerNamePull.substr(headerPos + 1)<<endl);
                 if (headerNameKey == "status")
                 {
                     std::stringstream ss(headerNamePull.substr(headerPos + 1));
                     ss >> status;
-                    request.status = status;
+                    if (status != 200)
+                        request.status = status;
                     LOG(cout<<"request.status: " << request.status<<endl);
-                    if (request.status >= 400)
+                    if (status >= 400)
                     {
                         makeError();
                         return (0);
                     }
                 }
+                makeHeader(headerNameKey, headerNamePull.substr(headerPos + 1));
+                LOG(cout<<headerNameKey<<" : "<<headerNamePull.substr(headerPos + 1)<<endl);
                 return (crlfPos + 2);
             }
         }
@@ -373,6 +374,12 @@ size_t  Response::setCgiContent(string &content_, size_t &status)
     size_t  pos;
     size_t  temp;
 
+    if (status == 600)
+    {
+        request.status = 500;
+        makeError();
+        return (0);
+    }
     pos = content_.find("\r\n");
     if (pos != string::npos && pos == 0)
         content_ = content_.substr(pos + 2);

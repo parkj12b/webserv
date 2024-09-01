@@ -41,9 +41,25 @@ std::map<int, int>  cgiFdInit()
     return (m);
 }
 
+std::map<pid_t, int>    pidPipeInit()
+{
+    std::map<pid_t, int>    m;
+
+    return (m);
+}
+
+std::vector<pid_t>  errorPidInit()
+{
+    std::vector<pid_t>  v;
+
+    return (v);
+}
+
 std::vector<pid_t>  Kq::processor = processorInit();
 std::vector<struct kevent> Kq::fdList = fdListInit();
 std::map<int, int>  Kq::cgiFd = cgiFdInit();
+std::map<pid_t, int>    Kq::pidPipe = pidPipeInit();
+std::vector<pid_t>  Kq::errorPid = errorPidInit();
 
 Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
 {
@@ -152,7 +168,7 @@ void    Kq::plusClient(int serverFd)
     if (clientFd < 0)
         return ;
     LOG(std::cout<<"plus client "<<clientFd<<std::endl);
-    plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, Server::serverConfig->getDefaultServer(server[serverFd].getPort())->getHeaderTimeout() * 1000, 0);  //75초 default값
+    plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 75000, 0);  //75초 default값
     plusEvent(clientFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     findServer[clientFd] = serverFd;
 }
@@ -291,14 +307,21 @@ void    Kq::mainLoop()
     // std::vector<pid_t>  notFin;
     struct kevent       store[connectionCnt];
     int                 count;
+    int                 status;
 
     //waitpid(complete) 복사 생성자를 없앰 다만 erase를 진행할 때의 오히려 비용이 조금 더 들 수도 있을 수도 있다. 
     for (std::vector<pid_t>::iterator it = Kq::processor.begin(); it != Kq::processor.end();)
     {
-        if (waitpid(*it, NULL, WNOHANG) <= 0)
+        if (waitpid(*it, &status, WNOHANG) <= 0)
             it++;
         else
+        {
             it = Kq::processor.erase(it);
+            if (status != 0)
+            {
+                errorPid.push_back(*it);
+            }
+        }
     }
     // Kq::processor = notFin;
     //changed EVENTCNT to connectionCnt
