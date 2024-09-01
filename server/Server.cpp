@@ -130,6 +130,7 @@ EVENT Server::cgiRead(struct kevent& store)
         cgiContent[store.ident].clear();
         cgiContentLength[store.ident] = 0;
         cgiContentLength.erase(store.ident);
+        Kq::pidPipe.erase(store.ident);
         if (status >= 400)
             return (ERROR);
         LOG(cout << "status: " << status << endl);
