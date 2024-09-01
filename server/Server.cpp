@@ -119,7 +119,7 @@ EVENT Server::cgiRead(struct kevent& store)
 	if (readSize <= 0)
 	{
         size_t  status = 0;
-        int     waitStatus;
+        int     waitStatus = 0;
         waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
         if (waitStatus != 0)
             status = 600;
@@ -133,13 +133,13 @@ EVENT Server::cgiRead(struct kevent& store)
         if (status >= 400)
             return (ERROR);
         LOG(cout << "status: " << status << endl);
-        LOG(std::cout << "msg: " << client[Kq::cgiFd[store.ident]].getMsg() << endl);
+        // LOG(std::cout << "msg: " << client[Kq::cgiFd[store.ident]].getMsg() << endl);
         return (FINISH);
 	}
     buf[readSize] = '\0';
     cgiContent[store.ident].append(buf, readSize);
     cgiContentLength[store.ident] += readSize;
-    std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl;
+    // std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl;
 	return (ING);
 }
 
@@ -190,7 +190,15 @@ EVENT   Server::clientWrite(struct kevent& store)
     LOG(std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl);
     // write(writeLogs, buffer, client[store.ident].responseIndex());
     // write(1, buffer, client[store.ident].responseIndex());
+    if (fcntl(store.ident, F_GETFD, 0) != 0)
+        return (ERROR);
     index = write(store.ident, buffer, client[store.ident].responseIndex());
+    std::cout<<index<<endl;
+    // if (index > client[store.ident].responseIndex())
+    // {
+    //     std::cout<<"ERROR wirte"<<endl;
+    //     return (ERROR);
+    // }
     client[store.ident].plusIndex(index);
     client[store.ident].setConnection(true);
     if (client[store.ident].responseIndex())
@@ -198,12 +206,12 @@ EVENT   Server::clientWrite(struct kevent& store)
     if (client[store.ident].getRequestStatus() == 100)
         return (EXPECT);
     client[store.ident].deleteContent();
+    client[store.ident].resetClient();
     if (!client[store.ident].getConnect())
     {
         LOG(std::cout<<"connection fin"<<std::endl);
         return (ERROR);
     }
-    client[store.ident].resetClient();
     LOG(std::cout<<"keep-alive"<<std::endl);
     return (FINISH);
 }

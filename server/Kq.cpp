@@ -352,6 +352,10 @@ void    Kq::mainLoop()
                 LOG(std::cout<<"timer"<<std::endl);
                 eventTimer(store[i]);
             }
+            else
+            {
+                std::cout<<"bad new "<<std::endl;
+            }
         }
     }
 }
