@@ -155,8 +155,15 @@ void    Response::makeFilePath(string& str)
     // LOG(cout << "host: " << request.header["host"].front() << endl);
     LOG(cout << "str before: " << str << endl);
     str = location->getRoot() + "/" + str;
+    string strDir = str.substr(0, str.find_last_of("/"));
     LOG(cout<<"str: "<<str<<endl);
-    if (isWithinBasePath(location->getRoot(), str) == false)
+    if (isDirectory(strDir.c_str()) == false)
+    {
+        request.status = 404;
+        LOG(cout << "404 1\n");
+        return ;
+    }
+    if (isWithinBasePath(location->getRoot(), strDir) == false)
     {
         request.status = 403;
         LOG(cout << "403 1\n");
@@ -191,7 +198,9 @@ void    Response::makeFilePath(string& str)
     LOG(cout << "str: " << str << endl);
 }
 
-Response::Response() : cgiFlag(false)
+Response::Response() : cgiFlag(false), port(0), startHeaderLength(0), contentLength(0),
+    pathEnv(""), start(""), header(""), content(""), entity(""),
+    serverConfig(NULL), locationConfig(NULL)
 {
     request.status = 0;
 }
@@ -533,6 +542,8 @@ void    Response::makeDefaultHeader()
     order = 0;
     while (getline(strStream, temp, ' '))
     {
+        if (temp == "")
+            continue;
         pos = temp.find_last_not_of('\n');
         temp.erase(pos + 1);
         day[order++] = temp;
@@ -558,6 +569,11 @@ void    Response::makeError()
     if (location != NULL)
     {
         errorPage = location->getErrorPage();
+        errorPath = errorPage[request.status];
+    }
+    else if (serverConfig != NULL)
+    {
+        errorPage = serverConfig->getErrorPage();
         errorPath = errorPage[request.status];
     }
 
@@ -653,7 +669,7 @@ bool    Response::isValidUploadPath()
     string              url = request.url;
 
     LOG(cout << "upload path : " << uploadPath << endl;)
-    
+
     if (uploadPath == "" || isDirectory(uploadPath.c_str()) == false)
     {
         request.status = 404;
@@ -746,7 +762,7 @@ void    Response::makePost()
 
 
     chdir(getDir(request.url).c_str());
-    cout << "request url: " << request.url << endl;
+    LOG(cout << "request url: " << request.url << endl);
     system("pwd");
 	if (isValidUploadPath() && cgiFlag)
 	{

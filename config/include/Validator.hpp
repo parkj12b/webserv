@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:26:25 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/18 20:39:35 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/30 19:02:52 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,8 @@ public:
     void                checkPort(ServerConfigData *serverData,
                             ServerConfig *serverConfig);
     void                checkServerKeepaliveTimeout(ServerConfigData *serverData,
+                            ServerConfig *serverConfig);
+    void                checkServerErrorPage(ServerConfigData *serverData,
                             ServerConfig *serverConfig);
     LocationConfigData  checkLocation(LocationConfig *locationConfig);
     void                checkErrorLog(LocationConfigData &locationData,

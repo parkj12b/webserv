@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 20:21:17 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/17 01:13:29 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/30 19:01:25 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,5 +65,7 @@ void    ServerConfigData::setLocationConfigData(string path,
 vector<string> &ServerConfigData::getSuffixMatch() { return _suffixMatch; }
 
 Trie &ServerConfigData::getPrefixTrie() { return _prefixTrie; }
+
+map<int, string> &ServerConfigData::getErrorPage() { return _errorPage; }
 
 ServerConfigData::ServerConfigData() {}

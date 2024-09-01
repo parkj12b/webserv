@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:30:28 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/25 19:46:09 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/30 19:09:53 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,6 +185,32 @@ void    Validator::checkServerKeepaliveTimeout(ServerConfigData *serverData,
     else
         serverData->setHeaderTimeout(0);
 
+}
+
+void    Validator::checkServerErrorPage(ServerConfigData *serverData, ServerConfig *serverConfig)
+{
+
+    Env *currentEnv = serverConfig->getEnv();
+    map<int, string> &errorPage = serverData->getErrorPage();
+    while (currentEnv != NULL)
+    {
+        vector<vector<vector< Token *> > > *v = serverConfig->getConfig("error_page");
+        if (v == NULL) { currentEnv = currentEnv->getPrev(); continue; }
+        for (int i = 0; i < (int)v->size(); i++)
+        {
+            string errorURI = (dynamic_cast<Word *>((*v)[i][2][0]))->lexeme;
+            string errorNum = (dynamic_cast<Word *>((*v)[i][0][0]))->lexeme;
+            errorPage.insert(pair<int, string>(strtol(errorNum.c_str(), NULL, 10), errorURI));
+            for (size_t j = 0, numArg = (*v)[i][1].size(); j < numArg; j++)
+            {
+                string errorNum = (dynamic_cast<Word *>((*v)[i][1][j]))->lexeme;
+                if (errorPage.find(strtol(errorNum.c_str(), NULL, 10)) != errorPage.end())
+                    continue;
+                errorPage.insert(pair<int, string>(strtol(errorNum.c_str(), NULL, 10), errorURI));
+            }
+        }
+        currentEnv = currentEnv->getPrev();
+    }
 }
 
 LocationConfigData    Validator::checkLocation(LocationConfig *locationConfig)

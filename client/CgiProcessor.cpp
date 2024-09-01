@@ -1,5 +1,6 @@
 #include <sys/stat.h>
 #include <dirent.h>
+#include "UtilTemplate.hpp"
 #include "CgiProcessor.hpp"
 #include "Kq.hpp"
 #include "UtilTemplate.hpp" 
@@ -52,7 +53,7 @@ void	CgiProcessor::insertEnv(string key, string value)
 
 void	CgiProcessor::setURLEnv()
 {
-	std::cout<<"host size: " <<request.header["host"].size()<<endl;
+	LOG(std::cout<<"host size: " <<request.header["host"].size()<<endl);
 	insertEnv("SERVER_NAME", request.header["host"].front());
 	insertEnv("SERVER_PORT", to_string(request.port));
 	insertEnv("PATH_INFO", request.url);
@@ -110,7 +111,11 @@ void	CgiProcessor::setStartHeaderEnv()
 	insertEnv("REMOTE_ADDR", request.clientIp);
 	insertEnv("REDIRECT_STATUS", "false");
 	insertEnv("SCRIPT_FILENAME", scriptFile);
-	string uploadPath = locationConfig->getFastcgiParam()["UPLOAD_PATH"];
+	string uploadPath = "";
+	if (locationConfig != NULL)
+	{
+		uploadPath = locationConfig->getFastcgiParam()["UPLOAD_PATH"];
+	}
 	LOG(cout << "upload path: " << uploadPath << endl);
 	insertEnv("UPLOAD_PATH", uploadPath);
 }
@@ -121,7 +126,7 @@ void	CgiProcessor::selectCgiCmd(string url)
 	const string	availCgiExtensions[2] = {".py", ".php"};
 	string			cgiExtension;
 	size_t			cgiFilePos;
-	cout << "Url: " << url << endl;
+	LOG(cout << "Url: " << url << endl);
 	for (int i=0; i<2; i++)
 	{
 		cgiExtension = availCgiExtensions[i];
@@ -129,7 +134,7 @@ void	CgiProcessor::selectCgiCmd(string url)
 		if (cgiFilePos != string::npos)
 			break ;
 	}
-	cout << "cgiExtension: " << cgiExtension << endl;
+	LOG(cout << "cgiExtension: " << cgiExtension << endl);
 	cgiCommand = (!cgiExtension.compare(".py")) ? "python3" : "php-cgi";
 	scriptFile = url.substr(0, cgiFilePos + cgiExtension.size());
 }
