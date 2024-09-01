@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/30 16:54:23 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/01 14:39:53 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ LocationConfigData *Client::recurFindLocation(string url,
         = locationConfigData->getLocationConfigData(urlFound, 0);
     size_t i = url.find(configData->getPath());
     string passURL = url.substr(i + configData->getPath().size());
+    passURL = "/" + passURL;
     return (recurFindLocation(passURL, configData));
 }
 
@@ -309,6 +310,7 @@ int Client::setHeader()
                 LOG(std::cout<<"standardTime: " <<standardTime<<std::endl);
                 LOG(std::cout<<"server name: "<<Server::serverConfig->getDefaultServer(port)->getServerName()[0]<<endl;)
                 LOG(cout << "response in location: " << &response << endl);
+                LOG(cout << "host: "<<request.header["host"].front()<<endl);
                 if (setMatchingLocation(request.url))
                 {
                     request.status = 404;
@@ -482,6 +484,8 @@ void    Client::setMessage(const char* msgRequest, int &readSize)
     if (setHeader())  //max size literal, 헤더 파싱
     {
         request.fin = true;
+        if (!request.header["host"].empty())
+            request.header["host"].pop_back();
         request.header["host"].push_back(Server::serverConfig->getDefaultServer(port)->getServerName()[0]);
         LOG(std::cout<<"Header Error\n");
         return ;
@@ -570,6 +574,7 @@ bool    Client::setMatchingLocation(string url)
         = serverConfigData->getLocationConfigData(request.location, 0);
     size_t i = url.find(location->getPath());
     string temp = url.substr(i + location->getPath().size());
+    temp = "/" + temp;
     response.setLocationConfigData(recurFindLocation(temp, location));
     LOG(cout << "path: " << response.getLocationConfigData()->getPath() << endl);
     LOG(cout << "location " << location << endl);

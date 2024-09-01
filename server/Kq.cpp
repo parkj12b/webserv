@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/01 13:45:47 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/01 16:44:18 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -316,11 +316,11 @@ void    Kq::mainLoop()
             it++;
         else
         {
-            it = Kq::processor.erase(it);
             if (status != 0)
             {
                 errorPid.push_back(*it);
             }
+            it = Kq::processor.erase(it);
         }
     }
     // Kq::processor = notFin;

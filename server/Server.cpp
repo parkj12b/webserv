@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/30 16:56:14 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/01 16:35:13 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ EVENT Server::cgiRead(struct kevent& store)
         size_t  status = 0;
         if (std::find(Kq::errorPid.begin(), Kq::errorPid.end(), Kq::pidPipe[store.ident]) != Kq::errorPid.end())
         {
-            Kq::pidPipe.erase(Kq::pidPipe[store.ident]);
+            Kq::errorPid.erase(std::find(Kq::errorPid.begin(), Kq::errorPid.end(), Kq::pidPipe[store.ident]));
             status = 600;
         }
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);

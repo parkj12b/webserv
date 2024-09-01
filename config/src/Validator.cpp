@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:30:28 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/30 19:09:53 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/01 15:55:45 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,15 @@ HTTPServer    *Validator::validate()
     set<ServerConfigData *> &serverSet = _httpServer->getServerSet();
     for (size_t i = 0, size = serverConfig.size(); i < size; i++) {
         ServerConfigData *server = checkServer(serverConfig[i]);
+        
         serverSet.insert(server);
         vector<int> &port = server->getPort();
         vector<string> &serverName = server->getServerName();
         for (size_t j = 0, size = port.size(); j < size; j++) {
             for (size_t k = 0, size = serverName.size(); k < size; k++) {
+                if (serverConfigData[port[j]].find(serverName[k]) != serverConfigData[port[j]].end()) {
+                    throw ValidatorException("duplicate server config");
+                }
                 serverConfigData[port[j]].insert(make_pair(serverName[k], server));
                 if (_httpServer->getDefaultServer(port[j]) == NULL) {
                     _httpServer->setDefaultServer(port[j], server);
