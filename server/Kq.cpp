@@ -17,6 +17,9 @@ using namespace std;
 
 extern int logs;
 
+Kq::Kq()
+{}
+
 std::vector<pid_t>  processorInit()
 {
     std::vector<pid_t>  v;
@@ -38,15 +41,32 @@ std::map<int, int>  cgiFdInit()
     return (m);
 }
 
+std::map<pid_t, int>    pidPipeInit()
+{
+    std::map<pid_t, int>    m;
+
+    return (m);
+}
+
+std::vector<pid_t>  errorPidInit()
+{
+    std::vector<pid_t>  v;
+
+    return (v);
+}
+
 std::vector<pid_t>  Kq::processor = processorInit();
 std::vector<struct kevent> Kq::fdList = fdListInit();
 std::map<int, int>  Kq::cgiFd = cgiFdInit();
+std::map<pid_t, int>    Kq::pidPipe = pidPipeInit();
+std::vector<pid_t>  Kq::errorPid = errorPidInit();
 
 Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
 {
     struct sockaddr_in  serverAdr;
     int                 option;
     int                 serverFd;
+    int                 port;
     //Changing portNum to config port
     map<int, map<string, ServerConfigData *> > &serverConfigData = Server::serverConfig->getServerConfigData();
     map<int, map<string, ServerConfigData *> >::iterator serverConfigIt = serverConfigData.begin();
@@ -56,7 +76,7 @@ Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
     //여기서 루프 돌면서 server socket전부다 만들기
     while (serverConfigIt != serverConfigData.end())  //config parser
     {
-        int port = serverConfigIt->first;
+        port = serverConfigIt->first;
         while ((serverFd = socket(AF_INET, SOCK_STREAM, 0)) <= 0);
         while (setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)) < 0);
         memset(&serverAdr, 0, sizeof(serverAdr));
@@ -65,7 +85,7 @@ Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
         serverAdr.sin_port = htons(port);   //config parser
         while (::bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0)
         {
-            if (errno == EADDRINUSE)  //ip 에러를 여기서 처리할 수도...
+            if (errno == EADDRINUSE)  //port 번호가 같다면....
                 std::exit(1);
         }
         while (listen(serverFd, CLIENT_CNT) < 0);
@@ -84,6 +104,7 @@ Kq& Kq::operator=(const Kq& src)
 {
     kq = src.getKq();
     connectionCnt = Server::serverConfig->getWorkerConnections();
+    pathEnv = src.pathEnv;
     server = src.getServer();
     findServer = src.getFindServer();
     return (*this);
@@ -116,6 +137,8 @@ void    Kq::clientFin(struct kevent& store)
     plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+    if (serverFd == 0)
+        return ;
     findServer[store.ident] = 0;
     server[serverFd].clientFin(store.ident);
 }
@@ -284,14 +307,21 @@ void    Kq::mainLoop()
     // std::vector<pid_t>  notFin;
     struct kevent       store[connectionCnt];
     int                 count;
+    int                 status;
 
     //waitpid(complete) 복사 생성자를 없앰 다만 erase를 진행할 때의 오히려 비용이 조금 더 들 수도 있을 수도 있다. 
     for (std::vector<pid_t>::iterator it = Kq::processor.begin(); it != Kq::processor.end();)
     {
-        if (waitpid(*it, NULL, WNOHANG) <= 0)
+        if (waitpid(*it, &status, WNOHANG) <= 0)
             it++;
         else
+        {
             it = Kq::processor.erase(it);
+            if (status != 0)
+            {
+                errorPid.push_back(*it);
+            }
+        }
     }
     // Kq::processor = notFin;
     //changed EVENTCNT to connectionCnt
