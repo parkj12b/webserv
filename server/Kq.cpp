@@ -47,6 +47,7 @@ Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
     struct sockaddr_in  serverAdr;
     int                 option;
     int                 serverFd;
+    int                 port;
     //Changing portNum to config port
     map<int, map<string, ServerConfigData *> > &serverConfigData = Server::serverConfig->getServerConfigData();
     map<int, map<string, ServerConfigData *> >::iterator serverConfigIt = serverConfigData.begin();
@@ -56,7 +57,7 @@ Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
     //여기서 루프 돌면서 server socket전부다 만들기
     while (serverConfigIt != serverConfigData.end())  //config parser
     {
-        int port = serverConfigIt->first;
+        port = serverConfigIt->first;
         while ((serverFd = socket(AF_INET, SOCK_STREAM, 0)) <= 0);
         while (setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)) < 0);
         memset(&serverAdr, 0, sizeof(serverAdr));
