@@ -86,7 +86,10 @@ Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
         while (::bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0)
         {
             if (errno == EADDRINUSE)  //port 번호가 같다면....
+            {
+                cout<<"port error"<<endl;
                 std::exit(1);
+            }
         }
         while (listen(serverFd, CLIENT_CNT) < 0);
         plusEvent(serverFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);

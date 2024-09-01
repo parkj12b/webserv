@@ -85,6 +85,7 @@ int main(int argc, char **argv, char **envp)
     // std::srand(std::time(0));  //cookie 값 정할 때에 사용할 예정
     Kq  kq(pathEnv);
     std::ios::sync_with_stdio(false);
+    std::cout<<"good"<<std::endl;
     while (1)
         kq.mainLoop();
     close(logs);
