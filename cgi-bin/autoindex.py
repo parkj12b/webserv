@@ -40,8 +40,6 @@ def list_directory(directory):
 
 def main():
     # Handle the CGI request
-    while 1:
-        continue
     directory = os.environ.get('PATH_INFO')
     
     if directory == None:

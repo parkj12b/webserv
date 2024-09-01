@@ -115,6 +115,10 @@ EVENT Server::cgiRead(struct kevent& store)
         cgiContent[store.ident].clear();
     }
 	readSize = read(store.ident, buf, BUFFER_SIZE);
+    if (readSize < 0 || readSize > BUFFER_SIZE)
+    {
+        cout << "broken pipe" << endl;
+    }
 	LOG(cout << "CGI Read Size : " << readSize << endl);
 	if (readSize <= 0)
 	{
@@ -140,7 +144,7 @@ EVENT Server::cgiRead(struct kevent& store)
     buf[readSize] = '\0';
     cgiContent[store.ident].append(buf, readSize);
     cgiContentLength[store.ident] += readSize;
-    std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl;
+    LOG(std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl;)
 	return (ING);
 }
 
