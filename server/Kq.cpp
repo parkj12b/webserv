@@ -318,6 +318,7 @@ void    Kq::mainLoop()
         {
             if (status != 0)
             {
+                cout<<"pid status: "<<status<<endl;
                 errorPid.push_back(*it);
             }
             it = Kq::processor.erase(it);
