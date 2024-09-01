@@ -4,6 +4,7 @@ import cgi
 import cgitb
 import os
 from datetime import datetime
+import sys
 
 # Enable CGI error reporting
 cgitb.enable()
@@ -52,51 +53,56 @@ http_status_codes = {
     510: "Not Extended"
 }
 
-if 'ERROR_CODE' in os.environ:
-    error_code = os.environ.get("ERROR_CODE")
-else:
-    error_code = 500
-# Header
-if error_code == None:
-    print(f"Status: 500\r")
-    exit(0)
-else:
-    print(f"Status: 200\r")
-print("content-type: text/html\r")
+try:
 
-# Start HTML output
-print("<!DOCTYPE html>")
-print("<html lang='en'>")
-print("<head>")
-print("<meta charset='UTF-8'>")
-print("<title>Error Page</title>")
-print("<style>")
-print("body { font-family: Arial, sans-serif; margin: 20px; }")
-print(".container { max-width: 800px; margin: auto; }")
-print("h1 { color: #d9534f; }")
-print("p { font-size: 18px; }")
-print(".error-code { font-size: 24px; font-weight: bold; }")
-print("</style>")
-print("</head>")
-print("<body>")
+    if 'ERROR_CODE' in os.environ:
+        error_code = os.environ.get("ERROR_CODE")
+    else:
+        error_code = 500
+    # Header
+    if error_code == None:
+        print(f"Status: 500\r")
+        exit(0)
+    else:
+        print(f"Status: 200\r")
+    print("content-type: text/html\r")
 
-# Generate the error message
-print("<div class='container'>")
-print("<h1>Error Page</h1>")
-print("<p>We're sorry, but something went wrong.</p>")
+    # Start HTML output
+    print("<!DOCTYPE html>")
+    print("<html lang='en'>")
+    print("<head>")
+    print("<meta charset='UTF-8'>")
+    print("<title>Error Page</title>")
+    print("<style>")
+    print("body { font-family: Arial, sans-serif; margin: 20px; }")
+    print(".container { max-width: 800px; margin: auto; }")
+    print("h1 { color: #d9534f; }")
+    print("p { font-size: 18px; }")
+    print(".error-code { font-size: 24px; font-weight: bold; }")
+    print("</style>")
+    print("</head>")
+    print("<body>")
 
-# Capture the error details from the environment
-print(f"<p>Error code: {error_code}</p>")
-error_msg = f"{error_code} {http_status_codes[int(error_code)]}"  # Default error code
+    # Generate the error message
+    print("<div class='container'>")
+    print("<h1>Error Page</h1>")
+    print("<p>We're sorry, but something went wrong.</p>")
 
-print(f"<p class='error-code'>{error_msg}</p>")
-print(f"<p>Time of error: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>")
-print("<div>")
-print(f"<img src='https://http.cat/{error_code}' alt='HTTPCats error img' width='100%'>")
-print("</div>")
-print("<a href='/'>&larr; Back to Home</a>")
+    # Capture the error details from the environment
+    print(f"<p>Error code: {error_code}</p>")
+    error_msg = f"{error_code} {http_status_codes[int(error_code)]}"  # Default error code
 
-# End HTML output
-print("</div>")
-print("</body>")
-print("</html>")
+    print(f"<p class='error-code'>{error_msg}</p>")
+    print(f"<p>Time of error: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>")
+    print("<div>")
+    print(f"<img src='https://http.cat/{error_code}' alt='HTTPCats error img' width='100%'>")
+    print("</div>")
+    print("<a href='/'>&larr; Back to Home</a>")
+
+    # End HTML output
+    print("</div>")
+    print("</body>")
+    print("</html>")
+except Exception as e:
+    print("errorPage exception", file=sys.stderr)
+    sys.exit(255)

@@ -6,14 +6,15 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/01 16:35:13 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/01 21:41:10 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <algorithm>
 #include "Server.hpp"
 #include "Response.hpp"
-#include "UtilTemplate.hpp" 
+#include "UtilTemplate.hpp"
+
 
 extern int logs;
 extern int writeLogs;
@@ -96,6 +97,7 @@ int Server::plusClient(string pathEnv)
     if ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0)
         return (-1);
     setLinger(clntFd, 0);
+    fcntl(clntFd, F_SETFL, O_NONBLOCK);
     client[clntFd] = Client(clntFd, port, pathEnv);  //생성자 및 대입 연산자 호출
 	client[clntFd].clientIP(clntAdr);
     LOG(std::cout<<"temp delete"<<std::endl);
@@ -114,15 +116,23 @@ EVENT Server::cgiRead(struct kevent& store)
         cgiContentLength[store.ident] = 0;
         cgiContent[store.ident].clear();
     }
+    size_t  status = 0;
+    int     waitStatus = 0;
+    waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
+    if (WEXITSTATUS(waitStatus) != 0)
+    {
+        write(2, "ERROR\n", 6);
+        status = 600;
+    }
+    if (WIFEXITED(waitStatus))
+    {
+        status = WEXITSTATUS(waitStatus);
+        LOG(std::cout<<"status: "<<status<<std::endl);
+    }
 	readSize = read(store.ident, buf, BUFFER_SIZE);
 	LOG(cout << "CGI Read Size : " << readSize << endl);
 	if (readSize <= 0)
 	{
-        size_t  status = 0;
-        int     waitStatus;
-        waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
-        if (waitStatus != 0)
-            status = 600;
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
         // LOG(cout<<"status: "<<status<<endl);
@@ -133,13 +143,13 @@ EVENT Server::cgiRead(struct kevent& store)
         if (status >= 400)
             return (ERROR);
         LOG(cout << "status: " << status << endl);
-        LOG(std::cout << "msg: " << client[Kq::cgiFd[store.ident]].getMsg() << endl);
+        // LOG(std::cout << "msg: " << client[Kq::cgiFd[store.ident]].getMsg() << endl);
         return (FINISH);
 	}
     buf[readSize] = '\0';
     cgiContent[store.ident].append(buf, readSize);
     cgiContentLength[store.ident] += readSize;
-    std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl;
+    // LOG(std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl;)
 	return (ING);
 }
 
@@ -188,9 +198,17 @@ EVENT   Server::clientWrite(struct kevent& store)
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
     LOG(std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl);
+    char    buf[1];
+    ssize_t bytes_received = recv(store.ident, buf, sizeof(buf), MSG_PEEK);
+    if (bytes_received == 0)
+    {
+        LOG(std::cout<<"write: client close"<<std::endl);
+        return (ERROR);
+    }
     // write(writeLogs, buffer, client[store.ident].responseIndex());
     // write(1, buffer, client[store.ident].responseIndex());
-    index = write(store.ident, buffer, client[store.ident].responseIndex());
+    cout << "response Index: " << client[store.ident].responseIndex() << endl;
+    index = write(store.ident, buffer, client[store.ident].responseIndex()); //SIGPIPE 발생
     client[store.ident].plusIndex(index);
     client[store.ident].setConnection(true);
     if (client[store.ident].responseIndex())

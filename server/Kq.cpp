@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/01 16:44:18 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/01 20:27:38 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -323,7 +323,7 @@ void    Kq::mainLoop()
         {
             if (store[i].flags == EV_ERROR)
             {
-                cout << "server EV_ERROR" << endl;
+                cerr << "server EV_ERROR" << endl;
                 serverError(store[i]);  //server에 연결된 모든 client 종료
             }
             else if (store[i].filter == EVFILT_READ) //read event(complete)
@@ -334,7 +334,7 @@ void    Kq::mainLoop()
             LOG(std::cout<<"store[i].ident: "<<store[i].ident<<std::endl);
             if (store[i].flags == EV_ERROR)
             {
-                LOG(cout << "client EV_ERROR" << endl);
+                LOG(cerr << "client EV_ERROR" << endl);
                 clientFin(store[i]);  //client 종료
             }
             else if (store[i].filter == EVFILT_READ)

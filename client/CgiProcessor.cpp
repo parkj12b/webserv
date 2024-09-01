@@ -235,6 +235,8 @@ void	CgiProcessor::executeCGIScript(const string path)
 		request.status = 500;
 		return ;
 	}
+	fcntl(pipefd[0], F_SETFL, O_NONBLOCK);
+	// fcntl(pipefd[1], F_SETFL, O_NONBLOCK);
 	pid_t pid = fork();
 	if (pid == -1)
 	{
@@ -269,7 +271,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 		if (execve(&cgiCommand[0], argv, envp) == -1)
 		{
 			request.status = 500;
-			LOG(std::cout<<"execve error"<<endl);
+			LOG(std::cerr<<"execve error"<<endl);
 			exit(1);
 		}
 	}

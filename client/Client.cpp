@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/01 14:39:53 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/01 20:50:59 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,7 +215,7 @@ void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content, siz
     index = 0;
     LOG(std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl);
     msg = response.getEntity();
-    LOG(std::cout<<"msg: "<<msg<<std::endl);
+    // LOG(std::cout<<"msg: "<<msg<<std::endl);
 }
 
 bool    Client::getResponseCgi()
