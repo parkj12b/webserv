@@ -17,6 +17,9 @@ using namespace std;
 
 extern int logs;
 
+Kq::Kq()
+{}
+
 std::vector<pid_t>  processorInit()
 {
     std::vector<pid_t>  v;
@@ -66,7 +69,7 @@ Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
         serverAdr.sin_port = htons(port);   //config parser
         while (::bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0)
         {
-            if (errno == EADDRINUSE)  //ip 에러를 여기서 처리할 수도...
+            if (errno == EADDRINUSE)  //port 번호가 같다면....
                 std::exit(1);
         }
         while (listen(serverFd, CLIENT_CNT) < 0);
@@ -85,6 +88,7 @@ Kq& Kq::operator=(const Kq& src)
 {
     kq = src.getKq();
     connectionCnt = Server::serverConfig->getWorkerConnections();
+    pathEnv = src.pathEnv;
     server = src.getServer();
     findServer = src.getFindServer();
     return (*this);
@@ -117,6 +121,8 @@ void    Kq::clientFin(struct kevent& store)
     plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+    if (serverFd == 0)
+        return ;
     findServer[store.ident] = 0;
     server[serverFd].clientFin(store.ident);
 }
