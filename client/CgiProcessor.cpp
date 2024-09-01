@@ -1,7 +1,16 @@
 #include <sys/stat.h>
+#include <dirent.h>
+#include "UtilTemplate.hpp"
 #include "CgiProcessor.hpp"
 #include "Kq.hpp"
 #include "UtilTemplate.hpp" 
+
+string initEXCUTEPATH()
+{
+	return (realpath(".", NULL));
+}
+
+string CgiProcessor::EXECUTE_PATH = initEXCUTEPATH();
 
 CgiProcessor::CgiProcessor(Request &request_, ServerConfigData *serverConfig_, LocationConfigData *locationConfig_, string pathEnv_)
 	:request(request_)
@@ -44,6 +53,7 @@ void	CgiProcessor::insertEnv(string key, string value)
 
 void	CgiProcessor::setURLEnv()
 {
+	LOG(std::cout<<"host size: " <<request.header["host"].size()<<endl);
 	insertEnv("SERVER_NAME", request.header["host"].front());
 	insertEnv("SERVER_PORT", to_string(request.port));
 	insertEnv("PATH_INFO", request.url);
@@ -101,6 +111,13 @@ void	CgiProcessor::setStartHeaderEnv()
 	insertEnv("REMOTE_ADDR", request.clientIp);
 	insertEnv("REDIRECT_STATUS", "false");
 	insertEnv("SCRIPT_FILENAME", scriptFile);
+	string uploadPath = "";
+	if (locationConfig != NULL)
+	{
+		uploadPath = locationConfig->getFastcgiParam()["UPLOAD_PATH"];
+	}
+	LOG(cout << "upload path: " << uploadPath << endl);
+	insertEnv("UPLOAD_PATH", uploadPath);
 }
 
 void	CgiProcessor::selectCgiCmd(string url)
@@ -109,6 +126,7 @@ void	CgiProcessor::selectCgiCmd(string url)
 	const string	availCgiExtensions[2] = {".py", ".php"};
 	string			cgiExtension;
 	size_t			cgiFilePos;
+	LOG(cout << "Url: " << url << endl);
 	for (int i=0; i<2; i++)
 	{
 		cgiExtension = availCgiExtensions[i];
@@ -116,11 +134,12 @@ void	CgiProcessor::selectCgiCmd(string url)
 		if (cgiFilePos != string::npos)
 			break ;
 	}
-	cgiCommand = (!cgiExtension.compare(".py")) ? "python3" : "php";
+	LOG(cout << "cgiExtension: " << cgiExtension << endl);
+	cgiCommand = (!cgiExtension.compare(".py")) ? "python3" : "php-cgi";
 	scriptFile = url.substr(0, cgiFilePos + cgiExtension.size());
 }
 
-void	CgiProcessor::checkPostContentType()
+void	CgiProcessor::checkPostContentType(const string path)
 {
     LOG(cout<<"content-length: "<<request.header["content-length"].front()<<endl);
     LOG(cout<<"content-type: "<<request.header["content-type"].front()<<endl);
@@ -145,7 +164,7 @@ void	CgiProcessor::checkPostContentType()
 		// if (!request.header["content-type"].front().compare("multipart/form-data"))
 		// 	scriptFile = "/upload/upload.py";
 		insertEnv("CONTENT_FILENAME", request.contentFileName);
-		executeCGIScript(scriptFile);
+		executeCGIScript(path);
 	}
 	else
 	{
@@ -205,7 +224,7 @@ bool	CgiProcessor::findCgiCmdPath()
 
 void	CgiProcessor::executeCGIScript(const string path)
 {
-	scriptFile = path;
+	selectCgiCmd(path);
 	setURLEnv();
 	setStartHeaderEnv();
 	int pipefd[2];
@@ -219,18 +238,17 @@ void	CgiProcessor::executeCGIScript(const string path)
 	pid_t pid = fork();
 	if (pid == -1)
 	{
+		cout << "fork() error" << endl;
 		close(pipefd[0]);
 		close(pipefd[1]);
 		request.status = 500;
 		return ;
 	}
-	Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 	if (pid == 0)
 	{
 		LOG(std::cout<<"[PIPE FD] - (Read FD) : "<<pipefd[0]<<", (Write FD) : "<<pipefd[1]<<std::endl);
 		close(pipefd[0]);
 		dup2(pipefd[1], STDOUT_FILENO);
-		// dup2(pipefd[1], STDERR_FILENO);
 		close(pipefd[1]);
 		char *argv[] = {const_cast<char *>(&cgiCommand[0]), const_cast<char *>(&path[0]), NULL};
 		char **envp = new char*[metaVariables.size() + 1];
@@ -243,6 +261,10 @@ void	CgiProcessor::executeCGIScript(const string path)
 			strcpy(envp[idx++], env.c_str());
 		}
 		envp[metaVariables.size()] = 0;
+		int fd = open(request.contentFileName.c_str(), O_RDONLY, 0644);
+		dup2(fd, STDIN_FILENO);
+		close(fd);
+		// chdir()
 		if (execve(&cgiCommand[0], argv, envp) == -1)
 		{
 			request.status = 500;
@@ -252,9 +274,13 @@ void	CgiProcessor::executeCGIScript(const string path)
 	}
 	else
 	{
+		chdir(EXECUTE_PATH.c_str());
+		Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 		close(pipefd[1]);
 		Kq::processor.push_back(pid);
 		Kq::cgiFd[pipefd[0]] = request.clientFd;
-		Kq::cgiFd.insert(make_pair(pipefd[0], request.clientFd));
+		Kq::pidPipe[pipefd[0]] = pid;
+		// Kq::cgiFd.insert(make_pair(pipefd[0], request.clientFd));
+		// Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 	}
 }

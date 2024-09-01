@@ -47,10 +47,11 @@ LocationConfigData *Client::recurFindLocation(string url,
         = locationConfigData->getLocationConfigData(urlFound, 0);
     size_t i = url.find(configData->getPath());
     string passURL = url.substr(i + configData->getPath().size());
+    passURL = "/" + passURL;
     return (recurFindLocation(passURL, configData));
 }
 
-Client::Client() : connect(true), connection(false), fd(0), port(0), msgSize(0), index(0), responseAmount(0), standardTime(7500), startLine(0), headerLine(0), contentLine(0)
+Client::Client() : connect(true), connection(false), fd(0), port(0), msgSize(0), index(0), responseAmount(0), standardTime(75), startLine(0), headerLine(0), contentLine(0)
 {
     request.port = port;
     request.fin = false;
@@ -199,23 +200,20 @@ void    Client::setRequestFin(bool fin)
     request.fin = fin;
 }
 
-void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content)
+void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content, size_t &status)
 {
 	size_t  pos;
 
     std::cout<<"cgiContentLength: "<<cgiContentLength<<std::endl;
-    pos = response.setContent(content);
+    pos = response.setCgiContent(content);
     std::cout<<"cgi pos: "<<pos<<std::endl;
     if (cgiContentLength - pos > 0)
-        response.setContentLength(cgiContentLength - pos);
+        response.setCgiContentLength(cgiContentLength - pos);
     responseAmount = response.getStartHeaderLength() + cgiContentLength - pos;
     index = 0;
     std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl<<endl;
-}
-
-void    Client::setErrorMsg()
-{
     msg = response.getEntity();
+    // LOG(std::cout<<"msg: "<<msg<<std::endl);
 }
 
 bool    Client::getResponseCgi()
@@ -230,7 +228,7 @@ void    Client::deleteContent(void)
     if (file.is_open())
     {
         file.close();
-        // unlink(request.contentFileName.c_str());
+        unlink(request.contentFileName.c_str());
     }
 }
 
@@ -261,6 +259,7 @@ int Client::setStart()
         //keepa-alive
         // standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
         standardTime = Server::serverConfig->getDefaultServer(port)->getHeaderTimeout();  //여기서 keep-alive setting
+        LOG(std::cout<<"standardTime: " <<standardTime<<std::endl);
         if ((request.status = startLine.check(msg.substr(0, flag))))  //ingu test
             return (1);
         msgSize -= (flag + 2);
@@ -305,7 +304,11 @@ int Client::setHeader()
                 request.header = headerLine.getHeader();
                 msg = msg.substr(flag + 2);
                 //keep-alive
+                standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
+                LOG(std::cout<<"standardTime: " <<standardTime<<std::endl);
+                LOG(std::cout<<"server name: "<<Server::serverConfig->getDefaultServer(port)->getServerName()[0]<<endl;)
                 LOG(cout << "response in location: " << &response << endl);
+                LOG(cout << "host: "<<request.header["host"].front()<<endl);
                 if (setMatchingLocation(request.url))
                 {
                     request.status = 404;
@@ -322,11 +325,6 @@ int Client::setHeader()
                     return (2);
                 }
                 request.header = headerLine.getHeader();
-                if (request.header.find("content-type") != request.header.end())
-                {
-                    LOG(cout<<"content-type: "<<request.header["content-type"].front()<<endl);
-                }
-                standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
                 contentLine.initContentLine(headerLine.getContentLength(), headerLine.getContentType());
                 connect = headerLine.getConnect();
                 break ;
@@ -442,16 +440,22 @@ int Client::setTrailer(void)
 
 void    Client::resetClient()
 {
+    LOG(cout<<"reset fd: "<<fd<<endl);
     request.fin = false;
     request.status = 0;
+    // request.header.clear();
+    // request.query.clear();
     connect = true;
+    msgSize = 0;
     index = 0;
+    responseAmount = 0;
+    standardTime = 75;
     msg.clear();
     // 여기서 뭔가 ServerConfigData, LocationConfigData를 초기화해주는 기분이 듦
-    response = Response(port, pathEnv);
     startLine = StartLine(port);
     headerLine = HeaderLine(port);
     contentLine = ContentLine(port);
+    response = Response(port, pathEnv);
 }
 
 void    Client::setMessage(const char* msgRequest, int &readSize)
@@ -469,6 +473,7 @@ void    Client::setMessage(const char* msgRequest, int &readSize)
     write(logs, msgRequest, readSize);
     if (setStart())  //max size literal
     {
+        request.header["host"].push_back(Server::serverConfig->getDefaultServer(port)->getServerName()[0]);
         request.fin = true;
         LOG(std::cout<<fd<<" "<<request.status<<" ");
         LOG(std::cout<<"Startline Error\n");
@@ -477,6 +482,9 @@ void    Client::setMessage(const char* msgRequest, int &readSize)
     if (setHeader())  //max size literal, 헤더 파싱
     {
         request.fin = true;
+        if (!request.header["host"].empty())
+            request.header["host"].pop_back();
+        request.header["host"].push_back(Server::serverConfig->getDefaultServer(port)->getServerName()[0]);
         LOG(std::cout<<"Header Error\n");
         return ;
     }
@@ -527,6 +535,8 @@ void    Client::plusIndex(size_t plus)
 bool    Client::setMatchingLocation(string url)
 {
     LOG(cout << "url " << url << endl);
+    // size_t lastSlash = url.find_last_of('/');
+    // url = url.substr(0, lastSlash);
     string host = request.header["host"].front();
     ServerConfigData *serverConfigData;
     try {
@@ -552,7 +562,7 @@ bool    Client::setMatchingLocation(string url)
     }
     Trie &prefixTrie = serverConfigData->getPrefixTrie();
     request.location = prefixTrie.find(url);
-    LOG(cout << "location " << request.location << endl);
+    LOG(cout << "location: " << request.location << endl);
     if (request.location == "")
     {
         response.setLocationConfigData(NULL);
@@ -562,6 +572,7 @@ bool    Client::setMatchingLocation(string url)
         = serverConfigData->getLocationConfigData(request.location, 0);
     size_t i = url.find(location->getPath());
     string temp = url.substr(i + location->getPath().size());
+    temp = "/" + temp;
     response.setLocationConfigData(recurFindLocation(temp, location));
     LOG(cout << "path: " << response.getLocationConfigData()->getPath() << endl);
     LOG(cout << "location " << location << endl);

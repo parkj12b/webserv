@@ -82,6 +82,7 @@ class Response
     public:
         static std::map<int, std::string>           statusContent;
         static std::map<std::string, std::string>   session;
+        static std::vector<std::string>             cgiHeader;
         //oocf
         Response();
         Response(const Response& src);
@@ -108,13 +109,13 @@ class Response
         void        setRequest(Request &temp);
         void        setRequestStatus(int status);
         void        setLocationConfigData(LocationConfigData *locationConfig);
-        size_t      setCgiHeader(string &content_, string headerKey);
-		size_t      setCgiContent(string &content_);
+        size_t      setCgiHeader(string &content_, size_t &status);
+		size_t      setCgiContent(string &content_, size_t &status);
 		void	    setCgiContentLength(size_t contentLength_);
         //sub logic
 		bool	isCgiScriptInURL(string& str);
         void    initRequest(Request msg);       //request msg init
-        int     init();                         //start, header, content, entity init
+        bool    init();                         //start, header, content, entity init
         void    makeCookie(std::string& date);  //make cookie header
         void    makeDefaultHeader();            //date header make
         void    makeError();                    //error message make
@@ -124,6 +125,7 @@ class Response
         int     getDefaultErrorPage(int statusCode); // returns fd of default error page
         void    makeHeader(std::string key, std::string value); //key -> value
         void    makeContent(int fd);                            //make content
+        bool    isValidUploadPath();                            //check upload path
         //logic
         void    makeEntity();               //plus start, header, content
         void    makeGet();                  //GET method make response

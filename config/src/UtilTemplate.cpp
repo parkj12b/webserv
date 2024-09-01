@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 15:26:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/26 14:40:28 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/08/30 13:38:39 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,10 +166,16 @@ bool    isWithinBasePath(const string &basePath, const string &requestPath)
     LOG(cout << "requestPath: " << requestPath << endl);
     realBasePath = realpath(basePath.c_str(), NULL);
     if (!realBasePath)
+    {
+        LOG(cout<<"403 1 1"<<endl);
         return false;
+    }
     resolvedPathCstr = realpath(requestPath.c_str(), NULL);
     if (!resolvedPathCstr)
+    {
+        LOG(cout<<"403 1 2"<<endl);
         return false;
+    }
     LOG(cout << "resolved path: " << resolvedPathCstr << endl);
     resolvedPath = resolvedPathCstr;
     delete resolvedPathCstr;
@@ -178,6 +184,7 @@ bool    isWithinBasePath(const string &basePath, const string &requestPath)
         delete realBasePath;
         return true;
     }
+    LOG(cout<<"403 1 3"<<endl);
     return false;
 }
 
@@ -190,4 +197,12 @@ bool    isFile(const char *path)
     if (S_ISREG(statbuf.st_mode))
         return true;
     return false;
+}
+
+string  getDir(string path)
+{
+    size_t pos = path.find_last_of("/");
+    if (pos == string::npos)
+        return path;
+    return path.substr(0, pos);
 }

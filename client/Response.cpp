@@ -13,7 +13,6 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <algorithm>
 #include "Response.hpp"
 #include "Server.hpp"
 #include "LocationConfigData.hpp"
@@ -113,8 +112,19 @@ map<string, string>  sessionInit()
     return (m);
 }
 
-map<int, string>  Response::statusContent = statusContentInit();
-map<string, string>  Response::session = sessionInit();
+vector<std::string> cgiHeaderInit()
+{
+    std::vector<std::string>    v;
+
+    v.push_back("content-type");
+    v.push_back("location");
+    v.push_back("status");
+    return (v);
+}
+
+map<int, string>    Response::statusContent = statusContentInit();
+map<string, string> Response::session = sessionInit();
+vector<std::string> Response::cgiHeader = cgiHeaderInit();
 
 bool	Response::isCgiScriptInURL(string& str)
 {
@@ -145,7 +155,15 @@ void    Response::makeFilePath(string& str)
     // LOG(cout << "host: " << request.header["host"].front() << endl);
     LOG(cout << "str before: " << str << endl);
     str = location->getRoot() + "/" + str;
-    if (isWithinBasePath(location->getRoot(), str) == false)
+    string strDir = str.substr(0, str.find_last_of("/"));
+    LOG(cout<<"str: "<<str<<endl);
+    if (isDirectory(strDir.c_str()) == false)
+    {
+        request.status = 404;
+        LOG(cout << "404 1\n");
+        return ;
+    }
+    if (isWithinBasePath(location->getRoot(), strDir) == false)
     {
         request.status = 403;
         LOG(cout << "403 1\n");
@@ -180,8 +198,11 @@ void    Response::makeFilePath(string& str)
     LOG(cout << "str: " << str << endl);
 }
 
-Response::Response() : cgiFlag(false)
+Response::Response() : cgiFlag(false), port(0), startHeaderLength(0), contentLength(0),
+    pathEnv(""), start(""), header(""), content(""), entity(""),
+    serverConfig(NULL), locationConfig(NULL)
 {
+    request.status = 0;
 }
 
 Response::Response(const Response& src)
@@ -305,55 +326,74 @@ void    Response::setLocationConfigData(LocationConfigData *locationConfigData)
     locationConfig = locationConfigData;
 }
 
-size_t  Response::setCgiHeader(string &content_, string headerKey)
+size_t  Response::setCgiHeader(string &content_, size_t &status)
 {
     size_t  crlfPos;
     size_t  headerPos;
-    string  headerName;
+    string  headerNamePull;
+    string  headerNameKey;
+    string  headerNameValue;
 
     crlfPos = content_.find("\r\n");
     if (crlfPos != string::npos)
     {
-        headerName = content_.substr(0, crlfPos);
-        content_ = content_.substr(crlfPos + 2);
-        headerPos = headerName.find(":");
+        headerNamePull = content_.substr(0, crlfPos);
+        LOG(cout << "cgi crlf READ: "<<headerNamePull<<endl);
+        headerPos = headerNamePull.find(":");
         if (headerPos != string::npos)
-            makeHeader(headerKey, headerName.substr(headerPos + 1));
+        {
+            headerNameKey = headerNamePull.substr(0, headerPos);
+            HeaderLine::eraseSpace(headerNameKey, 1);
+            if (std::find(cgiHeader.begin(), cgiHeader.end(), headerNameKey) != cgiHeader.end())
+            {
+                content_ = content_.substr(crlfPos + 2);
+                if (headerNameKey == "status")
+                {
+                    std::stringstream ss(headerNamePull.substr(headerPos + 1));
+                    ss >> status;
+                    if (status != 200)
+                        request.status = status;
+                    LOG(cout<<"request.status: " << request.status<<endl);
+                    if (status >= 400)
+                    {
+                        makeError();
+                        return (0);
+                    }
+                }
+                makeHeader(headerNameKey, headerNamePull.substr(headerPos + 1));
+                LOG(cout<<headerNameKey<<" : "<<headerNamePull.substr(headerPos + 1)<<endl);
+                return (crlfPos + 2);
+            }
+        }
     }
-    return (crlfPos + 2);
+    return (0);
 }
 
-size_t  Response::setCgiContent(string &content_)
+size_t  Response::setCgiContent(string &content_, size_t &status)
 {
     size_t  pos;
+    size_t  temp;
 
+    if (status == 600)
+    {
+        request.status = 500;
+        // std::cout<<"good good"<<std::endl;
+        makeError();
+        return (0);
+    }
+    pos = content_.find("\r\n");
+    if (pos != string::npos && pos == 0)
+        content_ = content_.substr(pos + 2);
     pos = 0;
-    pos += setCgiHeader(content_, "content-type");
-    pos += setCgiHeader(content_, "status");
+    do
+    {
+        temp = setCgiHeader(content_, status);
+        if (status >= 400)
+            return (0);
+        pos += temp;
+    } while (temp != 0);
     content = content_;
     return (pos);
-    // size_t      crlfPos;
-    // size_t      contentPos;
-    // std::string contentType;
-
-    // crlfPos = content_.find("\r\n");
-    // if (crlfPos != std::string::npos)
-    // {
-    //     contentType = content_.substr(0, crlfPos);
-    //     content = content_.substr(crlfPos + 2);
-    //     contentPos = contentType.find(":");
-    //     if (contentPos != std::string::npos)
-    //         makeHeader("content-type", contentType.substr(contentPos + 1));
-    // }
-    // else
-    // {
-    //     content = content_;
-    //     return (0);
-    // }
-    // // LOG(std::cout<< "request.status: "<<request.status<<std::endl);
-    // // LOG(std::cout<<entity<<std::endl<<std::endl);
-    // // LOG(std::cout<<"================"<<std::endl);
-    // return (crlfPos + 2);
 }
 
 void	Response::setCgiContentLength(size_t contentLength_)
@@ -379,16 +419,16 @@ void    Response::initRequest(Request msg)
     // LOG(cout<<request.version<<endl);
 }
 
-int Response::init()
+bool    Response::init()
 {
     LOG(cout << "port: " << port << endl);
     cgiFlag = false;
-    if (request.status != 0)
-        return (0);
     start.clear();
     header.clear();
     content.clear();
     entity.clear();
+    if (request.status != 0)
+        return (false);
     string host = request.header["host"].front();
     LOG(cout << "host : " << host << endl);
 	cgiFlag = false;
@@ -401,12 +441,12 @@ int Response::init()
     {
         serverConfig = Server::serverConfig->getDefaultServer(port);
         if (serverConfig == NULL)
+        {
             request.status = 400;
-        makeError();
-        makeEntity();
-        return (1);
+            return (true);
+        }
     }
-    return (0);
+    return (false);
 }
 
 int Response::getDefaultErrorPage(int statusCode)
@@ -428,20 +468,22 @@ int Response::getDefaultErrorPage(int statusCode)
 
 void    Response::makeCookie(string& date)
 {
-    const string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    const size_t charactersSize = characters.size();
-    string result;
-    size_t      index;
-    string value;
-    string cookieValue;
+    const string    characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const size_t    charactersSize = characters.size();
+    string          result;
+    size_t          index;
+    string          value;
+    string          cookieValue;
 
     if (request.header["cookie"].empty())
     {
-        for (size_t i = 0; i < 12; ++i)
-        {
-            index = rand() % charactersSize;
-            result += characters[index];
-        }
+        do {
+            for (size_t i = 0; i < 20; ++i)
+            {
+                index = rand() % charactersSize;
+                result += characters[index];
+            }
+        } while (session.find(cookieValue) != session.end());
         session[result] = date;
         value = "session_id=" + result + "; Max-Age=3600";  //1시간
         // value = "session_id=" + result + "; Max-Age=60";  //1분
@@ -458,9 +500,7 @@ void    Response::makeCookie(string& date)
             cookieValue = cookieValue.substr(index + 1);
         HeaderLine::eraseSpace(cookieValue, 0);
         if (session.find(cookieValue) == session.end())
-        {
             session[cookieValue] = date;
-        }
         // LOG(std::cout<<"cookieValue: "<<cookieValue<<std::endl<<std::endl);
         makeHeader("session", session[cookieValue]);
     }
@@ -470,28 +510,28 @@ void    Response::makeDefaultHeader()
 {
     time_t              now;
     char*               dt;
-
-    now = time(0);
-    dt = ctime(&now);
     std::string         date;
-    std::string         str(dt);
-    std::ostringstream  oss(str);
-    std::istringstream  strStream(str);
+    int                 order;
     std::string         temp;
     std::string         day[5];
     size_t              pos;
-    int                 order;
 
+    now = time(0);
+    dt = ctime(&now);
+    std::string         str(dt);
+    std::istringstream  strStream(str);
     order = 0;
     while (getline(strStream, temp, ' '))
     {
+        if (temp == "")
+            continue;
         pos = temp.find_last_not_of('\n');
         temp.erase(pos + 1);
         day[order++] = temp;
     }
     date = day[0] + ", " + day[2] + " " + day[1] + " " + day[4] + " " + day[3] + " GMT";
-    makeHeader("Date", date);
-    makeHeader("Server", "inghwang/0.0");
+    makeHeader("date", date);
+    makeHeader("server", "inghwang/0.0");
     makeHeader("connection", "keep-alive");
     makeCookie(date);
 }
@@ -512,6 +552,11 @@ void    Response::makeError()
         errorPage = location->getErrorPage();
         errorPath = errorPage[request.status];
     }
+    else if (serverConfig != NULL)
+    {
+        errorPage = serverConfig->getErrorPage();
+        errorPath = errorPage[request.status];
+    }
 
     LOG(cout << "errorPath: " << errorPath << endl);
     int fd = -1;
@@ -522,9 +567,8 @@ void    Response::makeError()
     else
     {
         CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
-		cgiProcessor.selectCgiCmd(CGI_ERROR_PAGE);
 		cgiProcessor.insertEnv("ERROR_CODE", toString(request.status));
-        cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+        cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
         setCgiFlag(true);
     }
 }
@@ -600,6 +644,21 @@ void    Response::makeContent(int fd)
     close(fd);
 }
 
+bool    Response::isValidUploadPath()
+{
+    string              uploadPath = locationConfig->getFastcgiParam()["UPLOAD_PATH"];
+    string              url = request.url;
+
+    LOG(cout << "upload path : " << uploadPath << endl;)
+
+    if (uploadPath == "" || isDirectory(uploadPath.c_str()) == false)
+    {
+        request.status = 404;
+        return (false);
+    }
+    return (true);
+}
+
 void    Response::makeEntity()
 {
     entity.clear();
@@ -639,24 +698,21 @@ void    Response::makeGet()
     if (isDirectory(request.url.c_str()))
     {
         cgiFlag = true;
-        cgiProcessor.selectCgiCmd(AUTOINDEX_PATH);
         LOG(cout << "directory listing" << endl);
-    	cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+    	cgiProcessor.executeCGIScript(AUTOINDEX_PATH);
     }
 	else if (cgiFlag)
 	{
-		cgiProcessor.selectCgiCmd(request.url);
-		cgiProcessor.executeCGIScript(cgiProcessor.getScriptFile());
+		cgiProcessor.executeCGIScript(request.url);
 		if (request.status >= 400)
 		{
 			while (!cgiProcessor.getFin())
 				cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
 		}
 		// 나중에 content-length가 0일 때, 서버 에러 추가
-		start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
+		// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 		// makeHeader("content-type", "text/html");
 		// makeHeader("content-length", toString(contentLength)); //여기서 추가하고 나중에 또 추가함
-		makeHeader("status", toString(request.status));
 		content += cgiProcessor.getCgiContent();
 		LOG(cout << cgiProcessor.getCgiContent() << '\n');
         // LOG(std::cout<<header);
@@ -667,10 +723,9 @@ void    Response::makeGet()
 		if (fd < 0)
 		{
 			request.status = 404;
-			start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
+			// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 			while (!cgiProcessor.getFin())
 				cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
-            makeHeader("Content-Type", "text/html");
 			content += cgiProcessor.getCgiContent();
             LOG(cout << cgiProcessor.getCgiContent() << '\n');
             // fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);
@@ -692,11 +747,14 @@ void    Response::makePost()
     LOG(cout<<"Method: POST"<<endl);
 	CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
 
-	if (cgiFlag)
+
+    chdir(getDir(request.url).c_str());
+    LOG(cout << "request url: " << request.url << endl);
+    system("pwd");
+	if (isValidUploadPath() && cgiFlag)
 	{
-		cgiProcessor.selectCgiCmd(request.url);
         // cgiProcessor.insertEnv("CONTENT_FILE", request.contentFileName);
-		cgiProcessor.checkPostContentType();
+		cgiProcessor.checkPostContentType(request.url);
 	}
 	if (request.status >= 400)
 	{
@@ -725,14 +783,12 @@ void    Response::makeDelete()
 
 void    Response::responseMake()
 {
-    if (request.status > 0)
+    if (request.status > 0 || init())
     {
         makeError();
         makeEntity();
         return ;
     }
-    if (init())
-        return ;
     // LOG(cout << "request.status: " << request.status << endl);
     makeDefaultHeader();
     if (checkAllowedMethod())

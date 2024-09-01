@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:30:28 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/25 19:46:09 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/01 15:55:45 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,15 @@ HTTPServer    *Validator::validate()
     set<ServerConfigData *> &serverSet = _httpServer->getServerSet();
     for (size_t i = 0, size = serverConfig.size(); i < size; i++) {
         ServerConfigData *server = checkServer(serverConfig[i]);
+        
         serverSet.insert(server);
         vector<int> &port = server->getPort();
         vector<string> &serverName = server->getServerName();
         for (size_t j = 0, size = port.size(); j < size; j++) {
             for (size_t k = 0, size = serverName.size(); k < size; k++) {
+                if (serverConfigData[port[j]].find(serverName[k]) != serverConfigData[port[j]].end()) {
+                    throw ValidatorException("duplicate server config");
+                }
                 serverConfigData[port[j]].insert(make_pair(serverName[k], server));
                 if (_httpServer->getDefaultServer(port[j]) == NULL) {
                     _httpServer->setDefaultServer(port[j], server);
@@ -69,6 +73,7 @@ ServerConfigData    *Validator::checkServer(ServerConfig *serverConfig)
     
     checkServerName(serverData, serverConfig);
     checkPort(serverData, serverConfig);
+    checkServerKeepaliveTimeout(serverData, serverConfig);
     // checkDuplicateServerConfig(serverData);
     map<string, map<int, LocationConfig *> > &location = serverConfig->location;
     Trie &prefixTrie = serverData->getPrefixTrie();
@@ -184,6 +189,32 @@ void    Validator::checkServerKeepaliveTimeout(ServerConfigData *serverData,
     else
         serverData->setHeaderTimeout(0);
 
+}
+
+void    Validator::checkServerErrorPage(ServerConfigData *serverData, ServerConfig *serverConfig)
+{
+
+    Env *currentEnv = serverConfig->getEnv();
+    map<int, string> &errorPage = serverData->getErrorPage();
+    while (currentEnv != NULL)
+    {
+        vector<vector<vector< Token *> > > *v = serverConfig->getConfig("error_page");
+        if (v == NULL) { currentEnv = currentEnv->getPrev(); continue; }
+        for (int i = 0; i < (int)v->size(); i++)
+        {
+            string errorURI = (dynamic_cast<Word *>((*v)[i][2][0]))->lexeme;
+            string errorNum = (dynamic_cast<Word *>((*v)[i][0][0]))->lexeme;
+            errorPage.insert(pair<int, string>(strtol(errorNum.c_str(), NULL, 10), errorURI));
+            for (size_t j = 0, numArg = (*v)[i][1].size(); j < numArg; j++)
+            {
+                string errorNum = (dynamic_cast<Word *>((*v)[i][1][j]))->lexeme;
+                if (errorPage.find(strtol(errorNum.c_str(), NULL, 10)) != errorPage.end())
+                    continue;
+                errorPage.insert(pair<int, string>(strtol(errorNum.c_str(), NULL, 10), errorURI));
+            }
+        }
+        currentEnv = currentEnv->getPrev();
+    }
 }
 
 LocationConfigData    Validator::checkLocation(LocationConfig *locationConfig)

@@ -107,7 +107,7 @@ bool    ContentLine::fileExist(const char *fileName_)
 
 bool    ContentLine::tempFileMake(int &fd_)
 {
-    std::string     fileName_ = "./.tempContent/";
+    std::string     fileName_ = CgiProcessor::EXECUTE_PATH + "/.tempContent/";
     size_t          num;
 
     mkdir(".tempContent", 0777);
@@ -116,7 +116,7 @@ bool    ContentLine::tempFileMake(int &fd_)
     {
         if (!fileExist((fileName_ + toString(num)).c_str()))
         {
-            std::cout<<(fileName_ + toString(num)).c_str()<<std::endl;
+            LOG(std::cout<<(fileName_ + toString(num)).c_str()<<std::endl);
             fileName = fileName_ + toString(num);
             break ;
         }

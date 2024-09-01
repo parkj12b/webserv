@@ -6,14 +6,19 @@
 /*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/27 18:53:24 by devpark          ###   ########.fr       */
+/*   Updated: 2024/09/01 16:44:18 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Kq.hpp"
 #include "UtilTemplate.hpp" 
 
+using namespace std;
+
 extern int logs;
+
+Kq::Kq()
+{}
 
 std::vector<pid_t>  processorInit()
 {
@@ -36,15 +41,24 @@ std::map<int, int>  cgiFdInit()
     return (m);
 }
 
+std::map<pid_t, int>    pidPipeInit()
+{
+    std::map<pid_t, int>    m;
+
+    return (m);
+}
+
 std::vector<pid_t>  Kq::processor = processorInit();
 std::vector<struct kevent> Kq::fdList = fdListInit();
 std::map<int, int>  Kq::cgiFd = cgiFdInit();
+std::map<pid_t, int>    Kq::pidPipe = pidPipeInit();
 
 Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
 {
     struct sockaddr_in  serverAdr;
     int                 option;
     int                 serverFd;
+    int                 port;
     //Changing portNum to config port
     map<int, map<string, ServerConfigData *> > &serverConfigData = Server::serverConfig->getServerConfigData();
     map<int, map<string, ServerConfigData *> >::iterator serverConfigIt = serverConfigData.begin();
@@ -54,7 +68,7 @@ Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
     //여기서 루프 돌면서 server socket전부다 만들기
     while (serverConfigIt != serverConfigData.end())  //config parser
     {
-        int port = serverConfigIt->first;
+        port = serverConfigIt->first;
         while ((serverFd = socket(AF_INET, SOCK_STREAM, 0)) <= 0);
         while (setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)) < 0);
         memset(&serverAdr, 0, sizeof(serverAdr));
@@ -63,8 +77,11 @@ Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
         serverAdr.sin_port = htons(port);   //config parser
         while (::bind(serverFd, (struct sockaddr *)&serverAdr, sizeof(serverAdr)) < 0)
         {
-            if (errno == EADDRINUSE)  //ip 에러를 여기서 처리할 수도...
+            if (errno == EADDRINUSE)  //port 번호가 같다면....
+            {
+                cout<<"port error"<<endl;
                 std::exit(1);
+            }
         }
         while (listen(serverFd, CLIENT_CNT) < 0);
         plusEvent(serverFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
@@ -82,6 +99,7 @@ Kq& Kq::operator=(const Kq& src)
 {
     kq = src.getKq();
     connectionCnt = Server::serverConfig->getWorkerConnections();
+    pathEnv = src.pathEnv;
     server = src.getServer();
     findServer = src.getFindServer();
     return (*this);
@@ -114,6 +132,8 @@ void    Kq::clientFin(struct kevent& store)
     plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+    if (serverFd == 0)
+        return ;
     findServer[store.ident] = 0;
     server[serverFd].clientFin(store.ident);
 }
@@ -166,11 +186,14 @@ void    Kq::eventRead(struct kevent& store)
 	if (iter != cgiFd.end())
 	{
         // LOG(std::cout<<"cgi here\n");
-        LOG(std::cout<<"READ EVENT CGI"<<store.ident<<endl);
+        LOG(std::cout<<"READ EVENT CGI "<<store.ident<<endl);
 		serverFd = findServer[cgiFd[store.ident]]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
         {
-            // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+            LOG(std::cout<<"No enroll cgi: "<<store.ident << std::endl);
+            cgiFd.erase(iter->first);
+            plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+            close(store.ident);
 			return ;
         }
 		event = server[serverFd].cgiRead(store);
@@ -180,25 +203,27 @@ void    Kq::eventRead(struct kevent& store)
 			case ING:
 				break ;
 			case ERROR:
+                LOG(std::cout<<"iter->first cgi error: "<<iter->first<<std::endl);
+                plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+                close(iter->first);
+                cgiFd.erase(iter->first);
+                break ;
 			case FINISH:
                 LOG(std::cout<<"[CGI Read FD, not Client FD] : "<<iter->first<<std::endl);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
-				close(iter->first);  //cgi에서 사용한 fd를 닫지 않음
-				cgiFd[iter->first] = 0;
-                cgiFd.erase(iter->first);
+				close(store.ident);  //cgi에서 사용한 fd를 닫지 않음
+                cgiFd.erase(store.ident);
 				break ;
 		}
 	}
 	else
 	{
-        LOG(std::cout<<"READ EVENT CLIENT"<<store.ident<<endl);
+        LOG(std::cout<<"READ EVENT CLIENT "<<store.ident<<endl);
 		serverFd = findServer[store.ident]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
         {
-            LOG(std::cout<<"good"<<std::endl);
-            // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-            // clientFin(store);
+            LOG(std::cout<<"No enroll read: "<<store.ident << std::endl);
 			return ;
         }
 		event = server[serverFd].clientRead(store);
@@ -212,10 +237,12 @@ void    Kq::eventRead(struct kevent& store)
 				break ;
 			case EXPECT:
 			case FINISH:
-                if (!server[serverFd].getResponseCgi(store.ident))  //cgi임을 체크하기 cgi임을 확인하고 write를 완료하면 response를 초기화를 진행한다. 그렇게 되면 여태까지 만들어놓은 response는 사라진다. 
+                if (!server[serverFd].getResponseCgi(store.ident) && findServer[store.ident] != 0)  //cgi임을 체크하기 cgi임을 확인하고 write를 완료하면 response를 초기화를 진행한다. 그렇게 되면 여태까지 만들어놓은 response는 사라진다. 
                     plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
 				plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
 				plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, server[serverFd].getStandardTime(store.ident), 0);  //75초
+                plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+                LOG(std::cout<<"keep-alive: "<<server[serverFd].getStandardTime(store.ident)<<endl);
 				break ;
 		}
 	}
@@ -242,6 +269,7 @@ void    Kq::eventWrite(struct kevent& store)
             break ;
         case FINISH:
         case EXPECT:
+            plusEvent(store.ident, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
             plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
             break ;
     }
@@ -274,11 +302,12 @@ void    Kq::mainLoop()
     // std::vector<pid_t>  notFin;
     struct kevent       store[connectionCnt];
     int                 count;
+    int                 status;
 
     //waitpid(complete) 복사 생성자를 없앰 다만 erase를 진행할 때의 오히려 비용이 조금 더 들 수도 있을 수도 있다. 
     for (std::vector<pid_t>::iterator it = Kq::processor.begin(); it != Kq::processor.end();)
     {
-        if (waitpid(*it, NULL, WNOHANG) <= 0)
+        if (waitpid(*it, &status, WNOHANG) <= 0)
             it++;
         else
             it = Kq::processor.erase(it);
@@ -293,18 +322,24 @@ void    Kq::mainLoop()
         if (server.find(static_cast<int>(store[i].ident)) != server.end())
         {
             if (store[i].flags == EV_ERROR)
+            {
+                cout << "server EV_ERROR" << endl;
                 serverError(store[i]);  //server에 연결된 모든 client 종료
+            }
             else if (store[i].filter == EVFILT_READ) //read event(complete)
                 plusClient(static_cast<int>(store[i].ident));
         }
         else
         {
-            // LOG(std::cout<<"store[i].ident: "<<store[i].ident<<std::endl);
+            LOG(std::cout<<"store[i].ident: "<<store[i].ident<<std::endl);
             if (store[i].flags == EV_ERROR)
+            {
+                LOG(cout << "client EV_ERROR" << endl);
                 clientFin(store[i]);  //client 종료
+            }
             else if (store[i].filter == EVFILT_READ)
             {
-                // LOG(std::cout<<"read"<<" "<<store[i].ident<<std::endl);
+                LOG(std::cout<<"read"<<std::endl);
                 eventRead(store[i]);
             }
             else if (store[i].filter == EVFILT_WRITE)

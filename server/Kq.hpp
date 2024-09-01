@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kq.hpp                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:09:01 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/21 17:16:43 by devpark          ###   ########.fr       */
+/*   Updated: 2024/08/30 19:30:32 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 class HTTPServer;
 
 # define PORT 8000
-# define CLIENT_CNT 10
+# define CLIENT_CNT 500
 # define EVENTCNT 10
 
 class Server;
@@ -42,15 +42,16 @@ class Kq
 {
     private:
 		Kq();
-        int                         kq;
-        int                         connectionCnt;
-		string						pathEnv;
+        int                                 kq;
+        int                                 connectionCnt;
+		string						        pathEnv;
         static std::vector<struct kevent> 	fdList;
-        std::map<int, Server>       server;
-        std::map<int, int>          findServer;
+        std::map<int, Server>               server;
+        std::map<int, int>                  findServer;
     public:
         static std::vector<pid_t>   processor;
 		static std::map<int, int>	cgiFd;
+        static std::map<int, pid_t> pidPipe;
         Kq(string pathEnv_);
         Kq(const Kq& src);
         Kq& operator=(const Kq& src);

@@ -18,13 +18,14 @@ public:
 	size_t	getContentLength();
 	bool	getFin();
 	void	insertEnv(string key, string value);
-	void	selectCgiCmd(string url);
-	void	checkPostContentType();
+	void	checkPostContentType(const string path);
 	void	executeCGIScript(const string path);
+	static  string EXECUTE_PATH;
 private:
 	CgiProcessor();
 	CgiProcessor(const CgiProcessor& rhs);
 	CgiProcessor&	operator=(const CgiProcessor& rhs);
+	void	selectCgiCmd(string url);
 	void	setURLEnv();
 	void	setStartHeaderEnv();
 	bool	isDirectory(const char *binPath);

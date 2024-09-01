@@ -1,48 +1,61 @@
 <?php
-echo "Content-Type: text/html\r\n";
-echo "Status: 200\r\n";
 
+$uploadDir = getenv("UPLOAD_PATH");
+$uploadedFiles = [];
 
-$content_filename = getenv("CONTENT_FILENAME");
-if ($content_filename === false || !is_file($content_filename)) {
-    echo "status: 400\r\n";
-    exit(1);
-}
-
-// 파일 내용을 읽어오기
-$file_content = file_get_contents($content_filename);
-if ($file_content === false) {
-    echo "status: 400\r\n";
-    exit(1);
-}
-
-print_r($_POST);
-print_r($_SERVER);
-print_r($_FILES);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Check if a file has been uploaded
-    if (isset($_FILES['file'])) {
-        $file = $_FILES['file'];
-
-        // Check for upload errors
-        if ($file['error'] === UPLOAD_ERR_OK) {
-            // Move the file to the desired directory
-            $uploadDir = './uploads';
-            $uploadFile = $uploadDir . basename($file['name']);
-
-            if (move_uploaded_file($file['tmp_name'], $uploadFile)) {
-                echo "File successfully uploaded.";
-            } else {
-                echo "Failed to move uploaded file.";
+if ($_SERVER['REQUEST_METHOD'] == 'POST')
+{
+    if (isset($_FILES['file_php']) && is_array($_FILES['file_php']['name']))
+    {
+        foreach ($_FILES['file_php']['name'] as $key => $name)
+        {
+            if ($_FILES['file_php']['error'][$key] == UPLOAD_ERR_OK)
+            {
+                $tmp_name = $_FILES['file_php']['tmp_name'][$key];
+                $destination = $uploadDir.basename($name);
+                $fileExtension = pathinfo($name, PATHINFO_EXTENSION);
+                if ($fileExtension === 'py' || $fileExtension === 'php')
+                {
+                    foreach ($uploadedFiles as $file)
+                    {
+                        unlink($file);
+                    }
+                    echo "status: 400\r\n";
+                    exit;
+                }
+                // Move the uploaded file to the desired directory
+                if (move_uploaded_file($tmp_name, $destination))
+                {
+                    echo "Status: 302\r\n";
+                    echo "location: /upload_success.html\r\n";
+                }
+                else
+                {
+                    foreach ($uploadedFiles as $file)
+                    {
+                        unlink($file);
+                    }
+                    echo "status: 400\r\n";
+                }
             }
-        } else {
-            echo "File upload error: " . $file['error'];
+            else
+            {
+                foreach ($uploadedFiles as $file)
+                {
+                    unlink($file);
+                }
+                echo "status: 400\r\n";
+            }
         }
-    } else {
-        echo "No file uploaded.";
     }
-} else {
-    echo "Invalid request method.";
+    else
+    {
+        foreach ($uploadedFiles as $file)
+        {
+            unlink($file);
+        }
+        echo "status: 400\r\n";
+        // exit ;
+    }
 }
 ?>

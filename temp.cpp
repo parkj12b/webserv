@@ -79,8 +79,8 @@ int main()
     std::string test4 = "HI HellPo World";
     size_t  pos = test4.find('P');
     std::cout<<"find: P"<<std::endl;
-    std::cout<<test4.substr(0, pos)<<std::endl;
-    std::cout<<test4.substr(pos + 1)<<std::endl;
+    std::cout<<test4.substr(0, pos)<<std::endl;  //HI Hell
+    std::cout<<test4.substr(pos + 1)<<std::endl;  //o World
     while (test>>str)
     {
         std::cout<<str<<std::endl;
