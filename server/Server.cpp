@@ -195,28 +195,29 @@ EVENT Server::clientRead(struct kevent& store)
 EVENT   Server::clientWrite(struct kevent& store)
 {
     std::vector<Client*>::iterator   it;
+    ssize_t     openCheck;
     size_t      index;
     const char* buffer = client[store.ident].respondMsgIndex();
+    char        readBuffer[1];
 
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
     // int flags = fcntl(store.ident, F_GETFL, 0);
     // if (!(flags & O_RDWR))
     //     return (ERROR);
-    cout<<"msg: " <<buffer<<endl;
     LOG(std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl);
-    char    buf[1];
-    ssize_t bytes_received = recv(store.ident, buf, sizeof(buf), MSG_PEEK);
-    if (bytes_received == 0)
+    openCheck = recv(store.ident, readBuffer, sizeof(readBuffer), MSG_PEEK);
+    if (openCheck == 0)
     {
         LOG(std::cout<<"write: client close"<<std::endl);
         return (ERROR);
     }
-    // write(writeLogs, buffer, client[store.ident].responseIndex());
-    // write(1, buffer, client[store.ident].responseIndex());
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     if (index > client[store.ident].responseIndex())
         return (ERROR);
+    cout<<"msg: " <<buffer<<endl;
+    // write(writeLogs, buffer, client[store.ident].responseIndex());
+    // write(1, buffer, client[store.ident].responseIndex());
     std::cout<<index<<endl;
     // if (index > client[store.ident].responseIndex())
     // {
