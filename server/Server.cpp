@@ -81,7 +81,8 @@ void setLinger(int sockfd, int linger_time) {
     linger_opt.l_onoff = 1;  // Enable linger option
     linger_opt.l_linger = linger_time;  // Set linger time in seconds
 
-    if (setsockopt(sockfd, SOL_SOCKET, SO_LINGER, &linger_opt, sizeof(linger_opt)) < 0) {
+    if (setsockopt(sockfd, SOL_SOCKET, SO_LINGER, &linger_opt, sizeof(linger_opt)) < 0)
+    {
         perror("setsockopt(SO_LINGER) failed");
     }
     //fcntl temp
@@ -119,23 +120,23 @@ EVENT Server::cgiRead(struct kevent& store)
         cgiContentLength[store.ident] = 0;
         cgiContent[store.ident].clear();
     }
-    size_t  status = 0;
-    int     waitStatus = 0;
-    waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
-    if (WEXITSTATUS(waitStatus) != 0)
-    {
-        write(2, "ERROR\n", 6);
-        status = 600;
-    }
-    if (WIFEXITED(waitStatus))
-    {
-        status = WEXITSTATUS(waitStatus);
-        LOG(std::cout<<"status: "<<status<<std::endl);
-    }
 	readSize = read(store.ident, buf, BUFFER_SIZE);
 	LOG(cout << "CGI Read Size : " << readSize << endl);
 	if (readSize <= 0)
 	{
+        size_t  status = 0;
+        int     waitStatus = 0;
+        waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
+        if (WEXITSTATUS(waitStatus) != 0)
+        {
+            write(2, "ERROR\n", 6);
+            status = 600;
+        }
+        if (WIFEXITED(waitStatus))
+        {
+            status = WEXITSTATUS(waitStatus);
+            LOG(std::cout<<"status: "<<status<<std::endl);
+        }
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
         // LOG(cout<<"status: "<<status<<endl);
@@ -215,7 +216,7 @@ EVENT   Server::clientWrite(struct kevent& store)
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     if (index > client[store.ident].responseIndex())
         return (ERROR);
-    cout<<"msg: " <<buffer<<endl;
+    // cout<<"msg: " <<buffer<<endl;
     // write(writeLogs, buffer, client[store.ident].responseIndex());
     // write(1, buffer, client[store.ident].responseIndex());
     std::cout<<index<<endl;
