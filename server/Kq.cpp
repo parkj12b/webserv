@@ -262,8 +262,6 @@ void    Kq::eventWrite(struct kevent& store)
     if (serverFd == 0)
     {
         LOG(std::cout<<"No enroll write: "<<store.ident << std::endl);
-        plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
-        close(store.ident);
         return ;
     }
     event = server[serverFd].clientWrite(store);
