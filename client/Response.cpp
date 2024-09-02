@@ -682,10 +682,8 @@ void    Response::makeContent(int fd)
 {
     string  location = request.url;
     size_t  pos = location.find_last_of('.');
-    ssize_t openCheck;
-    string contentType;
-    char    readBuffer[1];
 
+    string contentType;
     cout << "location: " << location << endl;
     if (pos != string::npos)
     {
@@ -698,13 +696,6 @@ void    Response::makeContent(int fd)
     else
         contentType = "application/octet-stream";
     makeHeader("content-type", contentType);
-    openCheck = recv(fd, readBuffer, sizeof(readBuffer), MSG_PEEK);
-    if (openCheck == 0)
-    {
-        LOG(std::cout<<"read: fd close"<<std::endl);
-        return ;
-    }
-    fcntl(fd, F_SETFL, O_NONBLOCK);
     Kq::plusEvent(fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     cgiFlag = true;
     Kq::cgiFd[fd] = request.clientFd;

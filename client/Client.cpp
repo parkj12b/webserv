@@ -59,7 +59,7 @@ Client::Client() : connect(true), connection(false), fd(0), port(0), socketReadS
 	request.clientFd = fd;
 }
 
-Client::Client(int fd, int port, string pathEnv_) : connect(true), connection(false), fd(fd), port(port), socketReadSize(1), msgSize(0), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port), pathEnv(pathEnv_)
+Client::Client(int fd, int port, string pathEnv_) : connect(true), connection(false), fd(fd), port(port), socketReadSize(1), msgSize(0), index(0), responseAmount(0), standardTime(75), startLine(port), headerLine(port), contentLine(port), pathEnv(pathEnv_)
 {
     request.port = port;
     request.fin = false;
