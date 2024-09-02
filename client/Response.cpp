@@ -142,6 +142,7 @@ std::map<std::string, std::string>  urlContentTypeInit()
     mimeTypes["gif"] = "image/gif";
     mimeTypes["svg"] = "image/svg+xml";
     mimeTypes["webp"] = "image/webp";
+    mimeTypes["ico"] = "image/x-icon";
     // 3. Audioand Video Files
     mimeTypes["mp3"] = "audio/mpeg";
     mimeTypes["ogg"] = "audio/ogg";
@@ -455,6 +456,7 @@ size_t  Response::setCgiContent(string &content_, size_t &status)
 void	Response::setCgiContentLength(size_t contentLength_)
 {
     contentLength = contentLength_;
+    cout<<"here    here "<< contentLength_<<endl;
     makeHeader("content-length", toString(contentLength));
     makeEntity();
     // LOG(std::cout<<"header: \n\n"<<header);
@@ -694,6 +696,7 @@ void    Response::makeContent(int fd)
         contentType = "application/octet-stream";
     makeHeader("content-type", contentType);
     Kq::plusEvent(fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
+    cgiFlag = true;
     Kq::cgiFd[fd] = request.clientFd;
     Kq::pidPipe[fd] = 0;
     // cout << "cgiFd[fd]: " << request.clientFd << endl;
@@ -735,6 +738,7 @@ void    Response::makeEntity()
     entity = "HTTP/1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
     if (!header.empty())
         entity += header + "\r\n";
+    cout << "header: " << header << endl;
     startHeaderLength = entity.size();
     if (!content.empty())
         entity.append(content);
