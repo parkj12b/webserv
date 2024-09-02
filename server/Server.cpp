@@ -137,6 +137,8 @@ EVENT Server::cgiRead(struct kevent& store)
             status = WEXITSTATUS(waitStatus);
             LOG(std::cout<<"status: "<<status<<std::endl);
         }
+        if (readSize < 0)
+            status = 600;
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
         // LOG(cout<<"status: "<<status<<endl);
@@ -160,7 +162,7 @@ EVENT Server::cgiRead(struct kevent& store)
 EVENT Server::clientRead(struct kevent& store)
 {
     //buffer 문제인지 생각해보기
-    char    buffer[BUFFER_SIZE + 1];
+    char    buffer[BUFFER_SIZE * client[store.ident].getSocketReadSize() + 1];
     int     readSize;
 
     //eof신호를 못 받게 됨
@@ -168,12 +170,18 @@ EVENT Server::clientRead(struct kevent& store)
         return (ING);
     // if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 100)
     //     return (ING);
-    readSize = read(store.ident, buffer, BUFFER_SIZE);
+    readSize = read(store.ident, buffer, BUFFER_SIZE * client[store.ident].getSocketReadSize());
+    LOG(cout<<"socketReadSize:" <<client[store.ident].getSocketReadSize()<<endl);
     if (readSize <= 0) // read가 발생했는데 읽은게 없다면 에러
     {
         LOG(std::cout<<"read error or socket close\n");
         client[store.ident].deleteContent();
         return (ERROR);
+    }
+    if (readSize == BUFFER_SIZE * client[store.ident].getSocketReadSize())
+    {
+        client[store.ident].plusSocketReadSize();
+        cout << "buffer read size: " << BUFFER_SIZE * client[store.ident].getSocketReadSize()<<endl;
     }
     LOG(std::cout<<"Client Read " << readSize << std::endl);
     buffer[readSize] = '\0';
@@ -219,7 +227,7 @@ EVENT   Server::clientWrite(struct kevent& store)
     // cout<<"msg: " <<buffer<<endl;
     // write(writeLogs, buffer, client[store.ident].responseIndex());
     // write(1, buffer, client[store.ident].responseIndex());
-    std::cout<<index<<endl;
+    std::cout<<"write index: " <<index<<endl;
     // if (index > client[store.ident].responseIndex())
     // {
     //     std::cout<<"ERROR wirte"<<endl;

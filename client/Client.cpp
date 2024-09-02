@@ -51,7 +51,7 @@ LocationConfigData *Client::recurFindLocation(string url,
     return (recurFindLocation(passURL, configData));
 }
 
-Client::Client() : connect(true), connection(false), fd(0), port(0), msgSize(0), index(0), responseAmount(0), standardTime(75), startLine(0), headerLine(0), contentLine(0)
+Client::Client() : connect(true), connection(false), fd(0), port(0), socketReadSize(1), msgSize(0), index(0), responseAmount(0), standardTime(75), startLine(0), headerLine(0), contentLine(0)
 {
     request.port = port;
     request.fin = false;
@@ -59,7 +59,7 @@ Client::Client() : connect(true), connection(false), fd(0), port(0), msgSize(0),
 	request.clientFd = fd;
 }
 
-Client::Client(int fd, int port, string pathEnv_) : connect(true), connection(false), fd(fd), port(port), msgSize(0), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port), pathEnv(pathEnv_)
+Client::Client(int fd, int port, string pathEnv_) : connect(true), connection(false), fd(fd), port(port), socketReadSize(1), msgSize(0), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port), pathEnv(pathEnv_)
 {
     request.port = port;
     request.fin = false;
@@ -67,7 +67,7 @@ Client::Client(int fd, int port, string pathEnv_) : connect(true), connection(fa
 	request.clientFd = fd;
 }
 
-Client::Client(const Client& src) : connect(src.getConnect()), connection(src.getConnection()), fd(src.getFd()), port(src.getPort()), msgSize(src.getMsgSize()), index(src.getIndex()), responseAmount(src.getResponseAmount()), standardTime(src.getStandardTime()), msg(src.getMsg()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse()), pathEnv(src.pathEnv)
+Client::Client(const Client& src) : connect(src.getConnect()), connection(src.getConnection()), fd(src.getFd()), port(src.getPort()), socketReadSize(src.socketReadSize), msgSize(src.getMsgSize()), index(src.getIndex()), responseAmount(src.getResponseAmount()), standardTime(src.getStandardTime()), msg(src.getMsg()), request(src.getRequest()), startLine(src.getStartLine()), headerLine(src.getHeaderline()), contentLine(src.getContentLine()), response(src.getResponse()), pathEnv(src.pathEnv)
 {}
 
 Client& Client::operator=(const Client& src)
@@ -76,6 +76,7 @@ Client& Client::operator=(const Client& src)
     connection = src.getConnection();
     fd = src.getFd();
     port = src.getPort();
+    socketReadSize = src.socketReadSize;
     msgSize = src.getMsgSize();
     index = src.getIndex();
     responseAmount = src.getResponseAmount();
@@ -113,6 +114,11 @@ int Client::getFd(void) const
 int Client::getPort(void) const
 {
     return (port);
+}
+
+int Client::getSocketReadSize(void) const
+{
+    return (socketReadSize);
 }
 
 size_t  Client::getMsgSize(void) const
@@ -216,6 +222,11 @@ void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content, siz
     LOG(std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl);
     msg = response.getEntity();
     // LOG(std::cout<<"msg: "<<msg<<std::endl);
+}
+
+void    Client::plusSocketReadSize()
+{
+    socketReadSize++;
 }
 
 bool    Client::getResponseCgi()
@@ -368,6 +379,8 @@ int Client::setHeader()
             request.status = 400;
             return (1);
         }
+        else if (headerLine.getContentType() == CONTENT && headerLine.getContentLength() == 0)
+            request.fin = true;
     }
     return (0);
 }
@@ -448,6 +461,7 @@ void    Client::resetClient()
     // request.header.clear();
     // request.query.clear();
     connect = true;
+    socketReadSize = 1;
     msgSize = 0;
     index = 0;
     responseAmount = 0;
@@ -464,14 +478,6 @@ void    Client::setMessage(const char* msgRequest, int &readSize)
 {
     msgSize += readSize;
     msg.append(msgRequest, readSize);
-    // if (msg.empty() && headerLine.getCompletion() && !contentLine.getCompletion())
-    // {
-    //     contentLine.makeContentLine(std::string(msgRequest), msgSize, request.status);
-    // }
-    // else
-    // {
-    //     msg.append(msgRequest, readSize);
-    // }
     write(logs, msgRequest, readSize);
     if (setStart())  //max size literal
     {
