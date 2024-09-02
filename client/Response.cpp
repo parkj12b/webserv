@@ -123,6 +123,13 @@ vector<std::string> cgiHeaderInit()
     return (v);
 }
 
+std::map<std::string, std::string>  urlContentTypeInit()
+{
+    std::map<std::string, std::string>  m;
+
+    m["icon"] = "image/x-icon";
+}
+
 map<int, string>    Response::statusContent = statusContentInit();
 map<string, string> Response::session = sessionInit();
 vector<std::string> Response::cgiHeader = cgiHeaderInit();
@@ -234,7 +241,7 @@ Response::~Response()
 {
 }
 
-Response::Response(int port, string pathEnv_) : cgiFlag(false), port(port), startHeaderLength(0), contentLength(0), pathEnv(pathEnv_)
+Response::Response(int port, string pathEnv_) : cgiFlag(false), port(port), startHeaderLength(0), contentLength(0), pathEnv(pathEnv_), serverConfig(NULL), locationConfig(NULL)
 {
     request.fin = false;
     request.status = 0;
@@ -573,7 +580,7 @@ void    Response::makeError()
     if (errorPath != "")
         fd = open(errorPath.c_str(), O_RDONLY);
     if (errorPath != "" || fd >= 0)
-        makeContent(fd);
+        makeContent(fd, false);
     else
     {
         CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
@@ -629,14 +636,16 @@ void    Response::makeHeader(string key, string value)
     header += key + ": " + value + "\r\n";
 }
 
-void    Response::makeContent(int fd)
+void    Response::makeContent(int fd, bool contentTypeFlag)
 {
     int     count;
     int     readSize;
     char    buffer[4096];
 
-    if (request.url == "./favicon.ico")
-        makeHeader("Content-Type", "image/x-icon");
+    if (contentTypeFlag)
+    {
+        
+    }
     else
         makeHeader("Content-Type", "text/html");
     count = 0;
@@ -740,7 +749,7 @@ void    Response::makeGet()
 			// makeContent(fd);
 			return ;
 		}
-		makeContent(fd);
+		makeContent(fd, true);
 	}
 	request.status = 200;
     // start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";

@@ -83,6 +83,7 @@ class Response
         static std::map<int, std::string>           statusContent;
         static std::map<std::string, std::string>   session;
         static std::vector<std::string>             cgiHeader;
+        static std::map<std::string, std::string>   urlContentType;
         //oocf
         Response();
         Response(const Response& src);
@@ -124,7 +125,7 @@ class Response
         void    makeFilePath(std::string& str); //make real url
         int     getDefaultErrorPage(int statusCode); // returns fd of default error page
         void    makeHeader(std::string key, std::string value); //key -> value
-        void    makeContent(int fd);                            //make content
+        void    makeContent(int fd, bool contentTypeFlag);                            //make content
         bool    isValidUploadPath();                            //check upload path
         //logic
         void    makeEntity();               //plus start, header, content

@@ -132,7 +132,7 @@ void    Kq::clientFin(struct kevent& store)
 
     LOG(std::cout<<"bye"<<std::endl);
     serverFd = findServer[store.ident];
-    // plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
+    plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
     if (serverFd == 0)
@@ -165,7 +165,7 @@ void    Kq::plusClient(int serverFd)
     clientFd = server[serverFd].plusClient(pathEnv);
     if (clientFd < 0)
         return ;
-    LOG(std::cout<<"plus client "<<clientFd<<std::endl);
+    LOG(std::cout<<"plus client: "<<clientFd<<std::endl);
     plusEvent(clientFd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, 75000, 0);  //75초 default값
     plusEvent(clientFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     findServer[clientFd] = serverFd;
@@ -189,7 +189,7 @@ void    Kq::eventRead(struct kevent& store)
 	if (iter != cgiFd.end())
 	{
         // LOG(std::cout<<"cgi here\n");
-        LOG(std::cout<<"READ EVENT CGI "<<store.ident<<endl);
+        LOG(std::cout<<"READ EVENT CGI: "<<store.ident<<endl);
 		serverFd = findServer[cgiFd[store.ident]]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
         {
@@ -207,16 +207,16 @@ void    Kq::eventRead(struct kevent& store)
 				break ;
 			case ERROR:
                 LOG(std::cout<<"iter->first cgi error: "<<iter->first<<std::endl);
-                plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-                close(iter->first);
                 cgiFd.erase(iter->first);
+                plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+                close(store.ident);
                 break ;
 			case FINISH:
                 LOG(std::cout<<"iter->first: "<<iter->first<<std::endl);
-                plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
-				close(store.ident);  //cgi에서 사용한 fd를 닫지 않음
-                cgiFd.erase(store.ident);
+				cgiFd.erase(iter->first);
+                plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+                close(store.ident);
 				break ;
 		}
 	}
@@ -297,7 +297,6 @@ void    Kq::eventTimer(struct kevent& store)
         case ING:
             break ;
         case FINISH:
-            plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
             clientFin(store);
             break ;
     }
