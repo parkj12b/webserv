@@ -126,16 +126,19 @@ EVENT Server::cgiRead(struct kevent& store)
 	{
         size_t  status = 0;
         int     waitStatus = 0;
-        waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
-        if (WEXITSTATUS(waitStatus) != 0)
+        if (Kq::pidPipe[store.ident] != 0)
         {
-            write(2, "ERROR\n", 6);
-            status = 600;
-        }
-        if (WIFEXITED(waitStatus))
-        {
-            status = WEXITSTATUS(waitStatus);
-            LOG(std::cout<<"status: "<<status<<std::endl);
+            waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
+            if (WEXITSTATUS(waitStatus) != 0)
+            {
+                write(2, "ERROR\n", 6);
+                status = 600;
+            }
+            if (WIFEXITED(waitStatus))
+            {
+                status = WEXITSTATUS(waitStatus);
+                LOG(std::cout<<"status: "<< status << std::endl);
+            }
         }
         if (readSize < 0)
             status = 600;
