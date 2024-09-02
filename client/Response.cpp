@@ -128,6 +128,9 @@ std::map<std::string, std::string>  urlContentTypeInit()
     std::map<std::string, std::string>  m;
 
     m["icon"] = "image/x-icon";
+    m["html"] = "text/html";
+    m["png"] = "image/png";
+    return (m);
 }
 
 map<int, string>    Response::statusContent = statusContentInit();
@@ -580,7 +583,7 @@ void    Response::makeError()
     if (errorPath != "")
         fd = open(errorPath.c_str(), O_RDONLY);
     if (errorPath != "" || fd >= 0)
-        makeContent(fd, false);
+        makeContent(fd);
     else
     {
         CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
@@ -636,15 +639,18 @@ void    Response::makeHeader(string key, string value)
     header += key + ": " + value + "\r\n";
 }
 
-void    Response::makeContent(int fd, bool contentTypeFlag)
+void    Response::makeContent(int fd)
 {
     int     count;
     int     readSize;
     char    buffer[4096];
 
+sssss
     if (contentTypeFlag)
     {
-        
+        //substr (.을 기준으로) html, png, icon
+        //default 예외로 
+        //makeHeader("Content-Type", value)
     }
     else
         makeHeader("Content-Type", "text/html");
@@ -749,7 +755,7 @@ void    Response::makeGet()
 			// makeContent(fd);
 			return ;
 		}
-		makeContent(fd, true);
+		makeContent(fd);
 	}
 	request.status = 200;
     // start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
