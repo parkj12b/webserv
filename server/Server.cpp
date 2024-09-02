@@ -195,8 +195,10 @@ EVENT Server::clientRead(struct kevent& store)
 EVENT   Server::clientWrite(struct kevent& store)
 {
     std::vector<Client*>::iterator   it;
+    ssize_t     openCheck;
     size_t      index;
     const char* buffer = client[store.ident].respondMsgIndex();
+    char        readBuffer[1];
 
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
@@ -204,17 +206,24 @@ EVENT   Server::clientWrite(struct kevent& store)
     // if (!(flags & O_RDWR))
     //     return (ERROR);
     LOG(std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl);
-    char    buf[1];
-    ssize_t bytes_received = recv(store.ident, buf, sizeof(buf), MSG_PEEK);
-    if (bytes_received == 0)
+    openCheck = recv(store.ident, readBuffer, sizeof(readBuffer), MSG_PEEK);
+    if (openCheck == 0)
     {
         LOG(std::cout<<"write: client close"<<std::endl);
         return (ERROR);
     }
+    index = write(store.ident, buffer, client[store.ident].responseIndex());
+    if (index > client[store.ident].responseIndex())
+        return (ERROR);
+    cout<<"msg: " <<buffer<<endl;
     // write(writeLogs, buffer, client[store.ident].responseIndex());
     // write(1, buffer, client[store.ident].responseIndex());
-    cout << "response Index: " << client[store.ident].responseIndex() << endl;
-    index = write(store.ident, buffer, client[store.ident].responseIndex()); //SIGPIPE 발생
+    std::cout<<index<<endl;
+    // if (index > client[store.ident].responseIndex())
+    // {
+    //     std::cout<<"ERROR wirte"<<endl;
+    //     return (ERROR);
+    // }
     client[store.ident].plusIndex(index);
     client[store.ident].setConnection(true);
     if (client[store.ident].responseIndex())
