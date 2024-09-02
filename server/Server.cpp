@@ -193,12 +193,13 @@ EVENT   Server::clientWrite(struct kevent& store)
     // int flags = fcntl(store.ident, F_GETFL, 0);
     // if (!(flags & O_RDWR))
     //     return (ERROR);
+    cout<<"msg: " <<buffer<<endl;
     LOG(std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl);
     // write(writeLogs, buffer, client[store.ident].responseIndex());
     // write(1, buffer, client[store.ident].responseIndex());
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     if (index > client[store.ident].responseIndex())
-        return (ERROR);
+        return (FINISH);
     std::cout<<index<<endl;
     // if (index > client[store.ident].responseIndex())
     // {
