@@ -713,7 +713,7 @@ void    Response::makeGet()
     {
         cgiFlag = true;
         LOG(cout << "directory listing" << endl);
-    	cgiProcessor.executeCGIScript(AUTOINDEX_PATH);
+    	cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + AUTOINDEX_PATH);
     }
 	else if (cgiFlag)
 	{
@@ -721,7 +721,7 @@ void    Response::makeGet()
 		if (request.status >= 400)
 		{
 			while (!cgiProcessor.getFin())
-				cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
+				cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);
 		}
 		// 나중에 content-length가 0일 때, 서버 에러 추가
 		// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
@@ -739,7 +739,7 @@ void    Response::makeGet()
 			request.status = 404;
 			// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 			while (!cgiProcessor.getFin())
-				cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
+				cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);
 			content += cgiProcessor.getCgiContent();
             LOG(cout << cgiProcessor.getCgiContent() << '\n');
             // fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);
@@ -773,11 +773,6 @@ void    Response::makePost()
 	if (request.status >= 400)
 	{
         makeError();
-		// while (!cgiProcessor.getFin())
-        // {
-        //     LOG(cout<<"Method: POST CGI ERROR"<<endl);
-		// 	cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
-        // }
 	}
 }
 

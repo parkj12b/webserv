@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/01 21:41:10 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/02 15:57:34 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,6 @@ void setLinger(int sockfd, int linger_time) {
     {
         perror("setsockopt(SO_LINGER) failed");
     }
-    //fcntl temp
-    int flags = fcntl(sockfd, F_GETFL, 0);
-    fcntl(sockfd, F_SETFL, flags | O_NONBLOCK);
 }
 
 int Server::plusClient(string pathEnv)
@@ -101,7 +98,8 @@ int Server::plusClient(string pathEnv)
     if ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0)
         return (-1);
     setLinger(clntFd, 0);
-    fcntl(clntFd, F_SETFL, O_NONBLOCK);
+    int flags = fcntl(clntFd, F_GETFL, 0);
+    fcntl(clntFd, F_SETFL, flags | O_NONBLOCK);
     client[clntFd] = Client(clntFd, port, pathEnv);  //생성자 및 대입 연산자 호출
 	client[clntFd].clientIP(clntAdr);
     LOG(std::cout<<"temp delete"<<std::endl);
@@ -143,6 +141,7 @@ EVENT Server::cgiRead(struct kevent& store)
         if (readSize < 0)
             status = 600;
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
+        LOG(cout<<"cgiContent[store.ident]: "<<cgiContent[store.ident]<<endl);
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
         // LOG(cout<<"status: "<<status<<endl);
         cgiContent[store.ident].clear();
