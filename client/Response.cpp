@@ -395,7 +395,7 @@ size_t  Response::setCgiHeader(string &content_, size_t &status)
     if (crlfPos != string::npos)
     {
         headerNamePull = content_.substr(0, crlfPos);
-        LOG(cout << "cgi crlf READ: "<<headerNamePull<<endl);
+        // LOG(cout << "cgi crlf READ: "<<headerNamePull<<endl);
         headerPos = headerNamePull.find(":");
         if (headerPos != string::npos)
         {
@@ -677,9 +677,6 @@ void    Response::makeHeader(string key, string value)
 
 void    Response::makeContent(int fd)
 {
-    int     count;
-    int     readSize;
-    char    buffer[4096];
     string  location = request.url;
     size_t  pos = location.find_last_of('.');
 
@@ -696,7 +693,6 @@ void    Response::makeContent(int fd)
     else
         contentType = "application/octet-stream";
     makeHeader("content-type", contentType);
-    count = 0;
     Kq::plusEvent(fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     Kq::cgiFd[fd] = request.clientFd;
     Kq::pidPipe[fd] = 0;
