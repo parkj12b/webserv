@@ -49,6 +49,7 @@ class Client
         bool        connection;
         int         fd;
         int         port;
+        int         socketReadSize;
         size_t      msgSize;
         size_t      index;
         size_t      responseAmount;
@@ -73,6 +74,7 @@ class Client
         bool        getConnection() const;
         int         getFd() const;
         int         getPort() const;
+        int         getSocketReadSize() const;
         size_t      getMsgSize() const;
         size_t      getIndex() const;
         size_t      getResponseAmount() const;
@@ -93,6 +95,7 @@ class Client
         void    setRequestStatus(int temp);
         void    setRequestFin(bool fin);
 		void	setCgiResponseEntity(size_t &cgiContentLength, string &content, size_t &status);
+        void    plusSocketReadSize();
         //logic
         bool        getResponseCgi();
         void        deleteContent();

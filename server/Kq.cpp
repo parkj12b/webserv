@@ -132,7 +132,7 @@ void    Kq::clientFin(struct kevent& store)
 
     LOG(std::cout<<"bye"<<std::endl);
     serverFd = findServer[store.ident];
-    plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
+    // plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
     if (serverFd == 0)
@@ -233,7 +233,7 @@ void    Kq::eventRead(struct kevent& store)
 		switch (event)
 		{
 			case ERROR:
-                plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+                // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
 				clientFin(store);
 				break ;
 			case ING:
@@ -357,10 +357,6 @@ void    Kq::mainLoop()
             {
                 LOG(std::cout<<"timer"<<std::endl);
                 eventTimer(store[i]);
-            }
-            else
-            {
-                std::cout<<"bad new "<<std::endl;
             }
         }
     }
