@@ -200,7 +200,7 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
             contentLength -= static_cast<int>(readSize);
             // content.push_back(str);
             flag = write(fd, &str[0], readSize);
-            readSize -= readSize;
+            readSize  = 0;
             str.clear();
             if (contentLength == 0)
             {
@@ -221,9 +221,10 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
     }
     else if (contentType == TRANSFER)
     {
-        chunked.append(str, readSize);
-        str.clear();
+        chunked.append(&str[0], readSize);
         readSize = 0;
+        str.clear();
+        cout<<"chunked: "<<chunked<<endl;
         flag = chunked.find("0\r\n\r\n");
         // flag = str.find("0\r\n");  //talnet 때문에 임시로 대체함
         //에러 발생시 중간에 빠져 나왔을 떄

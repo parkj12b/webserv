@@ -144,7 +144,7 @@ int     StartLine::check(std::string firstLine)
             case 0:
                 method = originMethod[str];
                 if (method == 0)
-                    return (400);
+                    return (405);
                 break ;
             case 1:  //allow checking and root checking (config parser)
                 if (str.empty())
