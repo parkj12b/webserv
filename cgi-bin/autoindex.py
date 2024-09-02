@@ -17,8 +17,8 @@ def list_directory(directory):
     items.sort()
     
     # Create HTML content
-    html = '<!doctype html>'
-    html += '<html><head><title>Directory Listing</title><style></head>'
+    html = ''
+    html += '<html><head><title>Directory Listing</title><meta charset="utf-8"></head>'
     html += '<body><h1>Directory Listing</h1><ul>'
     
     # Parent directory link
@@ -40,8 +40,6 @@ def list_directory(directory):
 
 def main():
     # Handle the CGI request
-    while 1:
-        continue
     directory = os.environ.get('PATH_INFO')
     
     if directory == None:

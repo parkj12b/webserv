@@ -26,7 +26,7 @@
 # include "CgiProcessor.hpp"
 # include "HeaderLine.hpp"
 
-# define AUTOINDEX_PATH "./cgi-bin/autoindex.py"
+# define AUTOINDEX_PATH "/cgi-bin/autoindex.py"
 
 using namespace std;
 
