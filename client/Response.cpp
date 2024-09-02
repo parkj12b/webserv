@@ -434,7 +434,6 @@ size_t  Response::setCgiContent(string &content_, size_t &status)
     if (status == 600)
     {
         request.status = 500;
-        std::cout<<"good good"<<std::endl;
         makeError();
         return (0);
     }
@@ -698,18 +697,22 @@ void    Response::makeContent(int fd)
         contentType = "application/octet-stream";
     makeHeader("content-type", contentType);
     count = 0;
-    while (1)
-    {
-        readSize = read(fd, buffer, 4095);
-        if (readSize <= 0)
-            break ;
-        content.append(buffer, readSize);
-        count += readSize;
-    }
-    LOG(cout<<"Content Size: "<<content.size()<<endl);
-    contentLength = count;
-    makeHeader("content-length", to_string(count));
-    close(fd);
+    Kq::plusEvent(fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
+    Kq::cgiFd[fd] = request.clientFd;
+    Kq::pidPipe[fd] = 0;
+    // cout << "cgiFd[fd]: " << request.clientFd << endl;
+    // while (1)
+    // {
+    //     readSize = read(fd, buffer, 4095);
+    //     if (readSize <= 0)
+    //         break ;
+    //     content.append(buffer, readSize);
+    //     count += readSize;
+    // }
+    // LOG(cout<<"Content Size: "<<content.size()<<endl);
+    // contentLength = count;
+    // makeHeader("content-length", to_string(count));
+    // close(fd);
 }
 
 bool    Response::isValidUploadPath()
