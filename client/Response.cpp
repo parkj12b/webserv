@@ -13,7 +13,6 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <sys/stat.h>
 #include "Response.hpp"
 #include "Server.hpp"
 #include "LocationConfigData.hpp"
@@ -785,21 +784,6 @@ void    Response::makeGet()
 	}
 	else
 	{
-        struct stat sb;
-
-        if (stat(request.url.c_str(), &sb) == -1)
-        {
-            request.status = 500;
-            makeError();
-            return ;
-        }
-        if (sb.st_size == 0)
-        {
-            cout << "i am zero 000\n";
-            makeHeader("Content-length", "0");
-            makeHeader("Content-Type", "application/octet-stream");
-            return ;
-        }
 		fd = open(request.url.c_str(), O_RDONLY);
 		if (fd < 0)
 		{
@@ -831,7 +815,6 @@ void    Response::makePost()
 
     chdir(getDir(request.url).c_str());
     LOG(cout << "request url: " << request.url << endl);
-    system("pwd");
 	if (isValidUploadPath() && cgiFlag)
 	{
         // cgiProcessor.insertEnv("CONTENT_FILE", request.contentFileName);
@@ -846,15 +829,32 @@ void    Response::makePost()
 void    Response::makeDelete()
 {
     LOG(cout<<"Method: DELETE"<<endl);
-    if (remove(request.url.c_str()) == 0)
-    {
-        request.status = 204;
-    }
-    else
+    LocationConfigData *location = getLocationConfigData();
+    if (location == NULL)
     {
         request.status = 404;
         makeError();
+        return ;
     }
+    string uploadPath = location->getFastcgiParam()["UPLOAD_PATH"];
+    if (uploadPath == "")
+    {
+        request.status = 404;
+        makeError();
+        return ;
+    }
+    CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
+    chdir(getDir(request.url).c_str());
+    LOG(cout << "request url: " << request.url << endl);
+	if (isValidUploadPath() && cgiFlag)
+	{
+        // cgiProcessor.insertEnv("CONTENT_FILE", request.contentFileName);
+		cgiProcessor.executeCGIScript(request.url);
+	}
+	if (request.status >= 400)
+	{
+        makeError();
+	}
 }
 
 void    Response::responseMake()

@@ -26,8 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
                 // Move the uploaded file to the desired directory
                 if (move_uploaded_file($tmp_name, $destination))
                 {
-                    echo "Status: 302\r\n";
-                    echo "location: /upload_success.html\r\n";
+                    continue ;
                 }
                 else
                 {
@@ -36,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
                         unlink($file);
                     }
                     echo "status: 400\r\n";
+                    exit ;
                 }
             }
             else
@@ -45,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
                     unlink($file);
                 }
                 echo "status: 400\r\n";
+                exit ;
             }
         }
     }
@@ -55,7 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             unlink($file);
         }
         echo "status: 400\r\n";
-        // exit ;
+        exit ;
     }
+    echo "Status: 302\r\n";
+    echo "location: /upload_success.html\r\n";
 }
 ?>

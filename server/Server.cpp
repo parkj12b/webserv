@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/02 18:51:17 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/02 21:26:47 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ EVENT Server::cgiRead(struct kevent& store)
         buf[readSize] = '\0';
         cgiContent[store.ident].append(buf, readSize);
         cgiContentLength[store.ident] += readSize;
+        // cout << "cgiContent[store.ident] : " << cgiContent[store.ident] << endl;
     }
     // LOG(std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl;)
     cout<<"store.data: "<<store.data<<endl;
