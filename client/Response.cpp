@@ -125,17 +125,54 @@ vector<std::string> cgiHeaderInit()
 
 std::map<std::string, std::string>  urlContentTypeInit()
 {
-    std::map<std::string, std::string>  m;
+    std::map<std::string, std::string> mimeTypes;
 
-    m["icon"] = "image/x-icon";
-    m["html"] = "text/html";
-    m["png"] = "image/png";
-    return (m);
+    // Initialize the map with file extensions and their MIME types
+    // 1. Text Files
+    mimeTypes["html"] = "text/html";
+    mimeTypes["htm"] = "text/html";
+    mimeTypes["css"] = "text/css";
+    mimeTypes["js"] = "application/javascript";
+    mimeTypes["txt"] = "text/plain";
+    mimeTypes["xml"] = "application/xml";
+    // 2. ImageFiles
+    mimeTypes["jpg"] = "image/jpeg";
+    mimeTypes["jpeg"] = "image/jpeg";
+    mimeTypes["png"] = "image/png";
+    mimeTypes["gif"] = "image/gif";
+    mimeTypes["svg"] = "image/svg+xml";
+    mimeTypes["webp"] = "image/webp";
+    // 3. Audioand Video Files
+    mimeTypes["mp3"] = "audio/mpeg";
+    mimeTypes["ogg"] = "audio/ogg";
+    mimeTypes["wav"] = "audio/wav";
+    mimeTypes["mp4"] = "video/mp4";
+    mimeTypes["webm"] = "video/webm";
+    mimeTypes["ogg"] = "video/ogg";
+    // 4. Archie Files
+    mimeTypes["zip"] = "application/zip";
+    mimeTypes["gz"] = "application/gzip";
+    mimeTypes["tar"] = "application/x-tar";
+    mimeTypes["tar.gz"] = "application/gzip";
+    // 5. Documnt Files
+    mimeTypes["pdf"] = "application/pdf";
+    mimeTypes["doc"] = "application/msword";
+    mimeTypes["docx"] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    mimeTypes["xls"] = "application/vnd.ms-excel";
+    mimeTypes["xlsx"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    mimeTypes["ppt"] = "application/vnd.ms-powerpoint";
+    mimeTypes["pptx"] = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+    // 6. OtherFiles
+    mimeTypes["json"] = "application/json";
+    mimeTypes["csv"] = "text/csv";
+    mimeTypes["webmanifest"] = "application/manifest+json";
+    return (mimeTypes);
 }
 
 map<int, string>    Response::statusContent = statusContentInit();
 map<string, string> Response::session = sessionInit();
 vector<std::string> Response::cgiHeader = cgiHeaderInit();
+map<string, string> Response::urlContentType = urlContentTypeInit();
 
 bool	Response::isCgiScriptInURL(string& str)
 {
@@ -644,16 +681,22 @@ void    Response::makeContent(int fd)
     int     count;
     int     readSize;
     char    buffer[4096];
+    string  location = request.url;
+    size_t  pos = location.find_last_of('.');
 
-sssss
-    if (contentTypeFlag)
+    string contentType;
+    cout << "location: " << location << endl;
+    if (pos != string::npos)
     {
-        //substr (.을 기준으로) html, png, icon
-        //default 예외로 
-        //makeHeader("Content-Type", value)
+        string extension = location.substr(pos + 1);
+        cout << "extension: " << extension << endl;
+        contentType = urlContentType[extension];
+        if (contentType == "")
+            contentType = "application/octet-stream";
     }
     else
-        makeHeader("Content-Type", "text/html");
+        contentType = "application/octet-stream";
+    makeHeader("content-type", contentType);
     count = 0;
     while (1)
     {
