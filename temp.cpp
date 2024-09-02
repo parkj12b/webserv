@@ -4,9 +4,18 @@
 #include <vector>
 #include <algorithm>
 #include <cctype>
-#include <fcntl.h>
 #include <fstream> 
 #include <unistd.h>
+
+
+
+//file discripter checking 
+#include <fcntl.h>
+#include <errno.h>
+
+int is_fd_valid(int fd) {
+    return fcntl(fd, F_GETFD) != -1 || errno != EBADF;
+}
 
 enum    NUM
 {

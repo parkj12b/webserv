@@ -6,7 +6,7 @@
 /*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/01 16:44:18 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/02 13:59:07 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,9 @@ Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
                 std::exit(1);
             }
         }
+        //fcntl temp
+        int flags = fcntl(serverFd, F_GETFL, 0);
+        fcntl(serverFd, F_SETFL, flags | O_NONBLOCK);
         while (listen(serverFd, CLIENT_CNT) < 0);
         plusEvent(serverFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
         server[serverFd] = Server(serverFd, port);  //config parser
@@ -129,7 +132,7 @@ void    Kq::clientFin(struct kevent& store)
 
     LOG(std::cout<<"bye"<<std::endl);
     serverFd = findServer[store.ident];
-    plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
+    // plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
     // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
     if (serverFd == 0)
@@ -230,7 +233,7 @@ void    Kq::eventRead(struct kevent& store)
 		switch (event)
 		{
 			case ERROR:
-                plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+                // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
 				clientFin(store);
 				break ;
 			case ING:
@@ -257,7 +260,10 @@ void    Kq::eventWrite(struct kevent& store)
         return ;
     serverFd = findServer[store.ident];
     if (serverFd == 0)
+    {
+        LOG(std::cout<<"No enroll write: "<<store.ident << std::endl);
         return ;
+    }
     event = server[serverFd].clientWrite(store);
     switch (event)
     {
@@ -323,7 +329,7 @@ void    Kq::mainLoop()
         {
             if (store[i].flags == EV_ERROR)
             {
-                cout << "server EV_ERROR" << endl;
+                cerr << "server EV_ERROR" << endl;
                 serverError(store[i]);  //server에 연결된 모든 client 종료
             }
             else if (store[i].filter == EVFILT_READ) //read event(complete)
@@ -334,7 +340,7 @@ void    Kq::mainLoop()
             LOG(std::cout<<"store[i].ident: "<<store[i].ident<<std::endl);
             if (store[i].flags == EV_ERROR)
             {
-                LOG(cout << "client EV_ERROR" << endl);
+                LOG(cerr << "client EV_ERROR" << endl);
                 clientFin(store[i]);  //client 종료
             }
             else if (store[i].filter == EVFILT_READ)

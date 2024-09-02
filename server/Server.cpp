@@ -6,14 +6,15 @@
 /*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/01 16:35:13 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/02 17:04:50 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <algorithm>
 #include "Server.hpp"
 #include "Response.hpp"
-#include "UtilTemplate.hpp" 
+#include "UtilTemplate.hpp"
+
 
 extern int logs;
 extern int writeLogs;
@@ -80,7 +81,8 @@ void setLinger(int sockfd, int linger_time) {
     linger_opt.l_onoff = 1;  // Enable linger option
     linger_opt.l_linger = linger_time;  // Set linger time in seconds
 
-    if (setsockopt(sockfd, SOL_SOCKET, SO_LINGER, &linger_opt, sizeof(linger_opt)) < 0) {
+    if (setsockopt(sockfd, SOL_SOCKET, SO_LINGER, &linger_opt, sizeof(linger_opt)) < 0)
+    {
         perror("setsockopt(SO_LINGER) failed");
     }
 }
@@ -96,6 +98,8 @@ int Server::plusClient(string pathEnv)
     if ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0)
         return (-1);
     setLinger(clntFd, 0);
+    int flags = fcntl(clntFd, F_GETFL, 0);
+    fcntl(clntFd, F_SETFL, flags | O_NONBLOCK);
     client[clntFd] = Client(clntFd, port, pathEnv);  //생성자 및 대입 연산자 호출
 	client[clntFd].clientIP(clntAdr);
     LOG(std::cout<<"New Client FD : " << clntFd <<std::endl);
@@ -125,15 +129,22 @@ EVENT Server::cgiRead(struct kevent& store)
 	{
         size_t  status = 0;
         int     waitStatus = 0;
-        do {
-            cout << "waitpid: " << waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG) << endl;
-        } while (!WIFEXITED(waitStatus));
-        if (waitStatus != 0)
+        waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
+        if (WEXITSTATUS(waitStatus) != 0)
         {
-            cout<<"good good "<<waitStatus<<endl;
+            write(2, "ERROR\n", 6);
+            status = 600;
+        }
+        if (WIFEXITED(waitStatus))
+        {
+            status = WEXITSTATUS(waitStatus);
+            LOG(std::cout<<"status: "<<status<<std::endl);
+        }
+        if (readSize < 0)
             status = 600;
         }
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
+        LOG(cout<<"cgiContent[store.ident]: "<<cgiContent[store.ident]<<endl);
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
         // LOG(cout<<"status: "<<status<<endl);
         cgiContent[store.ident].clear();
@@ -156,7 +167,7 @@ EVENT Server::cgiRead(struct kevent& store)
 EVENT Server::clientRead(struct kevent& store)
 {
     //buffer 문제인지 생각해보기
-    char    buffer[BUFFER_SIZE + 1];
+    char    buffer[BUFFER_SIZE * client[store.ident].getSocketReadSize() + 1];
     int     readSize;
 
     //eof신호를 못 받게 됨
@@ -164,12 +175,18 @@ EVENT Server::clientRead(struct kevent& store)
         return (ING);
     // if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 100)
     //     return (ING);
-    readSize = read(store.ident, buffer, BUFFER_SIZE);
+    readSize = read(store.ident, buffer, BUFFER_SIZE * client[store.ident].getSocketReadSize());
+    LOG(cout<<"socketReadSize:" <<client[store.ident].getSocketReadSize()<<endl);
     if (readSize <= 0) // read가 발생했는데 읽은게 없다면 에러
     {
         LOG(std::cout<<"read error or socket close\n");
         client[store.ident].deleteContent();
         return (ERROR);
+    }
+    if (readSize == BUFFER_SIZE * client[store.ident].getSocketReadSize())
+    {
+        client[store.ident].plusSocketReadSize();
+        cout << "buffer read size: " << BUFFER_SIZE * client[store.ident].getSocketReadSize()<<endl;
     }
     LOG(std::cout<<"Client Read " << readSize << std::endl);
     buffer[readSize] = '\0';
@@ -192,15 +209,35 @@ EVENT Server::clientRead(struct kevent& store)
 EVENT   Server::clientWrite(struct kevent& store)
 {
     std::vector<Client*>::iterator   it;
+    ssize_t     openCheck;
     size_t      index;
     const char* buffer = client[store.ident].respondMsgIndex();
+    char        readBuffer[1];
 
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
+    // int flags = fcntl(store.ident, F_GETFL, 0);
+    // if (!(flags & O_RDWR))
+    //     return (ERROR);
     LOG(std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl);
+    openCheck = recv(store.ident, readBuffer, sizeof(readBuffer), MSG_PEEK);
+    if (openCheck == 0)
+    {
+        LOG(std::cout<<"write: client close"<<std::endl);
+        return (ERROR);
+    }
+    index = write(store.ident, buffer, client[store.ident].responseIndex());
+    if (index > client[store.ident].responseIndex())
+        return (ERROR);
+    // cout<<"msg: " <<buffer<<endl;
     // write(writeLogs, buffer, client[store.ident].responseIndex());
     // write(1, buffer, client[store.ident].responseIndex());
-    index = write(store.ident, buffer, client[store.ident].responseIndex());
+    std::cout<<"write index: " <<index<<endl;
+    // if (index > client[store.ident].responseIndex())
+    // {
+    //     std::cout<<"ERROR wirte"<<endl;
+    //     return (ERROR);
+    // }
     client[store.ident].plusIndex(index);
     client[store.ident].setConnection(true);
     if (client[store.ident].responseIndex())
@@ -208,12 +245,12 @@ EVENT   Server::clientWrite(struct kevent& store)
     if (client[store.ident].getRequestStatus() == 100)
         return (EXPECT);
     client[store.ident].deleteContent();
+    client[store.ident].resetClient();
     if (!client[store.ident].getConnect())
     {
         LOG(std::cout<<"connection fin"<<std::endl);
         return (ERROR);
     }
-    client[store.ident].resetClient();
     LOG(std::cout<<"keep-alive"<<std::endl);
     return (FINISH);
 }

@@ -20,6 +20,7 @@
 #include "Trie.hpp"
 #include "UtilTemplate.hpp"
 #include "StartLine.hpp"
+#include "CgiProcessor.hpp"
 
 using namespace std;
 
@@ -233,8 +234,17 @@ Response::~Response()
 {
 }
 
-Response::Response(int port, string pathEnv_) : cgiFlag(false), port(port), contentLength(0), pathEnv(pathEnv_)
-{}
+Response::Response(int port, string pathEnv_) : cgiFlag(false), port(port), startHeaderLength(0), contentLength(0), pathEnv(pathEnv_)
+{
+    request.fin = false;
+    request.status = 0;
+    request.port = port;
+    request.url.clear();
+    request.location.clear();
+    request.query.clear();
+    request.header.clear();
+    request.contentFileName.clear();
+}
 
 int Response::getPort() const
 {
@@ -568,7 +578,7 @@ void    Response::makeError()
     {
         CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
 		cgiProcessor.insertEnv("ERROR_CODE", toString(request.status));
-        cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
+        cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);
         setCgiFlag(true);
     }
 }
