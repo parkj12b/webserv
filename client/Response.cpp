@@ -13,6 +13,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <sys/ioctl.h>
 #include "Response.hpp"
 #include "Server.hpp"
 #include "LocationConfigData.hpp"
@@ -679,8 +680,10 @@ void    Response::makeContent(int fd)
 {
     string  location = request.url;
     size_t  pos = location.find_last_of('.');
-
     string contentType;
+    int     fileBytes;
+
+    fileBytes = 0;
     cout << "location: " << location << endl;
     if (pos != string::npos)
     {
@@ -693,6 +696,16 @@ void    Response::makeContent(int fd)
     else
         contentType = "application/octet-stream";
     makeHeader("content-type", contentType);
+    if (ioctl(fd, FIONREAD, &fileBytes) < 0)
+    {
+        close(fd);
+        return ;
+    }
+    if (fileBytes == 0)
+    {
+        close(fd);
+        return ;
+    }
     Kq::plusEvent(fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     Kq::cgiFd[fd] = request.clientFd;
     Kq::pidPipe[fd] = 0;
