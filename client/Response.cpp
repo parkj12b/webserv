@@ -123,6 +123,16 @@ vector<std::string> cgiHeaderInit()
     return (v);
 }
 
+std::map<std::string, std::string>  urlContentTypeInit()
+{
+    std::map<std::string, std::string>  m;
+
+    m["icon"] = "image/x-icon";
+    m["html"] = "text/html";
+    m["png"] = "image/png";
+    return (m);
+}
+
 map<int, string>    Response::statusContent = statusContentInit();
 map<string, string> Response::session = sessionInit();
 vector<std::string> Response::cgiHeader = cgiHeaderInit();
@@ -234,7 +244,7 @@ Response::~Response()
 {
 }
 
-Response::Response(int port, string pathEnv_) : cgiFlag(false), port(port), startHeaderLength(0), contentLength(0), pathEnv(pathEnv_)
+Response::Response(int port, string pathEnv_) : cgiFlag(false), port(port), startHeaderLength(0), contentLength(0), pathEnv(pathEnv_), serverConfig(NULL), locationConfig(NULL)
 {
     request.fin = false;
     request.status = 0;
@@ -635,8 +645,13 @@ void    Response::makeContent(int fd)
     int     readSize;
     char    buffer[4096];
 
-    if (request.url == "./favicon.ico")
-        makeHeader("Content-Type", "image/x-icon");
+sssss
+    if (contentTypeFlag)
+    {
+        //substr (.을 기준으로) html, png, icon
+        //default 예외로 
+        //makeHeader("Content-Type", value)
+    }
     else
         makeHeader("Content-Type", "text/html");
     count = 0;

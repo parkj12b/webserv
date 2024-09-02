@@ -368,6 +368,7 @@ int Client::setHeader()
     {
         //아직 다 들어오지 않은 데이터가 있을 수도 있잔녀 이건 우선 생각하지 않음
         //데이터가 후에 들어온다고 가정한다면 그때 가서 처리를 해주면 됨 하지만 들어오지 않고 eof가 들어오면 맞는 데이터임에도 error로 처리하기 때문에 여기서 이렇게 처리하는 것이 맡다. 
+        cout<<"checking..."<<endl;
         if (request.method == GET)
             request.fin = true;
         else if (msg.empty() && headerLine.getContentType() == ENOT)
@@ -378,7 +379,10 @@ int Client::setHeader()
             return (1);
         }
         else if (headerLine.getContentType() == CONTENT && headerLine.getContentLength() == 0)
+        {
+            //빼야 할 수도
             request.fin = true;
+        }
     }
     return (0);
 }
@@ -388,6 +392,8 @@ int Client::setContent()
     if (!headerLine.getCompletion() || contentLine.getCompletion() || request.fin || request.status)
         return (0);
     LOG(std::cout<<"...setBodyLine parsing...\n");
+    // LOG(std::cout<<"msgSize: "<<msgSize<<endl);
+    // LOG(std::cout<<"msg: "<<msg<<endl);
     if (contentLine.makeContentLine(msg, msgSize, request.status, fd) < 0)
         return (1);
     if (contentLine.getCompletion())

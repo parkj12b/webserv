@@ -176,7 +176,6 @@ EVENT Server::clientRead(struct kevent& store)
     // if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 100)
     //     return (ING);
     readSize = read(store.ident, buffer, BUFFER_SIZE * client[store.ident].getSocketReadSize());
-    LOG(cout<<"socketReadSize:" <<client[store.ident].getSocketReadSize()<<endl);
     if (readSize <= 0) // read가 발생했는데 읽은게 없다면 에러
     {
         LOG(std::cout<<"read error or socket close\n");
@@ -263,6 +262,7 @@ EVENT   Server::clientTimer(struct kevent& store)
         return (ING);
     flag = client[store.ident].getConnection();
     client[store.ident].setConnection(false);
+    LOG(cout << "timeout: " << getStandardTime(store.ident) << endl);
     if (flag)
         return (ING);
     LOG(std::cout<<"TIMER OUT"<<std::endl);

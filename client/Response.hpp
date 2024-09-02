@@ -83,6 +83,7 @@ class Response
         static std::map<int, std::string>           statusContent;
         static std::map<std::string, std::string>   session;
         static std::vector<std::string>             cgiHeader;
+        static std::map<std::string, std::string>   urlContentType;
         //oocf
         Response();
         Response(const Response& src);
