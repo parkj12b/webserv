@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:55 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/30 13:55:02 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/01 21:53:48 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 # define PIPE_BUFFER_SIZE 65536
 # define DEFAULT_400_ERROR_PAGE "./resource/html/error/40x.html"
 # define DEFAULT_500_ERROR_PAGE "./resource/html/error/50x.html"
-# define CGI_ERROR_PAGE "./cgi-bin/error_page/errorPage.py"
+# define CGI_ERROR_PAGE "/cgi-bin/error_page/errorPage.py"
 
 //server를 여러 개 만들 경우에는 kq클래스 만들기
 //kq 클래스에서 서버 클래스를 관리하기

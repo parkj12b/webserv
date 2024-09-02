@@ -20,6 +20,7 @@
 #include "Trie.hpp"
 #include "UtilTemplate.hpp"
 #include "StartLine.hpp"
+#include "CgiProcessor.hpp"
 
 using namespace std;
 
@@ -577,7 +578,7 @@ void    Response::makeError()
     {
         CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
 		cgiProcessor.insertEnv("ERROR_CODE", toString(request.status));
-        cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
+        cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);
         setCgiFlag(true);
     }
 }
