@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/02 15:57:34 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/02 18:51:17 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,15 @@ EVENT Server::cgiRead(struct kevent& store)
     }
 	readSize = read(store.ident, buf, BUFFER_SIZE);
 	LOG(cout << "CGI Read Size : " << readSize << endl);
-	if (readSize <= 0)
+    if (readSize > 0)
+    {
+        buf[readSize] = '\0';
+        cgiContent[store.ident].append(buf, readSize);
+        cgiContentLength[store.ident] += readSize;
+    }
+    // LOG(std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl;)
+    cout<<"store.data: "<<store.data<<endl;
+	if (readSize <= 0 || (Kq::pidPipe[store.ident] == 0 && store.data - readSize == 0))
 	{
         size_t  status = 0;
         int     waitStatus = 0;
@@ -141,7 +149,7 @@ EVENT Server::cgiRead(struct kevent& store)
         if (readSize < 0)
             status = 600;
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
-        LOG(cout<<"cgiContent[store.ident]: "<<cgiContent[store.ident]<<endl);
+        // LOG(cout<<"cgiContent[store.ident]: "<<cgiContent[store.ident]<<endl);
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
         // LOG(cout<<"status: "<<status<<endl);
         cgiContent[store.ident].clear();
@@ -154,10 +162,6 @@ EVENT Server::cgiRead(struct kevent& store)
         // LOG(std::cout << "msg: " << client[Kq::cgiFd[store.ident]].getMsg() << endl);
         return (FINISH);
 	}
-    buf[readSize] = '\0';
-    cgiContent[store.ident].append(buf, readSize);
-    cgiContentLength[store.ident] += readSize;
-    // LOG(std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl;)
 	return (ING);
 }
 
