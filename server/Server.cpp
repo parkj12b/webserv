@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/02 21:26:47 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/03 21:14:42 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ EVENT Server::cgiRead(struct kevent& store)
         // cout << "cgiContent[store.ident] : " << cgiContent[store.ident] << endl;
     }
     // LOG(std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl;)
-    cout<<"store.data: "<<store.data<<endl;
+    LOG(cout<<"store.data: "<<store.data<<endl;)
 	if (readSize <= 0 || (Kq::pidPipe[store.ident] == 0 && store.data - readSize == 0))
 	{
         size_t  status = 0;
@@ -181,6 +181,7 @@ EVENT Server::clientRead(struct kevent& store)
     if (readSize <= 0) // read가 발생했는데 읽은게 없다면 에러
     {
         LOG(std::cout<<"read error or socket close\n");
+        std::cout<<"read error or socket close\n";
         client[store.ident].deleteContent();
         return (ERROR);
     }
@@ -233,7 +234,7 @@ EVENT   Server::clientWrite(struct kevent& store)
     // cout<<"msg: " <<buffer<<endl;
     // write(writeLogs, buffer, client[store.ident].responseIndex());
     // write(1, buffer, client[store.ident].responseIndex());
-    std::cout<<"write index: " <<index<<endl;
+    LOG(std::cout<<"write index: " <<index<<endl;)
     // if (index > client[store.ident].responseIndex())
     // {
     //     std::cout<<"ERROR wirte"<<endl;
