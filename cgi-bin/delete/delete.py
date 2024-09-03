@@ -18,7 +18,6 @@ if query_string == "":
     make_error(400)
 query_params = urllib.parse.parse_qs(query_string)
 
-print("hihihihihihihihihihihih", file=sys.stderr)
 q = queue.Queue()
 
 upload_dir = os.environ.get("UPLOAD_PATH")
@@ -35,18 +34,17 @@ def delete_file():
 def checkFileExist():
     if not query_params:
         make_error(400)
-    values = query_params.get("file", [])
+    values = query_params.get("file")
     if not values:
         make_error(400)
-    for value in values:
-        filename = os.path.basename(value)
-        filepath = os.path.join(upload_dir, filename)
-        if not os.path.exists(filepath):
-            make_error(404)
-        q.put(filepath)
+    value = values[0]
+    filename = os.path.basename(value)
+    filepath = os.path.join(upload_dir, filename)
+    if not os.path.exists(filepath):
+        make_error(404)
+    q.put(filepath)
 
 def main():
-    print("here", file=sys.stderr)
     checkFileExist()
     delete_file()
     print(f"status: 302\r")

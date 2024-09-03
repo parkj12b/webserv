@@ -226,7 +226,7 @@ void    Response::makeFilePath(string& str)
         str += "/" + location->getIndex();
         if (isFile(str.c_str()) == false)
         {
-            if (location->getAutoindex())
+            if (request.method == GET && location->getAutoindex())
                 str = temp + "/";
             else
             {
@@ -456,7 +456,7 @@ size_t  Response::setCgiContent(string &content_, size_t &status)
 void	Response::setCgiContentLength(size_t contentLength_)
 {
     contentLength = contentLength_;
-    cout<<"here    here "<< contentLength_<<endl;
+    LOG(cout<<"here    here "<< contentLength_<<endl;)
     makeHeader("content-length", toString(contentLength));
     makeEntity();
     // LOG(std::cout<<"header: \n\n"<<header);
@@ -683,11 +683,11 @@ void    Response::makeContent(int fd)
     size_t  pos = location.find_last_of('.');
 
     string contentType;
-    cout << "location: " << location << endl;
+    LOG(cout << "location: " << location << endl;)
     if (pos != string::npos)
     {
         string extension = location.substr(pos + 1);
-        cout << "extension: " << extension << endl;
+        LOG(cout << "extension: " << extension << endl;)
         contentType = urlContentType[extension];
         if (contentType == "")
             contentType = "application/octet-stream";
@@ -738,7 +738,7 @@ void    Response::makeEntity()
     entity = "HTTP/1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
     if (!header.empty())
         entity += header + "\r\n";
-    cout << "header: " << header << endl;
+    LOG(cout << "header: " << header << endl;)
     startHeaderLength = entity.size();
     if (!content.empty())
         entity.append(content);
@@ -829,32 +829,41 @@ void    Response::makePost()
 void    Response::makeDelete()
 {
     LOG(cout<<"Method: DELETE"<<endl);
-    LocationConfigData *location = getLocationConfigData();
-    if (location == NULL)
+
+    if (cgiFlag)
     {
-        request.status = 404;
-        makeError();
-        return ;
+        LocationConfigData *location = getLocationConfigData();
+        if (location == NULL)
+        {
+            request.status = 404;
+            makeError();
+            return ;
+        }
+        string uploadPath = location->getFastcgiParam()["UPLOAD_PATH"];
+        if (uploadPath == "")
+        {
+            request.status = 404;
+            makeError();
+            return ;
+        }
+        CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
+        chdir(getDir(request.url).c_str());
+        LOG(cout << "request url: " << request.url << endl);
+        if (isValidUploadPath())
+        {
+            // cgiProcessor.insertEnv("CONTENT_FILE", request.contentFileName);
+            cgiProcessor.executeCGIScript(request.url);
+        }
     }
-    string uploadPath = location->getFastcgiParam()["UPLOAD_PATH"];
-    if (uploadPath == "")
+    else
     {
-        request.status = 404;
+        request.status = 405;
         makeError();
-        return ;
     }
-    CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
-    chdir(getDir(request.url).c_str());
-    LOG(cout << "request url: " << request.url << endl);
-	if (isValidUploadPath() && cgiFlag)
-	{
-        // cgiProcessor.insertEnv("CONTENT_FILE", request.contentFileName);
-		cgiProcessor.executeCGIScript(request.url);
-	}
-	if (request.status >= 400)
-	{
-        makeError();
-	}
+	// if (request.status >= 400)
+	// {
+    //     makeError();
+	// }
 }
 
 void    Response::responseMake()
