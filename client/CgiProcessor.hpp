@@ -18,6 +18,7 @@ public:
 	size_t	getContentLength();
 	bool	getFin();
 	void	insertEnv(string key, string value);
+	bool	isValidUploadPath();
 	void	checkPostContentType(const string path);
 	void	executeCGIScript(const string path);
 	static  string EXECUTE_PATH;

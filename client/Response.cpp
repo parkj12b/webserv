@@ -440,8 +440,12 @@ size_t  Response::setCgiContent(string &content_, size_t &status)
     }
     pos = content_.find("\r\n");
     if (pos != string::npos && pos == 0)
+    {
         content_ = content_.substr(pos + 2);
-    pos = 0;
+        pos = 2;
+    }
+    else
+        pos = 0;
     do
     {
         temp = setCgiHeader(content_, status);
@@ -793,8 +797,6 @@ void    Response::makePost()
 {
     LOG(cout<<"Method: POST"<<endl);
 	CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
-    int fd;
-
     LOG(cout << "request url: " << request.url << endl);
     if (cgiFlag)
     {
@@ -803,7 +805,7 @@ void    Response::makePost()
     }
     else
     {
-        fd = open(request.url.c_str(), O_RDONLY);
+        int fd = open(request.url.c_str(), O_RDONLY);
 		if (fd < 0)
 		{
 			request.status = 404;
@@ -814,9 +816,7 @@ void    Response::makePost()
 		makeContent(fd);
     }
 	if (request.status >= 400)
-	{
         makeError();
-	}
 }
 
 void    Response::makeDelete()
@@ -825,34 +825,21 @@ void    Response::makeDelete()
 
     if (cgiFlag)
     {
-        LocationConfigData *location = getLocationConfigData();
-        if (location == NULL)
-        {
-            request.status = 404;
-            makeError();
-            return ;
-        }
-        string uploadPath = location->getFastcgiParam()["UPLOAD_PATH"];
-        if (uploadPath == "")
-        {
-            request.status = 404;
-            makeError();
-            return ;
-        }
         CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
+        if (!cgiProcessor.isValidUploadPath())
+        {
+            cout << "Upload Path Error" << endl;
+            makeError();
+            return ;
+        }
         chdir(getDir(request.url).c_str());
         LOG(cout << "request url: " << request.url << endl);
         cgiProcessor.executeCGIScript(request.url);
     }
     else
-    {
         request.status = 405;
+	if (request.status >= 400)
         makeError();
-    }
-	// if (request.status >= 400)
-	// {
-    //     makeError();
-	// }
 }
 
 void    Response::responseMake()

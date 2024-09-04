@@ -94,10 +94,7 @@ void	CgiProcessor::setStartHeaderEnv()
 		&& request.header["content-type"].size() > 0)
 	{
 		if (request.header["content-type"].size() > 1)
-		{
-			cout << "boundary here\n";
 			insertEnv("CONTENT_TYPE", request.header["content-type"][0] + "; boundary=" + request.header["content-type"][1]);
-		}
 		else
 			insertEnv("CONTENT_TYPE", request.header["content-type"].front());
 	}
@@ -139,6 +136,23 @@ void	CgiProcessor::selectCgiCmd(string url)
 	scriptFile = url.substr(0, cgiFilePos + cgiExtension.size());
 }
 
+bool	CgiProcessor::isValidUploadPath()
+{
+	if (locationConfig == NULL)
+	{
+		request.status = 404;
+		return (false);
+	}
+	string uploadPath = locationConfig->getFastcgiParam()["UPLOAD_PATH"];
+	cout << "[isValidUploadPath() Function] - uploadPath: " << uploadPath << endl;
+	if (!uploadPath.compare("") || !isDirectory(uploadPath.c_str()))
+	{
+		request.status = 404;
+		return (false);
+	}
+	return (true);
+}
+
 void	CgiProcessor::checkPostContentType(const string path)
 {
     LOG(cout<<"content-length: "<<request.header["content-length"].front()<<endl);
@@ -161,15 +175,17 @@ void	CgiProcessor::checkPostContentType(const string path)
 		|| !request.header["content-type"].front().compare("application/json")
 		|| !request.header["content-type"].front().compare("multipart/form-data"))
 	{
-		// if (!request.header["content-type"].front().compare("multipart/form-data"))
-		// 	scriptFile = "/upload/upload.py";
+		if (!request.header["content-type"].front().compare("multipart/form-data")
+			&& !isValidUploadPath())
+		{
+			cout << "Upload Path Error" << endl;
+			return ;
+		}
 		insertEnv("CONTENT_FILENAME", request.contentFileName);
 		executeCGIScript(path);
 	}
 	else
-	{
 		request.status = 400;
-	}
 	LOG(cout << "good: " << request.status << endl);
 }
 
@@ -178,7 +194,7 @@ bool	CgiProcessor::isDirectory(const char *binPath)
 	struct stat	fileInfo;
 
 	if (stat(binPath, &fileInfo) == -1)
-		return (true);
+		return (false);
 	if (S_ISDIR(fileInfo.st_mode))
 		return (true);
 	return (false);
