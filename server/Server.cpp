@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/02 17:04:50 by devpark          ###   ########.fr       */
+/*   Updated: 2024/09/04 19:55:07 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,8 @@ EVENT Server::cgiRead(struct kevent& store)
     }
     // LOG(std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl;)
     LOG(cout<<"store.data: "<<store.data<<endl;)
+    cout << "pidPipe: " << Kq::pidPipe[store.ident] << endl;
+    cout << "store.data: " << store.data << " readSize: " << readSize << endl;
 	if (readSize <= 0 || (Kq::pidPipe[store.ident] == 0 && store.data - readSize == 0))
 	{
         size_t  status = 0;
