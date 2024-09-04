@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/03 20:44:07 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/04 15:42:10 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,6 +319,7 @@ void    Kq::mainLoop()
     }
     // Kq::processor = notFin;
     //changed EVENTCNT to connectionCnt
+    cout << "connectionCnt: " << connectionCnt << endl;
     if ((count = kevent(kq, &fdList[0], fdList.size(), store, connectionCnt, NULL)) <= 0)
         return ;
     fdList.clear();

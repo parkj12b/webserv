@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/03 21:14:42 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/04 15:25:02 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,7 @@ EVENT Server::cgiRead(struct kevent& store)
         Kq::pidPipe.erase(store.ident);
         if (status >= 400)
             return (ERROR);
-        LOG(cout << "status: " << status << endl);
+        LOG(cout << "status 1: " << status << endl);
         // LOG(std::cout << "msg: " << client[Kq::cgiFd[store.ident]].getMsg() << endl);
         return (FINISH);
 	}
