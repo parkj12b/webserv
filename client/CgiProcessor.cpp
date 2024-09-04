@@ -200,19 +200,13 @@ bool	CgiProcessor::checkErr(const char *binPath)
 bool	CgiProcessor::findCgiCmdPath()
 {
 	vector<string> pathEnvList;
-	LOG(cout << "PATH ENV : " << pathEnv << endl);
 	istringstream iss(pathEnv);
 	string buffer;
 	while (getline(iss, buffer, ':'))
-	{
-		LOG(cout << buffer << endl);
 		pathEnvList.push_back(buffer);
-	}
 	for (vector<string>::iterator iter = pathEnvList.begin(); iter != pathEnvList.end(); iter++)
 	{
-		LOG(cout << "PATH : " << *iter << endl);
 		string cmdPath = (*iter).append("/").append(cgiCommand);
-		LOG(cout << cmdPath << endl);
 		if (!checkErr(cmdPath.c_str()))
 		{
 			cgiCommand = cmdPath;
