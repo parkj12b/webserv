@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
 /*   Updated: 2024/09/03 19:31:09 by minsepar         ###   ########.fr       */
@@ -210,16 +210,14 @@ void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content, siz
 {
 	size_t  pos;
 
-    LOG(std::cout << "cgiContentLength: " << cgiContentLength<<std::endl);
+    std::cout<<"cgiContentLength: "<<cgiContentLength<<std::endl;
     pos = response.setCgiContent(content, status);
-    LOG(std::cout << "cgi pos: " << pos << std::endl);
-    if (status >= 400)
-        return ;
-    // if (cgiContentLength - pos > 0)
-    response.setCgiContentLength(cgiContentLength - pos);
+    std::cout<<"cgi pos: "<<pos<<std::endl;
+    if (cgiContentLength - pos > 0)
+        response.setCgiContentLength(cgiContentLength - pos);
     responseAmount = response.getStartHeaderLength() + cgiContentLength - pos;
     index = 0;
-    LOG(std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl);
+    std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl<<endl;
     msg = response.getEntity();
     // LOG(std::cout<<"msg: "<<msg<<std::endl);
 }

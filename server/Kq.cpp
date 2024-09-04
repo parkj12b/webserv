@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   Kq.cpp                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
 /*   Updated: 2024/09/04 15:42:10 by minsepar         ###   ########.fr       */

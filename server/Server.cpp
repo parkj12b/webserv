@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/04 15:25:02 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/02 17:04:50 by devpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ int Server::plusClient(string pathEnv)
     fcntl(clntFd, F_SETFL, flags | O_NONBLOCK);
     client[clntFd] = Client(clntFd, port, pathEnv);  //생성자 및 대입 연산자 호출
 	client[clntFd].clientIP(clntAdr);
-    LOG(std::cout<<"temp delete"<<std::endl);
+    LOG(std::cout<<"New Client FD : " << clntFd <<std::endl);
     return (clntFd);
 }
 
@@ -118,7 +118,7 @@ EVENT Server::cgiRead(struct kevent& store)
         cgiContentLength[store.ident] = 0;
         cgiContent[store.ident].clear();
     }
-	readSize = read(store.ident, buf, BUFFER_SIZE);
+    readSize = read(store.ident, buf, BUFFER_SIZE);
 	LOG(cout << "CGI Read Size : " << readSize << endl);
     if (readSize > 0)
     {
