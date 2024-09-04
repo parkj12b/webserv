@@ -188,10 +188,10 @@ bool	Response::isCgiScriptInURL(string& str)
 	}
 	if (cgiFilePos == string::npos)
 	{
-		if (request.method == POST)
-        {
-			request.status = 400;
-        }
+		// if (request.method == POST)
+        // {
+		// 	request.status = 400;
+        // }
 		return (false);
 	}
 	return (true);
@@ -778,8 +778,8 @@ void    Response::makeGet()
 		// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 		// makeHeader("content-type", "text/html");
 		// makeHeader("content-length", toString(contentLength)); //여기서 추가하고 나중에 또 추가함
-		content += cgiProcessor.getCgiContent();
-		LOG(cout << cgiProcessor.getCgiContent() << '\n');
+		// content += cgiProcessor.getCgiContent();
+		// LOG(cout << cgiProcessor.getCgiContent() << '\n');
         // LOG(std::cout<<header);
 	}
 	else
@@ -811,15 +811,39 @@ void    Response::makePost()
 {
     LOG(cout<<"Method: POST"<<endl);
 	CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
+    int fd;
 
-
-    chdir(getDir(request.url).c_str());
     LOG(cout << "request url: " << request.url << endl);
-	if (isValidUploadPath() && cgiFlag)
-	{
-        // cgiProcessor.insertEnv("CONTENT_FILE", request.contentFileName);
-		cgiProcessor.checkPostContentType(request.url);
-	}
+    if (cgiFlag)
+    {
+        chdir(getDir(request.url).c_str());
+        if (isValidUploadPath())
+        {
+            // cgiProcessor.insertEnv("CONTENT_FILE", request.contentFileName);
+            cgiProcessor.checkPostContentType(request.url);
+        }
+    }
+    else
+    {
+        fd = open(request.url.c_str(), O_RDONLY);
+		if (fd < 0)
+		{
+			request.status = 404;
+			// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
+			while (!cgiProcessor.getFin())
+				cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);
+			content += cgiProcessor.getCgiContent();
+            LOG(cout << cgiProcessor.getCgiContent() << '\n');
+            // fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);
+			// if (fd < 0)
+			// 	return ;
+			// //거기에 맞는 content만들기
+			// makeHeader("Content-Type", "text/html");
+			// makeContent(fd);
+			return ;
+		}
+		makeContent(fd);
+    }
 	if (request.status >= 400)
 	{
         makeError();
