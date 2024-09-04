@@ -125,17 +125,55 @@ vector<std::string> cgiHeaderInit()
 
 std::map<std::string, std::string>  urlContentTypeInit()
 {
-    std::map<std::string, std::string>  m;
+    std::map<std::string, std::string> mimeTypes;
 
-    m["icon"] = "image/x-icon";
-    m["html"] = "text/html";
-    m["png"] = "image/png";
-    return (m);
+    // Initialize the map with file extensions and their MIME types
+    // 1. Text Files
+    mimeTypes["html"] = "text/html";
+    mimeTypes["htm"] = "text/html";
+    mimeTypes["css"] = "text/css";
+    mimeTypes["js"] = "application/javascript";
+    mimeTypes["txt"] = "text/plain";
+    mimeTypes["xml"] = "application/xml";
+    // 2. ImageFiles
+    mimeTypes["jpg"] = "image/jpeg";
+    mimeTypes["jpeg"] = "image/jpeg";
+    mimeTypes["png"] = "image/png";
+    mimeTypes["gif"] = "image/gif";
+    mimeTypes["svg"] = "image/svg+xml";
+    mimeTypes["webp"] = "image/webp";
+    mimeTypes["ico"] = "image/x-icon";
+    // 3. Audioand Video Files
+    mimeTypes["mp3"] = "audio/mpeg";
+    mimeTypes["ogg"] = "audio/ogg";
+    mimeTypes["wav"] = "audio/wav";
+    mimeTypes["mp4"] = "video/mp4";
+    mimeTypes["webm"] = "video/webm";
+    mimeTypes["ogg"] = "video/ogg";
+    // 4. Archie Files
+    mimeTypes["zip"] = "application/zip";
+    mimeTypes["gz"] = "application/gzip";
+    mimeTypes["tar"] = "application/x-tar";
+    mimeTypes["tar.gz"] = "application/gzip";
+    // 5. Documnt Files
+    mimeTypes["pdf"] = "application/pdf";
+    mimeTypes["doc"] = "application/msword";
+    mimeTypes["docx"] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    mimeTypes["xls"] = "application/vnd.ms-excel";
+    mimeTypes["xlsx"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    mimeTypes["ppt"] = "application/vnd.ms-powerpoint";
+    mimeTypes["pptx"] = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+    // 6. OtherFiles
+    mimeTypes["json"] = "application/json";
+    mimeTypes["csv"] = "text/csv";
+    mimeTypes["webmanifest"] = "application/manifest+json";
+    return (mimeTypes);
 }
 
 map<int, string>    Response::statusContent = statusContentInit();
 map<string, string> Response::session = sessionInit();
 vector<std::string> Response::cgiHeader = cgiHeaderInit();
+map<string, string> Response::urlContentType = urlContentTypeInit();
 
 bool	Response::isCgiScriptInURL(string& str)
 {
@@ -150,10 +188,10 @@ bool	Response::isCgiScriptInURL(string& str)
 	}
 	if (cgiFilePos == string::npos)
 	{
-		if (request.method == POST)
-        {
-			request.status = 400;
-        }
+		// if (request.method == POST)
+        // {
+		// 	request.status = 400;
+        // }
 		return (false);
 	}
 	return (true);
@@ -188,7 +226,7 @@ void    Response::makeFilePath(string& str)
         str += "/" + location->getIndex();
         if (isFile(str.c_str()) == false)
         {
-            if (location->getAutoindex())
+            if (request.method == GET && location->getAutoindex())
                 str = temp + "/";
             else
             {
@@ -358,7 +396,7 @@ size_t  Response::setCgiHeader(string &content_, size_t &status)
     if (crlfPos != string::npos)
     {
         headerNamePull = content_.substr(0, crlfPos);
-        LOG(cout << "cgi crlf READ: "<<headerNamePull<<endl);
+        // LOG(cout << "cgi crlf READ: "<<headerNamePull<<endl);
         headerPos = headerNamePull.find(":");
         if (headerPos != string::npos)
         {
@@ -397,7 +435,6 @@ size_t  Response::setCgiContent(string &content_, size_t &status)
     if (status == 600)
     {
         request.status = 500;
-        // std::cout<<"good good"<<std::endl;
         makeError();
         return (0);
     }
@@ -419,6 +456,7 @@ size_t  Response::setCgiContent(string &content_, size_t &status)
 void	Response::setCgiContentLength(size_t contentLength_)
 {
     contentLength = contentLength_;
+    LOG(cout<<"here    here "<< contentLength_<<endl;)
     makeHeader("content-length", toString(contentLength));
     makeEntity();
     // LOG(std::cout<<"header: \n\n"<<header);
@@ -641,47 +679,39 @@ void    Response::makeHeader(string key, string value)
 
 void    Response::makeContent(int fd)
 {
-    int     count;
-    int     readSize;
-    char    buffer[4096];
+    string  location = request.url;
+    size_t  pos = location.find_last_of('.');
 
-sssss
-    if (contentTypeFlag)
+    string contentType;
+    LOG(cout << "location: " << location << endl;)
+    if (pos != string::npos)
     {
-        //substr (.을 기준으로) html, png, icon
-        //default 예외로 
-        //makeHeader("Content-Type", value)
+        string extension = location.substr(pos + 1);
+        LOG(cout << "extension: " << extension << endl;)
+        contentType = urlContentType[extension];
+        if (contentType == "")
+            contentType = "application/octet-stream";
     }
     else
-        makeHeader("Content-Type", "text/html");
-    count = 0;
-    while (1)
-    {
-        readSize = read(fd, buffer, 4095);
-        if (readSize <= 0)
-            break ;
-        content.append(buffer, readSize);
-        count += readSize;
-    }
-    LOG(cout<<"Content Size: "<<content.size()<<endl);
-    contentLength = count;
-    makeHeader("content-length", to_string(count));
-    close(fd);
-}
-
-bool    Response::isValidUploadPath()
-{
-    string              uploadPath = locationConfig->getFastcgiParam()["UPLOAD_PATH"];
-    string              url = request.url;
-
-    LOG(cout << "upload path : " << uploadPath << endl;)
-
-    if (uploadPath == "" || isDirectory(uploadPath.c_str()) == false)
-    {
-        request.status = 404;
-        return (false);
-    }
-    return (true);
+        contentType = "application/octet-stream";
+    makeHeader("content-type", contentType);
+    Kq::plusEvent(fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
+    cgiFlag = true;
+    Kq::cgiFd[fd] = request.clientFd;
+    Kq::pidPipe[fd] = 0;
+    // cout << "cgiFd[fd]: " << request.clientFd << endl;
+    // while (1)
+    // {
+    //     readSize = read(fd, buffer, 4095);
+    //     if (readSize <= 0)
+    //         break ;
+    //     content.append(buffer, readSize);
+    //     count += readSize;
+    // }
+    // LOG(cout<<"Content Size: "<<content.size()<<endl);
+    // contentLength = count;
+    // makeHeader("content-length", to_string(count));
+    // close(fd);
 }
 
 void    Response::makeEntity()
@@ -693,6 +723,7 @@ void    Response::makeEntity()
     entity = "HTTP/1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
     if (!header.empty())
         entity += header + "\r\n";
+    LOG(cout << "header: " << header << endl;)
     startHeaderLength = entity.size();
     if (!content.empty())
         entity.append(content);
@@ -707,12 +738,10 @@ void    Response::makeGet()
     LOG(std::cout<<"Method: GET"<<std::endl);
     LOG(std::cout<<request.url.c_str()<<std::endl);
     CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
-<<<<<<<<< Temporary merge branch 1
 
     // cout << "is directory: " << isDirectory(request.url.c_str()) << endl;
     // cout << "location: " << getLocationConfigData()->getPath() << endl;
     // cout << "autoindex: " << getLocationConfigData()->getAutoindex() << endl;
-=========
     
     // LOG(cout << "is directory: " << isDirectory(request.url.c_str()) << endl);
     // LOG(cout << "location: " << getLocationConfigData()->getPath() << endl);
@@ -724,7 +753,7 @@ void    Response::makeGet()
     {
         cgiFlag = true;
         LOG(cout << "directory listing" << endl);
-    	cgiProcessor.executeCGIScript(AUTOINDEX_PATH);
+    	cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + AUTOINDEX_PATH);
     }
 	else if (cgiFlag)
 	{
@@ -732,14 +761,14 @@ void    Response::makeGet()
 		if (request.status >= 400)
 		{
 			while (!cgiProcessor.getFin())
-				cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
+				cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);
 		}
 		// 나중에 content-length가 0일 때, 서버 에러 추가
 		// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 		// makeHeader("content-type", "text/html");
 		// makeHeader("content-length", toString(contentLength)); //여기서 추가하고 나중에 또 추가함
-		content += cgiProcessor.getCgiContent();
-		LOG(cout << cgiProcessor.getCgiContent() << '\n');
+		// content += cgiProcessor.getCgiContent();
+		// LOG(cout << cgiProcessor.getCgiContent() << '\n');
         // LOG(std::cout<<header);
 	}
 	else
@@ -749,16 +778,9 @@ void    Response::makeGet()
 		{
 			request.status = 404;
 			// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
-			while (!cgiProcessor.getFin())
-				cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
-			content += cgiProcessor.getCgiContent();
-            LOG(cout << cgiProcessor.getCgiContent() << '\n');
-            // fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);
-			// if (fd < 0)
-			// 	return ;
-			// //거기에 맞는 content만들기
-			// makeHeader("Content-Type", "text/html");
-			// makeContent(fd);
+			// while (!cgiProcessor.getFin())
+			// 	cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);
+            makeError();
 			return ;
 		}
 		makeContent(fd);
@@ -771,39 +793,66 @@ void    Response::makePost()
 {
     LOG(cout<<"Method: POST"<<endl);
 	CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
+    int fd;
 
-
-    chdir(getDir(request.url).c_str());
     LOG(cout << "request url: " << request.url << endl);
-    system("pwd");
-	if (isValidUploadPath() && cgiFlag)
-	{
-        // cgiProcessor.insertEnv("CONTENT_FILE", request.contentFileName);
-		cgiProcessor.checkPostContentType(request.url);
-	}
+    if (cgiFlag)
+    {
+        chdir(getDir(request.url).c_str());
+        cgiProcessor.checkPostContentType(request.url);
+    }
+    else
+    {
+        fd = open(request.url.c_str(), O_RDONLY);
+		if (fd < 0)
+		{
+			request.status = 404;
+			// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
+			makeError();
+			return ;
+		}
+		makeContent(fd);
+    }
 	if (request.status >= 400)
 	{
         makeError();
-		// while (!cgiProcessor.getFin())
-        // {
-        //     LOG(cout<<"Method: POST CGI ERROR"<<endl);
-		// 	cgiProcessor.executeCGIScript(CGI_ERROR_PAGE);
-        // }
 	}
 }
 
 void    Response::makeDelete()
 {
     LOG(cout<<"Method: DELETE"<<endl);
-    if (remove(request.url.c_str()) == 0)
+
+    if (cgiFlag)
     {
-        request.status = 204;
+        LocationConfigData *location = getLocationConfigData();
+        if (location == NULL)
+        {
+            request.status = 404;
+            makeError();
+            return ;
+        }
+        string uploadPath = location->getFastcgiParam()["UPLOAD_PATH"];
+        if (uploadPath == "")
+        {
+            request.status = 404;
+            makeError();
+            return ;
+        }
+        CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
+        chdir(getDir(request.url).c_str());
+        LOG(cout << "request url: " << request.url << endl);
+        cgiProcessor.executeCGIScript(request.url);
     }
     else
     {
-        request.status = 404;
+        request.status = 405;
         makeError();
     }
+	// if (request.status >= 400)
+	// {
+    //     makeError();
+	// }
 }
 
 void    Response::responseMake()

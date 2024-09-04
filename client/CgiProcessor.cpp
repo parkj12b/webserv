@@ -200,19 +200,13 @@ bool	CgiProcessor::checkErr(const char *binPath)
 bool	CgiProcessor::findCgiCmdPath()
 {
 	vector<string> pathEnvList;
-	// LOG(cout << "PATH ENV : " << pathEnv << endl);
 	istringstream iss(pathEnv);
 	string buffer;
 	while (getline(iss, buffer, ':'))
-	{
-		// LOG(cout << buffer << endl);
 		pathEnvList.push_back(buffer);
-	}
 	for (vector<string>::iterator iter = pathEnvList.begin(); iter != pathEnvList.end(); iter++)
 	{
-		// LOG(cout << "PATH : " << *iter << endl);
 		string cmdPath = (*iter).append("/").append(cgiCommand);
-		// LOG(cout << cmdPath << endl);
 		if (!checkErr(cmdPath.c_str()))
 		{
 			cgiCommand = cmdPath;
@@ -228,6 +222,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 	setURLEnv();
 	setStartHeaderEnv();
 	int pipefd[2];
+	cout << "path: " << path << endl;
 	if (!findCgiCmdPath() || pipe(pipefd) < 0)
 	{
 		LOG(cout << "No CGI Command " << cgiCommand << endl);
@@ -236,6 +231,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 		return ;
 	}
 	fcntl(pipefd[0], F_SETFL, O_NONBLOCK);
+	LOG(std::cout<<"pipe fd: "<<pipefd[0]<<", "<<pipefd[1]<<std::endl);
 	pid_t pid = fork();
 	if (pid == -1)
 	{
@@ -247,7 +243,6 @@ void	CgiProcessor::executeCGIScript(const string path)
 	}
 	if (pid == 0)
 	{
-		LOG(std::cout<<"[PIPE FD] - (Read FD) : "<<pipefd[0]<<", (Write FD) : "<<pipefd[1]<<std::endl);
 		close(pipefd[0]);
 		dup2(pipefd[1], STDOUT_FILENO);
 		close(pipefd[1]);

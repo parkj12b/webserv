@@ -6,7 +6,7 @@
 /*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/02 18:04:43 by devpark          ###   ########.fr       */
+/*   Updated: 2024/09/04 15:42:10 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
         //fcntl temp
         int flags = fcntl(serverFd, F_GETFL, 0);
         fcntl(serverFd, F_SETFL, flags | O_NONBLOCK);
-        while (listen(serverFd, CLIENT_CNT) < 0);
+        while (listen(serverFd, SOMAXCONN) < 0);
         plusEvent(serverFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
         server[serverFd] = Server(serverFd, port);  //config parser
         serverConfigIt++;
@@ -319,6 +319,7 @@ void    Kq::mainLoop()
     }
     // Kq::processor = notFin;
     //changed EVENTCNT to connectionCnt
+    cout << "connectionCnt: " << connectionCnt << endl;
     if ((count = kevent(kq, &fdList[0], fdList.size(), store, connectionCnt, NULL)) <= 0)
         return ;
     fdList.clear();
@@ -339,7 +340,8 @@ void    Kq::mainLoop()
             LOG(std::cout<<"store[i].ident: "<<store[i].ident<<std::endl);
             if (store[i].flags == EV_ERROR)
             {
-                LOG(cerr << "client EV_ERROR" << endl);
+                cerr << "client EV_ERROR" << endl;
+                // LOG(cerr << "client EV_ERROR" << endl);
                 clientFin(store[i]);  //client 종료
             }
             else if (store[i].filter == EVFILT_READ)

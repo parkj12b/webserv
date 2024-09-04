@@ -6,7 +6,7 @@
 /*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/02 17:04:15 by devpark          ###   ########.fr       */
+/*   Updated: 2024/09/03 19:31:09 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ Client::Client() : connect(true), connection(false), fd(0), port(0), socketReadS
 	request.clientFd = fd;
 }
 
-Client::Client(int fd, int port, string pathEnv_) : connect(true), connection(false), fd(fd), port(port), socketReadSize(1), msgSize(0), index(0), responseAmount(0), startLine(port), headerLine(port), contentLine(port), pathEnv(pathEnv_)
+Client::Client(int fd, int port, string pathEnv_) : connect(true), connection(false), fd(fd), port(port), socketReadSize(1), msgSize(0), index(0), responseAmount(0), standardTime(75), startLine(port), headerLine(port), contentLine(port), pathEnv(pathEnv_)
 {
     request.port = port;
     request.fin = false;
@@ -368,7 +368,7 @@ int Client::setHeader()
     {
         //아직 다 들어오지 않은 데이터가 있을 수도 있잔녀 이건 우선 생각하지 않음
         //데이터가 후에 들어온다고 가정한다면 그때 가서 처리를 해주면 됨 하지만 들어오지 않고 eof가 들어오면 맞는 데이터임에도 error로 처리하기 때문에 여기서 이렇게 처리하는 것이 맡다. 
-        cout<<"checking..."<<endl;
+        LOG(cout<<"checking..."<<endl;)
         if (request.method == GET)
             request.fin = true;
         else if (msg.empty() && headerLine.getContentType() == ENOT)
