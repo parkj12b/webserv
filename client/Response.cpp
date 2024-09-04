@@ -789,16 +789,9 @@ void    Response::makeGet()
 		{
 			request.status = 404;
 			// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
-			while (!cgiProcessor.getFin())
-				cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);
-			content += cgiProcessor.getCgiContent();
-            LOG(cout << cgiProcessor.getCgiContent() << '\n');
-            // fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);
-			// if (fd < 0)
-			// 	return ;
-			// //거기에 맞는 content만들기
-			// makeHeader("Content-Type", "text/html");
-			// makeContent(fd);
+			// while (!cgiProcessor.getFin())
+			// 	cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);
+            makeError();
 			return ;
 		}
 		makeContent(fd);
@@ -830,16 +823,7 @@ void    Response::makePost()
 		{
 			request.status = 404;
 			// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
-			while (!cgiProcessor.getFin())
-				cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);
-			content += cgiProcessor.getCgiContent();
-            LOG(cout << cgiProcessor.getCgiContent() << '\n');
-            // fd = open(DEFAULT_400_ERROR_PAGE, O_RDONLY);
-			// if (fd < 0)
-			// 	return ;
-			// //거기에 맞는 content만들기
-			// makeHeader("Content-Type", "text/html");
-			// makeContent(fd);
+			makeError();
 			return ;
 		}
 		makeContent(fd);
