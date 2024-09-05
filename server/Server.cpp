@@ -113,6 +113,9 @@ EVENT   Server::cgiGet(struct kevent& store)
     char        readBuffer[1];
 	int         readSize;
 
+    if (store.flags & EV_ERROR)
+        return (ERROR);
+    cerr << "cgiGet" << endl;
     if (cgiContentLength.find(store.ident) == cgiContentLength.end())
     {
         cout << "clear setting..." << endl;
@@ -161,6 +164,9 @@ EVENT   Server::cgiRead(struct kevent& store)
 	int         readSize;
     char        readBuffer[1];
 
+    if (store.flags & EV_ERROR)
+        return (ERROR);
+    cerr << "cgiRead" << endl;
 	LOG(cout << "cgiRead fd: " << store.ident << endl);
     //초기 세팅
     if (cgiContentLength.find(store.ident) == cgiContentLength.end())
@@ -235,6 +241,9 @@ EVENT Server::clientRead(struct kevent& store)
     char    readBuffer[1];
 
     //eof신호를 못 받게 됨
+    if (store.flags & EV_ERROR)
+        return (ERROR);
+    cerr << "clientRead" << endl;
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
     // if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 100)
@@ -283,8 +292,12 @@ EVENT   Server::clientWrite(struct kevent& store)
     const char* buffer = client[store.ident].respondMsgIndex();
     char        readBuffer[1];
 
+    if (store.flags & EV_ERROR)
+        return (ERROR);
     if (store.ident == 0 || client[store.ident].getFd() == 0)
+    {
         return (ING);
+    }
     // int flags = fcntl(store.ident, F_GETFL, 0);
     // if (!(flags & O_RDWR))
     //     return (ERROR);
