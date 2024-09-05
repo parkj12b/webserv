@@ -529,6 +529,7 @@ int Response::getDefaultErrorPage(int statusCode)
 
     if (errorStr.size() > 0)
         fd = open(errorStr.c_str(), O_RDONLY);
+    throwIfError(errno, fd);
     if (fd != -1)
         return (fd);
     if (statusCode >= 400 && statusCode < 500)
@@ -634,7 +635,8 @@ void    Response::makeError()
     int fd = -1;
     if (errorPath != "")
         fd = open(errorPath.c_str(), O_RDONLY);
-    if (errorPath != "" || fd >= 0)
+    // throwIfError(errno, fd);
+    if (errorPath != "" && fd >= 0)
         makeContent(fd);
     else
     {
@@ -793,6 +795,7 @@ void    Response::makeGet()
 	else
 	{
 		fd = open(request.url.c_str(), O_RDONLY);
+        throwIfError(errno, fd);
 		if (fd < 0)
 		{
 			request.status = 404;
@@ -822,6 +825,7 @@ void    Response::makePost()
     else
     {
         int fd = open(request.url.c_str(), O_RDONLY);
+        throwIfError(errno, fd);
 		if (fd < 0)
 		{
 			request.status = 404;
@@ -848,7 +852,7 @@ void    Response::makeDelete()
             makeError();
             return ;
         }
-        chdir(getDir(request.url).c_str());
+        throwIfError(errno, chdir(getDir(request.url).c_str()));
         LOG(cout << "request url: " << request.url << endl);
         cgiProcessor.executeCGIScript(request.url);
     }

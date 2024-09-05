@@ -123,6 +123,7 @@ bool    ContentLine::tempFileMake(int &fd_)
         num++;
     }
     fd = open(fileName.c_str(), O_WRONLY | O_CREAT, 0777);
+    throwIfError(errno, fd);
     LOG(std::cout<<"MAkE FILE"<<std::endl);
     if (fd < 0)
         return (false);
@@ -167,7 +168,7 @@ int ContentLine::chunkedEntity()
         ans++;
     }
     completion = true;
-    close(fd);
+    throwIfError(errno, close(fd));
     return (0);
 }
 
@@ -205,7 +206,7 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
             if (contentLength == 0)
             {
                 completion = true;
-                close(fd);
+                throwIfError(errno, close(fd));
             }
         }
         else
@@ -216,7 +217,7 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
             str = str.substr(flag);
             completion = true;
             readSize -= flag;
-            close(fd);
+            throwIfError(errno, close(fd));
         }
     }
     else if (contentType == TRANSFER)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/03 19:31:09 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/05 16:19:17 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,6 +243,8 @@ bool    Client::getResponseCgi()
 
 void    Client::deleteContent(void)
 {
+    if (request.method == GET)
+        return ;
     std::ifstream file(request.contentFileName.c_str());
 
     if (file.is_open())

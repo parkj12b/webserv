@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 17:27:22 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/30 13:38:56 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/05 15:37:40 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,4 +47,5 @@ bool        isWithinBasePath(const string &basePath, const string &requestPath);
 bool        isFile(const char *path);
 string      getDir(string path);
 
+void        throwIfError(int error, int isError);
 #endif
