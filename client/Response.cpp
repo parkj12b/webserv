@@ -490,7 +490,6 @@ bool    Response::init()
         return (false);
     string host = request.header["host"].front();
     LOG(cout << "host : " << host << endl);
-	cgiFlag = false;
     // LOG(cout << "host: " << host << endl);
     try
     {
@@ -739,7 +738,7 @@ void    Response::makeEntity()
     entity = "HTTP/1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
     if (!header.empty())
         entity += header + "\r\n";
-    cout << "header: " << header << endl;
+    // cout << "header: " << header << endl;
     startHeaderLength = entity.size();
     if (!content.empty())
         entity.append(content);
@@ -752,6 +751,7 @@ void    Response::makeGet()
     int fd;
 
     LOG(std::cout<<"Method: GET"<<std::endl);
+    cout << "cgiFlag: " <<cgiFlag<<endl;
     LOG(std::cout<<request.url.c_str()<<std::endl);
     CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
   
@@ -779,9 +779,10 @@ void    Response::makeGet()
 		// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 		// makeHeader("content-type", "text/html");
 		// makeHeader("content-length", toString(contentLength)); //여기서 추가하고 나중에 또 추가함
-		content += cgiProcessor.getCgiContent();
-		LOG(cout << cgiProcessor.getCgiContent() << '\n');
+		// content += cgiProcessor.getCgiContent();
+		// LOG(cout << cgiProcessor.getCgiContent() << '\n');
         // LOG(std::cout<<header);
+        return ;
 	}
 	else
 	{
@@ -804,6 +805,7 @@ void    Response::makeGet()
 		if (fd < 0)
 		{
 			request.status = 404;
+            cout<<"fd error"<<endl;
 			// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 			while (!cgiProcessor.getFin())
 				cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);
@@ -859,6 +861,7 @@ void    Response::makeDelete()
 
 void    Response::responseMake()
 {
+    cout << "cgiFlag: " <<cgiFlag<<endl;
     if (request.status > 0 || init())
     {
         makeError();
@@ -894,7 +897,8 @@ void    Response::responseMake()
         default:
             break ;
     }
-    makeEntity();
+    if (!cgiFlag)
+        makeEntity();
     return ;
 }
 

@@ -125,8 +125,8 @@ EVENT Server::cgiRead(struct kevent& store)
         buf[readSize] = '\0';
         cgiContent[store.ident].append(buf, readSize);
         cgiContentLength[store.ident] += readSize;
+        LOG(std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl;)
     }
-    // LOG(std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl;)
     cout<<"store.data: "<<store.data<<endl;
 	if (readSize <= 0 || (Kq::pidPipe[store.ident] == 0 && store.data - readSize == 0))
 	{
@@ -226,6 +226,12 @@ EVENT   Server::clientWrite(struct kevent& store)
         LOG(std::cout<<"write: client close"<<std::endl);
         return (ERROR);
     }
+    if (openCheck < 0)
+    {
+        cout <<"openCheck error: "<< openCheck<<endl;
+        // return (ERROR);
+    }
+    index = write(1, buffer, client[store.ident].responseIndex());
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     if (index > client[store.ident].responseIndex())
         return (ERROR);
