@@ -427,6 +427,17 @@ size_t  Response::setCgiHeader(string &content_, size_t &status)
     return (0);
 }
 
+void        Response::setCgiGetContent(string &content_)
+{
+    content = content_;
+    makeEntity();
+}
+
+void	    Response::setCgiGetHeader(size_t contentLength_)
+{
+    makeHeader("content-length", toString(contentLength_));
+}
+
 size_t  Response::setCgiContent(string &content_, size_t &status)
 {
     size_t  pos;
@@ -493,7 +504,6 @@ bool    Response::init()
         return (false);
     string host = request.header["host"].front();
     LOG(cout << "host : " << host << endl);
-	cgiFlag = false;
     // LOG(cout << "host: " << host << endl);
     try
     {
@@ -661,7 +671,6 @@ int Response::checkAllowedMethod()
 {
     LocationConfigData  *location = getLocationConfigData();
     vector<string>    &allowedMethods = location->getAllowedMethods();
-    LOG(cout << allowedMethods.size() << endl);
     // for (auto iter = allowedMethods.begin(); iter != allowedMethods.end(); iter++)
     //     LOG(cout << "allowed method : " << endl);
 
@@ -698,12 +707,16 @@ void    Response::makeContent(int fd)
     }
     else
         contentType = "application/octet-stream";
+    LOG(cout << "[Response::makeContent] - fd + content-type: " << fd << ' ' << contentType << endl;)
     makeHeader("content-type", contentType);
     Kq::plusEvent(fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     cgiFlag = true;
     Kq::cgiFd[fd] = request.clientFd;
-    Kq::pidPipe[fd] = 0;
-    // cout << "cgiFd[fd]: " << request.clientFd << endl;
+    Kq::pidPipe[fd] = -1;
+    cout << "cgiFd[fd]: " << request.clientFd << endl;
+    // ssize_t readSize;
+    // char    buffer[4096];
+    // ssize_t count = 0;
     // while (1)
     // {
     //     readSize = read(fd, buffer, 4095);
@@ -714,7 +727,7 @@ void    Response::makeContent(int fd)
     // }
     // LOG(cout<<"Content Size: "<<content.size()<<endl);
     // contentLength = count;
-    // makeHeader("content-length", to_string(count));
+    // makeHeader("content-length", toString(count));
     // close(fd);
 }
 
@@ -740,6 +753,7 @@ void    Response::makeGet()
     int fd;
 
     LOG(std::cout<<"Method: GET"<<std::endl);
+    cout << "cgiFlag: " <<cgiFlag<<endl;
     LOG(std::cout<<request.url.c_str()<<std::endl);
     CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
 
@@ -774,6 +788,7 @@ void    Response::makeGet()
 		// content += cgiProcessor.getCgiContent();
 		// LOG(cout << cgiProcessor.getCgiContent() << '\n');
         // LOG(std::cout<<header);
+        return ;
 	}
 	else
 	{
@@ -781,6 +796,7 @@ void    Response::makeGet()
 		if (fd < 0)
 		{
 			request.status = 404;
+            cout<<"fd error"<<endl;
 			// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 			// while (!cgiProcessor.getFin())
 			// 	cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);
@@ -844,6 +860,7 @@ void    Response::makeDelete()
 
 void    Response::responseMake()
 {
+    cout << "cgiFlag: " <<cgiFlag<<endl;
     if (request.status > 0 || init())
     {
         makeError();
@@ -879,7 +896,8 @@ void    Response::responseMake()
         default:
             break ;
     }
-    makeEntity();
+    if (!cgiFlag)
+        makeEntity();
     return ;
 }
 
