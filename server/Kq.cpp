@@ -211,7 +211,7 @@ void    Kq::eventRead(struct kevent& store)
                 LOG(cout << "[Server::eventRead] - (ING, EXPECT) FD: " << iter->first << endl;)
 				break ;
 			case ERROR:
-                cout<<"ERROR CLOSE"<<endl;
+                LOG(cout<<"ERROR CLOSE"<<endl;)
                 LOG(cout << "[Server::eventRead] - (ERROR) FD: " << iter->first << endl;)
                 LOG(std::cout<<"first CGI Error: "<<iter->first<<std::endl);
                 cgiFd.erase(iter->first);
@@ -219,7 +219,7 @@ void    Kq::eventRead(struct kevent& store)
                 close(store.ident);
                 break ;
 			case FINISH:
-                cout<<"FINISH CLOSE"<<endl;
+                LOG(cout<<"FINISH CLOSE"<<endl;)
                 LOG(cout << "[Server::eventRead] - (FINISH) FD: " << iter->first << endl;)
                 LOG(std::cout<<"CGI Finish: "<<iter->first<<std::endl);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
