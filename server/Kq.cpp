@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/05 17:01:26 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/05 18:10:11 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,12 +319,17 @@ void    Kq::mainLoop()
     int                 status;
 
     //waitpid(complete) 복사 생성자를 없앰 다만 erase를 진행할 때의 오히려 비용이 조금 더 들 수도 있을 수도 있다. 
+    cout << "size: " << Kq::processor.size() << endl;
     for (std::vector<pid_t>::iterator it = Kq::processor.begin(); it != Kq::processor.end();)
     {
-        if (waitpid(*it, &status, WNOHANG) >= 0)
+        pid_t pid = waitpid(*it, &status, WNOHANG);
+        if (pid == 0)
             it++;
+        else if (pid > 0)
+            it = Kq::processor.erase(it);
         else
         {
+            cout << "pid: " << *it << endl;
             throwIfError(errno, -1);
             it = Kq::processor.erase(it);
         }

@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/05 17:04:39 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/05 18:22:13 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,21 +197,22 @@ EVENT   Server::cgiRead(struct kevent& store)
 	{
         size_t  status = 0;
         int     waitStatus = 0;
-        if (Kq::pidPipe[store.ident] != 0)
-        {
-            waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
-            vector<pid_t>::iterator it = find(Kq::processor.begin(), Kq::processor.end(), Kq::pidPipe[store.ident]);
+        
+        waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
+        vector<pid_t>::iterator it = find(Kq::processor.begin(), Kq::processor.end(), Kq::pidPipe[store.ident]);
+        if (it != Kq::processor.end())
             Kq::processor.erase(it);
-            if (WIFEXITED(waitStatus))
+        cout << "pidPipe: " << Kq::pidPipe[store.ident] << endl;
+        if (WIFEXITED(waitStatus))
+        {
+            status = WEXITSTATUS(waitStatus);
+            if (status != 0)
             {
-                status = WEXITSTATUS(waitStatus);
-                if (status != 0)
-                {
-                    status = 600;
-                }
-                LOG(std::cout<<"status: "<< status << std::endl);
+                status = 600;
             }
+            LOG(std::cout<<"status: "<< status << std::endl);
         }
+        
         if (readSize < 0)
             status = 600;
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
