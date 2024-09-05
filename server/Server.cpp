@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/04 19:55:07 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/05 18:22:13 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include "Server.hpp"
 #include "Response.hpp"
 #include "UtilTemplate.hpp"
-
 
 extern int logs;
 extern int writeLogs;
@@ -83,6 +82,7 @@ void setLinger(int sockfd, int linger_time) {
 
     if (setsockopt(sockfd, SOL_SOCKET, SO_LINGER, &linger_opt, sizeof(linger_opt)) < 0)
     {
+        throwIfError(errno, -1);
         perror("setsockopt(SO_LINGER) failed");
     }
 }
@@ -99,7 +99,7 @@ int Server::plusClient(string pathEnv)
         return (-1);
     setLinger(clntFd, 0);
     int flags = fcntl(clntFd, F_GETFL, 0);
-    fcntl(clntFd, F_SETFL, flags | O_NONBLOCK);
+    throwIfError(errno, fcntl(clntFd, F_SETFL, flags | O_NONBLOCK));
     client[clntFd] = Client(clntFd, port, pathEnv);  //생성자 및 대입 연산자 호출
 	client[clntFd].clientIP(clntAdr);
     LOG(std::cout<<"New Client FD : " << clntFd <<std::endl);
@@ -109,8 +109,6 @@ int Server::plusClient(string pathEnv)
 EVENT   Server::cgiGet(struct kevent& store)
 {
 	char	    buf[BUFFER_SIZE + 1];  //BUFFER_SIZE의 크기를 65536로 조절하였습니다. 
-    ssize_t     openCheck;
-    char        readBuffer[1];
 	int         readSize;
 
     if (store.flags & EV_ERROR)
@@ -122,13 +120,13 @@ EVENT   Server::cgiGet(struct kevent& store)
         cgiContentLength[store.ident] = 0;
         cgiContent[store.ident].clear();
     }
-    openCheck = recv(store.ident, readBuffer, sizeof(readBuffer), MSG_PEEK);
-    if (openCheck == 0)
+    if (store.flags & EV_ERROR)
     {
-        LOG(std::cout<<"cgiRead: client close"<<std::endl);
+        cout << "cgiGet errno: " << errno << endl;
         return (ERROR);
     }
     readSize = read(store.ident, buf, BUFFER_SIZE);
+    throwIfError(errno, readSize);
     if (readSize < 0)
     {
         cout << "ERROR readSize: " << readSize << endl;
@@ -160,9 +158,9 @@ EVENT   Server::cgiGet(struct kevent& store)
 EVENT   Server::cgiRead(struct kevent& store)
 {
 	char	    buf[BUFFER_SIZE + 1];  //BUFFER_SIZE의 크기를 65536로 조절하였습니다. 
-    ssize_t     openCheck;
+    // ssize_t     openCheck;
 	int         readSize;
-    char        readBuffer[1];
+    // char        readBuffer[1];
 
     if (store.flags & EV_ERROR)
         return (ERROR);
@@ -174,16 +172,18 @@ EVENT   Server::cgiRead(struct kevent& store)
         cgiContentLength[store.ident] = 0;
         cgiContent[store.ident].clear();
     }
-    openCheck = recv(store.ident, readBuffer, sizeof(readBuffer), MSG_PEEK);
-    if (openCheck == 0)
-    {
-        LOG(std::cout<<"cgiRead: client close"<<std::endl);
-        return (ERROR);
-    }
+    // openCheck = recv(store.ident, readBuffer, sizeof(readBuffer), MSG_PEEK);
+    // throwIfError(errno, openCheck);
+    // if (openCheck == 0)
+    // {
+    //     LOG(std::cout<<"cgiRead: client close"<<std::endl);
+    //     return (ERROR);
+    // }
     readSize = read(store.ident, buf, BUFFER_SIZE);
+    throwIfError(errno, readSize);
 	LOG(cout << "CGI Read Size : " << readSize << endl);
-    if (readSize < 0)
-        return (ERROR);
+    // if (readSize < 0)
+    //     return (ERROR);
     if (readSize > 0)
     {
         buf[readSize] = '\0';
@@ -195,24 +195,26 @@ EVENT   Server::cgiRead(struct kevent& store)
     LOG(cout<<"store.data: "<< store.data<<endl);
     cout << "pidPipe: " << Kq::pidPipe[store.ident] << endl;
     cout << "store.data: " << store.data << " readSize: " << readSize << endl;
-	if (readSize <= 0 || (Kq::pidPipe[store.ident] == 0 && store.data - readSize == 0))
+	if (readSize <= 0)
 	{
         size_t  status = 0;
         int     waitStatus = 0;
-        if (Kq::pidPipe[store.ident] != 0)
+        
+        waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
+        vector<pid_t>::iterator it = find(Kq::processor.begin(), Kq::processor.end(), Kq::pidPipe[store.ident]);
+        if (it != Kq::processor.end())
+            Kq::processor.erase(it);
+        cout << "pidPipe: " << Kq::pidPipe[store.ident] << endl;
+        if (WIFEXITED(waitStatus))
         {
-            waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
-            if (WEXITSTATUS(waitStatus) != 0)
+            status = WEXITSTATUS(waitStatus);
+            if (status != 0)
             {
-                write(2, "ERROR\n", 6);
                 status = 600;
             }
-            if (WIFEXITED(waitStatus))
-            {
-                status = WEXITSTATUS(waitStatus);
-                LOG(std::cout<<"status: "<< status << std::endl);
-            }
+            LOG(std::cout<<"status: "<< status << std::endl);
         }
+        
         if (readSize < 0)
             status = 600;
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
@@ -235,10 +237,10 @@ EVENT   Server::cgiRead(struct kevent& store)
 EVENT Server::clientRead(struct kevent& store)
 {
     //buffer 문제인지 생각해보기
-    ssize_t openCheck;
+    // ssize_t openCheck;
     char    buffer[BUFFER_SIZE * client[store.ident].getSocketReadSize() + 1];
     int     readSize;
-    char    readBuffer[1];
+    // char    readBuffer[1];
 
     //eof신호를 못 받게 됨
     if (store.flags & EV_ERROR)
@@ -248,13 +250,20 @@ EVENT Server::clientRead(struct kevent& store)
         return (ING);
     // if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 100)
     //     return (ING);
-    openCheck = recv(store.ident, readBuffer, sizeof(readBuffer), MSG_PEEK);
-    if (openCheck == 0)
+    // openCheck = recv(store.ident, readBuffer, sizeof(readBuffer), MSG_PEEK);
+    // // throwIfError(errno);
+    // if (openCheck == 0)
+    // {
+    //     LOG(std::cout<<"write: client close"<<std::endl);
+    //     return (ERROR);
+    // }
+    if (store.flags & EV_ERROR)
     {
-        LOG(std::cout<<"write: client close"<<std::endl);
+        cout << "clientRead errno: " << errno << endl;
         return (ERROR);
     }
     readSize = read(store.ident, buffer, BUFFER_SIZE * client[store.ident].getSocketReadSize());
+    // throwIfError(errno, readSize);
     if (readSize <= 0) // read가 발생했는데 읽은게 없다면 에러
     {
         std::cout<<"read error or socket close\n";
@@ -303,6 +312,7 @@ EVENT   Server::clientWrite(struct kevent& store)
     //     return (ERROR);
     LOG(std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl);
     openCheck = recv(store.ident, readBuffer, sizeof(readBuffer), MSG_PEEK);
+    throwIfError(errno, openCheck);
     if (openCheck == 0)
     {
         LOG(std::cout<<"write: client close"<<std::endl);
@@ -315,6 +325,7 @@ EVENT   Server::clientWrite(struct kevent& store)
     }
     // index = write(1, buffer, client[store.ident].responseIndex());
     index = write(store.ident, buffer, client[store.ident].responseIndex());
+    throwIfError(errno, index);
     if (index > client[store.ident].responseIndex())
         return (ERROR);
     // cout<<"msg: " <<buffer<<endl;
@@ -347,6 +358,8 @@ EVENT   Server::clientTimer(struct kevent& store)
 {
     bool    flag;
 
+    if (store.flags & EV_ERROR)
+        return (FINISH);
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
     flag = client[store.ident].getConnection();
@@ -361,7 +374,7 @@ EVENT   Server::clientTimer(struct kevent& store)
 void    Server::clientFin(int clientFd)
 {
     client[clientFd].deleteContent();
-    close(clientFd);
+    throwIfError(errno, close(clientFd));
     client.erase(clientFd);
 }
 
@@ -376,5 +389,5 @@ void    Server::serverError()
             continue ;
         clientFin(it->first);
     }
-    close(serverFd);
+    throwIfError(errno, close(serverFd));
 }

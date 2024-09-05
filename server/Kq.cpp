@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kq.cpp                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
+/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/04 15:42:10 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/05 18:10:11 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
         }
         //fcntl temp
         int flags = fcntl(serverFd, F_GETFL, 0);
-        fcntl(serverFd, F_SETFL, flags | O_NONBLOCK);
+        throwIfError(errno, fcntl(serverFd, F_SETFL, flags | O_NONBLOCK));
         while (listen(serverFd, SOMAXCONN) < 0);
         plusEvent(serverFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
         server[serverFd] = Server(serverFd, port);  //config parser
@@ -199,7 +199,7 @@ void    Kq::eventRead(struct kevent& store)
             cgiFd.erase(iter->first);
             plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
             cout << "ERRONO: " << errno << endl;
-            close(store.ident);
+            throwIfError(errno, close(store.ident));
 			return ;
         }
         if (Kq::pidPipe[iter->first] == -1)
@@ -218,7 +218,7 @@ void    Kq::eventRead(struct kevent& store)
                 LOG(std::cout<<"first CGI Error: "<<iter->first<<std::endl);
                 cgiFd.erase(iter->first);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-                close(store.ident);
+                throwIfError(errno, close(store.ident));
                 break ;
 			case FINISH:
                 LOG(cout<<"FINISH CLOSE"<<endl;)
@@ -227,7 +227,7 @@ void    Kq::eventRead(struct kevent& store)
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
 				cgiFd.erase(iter->first);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-                close(store.ident);
+                throwIfError(errno, close(store.ident));
 				break ;
 		}
 	}
@@ -327,12 +327,20 @@ void    Kq::mainLoop()
     int                 status;
 
     //waitpid(complete) 복사 생성자를 없앰 다만 erase를 진행할 때의 오히려 비용이 조금 더 들 수도 있을 수도 있다. 
+    cout << "size: " << Kq::processor.size() << endl;
     for (std::vector<pid_t>::iterator it = Kq::processor.begin(); it != Kq::processor.end();)
     {
-        if (waitpid(*it, &status, WNOHANG) <= 0)
+        pid_t pid = waitpid(*it, &status, WNOHANG);
+        if (pid == 0)
             it++;
-        else
+        else if (pid > 0)
             it = Kq::processor.erase(it);
+        else
+        {
+            cout << "pid: " << *it << endl;
+            throwIfError(errno, -1);
+            it = Kq::processor.erase(it);
+        }
     }
     // Kq::processor = notFin;
     //changed EVENTCNT to connectionCnt
@@ -340,6 +348,7 @@ void    Kq::mainLoop()
     if ((count = kevent(kq, &fdList[0], fdList.size(), store, connectionCnt, NULL)) <= 0)
     {
         cout << "ERROR or kevent Zero" << endl;
+        throwIfError(errno, count);
         return ;
     }
     fdList.clear();

@@ -194,7 +194,10 @@ bool	CgiProcessor::isDirectory(const char *binPath)
 	struct stat	fileInfo;
 
 	if (stat(binPath, &fileInfo) == -1)
+	{
+		throwIfError(errno, -1);
 		return (false);
+	}
 	if (S_ISDIR(fileInfo.st_mode))
 		return (true);
 	return (false);
@@ -241,27 +244,28 @@ void	CgiProcessor::executeCGIScript(const string path)
 	cout << "path: " << path << endl;
 	if (!findCgiCmdPath() || pipe(pipefd) < 0)
 	{
+		throwIfError(errno, -1);
 		LOG(cout << "No CGI Command " << cgiCommand << endl);
 		LOG(cout << "or pipe() error " << endl);
 		request.status = 500;
 		return ;
 	}
-	fcntl(pipefd[0], F_SETFL, O_NONBLOCK);
+	throwIfError(errno, fcntl(pipefd[0], F_SETFL, O_NONBLOCK));
 	LOG(std::cout<<"pipe fd: "<<pipefd[0]<<", "<<pipefd[1]<<std::endl);
 	pid_t pid = fork();
 	if (pid == -1)
 	{
 		cout << "fork() error" << endl;
-		close(pipefd[0]);
-		close(pipefd[1]);
+		throwIfError(errno, close(pipefd[0]));
+		throwIfError(errno, close(pipefd[1]));
 		request.status = 500;
 		return ;
 	}
 	if (pid == 0)
 	{
-		close(pipefd[0]);
-		dup2(pipefd[1], STDOUT_FILENO);
-		close(pipefd[1]);
+		throwIfError(errno, close(pipefd[0]));
+		throwIfError(errno, dup2(pipefd[1], STDOUT_FILENO));
+		throwIfError(errno, close(pipefd[1]));
 		char *argv[] = {const_cast<char *>(&cgiCommand[0]), const_cast<char *>(&path[0]), NULL};
 		char **envp = new char*[metaVariables.size() + 1];
 		size_t	idx = 0;
@@ -274,8 +278,9 @@ void	CgiProcessor::executeCGIScript(const string path)
 		}
 		envp[metaVariables.size()] = 0;
 		int fd = open(request.contentFileName.c_str(), O_RDONLY, 0644);
-		dup2(fd, STDIN_FILENO);
-		close(fd);
+		throwIfError(errno, fd);
+		throwIfError(errno, dup2(fd, STDIN_FILENO));
+		throwIfError(errno, close(fd));
 		// chdir()
 		if (execve(&cgiCommand[0], argv, envp) == -1)
 		{
@@ -286,13 +291,11 @@ void	CgiProcessor::executeCGIScript(const string path)
 	}
 	else
 	{
-		chdir(EXECUTE_PATH.c_str());
+		throwIfError(errno, chdir(EXECUTE_PATH.c_str()));
 		Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
-		close(pipefd[1]);
+		throwIfError(errno, close(pipefd[1]));
 		Kq::processor.push_back(pid);
 		Kq::cgiFd[pipefd[0]] = request.clientFd;
 		Kq::pidPipe[pipefd[0]] = pid;
-		// Kq::cgiFd.insert(make_pair(pipefd[0], request.clientFd));
-		// Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 	}
 }

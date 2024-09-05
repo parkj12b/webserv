@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 15:26:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/30 13:38:39 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/05 16:31:09 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,9 @@ int isDirectory(const char *path)
     struct stat statbuf;
 
     if (stat(path, &statbuf) != 0)
+    {
         return 0;
+    }
     if (S_ISDIR(statbuf.st_mode))
         return 1;
     return 0;
@@ -205,4 +207,16 @@ string  getDir(string path)
     if (pos == string::npos)
         return path;
     return path.substr(0, pos);
+}
+
+void throwIfError(int status, int error)
+{
+    // (void) error;
+    if (error >= 0 || status == 35)
+        return ;
+    cout << "errno: " << errno << endl;
+    if (status != 0)
+    {
+        throw exception();
+    }
 }
