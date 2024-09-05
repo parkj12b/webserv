@@ -1,0 +1,3410 @@
+========parser========
+/
+/cgi-bin/
+/custom_error_page/
+/delete/
+/new-page/
+/new-page1/
+/upload/
+
+
+========http message========
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93825
+store.data: 697 readSize: 697
+pidPipe: 93826
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93825
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 867
+
+FINISH CLOSE
+pidPipe: 93826
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 867
+
+FINISH CLOSE
+pidPipe: 93827
+store.data: 697 readSize: 697
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93827
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 867
+
+FINISH CLOSE
+pidPipe: 93828
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93828
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 867
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93829
+store.data: 697 readSize: 697
+pidPipe: 93830
+store.data: 697 readSize: 697
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93829
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 867
+
+FINISH CLOSE
+pidPipe: 93830
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 867
+
+FINISH CLOSE
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+ERROR CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93831
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93831
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 867
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93832
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93832
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 867
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93833
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93833
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 867
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93835
+store.data: 697 readSize: 697
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93835
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 867
+
+FINISH CLOSE
+pidPipe: 93836
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93836
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 867
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93837
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93837
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 867
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93838
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+pidPipe: 93838
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 867
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93839
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93839
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 867
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93851
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93851
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93857
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93857
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93858
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93858
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93859
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93859
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93866
+store.data: 697 readSize: 697
+pidPipe: 93867
+store.data: 697 readSize: 697
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93866
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+pidPipe: 93867
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+pidPipe: 93868
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93868
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93869
+store.data: 697 readSize: 697
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93869
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+pidPipe: 93870
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93870
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93871
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93871
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93872
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93872
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93877
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93877
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93878
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93878
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93879
+store.data: 697 readSize: 697
+pidPipe: 93880
+store.data: 697 readSize: 697
+pidPipe: 93881
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93879
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+pidPipe: 93880
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+pidPipe: 93881
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93882
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93882
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93883
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93883
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93896
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93896
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93899
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93899
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93900
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93900
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93901
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93901
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93906
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93906
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93907
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93907
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93908
+store.data: 697 readSize: 697
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93908
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93909
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93909
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93910
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93910
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93911
+store.data: 697 readSize: 697
+pidPipe: 93912
+store.data: 697 readSize: 697
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93911
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+pidPipe: 93912
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+pidPipe: 93913
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93913
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93914
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93914
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93918
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93918
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93920
+store.data: 697 readSize: 697
+pidPipe: 93921
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93920
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+pidPipe: 93921
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93922
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93922
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93923
+store.data: 697 readSize: 697
+pidPipe: 93924
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93923
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93924
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93925
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93925
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93926
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93926
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93927
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93927
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93935
+store.data: 697 readSize: 697
+pidPipe: 93936
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93935
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+pidPipe: 93936
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+pidPipe: 93937
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93937
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+pidPipe: 93938
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93938
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93939
+store.data: 697 readSize: 697
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93939
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+pidPipe: 93940
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93940
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+pidPipe: 93941
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93941
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93942
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93942
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+pidPipe: 93943
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93943
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+pidPipe: 93944
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93944
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93945
+store.data: 697 readSize: 697
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93945
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93946
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93946
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93947
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93947
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93948
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93948
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93949
+store.data: 697 readSize: 697
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93949
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+pidPipe: 93950
+store.data: 697 readSize: 697
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+ERROR CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93950
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+ERROR CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93951
+store.data: 697 readSize: 697
+pidPipe: 93952
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93951
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+pidPipe: 93952
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93962
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93962
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93963
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93963
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93964
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93964
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93969
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+pidPipe: 93969
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+ERROR CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93970
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93970
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93971
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93971
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+read error or socket close
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93977
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93977
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93978
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93978
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+pidPipe: 93979
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93979
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93980
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93980
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93981
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93981
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93982
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93982
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93983
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93983
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93984
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93984
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+pidPipe: 93987
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93987
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93988
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93988
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93989
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+pidPipe: 93989
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93990
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93990
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93991
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93991
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93992
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93992
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93993
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93993
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93994
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93994
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93995
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 93995
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+pidPipe: 93996
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93996
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 93997
+store.data: 697 readSize: 697
+pidPipe: 93998
+store.data: 697 readSize: 697
+pidPipe: 93999
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 93997
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+pidPipe: 93998
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+pidPipe: 93999
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 94005
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 94005
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 94011
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 94011
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 94012
+store.data: 697 readSize: 697
+pidPipe: 94013
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 94012
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+pidPipe: 94013
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 94014
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 94014
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 94015
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 94015
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 94018
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 94018
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 94019
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 94019
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+read error or socket close
+pidPipe: 94020
+store.data: 697 readSize: 697
+read error or socket close
+connectionCnt: 1024
+pidPipe: 94020
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 94021
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 94021
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 94022
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 94022
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 94023
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 94023
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 94028
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 94028
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 94029
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 94029
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 94030
+store.data: 697 readSize: 697
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 94030
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+pidPipe: 94035
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 94035
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 94036
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 94036
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+read error or socket close
+connectionCnt: 1024
+pidPipe: 94037
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 94037
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+pidPipe: 94038
+store.data: 697 readSize: 697
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 94038
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+path: /Users/jonghopa/Documents/born_to_code/mini/cgi-bin/error_page/errorPage.py
+connectionCnt: 1024
+pidPipe: 94039
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 94039
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+pidPipe: 94040
+store.data: 697 readSize: 697
+connectionCnt: 1024
+pidPipe: 94040
+store.data: 0 readSize: 0
+cgiContentLength: 697
+cgi pos: 38
+responseAmount: 887
+
+FINISH CLOSE
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024
+connectionCnt: 1024

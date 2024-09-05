@@ -87,6 +87,11 @@ int main(int argc, char **argv, char **envp)
     //fd를 닫지 않았을 가능성이 존재함
     std::cout<<"\n\n========http message========"<<std::endl;
     // std::srand(std::time(0));  //cookie 값 정할 때에 사용할 예정
+    // if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
+    // {
+    //     cout << "signal() function error" << endl;
+    //     exit(3);  
+    // }
     Kq  kq(pathEnv);
     std::ios::sync_with_stdio(false);
     while (1)

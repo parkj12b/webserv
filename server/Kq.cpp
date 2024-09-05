@@ -196,23 +196,32 @@ void    Kq::eventRead(struct kevent& store)
             LOG(std::cout<<"No enroll cgi: "<<store.ident << std::endl);
             cgiFd.erase(iter->first);
             plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+            cout << "ERRONO: " << errno << endl;
             close(store.ident);
 			return ;
         }
-		event = server[serverFd].cgiRead(store);
+        if (Kq::pidPipe[iter->first] == -1)
+            event = server[serverFd].cgiGet(store);
+        else
+            event = server[serverFd].cgiRead(store);
 		switch (event)
 		{
 			case EXPECT:
 			case ING:
+                LOG(cout << "[Server::eventRead] - (ING, EXPECT) FD: " << iter->first << endl;)
 				break ;
 			case ERROR:
-                LOG(std::cout<<"iter->first cgi error: "<<iter->first<<std::endl);
+                cout<<"ERROR CLOSE"<<endl;
+                LOG(cout << "[Server::eventRead] - (ERROR) FD: " << iter->first << endl;)
+                LOG(std::cout<<"first CGI Error: "<<iter->first<<std::endl);
                 cgiFd.erase(iter->first);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 close(store.ident);
                 break ;
 			case FINISH:
-                LOG(std::cout<<"iter->first: "<<iter->first<<std::endl);
+                cout<<"FINISH CLOSE"<<endl;
+                LOG(cout << "[Server::eventRead] - (FINISH) FD: " << iter->first << endl;)
+                LOG(std::cout<<"CGI Finish: "<<iter->first<<std::endl);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
 				cgiFd.erase(iter->first);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
@@ -321,7 +330,10 @@ void    Kq::mainLoop()
     //changed EVENTCNT to connectionCnt
     cout << "connectionCnt: " << connectionCnt << endl;
     if ((count = kevent(kq, &fdList[0], fdList.size(), store, connectionCnt, NULL)) <= 0)
+    {
+        cout << "ERROR or kevent Zero" << endl;
         return ;
+    }
     fdList.clear();
     for (int i = 0; i < count; i++)
     {
