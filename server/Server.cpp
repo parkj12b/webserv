@@ -106,10 +106,51 @@ int Server::plusClient(string pathEnv)
     return (clntFd);
 }
 
-EVENT Server::cgiRead(struct kevent& store)
+EVENT   Server::cgiGet(struct kevent& store)
 {
 	char	    buf[BUFFER_SIZE + 1];  //BUFFER_SIZE의 크기를 65536로 조절하였습니다. 
+    ssize_t     openCheck;
+    char        readBuffer[1];
 	int         readSize;
+
+    if (cgiContentLength.find(store.ident) == cgiContentLength.end())
+    {
+        cout << "clear setting..." << endl;
+        cgiContentLength[store.ident] = 0;
+        cgiContent[store.ident].clear();
+    }
+    openCheck = recv(store.ident, readBuffer, sizeof(readBuffer), MSG_PEEK);
+    if (openCheck == 0)
+    {
+        LOG(std::cout<<"cgiRead: client close"<<std::endl);
+        return (ERROR);
+    }
+    readSize = read(store.ident, buf, BUFFER_SIZE);
+    if (readSize < 0)
+        return (ERROR);
+    buf[readSize] = '\0';
+    cgiContent[store.ident].append(buf, readSize);
+    cgiContentLength[store.ident] += readSize;
+    cout << "store.data: " << store.data << " readSize: " << readSize << endl;
+    if (store.data - readSize == 0)
+    {
+        cout << "write message setting start..." << endl;
+        client[Kq::cgiFd[store.ident]].setCgiGetEntity(cgiContentLength[store.ident], cgiContent[store.ident]);
+        cgiContent[store.ident].clear();
+        cgiContentLength[store.ident] = 0;
+        cgiContentLength.erase(store.ident);
+        Kq::pidPipe.erase(store.ident);
+        return (FINISH);
+    }
+    return (ING);
+}
+
+EVENT   Server::cgiRead(struct kevent& store)
+{
+	char	    buf[BUFFER_SIZE + 1];  //BUFFER_SIZE의 크기를 65536로 조절하였습니다. 
+    ssize_t     openCheck;
+	int         readSize;
+    char        readBuffer[1];
 
 	LOG(cout << "cgiRead fd: " << store.ident << endl);
     //초기 세팅
@@ -118,8 +159,16 @@ EVENT Server::cgiRead(struct kevent& store)
         cgiContentLength[store.ident] = 0;
         cgiContent[store.ident].clear();
     }
+    openCheck = recv(store.ident, readBuffer, sizeof(readBuffer), MSG_PEEK);
+    if (openCheck == 0)
+    {
+        LOG(std::cout<<"cgiRead: client close"<<std::endl);
+        return (ERROR);
+    }
     readSize = read(store.ident, buf, BUFFER_SIZE);
 	LOG(cout << "CGI Read Size : " << readSize << endl);
+    if (readSize < 0)
+        return (ERROR);
     if (readSize > 0)
     {
         buf[readSize] = '\0';
@@ -127,8 +176,8 @@ EVENT Server::cgiRead(struct kevent& store)
         cgiContentLength[store.ident] += readSize;
         // cout << "cgiContent[store.ident] : " << cgiContent[store.ident] << endl;
     }
-    // LOG(std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl;)
-    LOG(cout<<"store.data: "<<store.data<<endl;)
+    // LOG(std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl);
+    LOG(cout<<"store.data: "<< store.data<<endl);
     cout << "pidPipe: " << Kq::pidPipe[store.ident] << endl;
     cout << "store.data: " << store.data << " readSize: " << readSize << endl;
 	if (readSize <= 0 || (Kq::pidPipe[store.ident] == 0 && store.data - readSize == 0))
@@ -171,18 +220,25 @@ EVENT Server::cgiRead(struct kevent& store)
 EVENT Server::clientRead(struct kevent& store)
 {
     //buffer 문제인지 생각해보기
+    ssize_t openCheck;
     char    buffer[BUFFER_SIZE * client[store.ident].getSocketReadSize() + 1];
     int     readSize;
+    char    readBuffer[1];
 
     //eof신호를 못 받게 됨
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
     // if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 100)
     //     return (ING);
+    openCheck = recv(store.ident, readBuffer, sizeof(readBuffer), MSG_PEEK);
+    if (openCheck == 0)
+    {
+        LOG(std::cout<<"write: client close"<<std::endl);
+        return (ERROR);
+    }
     readSize = read(store.ident, buffer, BUFFER_SIZE * client[store.ident].getSocketReadSize());
     if (readSize <= 0) // read가 발생했는데 읽은게 없다면 에러
     {
-        LOG(std::cout<<"read error or socket close\n");
         std::cout<<"read error or socket close\n";
         client[store.ident].deleteContent();
         return (ERROR);

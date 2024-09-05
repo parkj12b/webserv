@@ -206,6 +206,15 @@ void    Client::setRequestFin(bool fin)
     request.fin = fin;
 }
 
+void    Client::setCgiGetEntity(size_t &cgiContentLength, string &content)
+{
+    response.setCgiGetHeader(cgiContentLength);
+    response.setCgiGetContent(content);
+    responseAmount = response.getStartHeaderLength() + cgiContentLength;
+    index = 0;
+    msg = response.getEntity();
+}
+
 void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content, size_t &status)
 {
 	size_t  pos;

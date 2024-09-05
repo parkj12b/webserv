@@ -78,6 +78,7 @@ class Server
         bool    getResponseCgi(int fd);
         ssize_t getStandardTime(int fd);
         int     plusClient(string pathEnv);	//client socket accept
+        EVENT   cgiGet(struct kevent& store);
 		EVENT	cgiRead(struct kevent& store);		//client cgi read event manage
         EVENT   clientRead(struct kevent& store);   //client read event manage
         EVENT   clientWrite(struct kevent& store);  //client write event manage

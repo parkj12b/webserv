@@ -94,6 +94,7 @@ class Client
         void    setFd(uintptr_t fd);
         void    setRequestStatus(int temp);
         void    setRequestFin(bool fin);
+        void    setCgiGetEntity(size_t &cgiContentLength, string &content);
 		void	setCgiResponseEntity(size_t &cgiContentLength, string &content, size_t &status);
         void    plusSocketReadSize();
         //logic
