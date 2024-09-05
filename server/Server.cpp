@@ -127,12 +127,21 @@ EVENT   Server::cgiGet(struct kevent& store)
     }
     readSize = read(store.ident, buf, BUFFER_SIZE);
     if (readSize < 0)
+    {
+        cout << "ERROR readSize: " << readSize << endl;
         return (ERROR);
+    }
     buf[readSize] = '\0';
     cgiContent[store.ident].append(buf, readSize);
     cgiContentLength[store.ident] += readSize;
     cout << "store.data: " << store.data << " readSize: " << readSize << endl;
-    if (store.data - readSize == 0)
+    cout << "cgiGet errno: " << errno << endl;
+    if (errno == 2)
+    {
+        cout << "cgiGet errno: " << errno << endl;
+        return (ERROR);
+    }
+    if (store.data - readSize <= 0)
     {
         cout << "write message setting start..." << endl;
         client[Kq::cgiFd[store.ident]].setCgiGetEntity(cgiContentLength[store.ident], cgiContent[store.ident]);
@@ -286,6 +295,12 @@ EVENT   Server::clientWrite(struct kevent& store)
         LOG(std::cout<<"write: client close"<<std::endl);
         return (ERROR);
     }
+    if (openCheck < 0)
+    {
+        cout <<"openCheck error: "<< openCheck<<endl;
+        // return (ERROR);
+    }
+    // index = write(1, buffer, client[store.ident].responseIndex());
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     if (index > client[store.ident].responseIndex())
         return (ERROR);

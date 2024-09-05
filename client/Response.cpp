@@ -504,7 +504,6 @@ bool    Response::init()
         return (false);
     string host = request.header["host"].front();
     LOG(cout << "host : " << host << endl);
-	cgiFlag = false;
     // LOG(cout << "host: " << host << endl);
     try
     {
@@ -754,6 +753,7 @@ void    Response::makeGet()
     int fd;
 
     LOG(std::cout<<"Method: GET"<<std::endl);
+    cout << "cgiFlag: " <<cgiFlag<<endl;
     LOG(std::cout<<request.url.c_str()<<std::endl);
     CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
 
@@ -788,6 +788,7 @@ void    Response::makeGet()
 		// content += cgiProcessor.getCgiContent();
 		// LOG(cout << cgiProcessor.getCgiContent() << '\n');
         // LOG(std::cout<<header);
+        return ;
 	}
 	else
 	{
@@ -795,6 +796,7 @@ void    Response::makeGet()
 		if (fd < 0)
 		{
 			request.status = 404;
+            cout<<"fd error"<<endl;
 			// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 			// while (!cgiProcessor.getFin())
 			// 	cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);
@@ -858,6 +860,7 @@ void    Response::makeDelete()
 
 void    Response::responseMake()
 {
+    cout << "cgiFlag: " <<cgiFlag<<endl;
     if (request.status > 0 || init())
     {
         makeError();
@@ -893,7 +896,8 @@ void    Response::responseMake()
         default:
             break ;
     }
-    makeEntity();
+    if (!cgiFlag)
+        makeEntity();
     return ;
 }
 
