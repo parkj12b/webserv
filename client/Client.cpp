@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: devpark <devpark@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/01 20:50:59 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/03 19:31:09 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,16 +210,14 @@ void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content, siz
 {
 	size_t  pos;
 
-    LOG(std::cout << "cgiContentLength: " << cgiContentLength<<std::endl);
+    std::cout<<"cgiContentLength: "<<cgiContentLength<<std::endl;
     pos = response.setCgiContent(content, status);
-    LOG(std::cout << "cgi pos: " << pos << std::endl);
-    if (status >= 400)
-        return ;
-    // if (cgiContentLength - pos > 0)
-    response.setCgiContentLength(cgiContentLength - pos);
+    std::cout<<"cgi pos: "<<pos<<std::endl;
+    if (cgiContentLength - pos > 0)
+        response.setCgiContentLength(cgiContentLength - pos);
     responseAmount = response.getStartHeaderLength() + cgiContentLength - pos;
     index = 0;
-    LOG(std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl);
+    std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl<<endl;
     msg = response.getEntity();
     // LOG(std::cout<<"msg: "<<msg<<std::endl);
 }
@@ -370,6 +368,7 @@ int Client::setHeader()
     {
         //아직 다 들어오지 않은 데이터가 있을 수도 있잔녀 이건 우선 생각하지 않음
         //데이터가 후에 들어온다고 가정한다면 그때 가서 처리를 해주면 됨 하지만 들어오지 않고 eof가 들어오면 맞는 데이터임에도 error로 처리하기 때문에 여기서 이렇게 처리하는 것이 맡다. 
+        LOG(cout<<"checking..."<<endl;)
         if (request.method == GET)
             request.fin = true;
         else if (msg.empty() && headerLine.getContentType() == ENOT)

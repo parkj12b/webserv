@@ -14,6 +14,7 @@ def generate_html(query_params):
     stars_cnt = 64 * 1024 * 12
     """ 쿼리 파라미터에 기반한 HTML 페이지 생성 """
     # HTML 헤더 출력
+    print("status: 200")
     print("Content-type: text/html\r\n")
     print("<html>")
     print("<head>")

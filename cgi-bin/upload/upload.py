@@ -39,6 +39,8 @@ def handle_file_uploads():
         else:
             # Single file upload
             process_file(files)
+        print(f"status:302\r")
+        print(f"location:/upload_success.html\r")
     else:
         make_error()
 
@@ -59,8 +61,6 @@ def process_file(file_item):
         with open(filepath, 'wb') as output_file:
             output_file.write(file_item.file.read())
         
-        print(f"status:302\r")
-        print(f"location:/upload_success.html\r")
     else:
         make_error()
 def main():

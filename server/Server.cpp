@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/02 18:51:17 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/04 19:55:07 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ int Server::plusClient(string pathEnv)
     fcntl(clntFd, F_SETFL, flags | O_NONBLOCK);
     client[clntFd] = Client(clntFd, port, pathEnv);  //생성자 및 대입 연산자 호출
 	client[clntFd].clientIP(clntAdr);
-    LOG(std::cout<<"temp delete"<<std::endl);
+    LOG(std::cout<<"New Client FD : " << clntFd <<std::endl);
     return (clntFd);
 }
 
@@ -118,16 +118,19 @@ EVENT Server::cgiRead(struct kevent& store)
         cgiContentLength[store.ident] = 0;
         cgiContent[store.ident].clear();
     }
-	readSize = read(store.ident, buf, BUFFER_SIZE);
+    readSize = read(store.ident, buf, BUFFER_SIZE);
 	LOG(cout << "CGI Read Size : " << readSize << endl);
     if (readSize > 0)
     {
         buf[readSize] = '\0';
         cgiContent[store.ident].append(buf, readSize);
         cgiContentLength[store.ident] += readSize;
-        LOG(std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl;)
+        // cout << "cgiContent[store.ident] : " << cgiContent[store.ident] << endl;
     }
-    cout<<"store.data: "<<store.data<<endl;
+    // LOG(std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl;)
+    LOG(cout<<"store.data: "<<store.data<<endl;)
+    cout << "pidPipe: " << Kq::pidPipe[store.ident] << endl;
+    cout << "store.data: " << store.data << " readSize: " << readSize << endl;
 	if (readSize <= 0 || (Kq::pidPipe[store.ident] == 0 && store.data - readSize == 0))
 	{
         size_t  status = 0;
@@ -158,7 +161,7 @@ EVENT Server::cgiRead(struct kevent& store)
         Kq::pidPipe.erase(store.ident);
         if (status >= 400)
             return (ERROR);
-        LOG(cout << "status: " << status << endl);
+        LOG(cout << "status 1: " << status << endl);
         // LOG(std::cout << "msg: " << client[Kq::cgiFd[store.ident]].getMsg() << endl);
         return (FINISH);
 	}
@@ -180,6 +183,7 @@ EVENT Server::clientRead(struct kevent& store)
     if (readSize <= 0) // read가 발생했는데 읽은게 없다면 에러
     {
         LOG(std::cout<<"read error or socket close\n");
+        std::cout<<"read error or socket close\n";
         client[store.ident].deleteContent();
         return (ERROR);
     }
@@ -238,7 +242,7 @@ EVENT   Server::clientWrite(struct kevent& store)
     // cout<<"msg: " <<buffer<<endl;
     // write(writeLogs, buffer, client[store.ident].responseIndex());
     // write(1, buffer, client[store.ident].responseIndex());
-    std::cout<<"write index: " <<index<<endl;
+    LOG(std::cout<<"write index: " <<index<<endl;)
     // if (index > client[store.ident].responseIndex())
     // {
     //     std::cout<<"ERROR wirte"<<endl;
