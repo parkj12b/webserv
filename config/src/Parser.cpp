@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 18:48:59 by minsepar          #+#    #+#             */
-/*   Updated: 2024/09/06 20:29:34 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/06 20:55:01 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -451,6 +451,7 @@ void Parser::initializeDirectiveSyntax() {
     Parser::_directiveSyntax.insert(std::make_pair("log_format", v));
 
     // Empty vectors for "events", "http", and "server"
+    v.clear();
     Parser::_directiveSyntax.insert(std::make_pair("events", v));
     Parser::_directiveSyntax.insert(std::make_pair("http", v));
     Parser::_directiveSyntax.insert(std::make_pair("server", v));
