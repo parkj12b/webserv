@@ -124,7 +124,7 @@ bool    ContentLine::tempFileMake(int &fd_)
         num++;
     }
     fd = open(fileName.c_str(), O_WRONLY | O_CREAT, 0777);
-    throwIfError(errno, fd);
+    // throwIfError(errno, fd);  //makeError 아래에서 처리함
     LOG(std::cout<<"MAkE FILE"<<std::endl);
     if (fd < 0)
         return (false);
@@ -134,7 +134,7 @@ bool    ContentLine::tempFileMake(int &fd_)
     return (true);
 }
 
-int ContentLine::chunkedEntity()
+int ContentLine::chunkedEntity(int &status)
 {
     std::istringstream  chunkedStream(chunked);
     std::string         temp;
@@ -157,10 +157,14 @@ int ContentLine::chunkedEntity()
             }
             catch(const std::exception& e)
             {
-                return (1);
+                status = 400;
+                return (-1);
             }
             if (size < 0)
-                return (1);
+            {
+                status = 400;
+                return (-1);
+            }
         }
         else
         {
@@ -170,7 +174,11 @@ int ContentLine::chunkedEntity()
         ans++;
     }
     completion = true;
-    throwIfError(errno, close(fd));
+    if (!throwIfError(errno, close(fd)))
+    {
+        status = 500;
+        return (-1);  //makeError
+    }
     return (0);
 }
 
@@ -208,7 +216,11 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
             if (contentLength == 0)
             {
                 completion = true;
-                throwIfError(errno, close(fd));
+                if (!throwIfError(errno, close(fd)))
+                {
+                    status = 500;
+                    return (-1);
+                }
             }
         }
         else
@@ -219,7 +231,11 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
             str = str.substr(flag);
             completion = true;
             readSize -= flag;
-            throwIfError(errno, close(fd));
+            if (!throwIfError(errno, close(fd)))
+            {
+                status = 500;
+                return (-1);
+            }
         }
     }
     else if (contentType == TRANSFER)
@@ -237,9 +253,8 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
             str = chunked.substr(flag + 5);
             chunked = chunked.substr(0, flag);
             // str = str.substr(flag + 3);
-            if (chunkedEntity() < 0)
+            if (chunkedEntity(status) < 0)
             {
-                status = 400;
                 return (-1);
             }
             readSize = str.size();

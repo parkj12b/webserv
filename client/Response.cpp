@@ -529,7 +529,7 @@ int Response::getDefaultErrorPage(int statusCode)
 
     if (errorStr.size() > 0)
         fd = open(errorStr.c_str(), O_RDONLY);
-    throwIfError(errno, fd);
+    // throwIfError(errno, fd);  //고민
     if (fd != -1)
         return (fd);
     if (statusCode >= 400 && statusCode < 500)
@@ -635,7 +635,7 @@ void    Response::makeError()
     int fd = -1;
     if (errorPath != "")
         fd = open(errorPath.c_str(), O_RDONLY);
-    // throwIfError(errno, fd);
+    // throwIfError(errno, fd);   //고민
     if (errorPath != "" && fd >= 0)
         makeContent(fd);
     else
@@ -795,7 +795,7 @@ void    Response::makeGet()
 	else
 	{
 		fd = open(request.url.c_str(), O_RDONLY);
-        throwIfError(errno, fd);
+        throwIfError(errno, fd);   //아래에 있다.
 		if (fd < 0)
 		{
 			request.status = 404;
@@ -826,7 +826,7 @@ void    Response::makePost()
     else
     {
         int fd = open(request.url.c_str(), O_RDONLY);
-        throwIfError(errno, fd);
+        throwIfError(errno, fd);  //아래에 존재함 지울 것
 		if (fd < 0)
 		{
 			request.status = 404;
@@ -853,7 +853,12 @@ void    Response::makeDelete()
             makeError();
             return ;
         }
-        throwIfError(errno, chdir(getDir(request.url).c_str()));
+        if (!throwIfError(errno, chdir(getDir(request.url).c_str())))
+        {
+            request.status = 500;
+            makeError();
+            return ;
+        }
         LOG(cout << "request url: " << request.url << endl);
         cgiProcessor.executeCGIScript(request.url);
     }

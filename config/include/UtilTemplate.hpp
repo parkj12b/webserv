@@ -47,5 +47,5 @@ bool        isWithinBasePath(const string &basePath, const string &requestPath);
 bool        isFile(const char *path);
 string      getDir(string path);
 
-void        throwIfError(int error, int isError);
+int         throwIfError(int error, int isError);
 #endif
