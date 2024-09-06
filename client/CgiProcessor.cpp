@@ -195,7 +195,6 @@ bool	CgiProcessor::isDirectory(const char *binPath)
 
 	if (stat(binPath, &fileInfo) == -1)
 	{
-		throwIfError(errno, -1);
 		return (false);
 	}
 	if (S_ISDIR(fileInfo.st_mode))
@@ -244,28 +243,34 @@ void	CgiProcessor::executeCGIScript(const string path)
 	cout << "path: " << path << endl;
 	if (!findCgiCmdPath() || pipe(pipefd) < 0)
 	{
-		throwIfError(errno, -1);
 		LOG(cout << "No CGI Command " << cgiCommand << endl);
 		LOG(cout << "or pipe() error " << endl);
 		request.status = 500;
 		return ;
 	}
-	throwIfError(errno, fcntl(pipefd[0], F_SETFL, O_NONBLOCK));
+	if (!throwIfError(errno, fcntl(pipefd[0], F_SETFL, O_NONBLOCK)))
+	{
+		request.status = 500;
+		return ;
+	}
 	LOG(std::cout<<"pipe fd: "<<pipefd[0]<<", "<<pipefd[1]<<std::endl);
 	pid_t pid = fork();
 	if (pid == -1)
 	{
 		cout << "fork() error" << endl;
-		throwIfError(errno, close(pipefd[0]));
-		throwIfError(errno, close(pipefd[1]));
+		close(pipefd[0]);  //makeError 아래에서 처리함
+		close(pipefd[1]);  //makeError 아래에서 처리함
 		request.status = 500;
 		return ;
 	}
 	if (pid == 0)
 	{
-		throwIfError(errno, close(pipefd[0]));
-		throwIfError(errno, dup2(pipefd[1], STDOUT_FILENO));
-		throwIfError(errno, close(pipefd[1]));
+		if (!throwIfError(errno, close(pipefd[0])))
+			exit(2);	//exit 
+		if (!throwIfError(errno, dup2(pipefd[1], STDOUT_FILENO)))
+			exit(2);  //exit
+		if (!throwIfError(errno, close(pipefd[1])))
+			exit(2);  //exit
 		char *argv[] = {const_cast<char *>(&cgiCommand[0]), const_cast<char *>(&path[0]), NULL};
 		char **envp = new char*[metaVariables.size() + 1];
 		size_t	idx = 0;
@@ -293,11 +298,15 @@ void	CgiProcessor::executeCGIScript(const string path)
 	}
 	else
 	{
-		throwIfError(errno, chdir(EXECUTE_PATH.c_str()));
-		Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 		Kq::closeFd.push_back(pipefd[1]);
-		// throwIfError(errno, close(pipefd[1]));
 		Kq::processor.push_back(pid);
+		// throwIfError(errno, close(pipefd[1]));
+		if (!throwIfError(errno, chdir(EXECUTE_PATH.c_str())))
+		{
+			request.status = 500;
+			return ;
+		}  //makeError
+		Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 		Kq::cgiFd[pipefd[0]] = request.clientFd;
 		Kq::pidPipe[pipefd[0]] = pid;
 	}

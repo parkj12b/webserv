@@ -93,7 +93,8 @@ Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
         }
         //fcntl temp
         int flags = fcntl(serverFd, F_GETFL, 0);
-        throwIfError(errno, fcntl(serverFd, F_SETFL, flags | O_NONBLOCK));
+        throwIfError(errno, flags);
+        throwIfError(errno, fcntl(serverFd, F_SETFL, flags | O_NONBLOCK));  //처리하지 않기
         while (listen(serverFd, SOMAXCONN) < 0);
         plusEvent(serverFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
         server[serverFd] = Server(serverFd, port);  //config parser
@@ -348,7 +349,6 @@ void    Kq::mainLoop()
         else
         {
             cout << "pid: " << *it << endl;
-            throwIfError(errno, -1);
             it = Kq::processor.erase(it);
         }
     }
@@ -358,7 +358,6 @@ void    Kq::mainLoop()
     if ((count = kevent(kq, &fdList[0], fdList.size(), store, connectionCnt, NULL)) <= 0)
     {
         cout << "ERROR or kevent Zero" << endl;
-        throwIfError(errno, count);
         return ;
     }
     fdList.clear();
