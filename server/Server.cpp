@@ -375,7 +375,8 @@ EVENT   Server::clientTimer(struct kevent& store)
 void    Server::clientFin(int clientFd)
 {
     client[clientFd].deleteContent();
-    throwIfError(errno, close(clientFd));
+    Kq::closeFd.push_back(clientFd);
+    // throwIfError(errno, close(clientFd));
     client.erase(clientFd);
 }
 
@@ -390,5 +391,6 @@ void    Server::serverError()
             continue ;
         clientFin(it->first);
     }
-    throwIfError(errno, close(serverFd));
+    Kq::closeFd.push_back(serverFd);
+    // throwIfError(errno, close(serverFd));
 }

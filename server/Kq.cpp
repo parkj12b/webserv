@@ -207,7 +207,8 @@ void    Kq::eventRead(struct kevent& store)
             cgiFd.erase(iter->first);
             plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
             cout << "ERRONO: " << errno << endl;
-            throwIfError(errno, close(store.ident));
+            Kq::closeFd.push_back(store.ident);
+            // throwIfError(errno, close(store.ident));
 			return ;
         }
         if (Kq::pidPipe[iter->first] == -1)
@@ -226,7 +227,8 @@ void    Kq::eventRead(struct kevent& store)
                 LOG(std::cout<<"first CGI Error: "<<iter->first<<std::endl);
                 cgiFd.erase(iter->first);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-                throwIfError(errno, close(store.ident));
+                Kq::closeFd.push_back(store.ident);
+                // throwIfError(errno, close(store.ident));
                 break ;
 			case FINISH:
                 LOG(cout<<"FINISH CLOSE"<<endl;)
@@ -235,7 +237,8 @@ void    Kq::eventRead(struct kevent& store)
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
 				cgiFd.erase(iter->first);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-                throwIfError(errno, close(store.ident));
+                Kq::closeFd.push_back(store.ident);
+                // throwIfError(errno, close(store.ident));
 				break ;
 		}
 	}
@@ -280,7 +283,6 @@ void    Kq::eventWrite(struct kevent& store)
     serverFd = findServer[store.ident];
     if (serverFd == 0)
     {
-        cerr << "here write" << endl;
         LOG(std::cout<<"No enroll write: "<<store.ident << std::endl);
         return ;
     }
@@ -404,4 +406,9 @@ void    Kq::mainLoop()
             }
         }
     }
+    if (Kq::closeFd.empty())
+        return ;
+    for (std::vector<int>::iterator it = Kq::closeFd.begin(); it != Kq::closeFd.end(); it++)
+        close(*it);
+    Kq::closeFd.clear();
 }
