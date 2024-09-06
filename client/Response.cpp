@@ -739,7 +739,7 @@ void    Response::makeEntity()
     // LOG(std::cout<<request.status<<std::endl);
     if (request.status == 0)
         request.status = 200;
-    entity = "HTTP/1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
+    entity = "HTTP/1.1 " + toString(request.status) + statusContent[request.status] + "\r\n";
     if (!header.empty())
         entity += header + "\r\n";
     LOG(cout << "header: " << header << endl;)
@@ -806,6 +806,7 @@ void    Response::makeGet()
             makeError();
 			return ;
 		}
+        cout << "request.url: " << request.url << " fd: " << fd << endl;
 		makeContent(fd);
 	}
 	request.status = 200;
@@ -817,6 +818,7 @@ void    Response::makePost()
     LOG(cout<<"Method: POST"<<endl);
 	CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
     LOG(cout << "request url: " << request.url << endl);
+    LOG(cout << "[Response::makePost] - cgiFlag: " << cgiFlag << endl;)
     if (cgiFlag)
     {
         chdir(getDir(request.url).c_str());
@@ -905,8 +907,6 @@ void    Response::responseMake()
         default:
             break ;
     }
-    if (!cgiFlag)
-        makeEntity();
     return ;
 }
 
