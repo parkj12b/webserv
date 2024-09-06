@@ -93,7 +93,8 @@ Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
         }
         //fcntl temp
         int flags = fcntl(serverFd, F_GETFL, 0);
-        throwIfError(errno, fcntl(serverFd, F_SETFL, flags | O_NONBLOCK));
+        throwIfError(errno, flags);
+        throwIfError(errno, fcntl(serverFd, F_SETFL, flags | O_NONBLOCK));  //처리하지 않기
         while (listen(serverFd, SOMAXCONN) < 0);
         plusEvent(serverFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
         server[serverFd] = Server(serverFd, port);  //config parser
@@ -236,6 +237,7 @@ void    Kq::eventRead(struct kevent& store)
                 // throwIfError(errno, close(store.ident));
                 break ;
 			case FINISH:
+                LOG(std::cout<<"WRITE FD: "<<cgiFd[store.ident]<<" ERRNO:"<<errno<<std::endl);
                 LOG(cout<<"FINISH CLOSE"<<endl;)
                 LOG(cout << "[Server::eventRead] - (FINISH) FD: " << iter->first << endl;)
                 LOG(std::cout<<"CGI Finish: "<<iter->first<<std::endl);
@@ -342,7 +344,7 @@ void    Kq::mainLoop()
     int                 status;
 
     //waitpid(complete) 복사 생성자를 없앰 다만 erase를 진행할 때의 오히려 비용이 조금 더 들 수도 있을 수도 있다. 
-    cout << "size: " << Kq::processor.size() << endl;
+    cout << "Kq::processor size: " << Kq::processor.size() << endl;
     for (std::vector<pid_t>::iterator it = Kq::processor.begin(); it != Kq::processor.end();)
     {
         pid_t pid = waitpid(*it, &status, WNOHANG);
@@ -353,7 +355,6 @@ void    Kq::mainLoop()
         else
         {
             cout << "pid: " << *it << endl;
-            throwIfError(errno, -1);
             it = Kq::processor.erase(it);
         }
     }
@@ -363,7 +364,6 @@ void    Kq::mainLoop()
     if ((count = kevent(kq, &fdList[0], fdList.size(), store, connectionCnt, NULL)) <= 0)
     {
         cout << "ERROR or kevent Zero" << endl;
-        throwIfError(errno, count);
         return ;
     }
     fdList.clear();

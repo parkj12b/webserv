@@ -66,7 +66,7 @@ class ContentLine
         bool    fileExist(const char *fileName_);   //tempFileName exist
         bool    tempFileMake(int &num); //temp file make
         void    initContentLine(int initLength, CONTENTTYPE initType);  //init
-        int     chunkedEntity();                    //chunked message parsing
+        int     chunkedEntity(int &status);                    //chunked message parsing
         int     makeContentLine(std::string &str, size_t &readSize, int &status, int &fd_);  //contentLine make
 };
 

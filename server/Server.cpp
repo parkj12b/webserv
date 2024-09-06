@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/06 15:04:50 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/06 20:59:20 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,16 +75,18 @@ ssize_t Server::getStandardTime(int fd)
     return (standardTime * 1000);
 }
 
-void setLinger(int sockfd, int linger_time) {
+int setLinger(int sockfd, int linger_time) {
     struct linger linger_opt;
     linger_opt.l_onoff = 1;  // Enable linger option
     linger_opt.l_linger = linger_time;  // Set linger time in seconds
 
     if (setsockopt(sockfd, SOL_SOCKET, SO_LINGER, &linger_opt, sizeof(linger_opt)) < 0)
     {
-        throwIfError(errno, -1);
+        throwIfError(errno, -1);  //pass
         perror("setsockopt(SO_LINGER) failed");
+        return (0);
     }
+    return (1);
 }
 
 int Server::plusClient(string pathEnv)
@@ -97,9 +99,17 @@ int Server::plusClient(string pathEnv)
     //accept 무한 루프 && server 동기적 실패시 무한 루프 가능성 
     if ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0)
         return (-1);
-    setLinger(clntFd, 0);
+    if (!setLinger(clntFd, 0))
+    {
+        close(clntFd);
+        return (-1);
+    }
     int flags = fcntl(clntFd, F_GETFL, 0);
-    throwIfError(errno, fcntl(clntFd, F_SETFL, flags | O_NONBLOCK));
+    if (!throwIfError(errno, fcntl(clntFd, F_SETFL, flags | O_NONBLOCK)))
+    {
+        close(clntFd);
+        return (-1);  //고민
+    }
     client[clntFd] = Client(clntFd, port, pathEnv);  //생성자 및 대입 연산자 호출
 	client[clntFd].clientIP(clntAdr);
     LOG(std::cout<<"New Client FD : " << clntFd <<std::endl);
@@ -124,12 +134,7 @@ EVENT   Server::cgiGet(struct kevent& store)
         cgiContent[store.ident].clear();
     }
     readSize = read(store.ident, buf, BUFFER_SIZE);
-    throwIfError(errno, readSize);
-    // if (readSize == 0)
-    // {
-    //     cout << "ERROR readSize: " << readSize << endl;
-    //     return (ERROR);
-    // }
+    // throwIfError(errno, readSize);  //logic 맞는지 체크하기
     if (readSize < 0)
         return (ING);
     buf[readSize] = '\0';
@@ -174,7 +179,13 @@ EVENT   Server::cgiRead(struct kevent& store)
     //     return (ERROR);
     // }
     readSize = read(store.ident, buf, BUFFER_SIZE);
-    throwIfError(errno, readSize);
+    // if (!throwIfError(errno, readSize))
+    if (readSize < 0)
+    {
+        client[Kq::cgiFd[store.ident]].getResponse().setRequestStatus(500);
+        client[Kq::cgiFd[store.ident]].getResponse().makeError();
+        return (ERROR);
+    }  //makeError 같이 고민해보기
 	LOG(cout << "CGI Read Size : " << readSize << endl);
     // if (readSize < 0)
     //     return (ERROR);
@@ -212,7 +223,6 @@ EVENT   Server::cgiRead(struct kevent& store)
         if (readSize < 0)
             status = 600;
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
-        // LOG(cout<<"cgiContent[store.ident]: "<<cgiContent[store.ident]<<endl);
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
         // LOG(cout<<"status: "<<status<<endl);
         cgiContent[store.ident].clear();
@@ -222,7 +232,7 @@ EVENT   Server::cgiRead(struct kevent& store)
         if (status >= 400)
             return (ERROR);
         LOG(cout << "status 1: " << status << endl);
-        // LOG(std::cout << "msg: " << client[Kq::cgiFd[store.ident]].getMsg() << endl);
+        LOG(std::cout << "msg: " << client[Kq::cgiFd[store.ident]].getMsg() << endl);
         return (FINISH);
 	}
 	return (ING);
@@ -306,7 +316,6 @@ EVENT   Server::clientWrite(struct kevent& store)
     //     return (ERROR);
     LOG(std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl);
     openCheck = recv(store.ident, readBuffer, sizeof(readBuffer), MSG_PEEK);
-    throwIfError(errno, openCheck);
     if (openCheck == 0)
     {
         LOG(std::cout<<"write: client close"<<std::endl);
@@ -317,10 +326,11 @@ EVENT   Server::clientWrite(struct kevent& store)
         cout <<"openCheck error: "<< openCheck<<endl;
         // return (ERROR);
     }
-    // index = write(1, buffer, client[store.ident].responseIndex());
+    cout << "buffer:" << buffer << endl;
     index = write(store.ident, buffer, client[store.ident].responseIndex());
-    throwIfError(errno, index);
-    if (index > client[store.ident].responseIndex())
+    // if (!throwIfError(errno, index))
+    //     return (ERROR);  //exit(ERROR)
+    if (index < 0 || index > client[store.ident].responseIndex())
         return (ERROR);
     // cout<<"msg: " <<buffer<<endl;
     // write(writeLogs, buffer, client[store.ident].responseIndex());

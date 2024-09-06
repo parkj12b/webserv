@@ -209,14 +209,12 @@ string  getDir(string path)
     return path.substr(0, pos);
 }
 
-void throwIfError(int status, int error)
+int throwIfError(int status, int error)
 {
-    // (void) error;
-    if (error >= 0 || status == 35)
-        return ;
+    if (error >= 0)
+        return (1);
     cout << "errno: " << errno << endl;
     if (status != 0)
-    {
-        throw exception();
-    }
+        return (0);
+    return (1);
 }
