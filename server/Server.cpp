@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/05 21:20:20 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/06 15:04:50 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,7 +271,7 @@ EVENT Server::clientRead(struct kevent& store)
     }
     LOG(std::cout<<"Client Read " << readSize << std::endl);
     buffer[readSize] = '\0';
-    write(logs, buffer, readSize);
+    // write(logs, buffer, readSize);
     client[store.ident].setMessage(buffer, readSize);
     client[store.ident].setConnection(true);
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
@@ -339,9 +339,10 @@ EVENT   Server::clientWrite(struct kevent& store)
         return (EXPECT);
     client[store.ident].deleteContent();
     client[store.ident].resetClient();
-    if (!client[store.ident].getConnect())
+    if (!client[store.ident].getConnect() || client[store.ident].getResponseStatus() >= 400)
     {
         LOG(std::cout<<"connection fin"<<std::endl);
+        LOG(cout << "Request.status: " << client[store.ident].getResponseStatus() << endl);
         return (ERROR);
     }
     LOG(std::cout<<"keep-alive"<<std::endl);
@@ -368,7 +369,8 @@ EVENT   Server::clientTimer(struct kevent& store)
 void    Server::clientFin(int clientFd)
 {
     client[clientFd].deleteContent();
-    throwIfError(errno, close(clientFd));
+    Kq::closeFd.push_back(clientFd);
+    // throwIfError(errno, close(clientFd));
     client.erase(clientFd);
 }
 
@@ -383,5 +385,6 @@ void    Server::serverError()
             continue ;
         clientFin(it->first);
     }
-    throwIfError(errno, close(serverFd));
+    Kq::closeFd.push_back(serverFd);
+    // throwIfError(errno, close(serverFd));
 }

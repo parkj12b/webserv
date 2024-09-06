@@ -89,6 +89,7 @@ class Client
         Response    &getResponse();
         bool        getRequestFin() const;
         int         getRequestStatus() const;
+        int         getResponseStatus() const;
         //set function
         void    setConnection(bool ycdi);
         void    setFd(uintptr_t fd);
