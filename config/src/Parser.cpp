@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 18:48:59 by minsepar          #+#    #+#             */
-/*   Updated: 2024/09/06 19:57:00 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/06 20:29:34 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -318,7 +318,7 @@ Syntax makeSyntax(const std::vector<int>& tags, int value) {
     return s;
 }
 
-map<string, vector<Syntax> > _directiveSyntax = map<string, vector<Syntax> >();
+map<string, vector<Syntax> > Parser::_directiveSyntax = map<string, vector<Syntax> >();
 
 void Parser::initializeDirectiveSyntax() {
     std::vector<Syntax> v;
