@@ -293,7 +293,8 @@ void	CgiProcessor::executeCGIScript(const string path)
 	{
 		throwIfError(errno, chdir(EXECUTE_PATH.c_str()));
 		Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
-		throwIfError(errno, close(pipefd[1]));
+		Kq::closeFd.push_back(pipefd[1]);
+		// throwIfError(errno, close(pipefd[1]));
 		Kq::processor.push_back(pid);
 		Kq::cgiFd[pipefd[0]] = request.clientFd;
 		Kq::pidPipe[pipefd[0]] = pid;

@@ -345,9 +345,10 @@ EVENT   Server::clientWrite(struct kevent& store)
         return (EXPECT);
     client[store.ident].deleteContent();
     client[store.ident].resetClient();
-    if (!client[store.ident].getConnect())
+    if (!client[store.ident].getConnect() || client[store.ident].getResponseStatus() >= 400)
     {
         LOG(std::cout<<"connection fin"<<std::endl);
+        LOG(cout << "Request.status: " << client[store.ident].getResponseStatus() << endl);
         return (ERROR);
     }
     LOG(std::cout<<"keep-alive"<<std::endl);
@@ -374,7 +375,8 @@ EVENT   Server::clientTimer(struct kevent& store)
 void    Server::clientFin(int clientFd)
 {
     client[clientFd].deleteContent();
-    throwIfError(errno, close(clientFd));
+    Kq::closeFd.push_back(clientFd);
+    // throwIfError(errno, close(clientFd));
     client.erase(clientFd);
 }
 
@@ -389,5 +391,6 @@ void    Server::serverError()
             continue ;
         clientFin(it->first);
     }
-    throwIfError(errno, close(serverFd));
+    Kq::closeFd.push_back(serverFd);
+    // throwIfError(errno, close(serverFd));
 }
