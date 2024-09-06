@@ -817,6 +817,7 @@ void    Response::makePost()
     LOG(cout<<"Method: POST"<<endl);
 	CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
     LOG(cout << "request url: " << request.url << endl);
+    LOG(cout << "[Response::makePost] - cgiFlag: " << cgiFlag << endl;)
     if (cgiFlag)
     {
         chdir(getDir(request.url).c_str());
@@ -905,8 +906,6 @@ void    Response::responseMake()
         default:
             break ;
     }
-    if (!cgiFlag)
-        makeEntity();
     return ;
 }
 

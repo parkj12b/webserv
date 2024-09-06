@@ -187,6 +187,7 @@ void	CgiProcessor::checkPostContentType(const string path)
 	else
 		request.status = 400;
 	LOG(cout << "good: " << request.status << endl);
+	cout << "before errno: " << errno << endl;
 }
 
 bool	CgiProcessor::isDirectory(const char *binPath)
@@ -298,7 +299,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 	}
 	else
 	{
-		Kq::closeFd.push_back(pipefd[1]);
+		close(pipefd[1]);
 		Kq::processor.push_back(pid);
 		// throwIfError(errno, close(pipefd[1]));
 		if (!throwIfError(errno, chdir(EXECUTE_PATH.c_str())))  //이게 실패할 경우에 무조건 적으로 터짐

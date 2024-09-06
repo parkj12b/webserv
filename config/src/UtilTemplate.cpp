@@ -211,7 +211,6 @@ string  getDir(string path)
 
 int throwIfError(int status, int error)
 {
-    // (void) error;
     if (error >= 0)
         return (1);
     cout << "errno: " << errno << endl;

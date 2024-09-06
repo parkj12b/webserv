@@ -110,6 +110,7 @@ bool    ContentLine::tempFileMake(int &fd_)
     std::string     fileName_ = CgiProcessor::EXECUTE_PATH + "/.tempContent/";
     size_t          num;
 
+    cout << "content errno: " << errno << endl;
     mkdir(".tempContent", 0777);
     num = fd_;
     while (1)
@@ -128,7 +129,8 @@ bool    ContentLine::tempFileMake(int &fd_)
     if (fd < 0)
         return (false);
     LOG(std::cout<<"fileName: "<<fileName<<std::endl);
-    // contentLength = 0;
+        // contentLength = 0;
+        cout << "content errno: " << errno << endl;
     return (true);
 }
 
