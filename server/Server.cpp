@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/05 18:22:13 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/06 15:01:41 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,11 +137,6 @@ EVENT   Server::cgiGet(struct kevent& store)
     cgiContentLength[store.ident] += readSize;
     cout << "store.data: " << store.data << " readSize: " << readSize << endl;
     cout << "cgiGet errno: " << errno << endl;
-    if (errno == 2)
-    {
-        cout << "cgiGet errno: " << errno << endl;
-        return (ERROR);
-    }
     if (store.data - readSize <= 0)
     {
         cout << "write message setting start..." << endl;
@@ -277,7 +272,7 @@ EVENT Server::clientRead(struct kevent& store)
     }
     LOG(std::cout<<"Client Read " << readSize << std::endl);
     buffer[readSize] = '\0';
-    write(logs, buffer, readSize);
+    // write(logs, buffer, readSize);
     client[store.ident].setMessage(buffer, readSize);
     client[store.ident].setConnection(true);
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
