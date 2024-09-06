@@ -18,9 +18,13 @@
 # include <stack>
 # include <string>
 # include <unordered_set>
-# include "Lexer.hpp"
 # include "Syntax.hpp"
+# include "Lexer.hpp"
 # include "LocationConfig.hpp"
+# include "Env.hpp"
+# include "ServerConfig.hpp"
+# include "Directives.hpp"
+# include "Tag.hpp"
 
 # define DEFAULT_CONFIG_PATH "./config/default.conf"
 
@@ -120,6 +124,9 @@ public:
     */
     void                    include(string &path);
     
+    /* initializer */
+    static void             initializeDirectiveNum();
+    static void             initializeDirectiveSyntax();
     Parser(Lexer &l, string context);
     ~Parser();
 };

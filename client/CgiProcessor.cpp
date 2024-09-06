@@ -278,7 +278,6 @@ void	CgiProcessor::executeCGIScript(const string path)
 		}
 		envp[metaVariables.size()] = 0;
 		int fd = open(request.contentFileName.c_str(), O_RDONLY, 0644);
-		cerr << "\n\n\nEXECVE errno: " << errno << " fd:" << fd << endl;
 		throwIfError(errno, fd);
 		throwIfError(errno, dup2(fd, STDIN_FILENO));
 		throwIfError(errno, close(fd));
