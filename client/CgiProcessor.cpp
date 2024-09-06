@@ -187,6 +187,7 @@ void	CgiProcessor::checkPostContentType(const string path)
 	else
 		request.status = 400;
 	LOG(cout << "good: " << request.status << endl);
+	cout << "before errno: " << errno << endl;
 }
 
 bool	CgiProcessor::isDirectory(const char *binPath)
@@ -195,7 +196,8 @@ bool	CgiProcessor::isDirectory(const char *binPath)
 
 	if (stat(binPath, &fileInfo) == -1)
 	{
-		throwIfError(errno, -1);
+		LOG(cout << "[CgiProcessor::isDirectory] - stat Function fail" << endl;)
+		throwIfError(errno, 1);
 		return (false);
 	}
 	if (S_ISDIR(fileInfo.st_mode))
@@ -278,10 +280,9 @@ void	CgiProcessor::executeCGIScript(const string path)
 		}
 		envp[metaVariables.size()] = 0;
 		int fd = open(request.contentFileName.c_str(), O_RDONLY, 0644);
-		throwIfError(errno, fd);
-		throwIfError(errno, dup2(fd, STDIN_FILENO));
-		throwIfError(errno, close(fd));
-		// chdir()
+		cerr << "\n\n\nEXECVE errno: " << errno << " fd:" << fd << endl;
+		dup2(fd, STDIN_FILENO);
+		close(fd);
 		if (execve(&cgiCommand[0], argv, envp) == -1)
 		{
 			request.status = 500;
@@ -293,7 +294,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 	{
 		throwIfError(errno, chdir(EXECUTE_PATH.c_str()));
 		Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
-		Kq::closeFd.push_back(pipefd[1]);
+		close(pipefd[1]);
 		// throwIfError(errno, close(pipefd[1]));
 		Kq::processor.push_back(pid);
 		Kq::cgiFd[pipefd[0]] = request.clientFd;

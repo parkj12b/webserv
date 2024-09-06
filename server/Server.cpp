@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/05 18:22:13 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/06 15:01:41 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,11 +137,6 @@ EVENT   Server::cgiGet(struct kevent& store)
     cgiContentLength[store.ident] += readSize;
     cout << "store.data: " << store.data << " readSize: " << readSize << endl;
     cout << "cgiGet errno: " << errno << endl;
-    if (errno == 2)
-    {
-        cout << "cgiGet errno: " << errno << endl;
-        return (ERROR);
-    }
     if (store.data - readSize <= 0)
     {
         cout << "write message setting start..." << endl;
@@ -228,7 +223,7 @@ EVENT   Server::cgiRead(struct kevent& store)
         if (status >= 400)
             return (ERROR);
         LOG(cout << "status 1: " << status << endl);
-        // LOG(std::cout << "msg: " << client[Kq::cgiFd[store.ident]].getMsg() << endl);
+        LOG(std::cout << "msg: " << client[Kq::cgiFd[store.ident]].getMsg() << endl);
         return (FINISH);
 	}
 	return (ING);
@@ -277,7 +272,7 @@ EVENT Server::clientRead(struct kevent& store)
     }
     LOG(std::cout<<"Client Read " << readSize << std::endl);
     buffer[readSize] = '\0';
-    write(logs, buffer, readSize);
+    // write(logs, buffer, readSize);
     client[store.ident].setMessage(buffer, readSize);
     client[store.ident].setConnection(true);
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
@@ -323,7 +318,7 @@ EVENT   Server::clientWrite(struct kevent& store)
         cout <<"openCheck error: "<< openCheck<<endl;
         // return (ERROR);
     }
-    // index = write(1, buffer, client[store.ident].responseIndex());
+    cout << "buffer:" << buffer << endl;
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     throwIfError(errno, index);
     if (index > client[store.ident].responseIndex())

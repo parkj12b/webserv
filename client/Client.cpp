@@ -227,13 +227,12 @@ void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content, siz
     std::cout<<"cgiContentLength: "<<cgiContentLength<<std::endl;
     pos = response.setCgiContent(content, status);
     std::cout<<"cgi pos: "<<pos<<std::endl;
-    if (cgiContentLength - pos > 0)
-        response.setCgiContentLength(cgiContentLength - pos);
+    response.setCgiContentLength(cgiContentLength - pos);
     responseAmount = response.getStartHeaderLength() + cgiContentLength - pos;
     index = 0;
     std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl<<endl;
     msg = response.getEntity();
-    // LOG(std::cout<<"msg: "<<msg<<std::endl);
+    LOG(std::cout<<"msg: "<<msg<<std::endl);
 }
 
 void    Client::plusSocketReadSize()

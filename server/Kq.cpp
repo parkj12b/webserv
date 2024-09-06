@@ -231,6 +231,7 @@ void    Kq::eventRead(struct kevent& store)
                 // throwIfError(errno, close(store.ident));
                 break ;
 			case FINISH:
+                LOG(std::cout<<"WRITE FD: "<<cgiFd[store.ident]<<" ERRNO:"<<errno<<std::endl);
                 LOG(cout<<"FINISH CLOSE"<<endl;)
                 LOG(cout << "[Server::eventRead] - (FINISH) FD: " << iter->first << endl;)
                 LOG(std::cout<<"CGI Finish: "<<iter->first<<std::endl);

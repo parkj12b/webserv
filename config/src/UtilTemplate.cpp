@@ -213,7 +213,9 @@ void throwIfError(int status, int error)
 {
     // (void) error;
     if (error >= 0 || status == 35)
+    {
         return ;
+    }
     cout << "errno: " << errno << endl;
     if (status != 0)
     {
