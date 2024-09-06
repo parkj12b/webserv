@@ -417,8 +417,13 @@ size_t  Response::setCgiHeader(string &content_, size_t &status)
                         makeError();
                         return (0);
                     }
+                    // if (request.status >= 400)
+                    //     makeHeader(headerNameKey, toString(request.status));
+                    // else
+                    //     makeHeader(headerNameKey, headerNamePull.substr(headerPos + 1));
                 }
-                makeHeader(headerNameKey, headerNamePull.substr(headerPos + 1));
+                else
+                    makeHeader(headerNameKey, headerNamePull.substr(headerPos + 1));
                 LOG(cout<<headerNameKey<<" : "<<headerNamePull.substr(headerPos + 1)<<endl);
                 return (crlfPos + 2);
             }
@@ -435,6 +440,7 @@ void        Response::setCgiGetContent(string &content_)
 
 void	    Response::setCgiGetHeader(size_t contentLength_)
 {
+    cout << "setCgiGetHeader" << endl << endl;
     makeHeader("content-length", toString(contentLength_));
 }
 
@@ -473,6 +479,7 @@ void	Response::setCgiContentLength(size_t contentLength_)
     contentLength = contentLength_;
     LOG(cout<<"here    here "<< contentLength_<<endl;)
     makeHeader("content-length", toString(contentLength));
+    cout << "setCgiContentLength" << endl << endl;
     makeEntity();
     // LOG(std::cout<<"header: \n\n"<<header);
     // LOG(std::cout<<"================"<<std::endl);
@@ -848,6 +855,7 @@ void    Response::makeDelete()
     if (cgiFlag)
     {
         CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
+        chdir(getDir(request.url).c_str()); 
         if (!cgiProcessor.isValidUploadPath())
         {
             cout << "Upload Path Error" << endl;
