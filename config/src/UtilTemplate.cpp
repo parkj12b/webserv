@@ -209,7 +209,7 @@ string  getDir(string path)
     return path.substr(0, pos);
 }
 
-void throwIfError(int status, int error)
+int throwIfError(int status, int error)
 {
     // (void) error;
     if (error >= 0 || status == 35)
