@@ -14,20 +14,14 @@ function generate_html($query_params, $headers) {
     echo "<body>\r\n";
     echo "<h1>CGI Query String Example</h1>\r\n";
 
-    // 헤더 출력
-    echo "<h2>HTTP Headers</h2>\r\n";
-    echo "<ul>\r\n";
-    foreach ($headers as $key => $value) {
-        echo "\t<li>$key: $value</li>\r\n";
-    }
-    echo "</ul>\r\n";
-
     // 쿼리 파라미터 출력
     echo "<h2>Received query parameters:</h2>\r\n";
     echo "<ul>\r\n";
-    foreach ($query_params as $key => $value) {
-        echo "\t<li>$key: $value</li>\r\n";
-    }
+    echo "\t<li>name: " . ($query_params['name'] ?? 'default_name') . "</li>\r\n";
+    echo "\t<li>age: " . ($query_params['age'] ?? 'default_age') . "</li>\r\n";
+    // foreach ($query_params as $key => $value) {
+    //     echo "\t<li>$key: $value</li>\r\n";
+    // }
     echo "</ul>\r\n";
     echo "</body>\r\n";
     echo "</html>\r\n";

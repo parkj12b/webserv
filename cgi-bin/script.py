@@ -21,18 +21,11 @@ def generate_html(query_params, headers):
 	print("<body>\r\n", end="")
 	print("<h1>CGI Query String Example</h1>\r\n", end="")
 
-    # 헤더 출력
-	print("<h2>HTTP Headers</h2>\r\n", end="")
-	print("<ul>\r\n", end="")
-	for key, value in headers.items():
-		print(f"\t<li>{key}: {value}</li>\r\n", end="")
-	print("</ul>\r\n", end="")
-
     # 쿼리 파라미터 출력
 	print("<h2>Received query parameters:</h2>\r\n", end="")
 	print("<ul>\r\n", end="")
-	for key, value in query_params.items():
-		print(f"\t<li>{key}: {value}</li>\r\n", end="")
+	print(f"\t<li>name: {query_params.get('name') or ''}</li>\r\n", end="")
+	print(f"\t<li>age: {query_params.get('age') or ''}</li>\r\n", end="")
 	print("</ul>\r\n", end="")
 	print("</body>\r\n", end="")
 	print("</html>\r\n", end="")

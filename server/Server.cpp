@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/05 18:22:13 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/05 21:20:20 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,35 +112,30 @@ EVENT   Server::cgiGet(struct kevent& store)
 	int         readSize;
 
     if (store.flags & EV_ERROR)
-        return (ERROR);
+    {
+        cout << "cgiGet errno: " << store.data << endl;
+        return (EXPECT);
+    }
+    cerr << "cgiGet" << endl;
     if (cgiContentLength.find(store.ident) == cgiContentLength.end())
     {
         cout << "clear setting..." << endl;
         cgiContentLength[store.ident] = 0;
         cgiContent[store.ident].clear();
     }
-    if (store.flags & EV_ERROR)
-    {
-        cout << "cgiGet errno: " << errno << endl;
-        return (ERROR);
-    }
     readSize = read(store.ident, buf, BUFFER_SIZE);
     throwIfError(errno, readSize);
+    // if (readSize == 0)
+    // {
+    //     cout << "ERROR readSize: " << readSize << endl;
+    //     return (ERROR);
+    // }
     if (readSize < 0)
-    {
-        cout << "ERROR readSize: " << readSize << endl;
-        return (ERROR);
-    }
+        return (ING);
     buf[readSize] = '\0';
     cgiContent[store.ident].append(buf, readSize);
     cgiContentLength[store.ident] += readSize;
     cout << "store.data: " << store.data << " readSize: " << readSize << endl;
-    cout << "cgiGet errno: " << errno << endl;
-    if (errno == 2)
-    {
-        cout << "cgiGet errno: " << errno << endl;
-        return (ERROR);
-    }
     if (store.data - readSize <= 0)
     {
         cout << "write message setting start..." << endl;
@@ -161,8 +156,9 @@ EVENT   Server::cgiRead(struct kevent& store)
 	int         readSize;
     // char        readBuffer[1];
 
-    // if (store.flags & EV_ERROR)
-    //     return (ERROR);
+    if (store.flags & EV_ERROR)
+        return (ERROR);
+    cerr << "cgiRead" << endl;
 	LOG(cout << "cgiRead fd: " << store.ident << endl);
     //초기 세팅
     if (cgiContentLength.find(store.ident) == cgiContentLength.end())
@@ -193,7 +189,7 @@ EVENT   Server::cgiRead(struct kevent& store)
     LOG(cout<<"store.data: "<< store.data<<endl);
     cout << "pidPipe: " << Kq::pidPipe[store.ident] << endl;
     cout << "store.data: " << store.data << " readSize: " << readSize << endl;
-	if (readSize <= 0)
+	if (readSize == 0)
 	{
         size_t  status = 0;
         int     waitStatus = 0;
@@ -241,6 +237,9 @@ EVENT Server::clientRead(struct kevent& store)
     // char    readBuffer[1];
 
     //eof신호를 못 받게 됨
+    if (store.flags & EV_ERROR)
+        return (ERROR);
+    cerr << "clientRead" << endl;
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
     // if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 100)
@@ -299,7 +298,9 @@ EVENT   Server::clientWrite(struct kevent& store)
     if (store.flags & EV_ERROR)
         return (ERROR);
     if (store.ident == 0 || client[store.ident].getFd() == 0)
+    {
         return (ING);
+    }
     // int flags = fcntl(store.ident, F_GETFL, 0);
     // if (!(flags & O_RDWR))
     //     return (ERROR);

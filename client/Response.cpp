@@ -806,6 +806,7 @@ void    Response::makeGet()
             makeError();
 			return ;
 		}
+        cout << "request.url: " << request.url << " fd: " << fd << endl;
 		makeContent(fd);
 	}
 	request.status = 200;
