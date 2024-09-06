@@ -151,7 +151,7 @@ int ContentLine::chunkedEntity(int &status)
         {
             try
             {
-                size = std::stoi(temp, nullptr, 16);
+                size = std::stoi(temp, NULL, 16);
             }
             catch(const std::exception& e)
             {

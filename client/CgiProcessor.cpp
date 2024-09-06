@@ -55,7 +55,7 @@ void	CgiProcessor::setURLEnv()
 {
 	LOG(std::cout<<"host size: " <<request.header["host"].size()<<endl);
 	insertEnv("SERVER_NAME", request.header["host"].front());
-	insertEnv("SERVER_PORT", to_string(request.port));
+	insertEnv("SERVER_PORT", toString(request.port));
 	insertEnv("PATH_INFO", request.url);
 	insertEnv("SCRIPT_NAME", scriptFile);
 	deque<string>	queryStrings;
