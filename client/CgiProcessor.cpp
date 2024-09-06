@@ -253,7 +253,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 		request.status = 500;
 		return ;
 	}
-	LOG(std::cout<<"pipe fd: "<<pipefd[0]<<", "<<pipefd[1]<<std::endl);
+	LOG(std::cout<<"pipe fd: " << pipefd[0] << ", " << pipefd[1]<<std::endl);
 	pid_t pid = fork();
 	if (pid == -1)
 	{
@@ -266,7 +266,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 	if (pid == 0)
 	{
 		if (!throwIfError(errno, close(pipefd[0])))
-			exit(2);	//exit 
+			exit(2);	//exit  logic 생각해보기
 		if (!throwIfError(errno, dup2(pipefd[1], STDOUT_FILENO)))
 			exit(2);  //exit
 		if (!throwIfError(errno, close(pipefd[1])))
@@ -301,11 +301,11 @@ void	CgiProcessor::executeCGIScript(const string path)
 		Kq::closeFd.push_back(pipefd[1]);
 		Kq::processor.push_back(pid);
 		// throwIfError(errno, close(pipefd[1]));
-		if (!throwIfError(errno, chdir(EXECUTE_PATH.c_str())))
+		if (!throwIfError(errno, chdir(EXECUTE_PATH.c_str())))  //이게 실패할 경우에 무조건 적으로 터짐
 		{
 			request.status = 500;
 			return ;
-		}  //makeError
+		}
 		Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 		Kq::cgiFd[pipefd[0]] = request.clientFd;
 		Kq::pidPipe[pipefd[0]] = pid;

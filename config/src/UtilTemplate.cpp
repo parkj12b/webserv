@@ -217,4 +217,5 @@ int throwIfError(int status, int error)
     cout << "errno: " << errno << endl;
     if (status != 0)
         return (0);
+    return (1);
 }

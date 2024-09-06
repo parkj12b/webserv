@@ -123,7 +123,7 @@ bool    ContentLine::tempFileMake(int &fd_)
         num++;
     }
     fd = open(fileName.c_str(), O_WRONLY | O_CREAT, 0777);
-    throwIfError(errno, fd);  //makeError 아래에서 처리함
+    // throwIfError(errno, fd);  //makeError 아래에서 처리함
     LOG(std::cout<<"MAkE FILE"<<std::endl);
     if (fd < 0)
         return (false);

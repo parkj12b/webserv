@@ -338,7 +338,7 @@ void    Kq::mainLoop()
     int                 status;
 
     //waitpid(complete) 복사 생성자를 없앰 다만 erase를 진행할 때의 오히려 비용이 조금 더 들 수도 있을 수도 있다. 
-    cout << "size: " << Kq::processor.size() << endl;
+    cout << "Kq::processor size: " << Kq::processor.size() << endl;
     for (std::vector<pid_t>::iterator it = Kq::processor.begin(); it != Kq::processor.end();)
     {
         pid_t pid = waitpid(*it, &status, WNOHANG);

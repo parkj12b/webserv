@@ -84,9 +84,9 @@ int setLinger(int sockfd, int linger_time) {
     {
         throwIfError(errno, -1);  //pass
         perror("setsockopt(SO_LINGER) failed");
-        return (-1);
+        return (0);
     }
-    return (0);
+    return (1);
 }
 
 int Server::plusClient(string pathEnv)
@@ -99,7 +99,7 @@ int Server::plusClient(string pathEnv)
     //accept 무한 루프 && server 동기적 실패시 무한 루프 가능성 
     if ((clntFd = accept(serverFd, (struct sockaddr *)&clntAdr, &adrSize)) < 0)
         return (-1);
-    if (!setLinger(clntFd, 0) < 0)
+    if (!setLinger(clntFd, 0))
     {
         close(clntFd);
         return (-1);
@@ -136,7 +136,7 @@ EVENT   Server::cgiGet(struct kevent& store)
         return (ERROR);
     }
     readSize = read(store.ident, buf, BUFFER_SIZE);
-    throwIfError(errno, readSize);  //logic 맞는지 체크하기
+    // throwIfError(errno, readSize);  //logic 맞는지 체크하기
     if (readSize < 0)
     {
         cout << "ERROR readSize: " << readSize << endl;
@@ -190,7 +190,13 @@ EVENT   Server::cgiRead(struct kevent& store)
     //     return (ERROR);
     // }
     readSize = read(store.ident, buf, BUFFER_SIZE);
-    throwIfError(errno, readSize);  //makeError 같이 고민해보기
+    // if (!throwIfError(errno, readSize))
+    if (readSize < 0)
+    {
+        client[Kq::cgiFd[store.ident]].getResponse().setRequestStatus(500);
+        client[Kq::cgiFd[store.ident]].getResponse().makeError();
+        return (ERROR);
+    }  //makeError 같이 고민해보기
 	LOG(cout << "CGI Read Size : " << readSize << endl);
     // if (readSize < 0)
     //     return (ERROR);
@@ -228,7 +234,6 @@ EVENT   Server::cgiRead(struct kevent& store)
         if (readSize < 0)
             status = 600;
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
-        // LOG(cout<<"cgiContent[store.ident]: "<<cgiContent[store.ident]<<endl);
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
         // LOG(cout<<"status: "<<status<<endl);
         cgiContent[store.ident].clear();
@@ -322,8 +327,6 @@ EVENT   Server::clientWrite(struct kevent& store)
     //     return (ERROR);
     LOG(std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl);
     openCheck = recv(store.ident, readBuffer, sizeof(readBuffer), MSG_PEEK);
-    if (!throwIfError(errno, openCheck))
-        return (ERROR);  //exit(ERROR)
     if (openCheck == 0)
     {
         LOG(std::cout<<"write: client close"<<std::endl);
@@ -336,9 +339,9 @@ EVENT   Server::clientWrite(struct kevent& store)
     }
     // index = write(1, buffer, client[store.ident].responseIndex());
     index = write(store.ident, buffer, client[store.ident].responseIndex());
-    if (!throwIfError(errno, index))
-        return (ERROR);  //exit(ERROR)
-    if (index > client[store.ident].responseIndex())
+    // if (!throwIfError(errno, index))
+    //     return (ERROR);  //exit(ERROR)
+    if (index < 0 || index > client[store.ident].responseIndex())
         return (ERROR);
     // cout<<"msg: " <<buffer<<endl;
     // write(writeLogs, buffer, client[store.ident].responseIndex());
