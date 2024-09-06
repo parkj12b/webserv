@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/05 18:10:11 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/05 21:34:38 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,6 +219,11 @@ void    Kq::eventRead(struct kevent& store)
 		switch (event)
 		{
 			case EXPECT:
+                plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+                cgiFd.erase(store.ident);
+                close(cgiFd[store.ident]);
+                close(store.ident);
+                break ;
 			case ING:
                 LOG(cout << "[Server::eventRead] - (ING, EXPECT) FD: " << iter->first << endl;)
 				break ;
@@ -226,7 +231,7 @@ void    Kq::eventRead(struct kevent& store)
                 LOG(cout<<"ERROR CLOSE"<<endl;)
                 LOG(cout << "[Server::eventRead] - (ERROR) FD: " << iter->first << endl;)
                 LOG(std::cout<<"first CGI Error: "<<iter->first<<std::endl);
-                cgiFd.erase(iter->first);
+                cgiFd.erase(store.ident);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 Kq::closeFd.push_back(store.ident);
                 // throwIfError(errno, close(store.ident));
@@ -237,7 +242,7 @@ void    Kq::eventRead(struct kevent& store)
                 LOG(cout << "[Server::eventRead] - (FINISH) FD: " << iter->first << endl;)
                 LOG(std::cout<<"CGI Finish: "<<iter->first<<std::endl);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
-				cgiFd.erase(iter->first);
+				cgiFd.erase(store.ident);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 Kq::closeFd.push_back(store.ident);
                 // throwIfError(errno, close(store.ident));
@@ -365,7 +370,7 @@ void    Kq::mainLoop()
     cout << "count: " << count << endl;
     for (int i = 0; i < count; i++)
     {
-        cout << "Kq errno: " << errno << endl;
+        // cout << "Kq errno: " << errno << endl;
         if (server.find(static_cast<int>(store[i].ident)) != server.end())
         {
             cout << "server: " << store[i].ident << endl;

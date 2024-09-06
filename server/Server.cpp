@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/06 15:01:41 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/06 20:59:20 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,10 @@ EVENT   Server::cgiGet(struct kevent& store)
 	int         readSize;
 
     if (store.flags & EV_ERROR)
-        return (ERROR);
+    {
+        cout << "cgiGet errno: " << store.data << endl;
+        return (EXPECT);
+    }
     cerr << "cgiGet" << endl;
     if (cgiContentLength.find(store.ident) == cgiContentLength.end())
     {
@@ -130,23 +133,14 @@ EVENT   Server::cgiGet(struct kevent& store)
         cgiContentLength[store.ident] = 0;
         cgiContent[store.ident].clear();
     }
-    if (store.flags & EV_ERROR)
-    {
-        cout << "cgiGet errno: " << errno << endl;
-        return (ERROR);
-    }
     readSize = read(store.ident, buf, BUFFER_SIZE);
     // throwIfError(errno, readSize);  //logic 맞는지 체크하기
     if (readSize < 0)
-    {
-        cout << "ERROR readSize: " << readSize << endl;
-        return (ERROR);
-    }
+        return (ING);
     buf[readSize] = '\0';
     cgiContent[store.ident].append(buf, readSize);
     cgiContentLength[store.ident] += readSize;
     cout << "store.data: " << store.data << " readSize: " << readSize << endl;
-    cout << "cgiGet errno: " << errno << endl;
     if (store.data - readSize <= 0)
     {
         cout << "write message setting start..." << endl;
@@ -206,7 +200,7 @@ EVENT   Server::cgiRead(struct kevent& store)
     LOG(cout<<"store.data: "<< store.data<<endl);
     cout << "pidPipe: " << Kq::pidPipe[store.ident] << endl;
     cout << "store.data: " << store.data << " readSize: " << readSize << endl;
-	if (readSize <= 0)
+	if (readSize == 0)
 	{
         size_t  status = 0;
         int     waitStatus = 0;

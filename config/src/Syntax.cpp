@@ -6,11 +6,13 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 19:13:09 by minsepar          #+#    #+#             */
-/*   Updated: 2024/08/10 15:20:27 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/06 20:31:12 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Syntax.hpp"
+
+Syntax::Syntax() {}
 
 Syntax::Syntax(vector<int> t, int r) : tag(t), required(r) {}
 
