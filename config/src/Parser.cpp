@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 18:48:59 by minsepar          #+#    #+#             */
-/*   Updated: 2024/09/06 20:55:01 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/06 21:01:03 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void Parser::match(int t)
 
 void Parser::error(string s)
 {
-    throw runtime_error("near line " + to_string(_lex->line) + ": " + s + ": " + _lex->getFileName());
+    throw runtime_error("near line " + toString(_lex->line) + ": " + s + ": " + _lex->getFileName());
 }
 
 void Parser::program() {
