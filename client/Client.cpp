@@ -186,6 +186,11 @@ int Client::getRequestStatus() const
     return (request.status);
 }
 
+int Client::getResponseStatus() const
+{
+    return (response.getRequestStatus());
+}
+
 void    Client::setConnection(bool ycdi)
 {
     this->connection = ycdi;

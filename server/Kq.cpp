@@ -48,10 +48,18 @@ std::map<pid_t, int>    pidPipeInit()
     return (m);
 }
 
-std::vector<pid_t>  Kq::processor = processorInit();
-std::vector<struct kevent> Kq::fdList = fdListInit();
-std::map<int, int>  Kq::cgiFd = cgiFdInit();
-std::map<pid_t, int>    Kq::pidPipe = pidPipeInit();
+std::vector<int>  closeFdInit()
+{
+    std::vector<int>  v;
+
+    return (v);
+}
+
+std::vector<pid_t>          Kq::processor = processorInit();
+std::vector<struct kevent>  Kq::fdList = fdListInit();
+std::map<int, int>          Kq::cgiFd = cgiFdInit();
+std::map<pid_t, int>        Kq::pidPipe = pidPipeInit();
+std::vector<int>            Kq::closeFd = closeFdInit();
 
 Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
 {
