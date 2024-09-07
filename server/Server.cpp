@@ -214,14 +214,9 @@ EVENT   Server::cgiRead(struct kevent& store)
         {
             status = WEXITSTATUS(waitStatus);
             if (status != 0)
-            {
                 status = 600;
-            }
             LOG(std::cout<<"status: "<< status << std::endl);
         }
-        
-        if (readSize < 0)
-            status = 600;
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
         // LOG(cout<<"status: "<<status<<endl);
@@ -326,7 +321,7 @@ EVENT   Server::clientWrite(struct kevent& store)
         cout <<"openCheck error: "<< openCheck<<endl;
         // return (ERROR);
     }
-    cout << "buffer:" << buffer << endl;
+    cout << "buffer: " << buffer << endl;
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     // if (!throwIfError(errno, index))
     //     return (ERROR);  //exit(ERROR)
