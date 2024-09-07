@@ -144,7 +144,7 @@ bool	CgiProcessor::isValidUploadPath()
 		return (false);
 	}
 	string uploadPath = locationConfig->getFastcgiParam()["UPLOAD_PATH"];
-	cout << "[isValidUploadPath() Function] - uploadPath: " << uploadPath << endl;
+	LOG(cout << "[isValidUploadPath() Function] - uploadPath: " << uploadPath << endl;)
 	if (!uploadPath.compare("") || !isDirectory(uploadPath.c_str()))
 	{
 		request.status = 404;

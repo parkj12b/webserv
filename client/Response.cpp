@@ -644,7 +644,10 @@ void    Response::makeError()
         fd = open(errorPath.c_str(), O_RDONLY);
     // throwIfError(errno, fd);   //고민
     if (errorPath != "" && fd >= 0)
+    {
+        request.url = errorPath;
         makeContent(fd);
+    }
     else
     {
         CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
@@ -726,7 +729,7 @@ void    Response::makeContent(int fd)
         return ;
     }
     makeHeader("content-type", contentType);
-    if (statReturn == 0)
+    if (fileStat.st_size == 0)
     {
         request.status = 200;
         makeHeader("content-length", "0");
@@ -819,7 +822,7 @@ void    Response::makeGet()
         if (fd < 0)
         {
             request.status = 404;
-            cout<<"fd error"<<endl;
+            LOG(cout << "fd error" << endl;)
             // start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
             // while (!cgiProcessor.getFin())
             // 	cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);

@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:30:28 by minsepar          #+#    #+#             */
-/*   Updated: 2024/09/07 14:33:21 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/07 15:53:38 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,11 +145,12 @@ void    Validator::checkPort(ServerConfigData *serverData, ServerConfig *serverC
         _port.push_back(port);
         if ((*v)[i].size() > 1) {
             string str = (dynamic_cast<Word *>((*v)[i][1][0]))->lexeme;
-            if (_httpServer->getDefaultServer(port) != NULL) {
-                throw ValidatorException("default_server directive must be set only once");
-            }
             if (str == "default_server") {
                 _httpServer->setDefaultServer(port, serverData);
+                return ;
+            }
+            if (_httpServer->getDefaultServer(port) != NULL) {
+                throw ValidatorException("default_server directive must be set only once");
             }
         }
     }
