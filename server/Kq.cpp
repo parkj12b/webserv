@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/05 21:34:38 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/07 13:46:17 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
         {
             if (errno == EADDRINUSE)  //port 번호가 같다면....
             {
-                cout<<"port error"<<endl;
+                LOG(cout<<"port error"<<endl;)
                 std::exit(1);
             }
         }
@@ -186,7 +186,7 @@ void    Kq::eventRead(struct kevent& store)
     EVENT   event;
 	map<int, int>::iterator iter = cgiFd.begin();
 
-    cerr << "eventRead" << endl;
+    LOG(cerr << "eventRead" << endl;)
     if (store.ident == 0)
         return ;
 	//vector에 담기 혹은 다른 방안 생각하기 serverFd가 map일 텐데 이거를 pipe일 경우에 value값을 1로
@@ -199,15 +199,15 @@ void    Kq::eventRead(struct kevent& store)
 	if (iter != cgiFd.end())
 	{
         // LOG(std::cout<<"cgi here\n");
-        std::cout<<"READ EVENT CGI: "<<store.ident<<endl;
+        LOG(std::cout<<"READ EVENT CGI: "<<store.ident<<endl;)
 		serverFd = findServer[cgiFd[store.ident]]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
         {
-            cerr<<"No enroll cgi: "<<store.ident << endl;
+            LOG(cerr<<"No enroll cgi: "<<store.ident << endl;)
             LOG(std::cout<<"No enroll cgi: "<<store.ident << std::endl);
             cgiFd.erase(iter->first);
             plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-            cout << "ERRONO: " << errno << endl;
+            LOG(cout << "ERRONO: " << errno << endl;)
             Kq::closeFd.push_back(store.ident);
             // throwIfError(errno, close(store.ident));
 			return ;
@@ -344,7 +344,7 @@ void    Kq::mainLoop()
     int                 status;
 
     //waitpid(complete) 복사 생성자를 없앰 다만 erase를 진행할 때의 오히려 비용이 조금 더 들 수도 있을 수도 있다. 
-    cout << "Kq::processor size: " << Kq::processor.size() << endl;
+    LOG(cout << "Kq::processor size: " << Kq::processor.size() << endl;)
     for (std::vector<pid_t>::iterator it = Kq::processor.begin(); it != Kq::processor.end();)
     {
         pid_t pid = waitpid(*it, &status, WNOHANG);
@@ -354,29 +354,29 @@ void    Kq::mainLoop()
             it = Kq::processor.erase(it);
         else
         {
-            cout << "pid: " << *it << endl;
+            LOG(cout << "pid: " << *it << endl;)
             it = Kq::processor.erase(it);
         }
     }
     // Kq::processor = notFin;
     //changed EVENTCNT to connectionCnt
-    cout << "connectionCnt: " << connectionCnt << endl;
+    LOG(cout << "connectionCnt: " << connectionCnt << endl;)
     if ((count = kevent(kq, &fdList[0], fdList.size(), store, connectionCnt, NULL)) <= 0)
     {
-        cout << "ERROR or kevent Zero" << endl;
+        LOG(cout << "ERROR or kevent Zero" << endl;)
         return ;
     }
     fdList.clear();
-    cout << "count: " << count << endl;
+    LOG(cout << "count: " << count << endl;)
     for (int i = 0; i < count; i++)
     {
         // cout << "Kq errno: " << errno << endl;
         if (server.find(static_cast<int>(store[i].ident)) != server.end())
         {
-            cout << "server: " << store[i].ident << endl;
+            LOG(cout << "server: " << store[i].ident << endl;)
             if (store[i].flags == EV_ERROR)
             {
-                cerr << "server EV_ERROR" << endl;
+                LOG(cerr << "server EV_ERROR" << endl;)
                 serverError(store[i]);  //server에 연결된 모든 client 종료
             }
             else if (store[i].filter == EVFILT_READ) //read event(complete)
@@ -384,28 +384,28 @@ void    Kq::mainLoop()
         }
         else
         {
-            cout << "client: " << store[i].ident << endl;
+            LOG(cout << "client: " << store[i].ident << endl;)
             LOG(std::cout<<"store[i].ident: "<<store[i].ident<<std::endl);
             if (store[i].flags & EV_ERROR) // 오류 플래그 확인
             {
-                std::cerr << "Event error: " << strerror(store[i].data) << std::endl;
-                cerr << "store[i].flags: " << store[i].flags << endl;
+                LOG(std::cerr << "Event error: " << strerror(store[i].data) << std::endl;)
+                LOG(cerr << "store[i].flags: " << store[i].flags << endl;)
             }
             if (store[i].filter == EVFILT_READ)
             {
-                cerr << "read" << endl;
+                LOG(cerr << "read" << endl;)
                 LOG(std::cout<<"read"<<std::endl);
                 eventRead(store[i]);
             }
             else if (store[i].filter == EVFILT_WRITE)
             {
-                cerr << "write" << endl;
+                LOG(cerr << "write" << endl;)
                 LOG(std::cout<<"write"<<std::endl);
                 eventWrite(store[i]);
             }
             else if (store[i].filter == EVFILT_TIMER)
             {
-                cerr << "timer" << endl;
+                LOG(cerr << "timer" << endl;)
                 LOG(std::cout<<"timer"<<std::endl);
                 eventTimer(store[i]);
             }

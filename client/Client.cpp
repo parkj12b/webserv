@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/05 16:19:17 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/07 13:26:11 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,15 +224,15 @@ void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content, siz
 {
 	size_t  pos;
 
-    std::cout<<"cgiContentLength: "<<cgiContentLength<<std::endl;
+    LOG(std::cout<<"cgiContentLength: "<<cgiContentLength<<std::endl;)
     pos = response.setCgiContent(content, status);
     if (status >= 400)
         return ;
-    std::cout<<"cgi pos: "<<pos<<std::endl;
+    LOG(std::cout<<"cgi pos: "<<pos<<std::endl;)
     response.setCgiContentLength(cgiContentLength - pos);
     responseAmount = response.getStartHeaderLength() + cgiContentLength - pos;
     index = 0;
-    std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl<<endl;
+    LOG(std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl<<endl;)
     msg = response.getEntity();
     LOG(std::cout<<"msg: "<<msg<<std::endl);
 }

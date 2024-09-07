@@ -230,7 +230,7 @@ void    Response::makeFilePath(string& str)
                 str = temp + "/";
             else
             {
-                cout << "403 2\n";
+                LOG(cout << "403 2\n";)
                 request.status = 403;
             }
             return ;
@@ -440,7 +440,7 @@ void        Response::setCgiGetContent(string &content_)
 
 void	    Response::setCgiGetHeader(size_t contentLength_)
 {
-    cout << "setCgiGetHeader" << endl << endl;
+    LOG(cout << "setCgiGetHeader" << endl << endl;)
     makeHeader("content-length", toString(contentLength_));
 }
 
@@ -479,7 +479,7 @@ void	Response::setCgiContentLength(size_t contentLength_)
     contentLength = contentLength_;
     LOG(cout<<"here    here "<< contentLength_<<endl;)
     makeHeader("content-length", toString(contentLength));
-    cout << "setCgiContentLength" << endl << endl;
+    LOG(cout << "setCgiContentLength" << endl << endl;)
     makeEntity();
     // LOG(std::cout<<"header: \n\n"<<header);
     // LOG(std::cout<<"================"<<std::endl);
@@ -722,7 +722,7 @@ void    Response::makeContent(int fd)
     cgiFlag = true;
     Kq::cgiFd[fd] = request.clientFd;
     Kq::pidPipe[fd] = -1;
-    cout << "cgiFd[fd]: " << request.clientFd << endl;
+    LOG(cout << "cgiFd[fd]: " << request.clientFd << endl;)
     // ssize_t readSize;
     // char    buffer[4096];
     // ssize_t count = 0;
@@ -762,7 +762,7 @@ void    Response::makeGet()
     int fd;
 
     LOG(std::cout<<"Method: GET"<<std::endl);
-    cout << "cgiFlag: " <<cgiFlag<<endl;
+    LOG(cout << "cgiFlag: " <<cgiFlag<<endl;)
     LOG(std::cout<<request.url.c_str()<<std::endl);
     CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
 
@@ -813,7 +813,7 @@ void    Response::makeGet()
             makeError();
 			return ;
 		}
-        cout << "request.url: " << request.url << " fd: " << fd << endl;
+        LOG(cout << "request.url: " << request.url << " fd: " << fd << endl;)
 		makeContent(fd);
 	}
 	request.status = 200;
@@ -858,7 +858,7 @@ void    Response::makeDelete()
         chdir(getDir(request.url).c_str()); 
         if (!cgiProcessor.isValidUploadPath())
         {
-            cout << "Upload Path Error" << endl;
+            LOG(cout << "Upload Path Error" << endl;)
             makeError();
             return ;
         }
@@ -879,7 +879,7 @@ void    Response::makeDelete()
 
 void    Response::responseMake()
 {
-    cout << "cgiFlag: " <<cgiFlag<<endl;
+    LOG(cout << "cgiFlag: " <<cgiFlag<<endl;)
     if (request.status > 0 || init())
     {
         makeError();

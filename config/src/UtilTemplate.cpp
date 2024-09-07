@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 15:26:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/09/05 16:31:09 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/07 13:27:30 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,7 +213,7 @@ int throwIfError(int status, int error)
 {
     if (error >= 0)
         return (1);
-    cout << "errno: " << errno << endl;
+    LOG(cout << "errno: " << errno << endl;)
     if (status != 0)
         return (0);
     return (1);
