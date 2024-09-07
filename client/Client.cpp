@@ -413,9 +413,9 @@ int Client::setContent()
     // LOG(std::cout<<"msg: "<<msg<<endl);
     if (contentLine.makeContentLine(msg, msgSize, request.status, fd) < 0)
         return (1);
+    request.contentFileName = contentLine.getFileName();
     if (contentLine.getCompletion())
     {
-        request.contentFileName = contentLine.getFileName();
         if (headerLine.getTe() == NOT)
         {
             if (!msg.empty())

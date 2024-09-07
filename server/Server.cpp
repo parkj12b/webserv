@@ -319,7 +319,7 @@ EVENT   Server::clientWrite(struct kevent& store)
         LOG(cout <<"openCheck error: "<< openCheck<<endl;)
         // return (ERROR);
     }
-    LOG(cout << "buffer: " << buffer << endl;)
+    cout << "buffer: " << buffer << endl;
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     // if (!throwIfError(errno, index))
     //     return (ERROR);  //exit(ERROR)
