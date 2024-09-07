@@ -309,6 +309,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 		}
 		Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 		Kq::cgiFd[pipefd[0]] = request.clientFd;
+		Kq::cgiFdToClient[request.clientFd] = pipefd[0];
 		Kq::pidPipe[pipefd[0]] = pid;
 	}
 }

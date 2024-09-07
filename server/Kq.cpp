@@ -6,12 +6,13 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/07 17:33:42 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/07 20:59:46 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Kq.hpp"
 #include "UtilTemplate.hpp" 
+#include <signal.h>
 
 using namespace std;
 
@@ -53,11 +54,19 @@ std::vector<int>  closeFdInit()
     return (v);
 }
 
+std::map<int, int>  cgiFdToClientInit()
+{
+    std::map<int, int>  m;
+
+    return (m);
+}
+
 std::vector<pid_t>          Kq::processor = processorInit();
 std::vector<struct kevent>  Kq::fdList = fdListInit();
 std::map<int, int>          Kq::cgiFd = cgiFdInit();
 std::map<pid_t, int>        Kq::pidPipe = pidPipeInit();
 std::vector<int>            Kq::closeFd = closeFdInit();
+std::map<int, int>          Kq::cgiFdToClient = cgiFdToClientInit();
 
 Kq::Kq(string pathEnv_) : pathEnv(pathEnv_)
 {
@@ -219,8 +228,8 @@ void    Kq::eventRead(struct kevent& store)
 			case EXPECT:
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 cgiFd.erase(store.ident);
-                close(cgiFd[store.ident]);
-                close(store.ident);
+                Kq::closeFd.push_back(cgiFd[store.ident]);
+                Kq::closeFd.push_back(store.ident);
                 break ;
 			case ING:
                 LOG(cout << "[Server::eventRead] - (ING, EXPECT) FD: " << iter->first << endl;)
@@ -331,6 +340,15 @@ void    Kq::eventTimer(struct kevent& store)
             break ;
         case ERROR:
         case FINISH:
+            cout << "cgiFdToClient: " << cgiFdToClient[store.ident] << endl;
+            if (cgiFdToClient[store.ident] != 0)
+            {
+                cout << "kill" << endl;
+                server[serverFd].getClient()[store.ident].getResponse().makeError();
+                kill(pidPipe[cgiFdToClient[store.ident]], SIGKILL);
+                Kq::processor.push_back(cgiFdToClient[store.ident]);
+                break ;
+            }
             clientFin(store);
             break ;
     }
@@ -351,7 +369,10 @@ void    Kq::mainLoop()
         if (pid == 0)
             it++;
         else if (pid > 0)
+        {
             it = Kq::processor.erase(it);
+            
+        }
         else
         {
             LOG(cout << "pid: " << *it << endl;)

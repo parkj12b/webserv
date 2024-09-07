@@ -1,0 +1,2014 @@
+========parser========
+lexeme: events
+tag: 260
+in context
+main
+tag: 123
+in headDirective
+lexeme: worker_connections
+tag: 259
+tag: 258
+tag: 59
+tag: 125
+lexeme: http
+tag: 260
+in context
+main
+tag: 123
+in headDirective
+lexeme: keepalive_timeout
+tag: 259
+keepalive_timeout
+lexeme: 10s
+tag: 264
+tag: 59
+lexeme: client_max_body_size
+tag: 259
+client_max_body_size
+lexeme: 1G
+tag: 263
+tag: 59
+lexeme: server
+tag: 260
+in context
+http
+in server
+tag: 123
+in headDirective
+lexeme: keepalive_timeout
+tag: 259
+keepalive_timeout
+lexeme: 10s
+tag: 264
+tag: 59
+lexeme: listen
+tag: 259
+tag: 258
+lexeme: default_server
+tag: 256
+tag: 59
+lexeme: server_name
+tag: 259
+lexeme: localhost
+tag: 256
+tag: 59
+lexeme: location
+tag: 260
+in context
+server
+lexeme: /
+tag: 256
+in headDirective
+tag: 123
+lexeme: autoindex
+tag: 259
+lexeme: on
+tag: 256
+tag: 59
+lexeme: limit_except
+tag: 260
+in context
+location
+lexeme: GET
+tag: 265
+in headDirective
+lexeme: POST
+tag: 265
+tag: 123
+tag: 125
+lexeme: keepalive_timeout
+tag: 259
+limit_except: 0x7ffba340ce80
+keepalive_timeout
+lexeme: 10s
+tag: 264
+tag: 258
+tag: 59
+lexeme: root
+tag: 259
+lexeme: /Users/minsepar/webserv/resource/html
+tag: 256
+tag: 59
+lexeme: index
+tag: 259
+lexeme: index.html
+tag: 256
+tag: 59
+tag: 125
+lexeme: location
+tag: 260
+location: 0x7ffba340ce80
+0x7ffba3409580 : 0x7ffba340ce80
+in context
+server
+lexeme: /upload/
+tag: 256
+in headDirective
+tag: 123
+lexeme: root
+tag: 259
+lexeme: /Users/minsepar/webserv/cgi-bin
+tag: 256
+tag: 59
+lexeme: index
+tag: 259
+lexeme: upload.py
+tag: 256
+tag: 59
+lexeme: fastcgi_param
+tag: 259
+lexeme: UPLOAD_PATH
+tag: 256
+lexeme: ../../resource/uploads/
+tag: 256
+tag: 59
+lexeme: limit_except
+tag: 260
+in context
+location
+lexeme: POST
+tag: 265
+in headDirective
+tag: 123
+tag: 125
+tag: 125
+limit_except: 0x7ffba340d990
+lexeme: location
+tag: 260
+location: 0x7ffba340d990
+0x7ffba3409580 : 0x7ffba340d990
+in context
+server
+lexeme: /uploads/
+tag: 256
+in headDirective
+tag: 123
+lexeme: root
+tag: 259
+lexeme: /Users/minsepar/webserv/resource
+tag: 256
+tag: 59
+lexeme: autoindex
+tag: 259
+lexeme: on
+tag: 256
+tag: 59
+lexeme: limit_except
+tag: 260
+in context
+location
+lexeme: GET
+tag: 265
+in headDirective
+tag: 123
+tag: 125
+tag: 125
+limit_except: 0x7ffba340e240
+lexeme: location
+tag: 260
+location: 0x7ffba340e240
+0x7ffba3409580 : 0x7ffba340e240
+in context
+server
+lexeme: /delete/
+tag: 256
+in headDirective
+tag: 123
+lexeme: root
+tag: 259
+lexeme: /Users/minsepar/webserv/cgi-bin
+tag: 256
+tag: 59
+lexeme: index
+tag: 259
+lexeme: delete.py
+tag: 256
+tag: 59
+lexeme: fastcgi_param
+tag: 259
+lexeme: UPLOAD_PATH
+tag: 256
+lexeme: ../../resource/uploads/
+tag: 256
+tag: 59
+lexeme: limit_except
+tag: 260
+in context
+location
+lexeme: DELETE
+tag: 265
+in headDirective
+tag: 123
+tag: 125
+tag: 125
+limit_except: 0x7ffba340e7d0
+lexeme: location
+tag: 260
+location: 0x7ffba340e7d0
+0x7ffba3409580 : 0x7ffba340e7d0
+in context
+server
+lexeme: /cgi-bin/
+tag: 256
+in headDirective
+tag: 123
+lexeme: root
+tag: 259
+lexeme: /Users/minsepar/webserv
+tag: 256
+tag: 59
+lexeme: autoindex
+tag: 259
+lexeme: on
+tag: 256
+tag: 59
+lexeme: limit_except
+tag: 260
+in context
+location
+lexeme: GET
+tag: 265
+in headDirective
+lexeme: DELETE
+tag: 265
+lexeme: POST
+tag: 265
+tag: 123
+tag: 125
+tag: 125
+limit_except: 0x7ffba340ee30
+lexeme: location
+tag: 260
+location: 0x7ffba340ee30
+0x7ffba3409580 : 0x7ffba340ee30
+in context
+server
+lexeme: /new-page/
+tag: 256
+in headDirective
+tag: 123
+lexeme: return
+tag: 259
+lexeme: 301
+tag: 262
+lexeme: http://www.youtube.com
+tag: 256
+tag: 59
+tag: 125
+lexeme: location
+tag: 260
+location: 0x7ffba340f440
+0x7ffba3409580 : 0x7ffba340f440
+in context
+server
+lexeme: /custom_error_page/
+tag: 256
+in headDirective
+tag: 123
+lexeme: error_page
+tag: 259
+lexeme: 404
+tag: 262
+lexeme: ./resource/html/error/404.html
+tag: 256
+tag: 59
+tag: 125
+lexeme: location
+tag: 260
+location: 0x7ffba340f4e0
+0x7ffba3409580 : 0x7ffba340f4e0
+in context
+server
+lexeme: /new-page1/
+tag: 256
+in headDirective
+tag: 123
+lexeme: return
+tag: 259
+lexeme: 301
+tag: 262
+lexeme: /
+tag: 256
+tag: 59
+tag: 125
+tag: 125
+location: 0x7ffba340faf0
+0x7ffba3409580 : 0x7ffba340faf0
+lexeme: server
+tag: 260
+in context
+http
+in server
+tag: 123
+in headDirective
+lexeme: server_name
+tag: 259
+lexeme: dimension.com
+tag: 256
+tag: 59
+lexeme: listen
+tag: 259
+tag: 258
+tag: 59
+lexeme: location
+tag: 260
+in context
+server
+lexeme: /
+tag: 256
+in headDirective
+tag: 123
+lexeme: index
+tag: 259
+lexeme: index.html
+tag: 256
+tag: 59
+lexeme: root
+tag: 259
+lexeme: /Users/minsepar/webserv/resource/html5up-dimension
+tag: 256
+tag: 59
+lexeme: limit_except
+tag: 260
+in context
+location
+lexeme: GET
+tag: 265
+in headDirective
+lexeme: POST
+tag: 265
+tag: 123
+tag: 125
+tag: 125
+limit_except: 0x7ffba340fe50
+tag: 125
+location: 0x7ffba340fe50
+0x7ffba340f200 : 0x7ffba340fe50
+lexeme: server
+tag: 260
+in context
+http
+in server
+tag: 123
+in headDirective
+lexeme: server_name
+tag: 259
+lexeme: massively.com
+tag: 256
+tag: 59
+lexeme: listen
+tag: 259
+tag: 258
+tag: 59
+lexeme: location
+tag: 260
+in context
+server
+lexeme: /
+tag: 256
+in headDirective
+tag: 123
+lexeme: index
+tag: 259
+lexeme: index.html
+tag: 256
+tag: 59
+lexeme: root
+tag: 259
+lexeme: /Users/minsepar/webserv/resource/html5up-massively
+tag: 256
+tag: 59
+lexeme: limit_except
+tag: 260
+in context
+location
+lexeme: GET
+tag: 265
+in headDirective
+lexeme: POST
+tag: 265
+tag: 123
+tag: 125
+tag: 125
+limit_except: 0x7ffba34106f0
+tag: 125
+location: 0x7ffba34106f0
+0x7ffba340fee0 : 0x7ffba34106f0
+lexeme: server
+tag: 260
+in context
+http
+in server
+tag: 123
+in headDirective
+lexeme: listen
+tag: 259
+tag: 258
+tag: 59
+lexeme: server_name
+tag: 259
+lexeme: abc
+tag: 256
+tag: 59
+tag: 125
+tag: 125
+tag: -1
+tag: -1
+num server: 4
+server port open.
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+server: 6
+8 client close
+New Client FD : 8
+plus client: 8
+Kq::processor size: 0
+connectionCnt: 1024
+count: 2
+server: 6
+9 client close
+New Client FD : 9
+plus client: 9
+client: 8
+store[i].ident: 8
+read
+READ EVENT CLIENT 8
+Client Read 723
+...startline parsing...
+standardTime: 0
+80
+...headerline parsing...
+standardTime: 10
+server name: localhost
+response in location: 0x7ffba3504860
+host: localhost
+url /get.html
+location: /
+url: /get.html
+temp: 
+location: /
+path: /
+location 0x7ffba34112d8
+lower location /
+location here: 0x7ffba34112d8
+checking...
+cgiFlag: 0
+port: 80
+host : localhost
+str before: /get.html
+str: /Users/minsepar/webserv/resource/html//get.html
+requestPath: /Users/minsepar/webserv/resource/html/
+resolved path: /Users/minsepar/webserv/resource/html
+str: /Users/minsepar/webserv/resource/html//get.html
+str: /Users/minsepar/webserv/resource/html//get.html
+Method: GET
+cgiFlag: 0
+/Users/minsepar/webserv/resource/html//get.html
+request.url: /Users/minsepar/webserv/resource/html//get.html fd: 10
+location: /Users/minsepar/webserv/resource/html//get.html
+extension: html
+[Response::makeContent] - fd + content-type: 10 text/html
+cgiFd[fd]: 8
+YES CGI
+time : Sat Sep  7 20:40:39 2024
+=====strat line=====
+fd : 8
+1 1 /get.html
+=====header line=====
+accept: text/html  application/xhtml+xml  application/xml;q=0.9  image/avif  image/webp  image/apng  */*;q=0.8  application/signed-exchange;v=b3;q=0.7  
+accept-encoding: gzip  deflate  br  
+accept-language: en-US  en;q=0.9  ko;q=0.8  
+connection: keep-alive  
+cookie: session_id=FZXC0wg0LvaJ6atJJx2a  
+dnt: 1  
+host: localhost  
+sec-ch-ua: Chromium;v=116  Not)A;Brand;v=24  Google Chrome;v=116  
+sec-ch-ua-mobile: ?0  
+sec-ch-ua-platform: macOS  
+sec-fetch-dest: document  
+sec-fetch-mode: navigate  
+sec-fetch-site: none  
+sec-fetch-user: ?1  
+upgrade-insecure-requests: 1  
+user-agent: Mozilla/5.0  AppleWebKit/537.36  Chrome/116.0.0.0 Safari/537.36  
+
+
+keep-alive: 10000
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+read
+READ EVENT CGI: 10
+clear setting...
+store.data: 553 readSize: 553
+write message setting start...
+setCgiGetHeader
+
+WRITE FD: 8 ERRNO:0
+FINISH CLOSE
+[Server::eventRead] - (FINISH) FD: 10
+CGI Finish: 10
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+read
+READ EVENT CLIENT 10
+No enroll read: 10
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+write
+8 739
+openCheck error: -1
+buffer: HTTP/1.1 200 OK
+date: Sat, 7 Sep 2024 20:40:39 GMT
+server: inghwang/0.0
+connection: keep-alive
+session: Sat, 7 Sep 2024 20:40:39 GMT
+content-type: text/html
+content-length: 553
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGI Script Form</title>
+</head>
+<body>
+    <h1>CGI Script Query Form</h1>
+    <form action="./cgi-bin/script.py" method="GET">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name"><br><br>
+        <label for="age">Age:</label><br>
+        <input type="text" id="age" name="age"><br><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
+
+write index: 739
+reset fd: 8
+keep-alive
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+read
+READ EVENT CLIENT 8
+Client Read 644
+...startline parsing...
+standardTime: 0
+80
+...headerline parsing...
+standardTime: 10
+server name: localhost
+response in location: 0x7ffba3504860
+host: localhost
+url /favicon.ico
+location: /
+url: /favicon.ico
+temp: 
+location: /
+path: /
+location 0x7ffba34112d8
+lower location /
+location here: 0x7ffba34112d8
+checking...
+cgiFlag: 0
+port: 80
+host : localhost
+str before: /favicon.ico
+str: /Users/minsepar/webserv/resource/html//favicon.ico
+requestPath: /Users/minsepar/webserv/resource/html/
+resolved path: /Users/minsepar/webserv/resource/html
+str: /Users/minsepar/webserv/resource/html//favicon.ico
+str: /Users/minsepar/webserv/resource/html//favicon.ico
+Method: GET
+cgiFlag: 0
+/Users/minsepar/webserv/resource/html//favicon.ico
+request.url: /Users/minsepar/webserv/resource/html//favicon.ico fd: 10
+location: /Users/minsepar/webserv/resource/html//favicon.ico
+extension: ico
+[Response::makeContent] - fd + content-type: 10 image/x-icon
+cgiFd[fd]: 8
+YES CGI
+time : Sat Sep  7 20:40:39 2024
+=====strat line=====
+fd : 8
+1 1 /favicon.ico
+=====header line=====
+accept: image/avif  image/webp  image/apng  image/svg+xml  image/*  */*;q=0.8  
+accept-encoding: gzip  deflate  br  
+accept-language: en-US  en;q=0.9  ko;q=0.8  
+connection: keep-alive  
+cookie: session_id=FZXC0wg0LvaJ6atJJx2a  
+dnt: 1  
+host: localhost  
+referer: http://localhost/get.html  
+sec-ch-ua: Chromium;v=116  Not)A;Brand;v=24  Google Chrome;v=116  
+sec-ch-ua-mobile: ?0  
+sec-ch-ua-platform: macOS  
+sec-fetch-dest: image  
+sec-fetch-mode: no-cors  
+sec-fetch-site: same-origin  
+user-agent: Mozilla/5.0  AppleWebKit/537.36  Chrome/116.0.0.0 Safari/537.36  
+
+
+keep-alive: 10000
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+read
+READ EVENT CGI: 10
+clear setting...
+store.data: 251966 readSize: 65536
+[Server::eventRead] - (ING, EXPECT) FD: 10
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+read
+READ EVENT CGI: 10
+store.data: 186430 readSize: 65536
+[Server::eventRead] - (ING, EXPECT) FD: 10
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+read
+READ EVENT CGI: 10
+store.data: 120894 readSize: 65536
+[Server::eventRead] - (ING, EXPECT) FD: 10
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+read
+READ EVENT CGI: 10
+store.data: 55358 readSize: 55358
+write message setting start...
+setCgiGetHeader
+
+WRITE FD: 8 ERRNO:35
+FINISH CLOSE
+[Server::eventRead] - (FINISH) FD: 10
+CGI Finish: 10
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+read
+READ EVENT CLIENT 10
+No enroll read: 10
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+write
+8 252158
+openCheck error: -1
+buffer: HTTP/1.1 200 OK
+date: Sat, 7 Sep 2024 20:40:39 GMT
+server: inghwang/0.0
+connection: keep-alive
+session: Sat, 7 Sep 2024 20:40:39 GMT
+content-type: image/x-icon
+content-length: 251966
+
+
+write index: 252158
+reset fd: 8
+keep-alive
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+read
+READ EVENT CLIENT 8
+Client Read 788
+...startline parsing...
+standardTime: 0
+80
+...headerline parsing...
+standardTime: 10
+server name: localhost
+response in location: 0x7ffba3504860
+host: localhost
+url /cgi-bin/script.py
+location: /cgi-bin/
+url: /script.py
+temp: 
+location: /cgi-bin/
+path: /cgi-bin/
+location 0x7ffba34115c8
+lower location /cgi-bin/
+location here: 0x7ffba34115c8
+checking...
+cgiFlag: 0
+port: 80
+host : localhost
+str before: /cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+requestPath: /Users/minsepar/webserv//cgi-bin
+resolved path: /Users/minsepar/webserv/cgi-bin
+str: /Users/minsepar/webserv//cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+Method: GET
+cgiFlag: 1
+/Users/minsepar/webserv//cgi-bin/script.py
+Url: /Users/minsepar/webserv//cgi-bin/script.py
+cgiExtension: .py
+host size: 1
+upload path: 
+path: /Users/minsepar/webserv//cgi-bin/script.py
+pipe fd: 10, 11
+YES CGI
+time : Sat Sep  7 20:40:40 2024
+=====strat line=====
+fd : 8
+1 1 /cgi-bin/script.py
+age=b
+name=a
+=====header line=====
+accept: text/html  application/xhtml+xml  application/xml;q=0.9  image/avif  image/webp  image/apng  */*;q=0.8  application/signed-exchange;v=b3;q=0.7  
+accept-encoding: gzip  deflate  br  
+accept-language: en-US  en;q=0.9  ko;q=0.8  
+connection: keep-alive  
+cookie: session_id=FZXC0wg0LvaJ6atJJx2a  
+dnt: 1  
+host: localhost  
+referer: http://localhost/get.html  
+sec-ch-ua: Chromium;v=116  Not)A;Brand;v=24  Google Chrome;v=116  
+sec-ch-ua-mobile: ?0  
+sec-ch-ua-platform: macOS  
+sec-fetch-dest: document  
+sec-fetch-mode: navigate  
+sec-fetch-site: same-origin  
+sec-fetch-user: ?1  
+upgrade-insecure-requests: 1  
+user-agent: Mozilla/5.0  AppleWebKit/537.36  Chrome/116.0.0.0 Safari/537.36  
+
+
+keep-alive: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+timer
+timeout: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+timer
+timeout: 10000
+TIMER OUT
+cgiFdToClient: 10
+kill
+bye
+8 client close
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+read
+READ EVENT CGI: 10
+No enroll cgi: 10
+ERRONO: 2
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+read
+READ EVENT CLIENT 10
+No enroll read: 10
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 9
+store[i].ident: 9
+read
+READ EVENT CLIENT 9
+Client Read 788
+...startline parsing...
+standardTime: 0
+80
+...headerline parsing...
+standardTime: 10
+server name: localhost
+response in location: 0x7ffba3504fe0
+host: localhost
+url /cgi-bin/script.py
+location: /cgi-bin/
+url: /script.py
+temp: 
+location: /cgi-bin/
+path: /cgi-bin/
+location 0x7ffba34115c8
+lower location /cgi-bin/
+location here: 0x7ffba34115c8
+checking...
+cgiFlag: 0
+port: 80
+host : localhost
+str before: /cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+requestPath: /Users/minsepar/webserv//cgi-bin
+resolved path: /Users/minsepar/webserv/cgi-bin
+str: /Users/minsepar/webserv//cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+Method: GET
+cgiFlag: 1
+/Users/minsepar/webserv//cgi-bin/script.py
+Url: /Users/minsepar/webserv//cgi-bin/script.py
+cgiExtension: .py
+host size: 1
+upload path: 
+path: /Users/minsepar/webserv//cgi-bin/script.py
+pipe fd: 8, 10
+YES CGI
+time : Sat Sep  7 20:41:00 2024
+=====strat line=====
+fd : 9
+1 1 /cgi-bin/script.py
+age=b
+name=a
+=====header line=====
+accept: text/html  application/xhtml+xml  application/xml;q=0.9  image/avif  image/webp  image/apng  */*;q=0.8  application/signed-exchange;v=b3;q=0.7  
+accept-encoding: gzip  deflate  br  
+accept-language: en-US  en;q=0.9  ko;q=0.8  
+connection: keep-alive  
+cookie: session_id=FZXC0wg0LvaJ6atJJx2a  
+dnt: 1  
+host: localhost  
+referer: http://localhost/get.html  
+sec-ch-ua: Chromium;v=116  Not)A;Brand;v=24  Google Chrome;v=116  
+sec-ch-ua-mobile: ?0  
+sec-ch-ua-platform: macOS  
+sec-fetch-dest: document  
+sec-fetch-mode: navigate  
+sec-fetch-site: same-origin  
+sec-fetch-user: ?1  
+upgrade-insecure-requests: 1  
+user-agent: Mozilla/5.0  AppleWebKit/537.36  Chrome/116.0.0.0 Safari/537.36  
+
+
+keep-alive: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 9
+store[i].ident: 9
+timer
+timeout: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 9
+store[i].ident: 9
+timer
+timeout: 10000
+TIMER OUT
+cgiFdToClient: 8
+kill
+bye
+9 client close
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+read
+READ EVENT CGI: 8
+No enroll cgi: 8
+ERRONO: 2
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+read
+READ EVENT CLIENT 8
+No enroll read: 8
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+server: 6
+8 client close
+New Client FD : 8
+plus client: 8
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+read
+READ EVENT CLIENT 8
+Client Read 788
+...startline parsing...
+standardTime: 0
+80
+...headerline parsing...
+standardTime: 10
+server name: localhost
+response in location: 0x7ffba3415130
+host: localhost
+url /cgi-bin/script.py
+location: /cgi-bin/
+url: /script.py
+temp: 
+location: /cgi-bin/
+path: /cgi-bin/
+location 0x7ffba34115c8
+lower location /cgi-bin/
+location here: 0x7ffba34115c8
+checking...
+cgiFlag: 0
+port: 80
+host : localhost
+str before: /cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+requestPath: /Users/minsepar/webserv//cgi-bin
+resolved path: /Users/minsepar/webserv/cgi-bin
+str: /Users/minsepar/webserv//cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+Method: GET
+cgiFlag: 1
+/Users/minsepar/webserv//cgi-bin/script.py
+Url: /Users/minsepar/webserv//cgi-bin/script.py
+cgiExtension: .py
+host size: 1
+upload path: 
+path: /Users/minsepar/webserv//cgi-bin/script.py
+pipe fd: 9, 10
+YES CGI
+time : Sat Sep  7 20:41:20 2024
+=====strat line=====
+fd : 8
+1 1 /cgi-bin/script.py
+age=b
+name=a
+=====header line=====
+accept: text/html  application/xhtml+xml  application/xml;q=0.9  image/avif  image/webp  image/apng  */*;q=0.8  application/signed-exchange;v=b3;q=0.7  
+accept-encoding: gzip  deflate  br  
+accept-language: en-US  en;q=0.9  ko;q=0.8  
+connection: keep-alive  
+cookie: session_id=FZXC0wg0LvaJ6atJJx2a  
+dnt: 1  
+host: localhost  
+referer: http://localhost/get.html  
+sec-ch-ua: Chromium;v=116  Not)A;Brand;v=24  Google Chrome;v=116  
+sec-ch-ua-mobile: ?0  
+sec-ch-ua-platform: macOS  
+sec-fetch-dest: document  
+sec-fetch-mode: navigate  
+sec-fetch-site: same-origin  
+sec-fetch-user: ?1  
+upgrade-insecure-requests: 1  
+user-agent: Mozilla/5.0  AppleWebKit/537.36  Chrome/116.0.0.0 Safari/537.36  
+
+
+keep-alive: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+timer
+timeout: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+timer
+timeout: 10000
+TIMER OUT
+cgiFdToClient: 9
+kill
+bye
+8 client close
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 9
+store[i].ident: 9
+read
+READ EVENT CGI: 9
+No enroll cgi: 9
+ERRONO: 2
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 9
+store[i].ident: 9
+read
+READ EVENT CLIENT 9
+No enroll read: 9
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+server: 6
+8 client close
+New Client FD : 8
+plus client: 8
+Kq::processor size: 0
+connectionCnt: 1024
+count: 2
+server: 6
+9 client close
+New Client FD : 9
+plus client: 9
+client: 8
+store[i].ident: 8
+read
+READ EVENT CLIENT 8
+Client Read 794
+...startline parsing...
+standardTime: 0
+80
+...headerline parsing...
+standardTime: 10
+server name: localhost
+response in location: 0x7ffba3604b30
+host: localhost
+url /cgi-bin/script.py
+location: /cgi-bin/
+url: /script.py
+temp: 
+location: /cgi-bin/
+path: /cgi-bin/
+location 0x7ffba34115c8
+lower location /cgi-bin/
+location here: 0x7ffba34115c8
+checking...
+cgiFlag: 0
+port: 80
+host : localhost
+str before: /cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+requestPath: /Users/minsepar/webserv//cgi-bin
+resolved path: /Users/minsepar/webserv/cgi-bin
+str: /Users/minsepar/webserv//cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+Method: GET
+cgiFlag: 1
+/Users/minsepar/webserv//cgi-bin/script.py
+Url: /Users/minsepar/webserv//cgi-bin/script.py
+cgiExtension: .py
+host size: 1
+upload path: 
+path: /Users/minsepar/webserv//cgi-bin/script.py
+pipe fd: 10, 11
+YES CGI
+time : Sat Sep  7 20:41:41 2024
+=====strat line=====
+fd : 8
+1 1 /cgi-bin/script.py
+age=b
+name=a
+=====header line=====
+accept: text/html  application/xhtml+xml  application/xml;q=0.9  image/avif  image/webp  image/apng  */*;q=0.8  application/signed-exchange;v=b3;q=0.7  
+accept-encoding: gzip  deflate  br  
+accept-language: en-US  en;q=0.9  ko;q=0.8  
+cache-control: max-age=0  
+connection: keep-alive  
+cookie: session_id=FZXC0wg0LvaJ6atJJx2a  
+dnt: 1  
+host: localhost  
+referer: http://localhost/get.html  
+sec-ch-ua: Chromium;v=116  Not)A;Brand;v=24  Google Chrome;v=116  
+sec-ch-ua-mobile: ?0  
+sec-ch-ua-platform: macOS  
+sec-fetch-dest: document  
+sec-fetch-mode: navigate  
+sec-fetch-site: same-origin  
+upgrade-insecure-requests: 1  
+user-agent: Mozilla/5.0  AppleWebKit/537.36  Chrome/116.0.0.0 Safari/537.36  
+
+
+keep-alive: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+timer
+timeout: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+timer
+timeout: 10000
+TIMER OUT
+cgiFdToClient: 10
+kill
+bye
+8 client close
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+read
+READ EVENT CGI: 10
+No enroll cgi: 10
+ERRONO: 2
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+read
+READ EVENT CLIENT 10
+No enroll read: 10
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 9
+store[i].ident: 9
+read
+READ EVENT CLIENT 9
+Client Read 794
+...startline parsing...
+standardTime: 0
+80
+...headerline parsing...
+standardTime: 10
+server name: localhost
+response in location: 0x7ffba36051c0
+host: localhost
+url /cgi-bin/script.py
+location: /cgi-bin/
+url: /script.py
+temp: 
+location: /cgi-bin/
+path: /cgi-bin/
+location 0x7ffba34115c8
+lower location /cgi-bin/
+location here: 0x7ffba34115c8
+checking...
+cgiFlag: 0
+port: 80
+host : localhost
+str before: /cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+requestPath: /Users/minsepar/webserv//cgi-bin
+resolved path: /Users/minsepar/webserv/cgi-bin
+str: /Users/minsepar/webserv//cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+Method: GET
+cgiFlag: 1
+/Users/minsepar/webserv//cgi-bin/script.py
+Url: /Users/minsepar/webserv//cgi-bin/script.py
+cgiExtension: .py
+host size: 1
+upload path: 
+path: /Users/minsepar/webserv//cgi-bin/script.py
+pipe fd: 8, 10
+YES CGI
+time : Sat Sep  7 20:42:06 2024
+=====strat line=====
+fd : 9
+1 1 /cgi-bin/script.py
+age=b
+name=a
+=====header line=====
+accept: text/html  application/xhtml+xml  application/xml;q=0.9  image/avif  image/webp  image/apng  */*;q=0.8  application/signed-exchange;v=b3;q=0.7  
+accept-encoding: gzip  deflate  br  
+accept-language: en-US  en;q=0.9  ko;q=0.8  
+cache-control: max-age=0  
+connection: keep-alive  
+cookie: session_id=FZXC0wg0LvaJ6atJJx2a  
+dnt: 1  
+host: localhost  
+referer: http://localhost/get.html  
+sec-ch-ua: Chromium;v=116  Not)A;Brand;v=24  Google Chrome;v=116  
+sec-ch-ua-mobile: ?0  
+sec-ch-ua-platform: macOS  
+sec-fetch-dest: document  
+sec-fetch-mode: navigate  
+sec-fetch-site: same-origin  
+upgrade-insecure-requests: 1  
+user-agent: Mozilla/5.0  AppleWebKit/537.36  Chrome/116.0.0.0 Safari/537.36  
+
+
+keep-alive: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+server: 6
+10 client close
+New Client FD : 10
+plus client: 10
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 9
+store[i].ident: 9
+timer
+timeout: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 9
+store[i].ident: 9
+timer
+timeout: 10000
+TIMER OUT
+cgiFdToClient: 8
+kill
+bye
+9 client close
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+read
+READ EVENT CGI: 8
+No enroll cgi: 8
+ERRONO: 2
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+read
+READ EVENT CLIENT 8
+No enroll read: 8
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+read
+READ EVENT CLIENT 10
+Client Read 794
+...startline parsing...
+standardTime: 0
+80
+...headerline parsing...
+standardTime: 10
+server name: localhost
+response in location: 0x7ffb93507380
+host: localhost
+url /cgi-bin/script.py
+location: /cgi-bin/
+url: /script.py
+temp: 
+location: /cgi-bin/
+path: /cgi-bin/
+location 0x7ffba34115c8
+lower location /cgi-bin/
+location here: 0x7ffba34115c8
+checking...
+cgiFlag: 0
+port: 80
+host : localhost
+str before: /cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+requestPath: /Users/minsepar/webserv//cgi-bin
+resolved path: /Users/minsepar/webserv/cgi-bin
+str: /Users/minsepar/webserv//cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+Method: GET
+cgiFlag: 1
+/Users/minsepar/webserv//cgi-bin/script.py
+Url: /Users/minsepar/webserv//cgi-bin/script.py
+cgiExtension: .py
+host size: 1
+upload path: 
+path: /Users/minsepar/webserv//cgi-bin/script.py
+pipe fd: 8, 9
+YES CGI
+time : Sat Sep  7 20:42:26 2024
+=====strat line=====
+fd : 10
+1 1 /cgi-bin/script.py
+age=b
+name=a
+=====header line=====
+accept: text/html  application/xhtml+xml  application/xml;q=0.9  image/avif  image/webp  image/apng  */*;q=0.8  application/signed-exchange;v=b3;q=0.7  
+accept-encoding: gzip  deflate  br  
+accept-language: en-US  en;q=0.9  ko;q=0.8  
+cache-control: max-age=0  
+connection: keep-alive  
+cookie: session_id=FZXC0wg0LvaJ6atJJx2a  
+dnt: 1  
+host: localhost  
+referer: http://localhost/get.html  
+sec-ch-ua: Chromium;v=116  Not)A;Brand;v=24  Google Chrome;v=116  
+sec-ch-ua-mobile: ?0  
+sec-ch-ua-platform: macOS  
+sec-fetch-dest: document  
+sec-fetch-mode: navigate  
+sec-fetch-site: same-origin  
+upgrade-insecure-requests: 1  
+user-agent: Mozilla/5.0  AppleWebKit/537.36  Chrome/116.0.0.0 Safari/537.36  
+
+
+keep-alive: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+timer
+timeout: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+timer
+timeout: 10000
+TIMER OUT
+cgiFdToClient: 8
+kill
+bye
+10 client close
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+read
+READ EVENT CGI: 8
+No enroll cgi: 8
+ERRONO: 2
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+read
+READ EVENT CLIENT 8
+No enroll read: 8
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+server: 6
+8 client close
+New Client FD : 8
+plus client: 8
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+read
+READ EVENT CLIENT 8
+Client Read 794
+...startline parsing...
+standardTime: 0
+80
+...headerline parsing...
+standardTime: 10
+server name: localhost
+response in location: 0x7ffb935042c0
+host: localhost
+url /cgi-bin/script.py
+location: /cgi-bin/
+url: /script.py
+temp: 
+location: /cgi-bin/
+path: /cgi-bin/
+location 0x7ffba34115c8
+lower location /cgi-bin/
+location here: 0x7ffba34115c8
+checking...
+cgiFlag: 0
+port: 80
+host : localhost
+str before: /cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+requestPath: /Users/minsepar/webserv//cgi-bin
+resolved path: /Users/minsepar/webserv/cgi-bin
+str: /Users/minsepar/webserv//cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+Method: GET
+cgiFlag: 1
+/Users/minsepar/webserv//cgi-bin/script.py
+Url: /Users/minsepar/webserv//cgi-bin/script.py
+cgiExtension: .py
+host size: 1
+upload path: 
+path: /Users/minsepar/webserv//cgi-bin/script.py
+pipe fd: 9, 10
+YES CGI
+time : Sat Sep  7 20:42:46 2024
+=====strat line=====
+fd : 8
+1 1 /cgi-bin/script.py
+age=b
+name=a
+=====header line=====
+accept: text/html  application/xhtml+xml  application/xml;q=0.9  image/avif  image/webp  image/apng  */*;q=0.8  application/signed-exchange;v=b3;q=0.7  
+accept-encoding: gzip  deflate  br  
+accept-language: en-US  en;q=0.9  ko;q=0.8  
+cache-control: max-age=0  
+connection: keep-alive  
+cookie: session_id=FZXC0wg0LvaJ6atJJx2a  
+dnt: 1  
+host: localhost  
+referer: http://localhost/get.html  
+sec-ch-ua: Chromium;v=116  Not)A;Brand;v=24  Google Chrome;v=116  
+sec-ch-ua-mobile: ?0  
+sec-ch-ua-platform: macOS  
+sec-fetch-dest: document  
+sec-fetch-mode: navigate  
+sec-fetch-site: same-origin  
+upgrade-insecure-requests: 1  
+user-agent: Mozilla/5.0  AppleWebKit/537.36  Chrome/116.0.0.0 Safari/537.36  
+
+
+keep-alive: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+timer
+timeout: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+timer
+timeout: 10000
+TIMER OUT
+cgiFdToClient: 9
+kill
+bye
+8 client close
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 9
+store[i].ident: 9
+read
+READ EVENT CGI: 9
+No enroll cgi: 9
+ERRONO: 2
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 9
+store[i].ident: 9
+read
+READ EVENT CLIENT 9
+No enroll read: 9
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+server: 6
+8 client close
+New Client FD : 8
+plus client: 8
+Kq::processor size: 0
+connectionCnt: 1024
+count: 2
+server: 6
+9 client close
+New Client FD : 9
+plus client: 9
+client: 8
+store[i].ident: 8
+read
+READ EVENT CLIENT 8
+Client Read 794
+...startline parsing...
+standardTime: 0
+80
+...headerline parsing...
+standardTime: 10
+server name: localhost
+response in location: 0x7ffb93505630
+host: localhost
+url /cgi-bin/script.py
+location: /cgi-bin/
+url: /script.py
+temp: 
+location: /cgi-bin/
+path: /cgi-bin/
+location 0x7ffba34115c8
+lower location /cgi-bin/
+location here: 0x7ffba34115c8
+checking...
+cgiFlag: 0
+port: 80
+host : localhost
+str before: /cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+requestPath: /Users/minsepar/webserv//cgi-bin
+resolved path: /Users/minsepar/webserv/cgi-bin
+str: /Users/minsepar/webserv//cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+Method: GET
+cgiFlag: 1
+/Users/minsepar/webserv//cgi-bin/script.py
+Url: /Users/minsepar/webserv//cgi-bin/script.py
+cgiExtension: .py
+host size: 1
+upload path: 
+path: /Users/minsepar/webserv//cgi-bin/script.py
+pipe fd: 10, 11
+YES CGI
+time : Sat Sep  7 20:43:36 2024
+=====strat line=====
+fd : 8
+1 1 /cgi-bin/script.py
+age=b
+name=a
+=====header line=====
+accept: text/html  application/xhtml+xml  application/xml;q=0.9  image/avif  image/webp  image/apng  */*;q=0.8  application/signed-exchange;v=b3;q=0.7  
+accept-encoding: gzip  deflate  br  
+accept-language: en-US  en;q=0.9  ko;q=0.8  
+cache-control: max-age=0  
+connection: keep-alive  
+cookie: session_id=FZXC0wg0LvaJ6atJJx2a  
+dnt: 1  
+host: localhost  
+referer: http://localhost/get.html  
+sec-ch-ua: Chromium;v=116  Not)A;Brand;v=24  Google Chrome;v=116  
+sec-ch-ua-mobile: ?0  
+sec-ch-ua-platform: macOS  
+sec-fetch-dest: document  
+sec-fetch-mode: navigate  
+sec-fetch-site: same-origin  
+upgrade-insecure-requests: 1  
+user-agent: Mozilla/5.0  AppleWebKit/537.36  Chrome/116.0.0.0 Safari/537.36  
+
+
+keep-alive: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+timer
+timeout: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+timer
+timeout: 10000
+TIMER OUT
+cgiFdToClient: 10
+kill
+bye
+8 client close
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+read
+READ EVENT CGI: 10
+No enroll cgi: 10
+ERRONO: 2
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+read
+READ EVENT CLIENT 10
+No enroll read: 10
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 9
+store[i].ident: 9
+timer
+timeout: 75000
+TIMER OUT
+cgiFdToClient: 8
+kill
+bye
+9 client close
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+server: 6
+8 client close
+New Client FD : 8
+plus client: 8
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+server: 6
+9 client close
+New Client FD : 9
+plus client: 9
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+read
+READ EVENT CLIENT 8
+Client Read 794
+...startline parsing...
+standardTime: 0
+80
+...headerline parsing...
+standardTime: 10
+server name: localhost
+response in location: 0x7ffb93604860
+host: localhost
+url /cgi-bin/script.py
+location: /cgi-bin/
+url: /script.py
+temp: 
+location: /cgi-bin/
+path: /cgi-bin/
+location 0x7ffba34115c8
+lower location /cgi-bin/
+location here: 0x7ffba34115c8
+checking...
+cgiFlag: 0
+port: 80
+host : localhost
+str before: /cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+requestPath: /Users/minsepar/webserv//cgi-bin
+resolved path: /Users/minsepar/webserv/cgi-bin
+str: /Users/minsepar/webserv//cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+Method: GET
+cgiFlag: 1
+/Users/minsepar/webserv//cgi-bin/script.py
+Url: /Users/minsepar/webserv//cgi-bin/script.py
+cgiExtension: .py
+host size: 1
+upload path: 
+path: /Users/minsepar/webserv//cgi-bin/script.py
+pipe fd: 10, 11
+YES CGI
+time : Sat Sep  7 20:44:57 2024
+=====strat line=====
+fd : 8
+1 1 /cgi-bin/script.py
+age=b
+name=a
+=====header line=====
+accept: text/html  application/xhtml+xml  application/xml;q=0.9  image/avif  image/webp  image/apng  */*;q=0.8  application/signed-exchange;v=b3;q=0.7  
+accept-encoding: gzip  deflate  br  
+accept-language: en-US  en;q=0.9  ko;q=0.8  
+cache-control: max-age=0  
+connection: keep-alive  
+cookie: session_id=FZXC0wg0LvaJ6atJJx2a  
+dnt: 1  
+host: localhost  
+referer: http://localhost/get.html  
+sec-ch-ua: Chromium;v=116  Not)A;Brand;v=24  Google Chrome;v=116  
+sec-ch-ua-mobile: ?0  
+sec-ch-ua-platform: macOS  
+sec-fetch-dest: document  
+sec-fetch-mode: navigate  
+sec-fetch-site: same-origin  
+upgrade-insecure-requests: 1  
+user-agent: Mozilla/5.0  AppleWebKit/537.36  Chrome/116.0.0.0 Safari/537.36  
+
+
+keep-alive: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+timer
+timeout: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+timer
+timeout: 10000
+TIMER OUT
+cgiFdToClient: 10
+kill
+bye
+8 client close
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+read
+READ EVENT CGI: 10
+No enroll cgi: 10
+ERRONO: 2
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+read
+READ EVENT CLIENT 10
+No enroll read: 10
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 9
+store[i].ident: 9
+timer
+timeout: 75000
+TIMER OUT
+cgiFdToClient: 8
+kill
+bye
+9 client close
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+server: 6
+8 client close
+New Client FD : 8
+plus client: 8
+Kq::processor size: 0
+connectionCnt: 1024
+count: 2
+server: 6
+9 client close
+New Client FD : 9
+plus client: 9
+client: 8
+store[i].ident: 8
+read
+READ EVENT CLIENT 8
+Client Read 794
+...startline parsing...
+standardTime: 0
+80
+...headerline parsing...
+standardTime: 10
+server name: localhost
+response in location: 0x7ffba3505010
+host: localhost
+url /cgi-bin/script.py
+location: /cgi-bin/
+url: /script.py
+temp: 
+location: /cgi-bin/
+path: /cgi-bin/
+location 0x7ffba34115c8
+lower location /cgi-bin/
+location here: 0x7ffba34115c8
+checking...
+cgiFlag: 0
+port: 80
+host : localhost
+str before: /cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+requestPath: /Users/minsepar/webserv//cgi-bin
+resolved path: /Users/minsepar/webserv/cgi-bin
+str: /Users/minsepar/webserv//cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+Method: GET
+cgiFlag: 1
+/Users/minsepar/webserv//cgi-bin/script.py
+Url: /Users/minsepar/webserv//cgi-bin/script.py
+cgiExtension: .py
+host size: 1
+upload path: 
+path: /Users/minsepar/webserv//cgi-bin/script.py
+pipe fd: 10, 11
+YES CGI
+time : Sat Sep  7 20:50:17 2024
+=====strat line=====
+fd : 8
+1 1 /cgi-bin/script.py
+age=b
+name=a
+=====header line=====
+accept: text/html  application/xhtml+xml  application/xml;q=0.9  image/avif  image/webp  image/apng  */*;q=0.8  application/signed-exchange;v=b3;q=0.7  
+accept-encoding: gzip  deflate  br  
+accept-language: en-US  en;q=0.9  ko;q=0.8  
+cache-control: max-age=0  
+connection: keep-alive  
+cookie: session_id=FZXC0wg0LvaJ6atJJx2a  
+dnt: 1  
+host: localhost  
+referer: http://localhost/get.html  
+sec-ch-ua: Chromium;v=116  Not)A;Brand;v=24  Google Chrome;v=116  
+sec-ch-ua-mobile: ?0  
+sec-ch-ua-platform: macOS  
+sec-fetch-dest: document  
+sec-fetch-mode: navigate  
+sec-fetch-site: same-origin  
+upgrade-insecure-requests: 1  
+user-agent: Mozilla/5.0  AppleWebKit/537.36  Chrome/116.0.0.0 Safari/537.36  
+
+
+keep-alive: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+timer
+timeout: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+timer
+timeout: 10000
+TIMER OUT
+cgiFdToClient: 10
+kill
+bye
+8 client close
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+read
+READ EVENT CGI: 10
+No enroll cgi: 10
+ERRONO: 2
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+read
+READ EVENT CLIENT 10
+No enroll read: 10
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 9
+store[i].ident: 9
+timer
+timeout: 75000
+TIMER OUT
+cgiFdToClient: 8
+kill
+bye
+9 client close
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+server: 6
+8 client close
+New Client FD : 8
+plus client: 8
+Kq::processor size: 0
+connectionCnt: 1024
+count: 2
+server: 6
+9 client close
+New Client FD : 9
+plus client: 9
+client: 8
+store[i].ident: 8
+read
+READ EVENT CLIENT 8
+Client Read 794
+...startline parsing...
+standardTime: 0
+80
+...headerline parsing...
+standardTime: 10
+server name: localhost
+response in location: 0x7ffba3504830
+host: localhost
+url /cgi-bin/script.py
+location: /cgi-bin/
+url: /script.py
+temp: 
+location: /cgi-bin/
+path: /cgi-bin/
+location 0x7ffba34115c8
+lower location /cgi-bin/
+location here: 0x7ffba34115c8
+checking...
+cgiFlag: 0
+port: 80
+host : localhost
+str before: /cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+requestPath: /Users/minsepar/webserv//cgi-bin
+resolved path: /Users/minsepar/webserv/cgi-bin
+str: /Users/minsepar/webserv//cgi-bin/script.py
+str: /Users/minsepar/webserv//cgi-bin/script.py
+Method: GET
+cgiFlag: 1
+/Users/minsepar/webserv//cgi-bin/script.py
+Url: /Users/minsepar/webserv//cgi-bin/script.py
+cgiExtension: .py
+host size: 1
+upload path: 
+path: /Users/minsepar/webserv//cgi-bin/script.py
+pipe fd: 10, 11
+YES CGI
+time : Sat Sep  7 21:00:37 2024
+=====strat line=====
+fd : 8
+1 1 /cgi-bin/script.py
+age=b
+name=a
+=====header line=====
+accept: text/html  application/xhtml+xml  application/xml;q=0.9  image/avif  image/webp  image/apng  */*;q=0.8  application/signed-exchange;v=b3;q=0.7  
+accept-encoding: gzip  deflate  br  
+accept-language: en-US  en;q=0.9  ko;q=0.8  
+cache-control: max-age=0  
+connection: keep-alive  
+cookie: session_id=FZXC0wg0LvaJ6atJJx2a  
+dnt: 1  
+host: localhost  
+referer: http://localhost/get.html  
+sec-ch-ua: Chromium;v=116  Not)A;Brand;v=24  Google Chrome;v=116  
+sec-ch-ua-mobile: ?0  
+sec-ch-ua-platform: macOS  
+sec-fetch-dest: document  
+sec-fetch-mode: navigate  
+sec-fetch-site: same-origin  
+upgrade-insecure-requests: 1  
+user-agent: Mozilla/5.0  AppleWebKit/537.36  Chrome/116.0.0.0 Safari/537.36  
+
+
+keep-alive: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+timer
+timeout: 10000
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 8
+store[i].ident: 8
+timer
+timeout: 10000
+TIMER OUT
+cgiFdToClient: 10
+kill
+bye
+8 client close
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+read
+READ EVENT CGI: 10
+No enroll cgi: 10
+ERRONO: 2
+Kq::processor size: 1
+connectionCnt: 1024
+count: 1
+client: 10
+store[i].ident: 10
+read
+READ EVENT CLIENT 10
+No enroll read: 10
+Kq::processor size: 0
+connectionCnt: 1024
+count: 1
+client: 9
+store[i].ident: 9
+timer
+timeout: 75000
+TIMER OUT
+cgiFdToClient: 8
+kill
+bye
+9 client close
+Kq::processor size: 0
+connectionCnt: 1024

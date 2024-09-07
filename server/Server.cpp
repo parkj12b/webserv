@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/07 17:33:54 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/07 20:58:23 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,7 +203,10 @@ EVENT   Server::cgiRead(struct kevent& store)
         waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
         vector<pid_t>::iterator it = find(Kq::processor.begin(), Kq::processor.end(), Kq::pidPipe[store.ident]);
         if (it != Kq::processor.end())
+        {
             Kq::processor.erase(it);
+            Kq::cgiFdToClient.erase(Kq::cgiFd[store.ident]);
+        }
         LOG(cout << "pidPipe: " << Kq::pidPipe[store.ident] << endl;)
         if (WIFEXITED(waitStatus))
         {
