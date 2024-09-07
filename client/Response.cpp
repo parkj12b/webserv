@@ -701,6 +701,8 @@ void    Response::makeHeader(string key, string value)
 
 void    Response::makeContent(int fd)
 {
+    int         statReturn;
+    struct stat fileStat;
     string  location = request.url;
     size_t  pos = location.find_last_of('.');
 
@@ -717,7 +719,19 @@ void    Response::makeContent(int fd)
     else
         contentType = "application/octet-stream";
     LOG(cout << "[Response::makeContent] - fd + content-type: " << fd << ' ' << contentType << endl;)
+    statReturn = stat(request.url.c_str(), &fileStat);
+    if (throwIfError(errno, statReturn) < 0)  //makeError
+    {
+        makeError();
+        return ;
+    }
     makeHeader("content-type", contentType);
+    if (statReturn == 0)
+    {
+        request.status = 200;
+        makeHeader("content-length", "0");
+        return ;
+    }
     Kq::plusEvent(fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     cgiFlag = true;
     Kq::cgiFd[fd] = request.clientFd;
@@ -749,7 +763,6 @@ void    Response::makeEntity()
     entity = "HTTP/1.1 " + toString(request.status) + statusContent[request.status] + "\r\n";
     if (!header.empty())
         entity += header + "\r\n";
-    LOG(cout << "header: " << header << endl;)
     startHeaderLength = entity.size();
     if (!content.empty())
         entity.append(content);
@@ -801,22 +814,23 @@ void    Response::makeGet()
 	}
 	else
 	{
-		fd = open(request.url.c_str(), O_RDONLY);
+        fd = open(request.url.c_str(), O_RDONLY);
         throwIfError(errno, fd);   //아래에 있다.
-		if (fd < 0)
-		{
-			request.status = 404;
+        if (fd < 0)
+        {
+            request.status = 404;
             cout<<"fd error"<<endl;
-			// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
-			// while (!cgiProcessor.getFin())
-			// 	cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);
+            // start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
+            // while (!cgiProcessor.getFin())
+            // 	cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);
             makeError();
-			return ;
-		}
+            return ;
+        }
         LOG(cout << "request.url: " << request.url << " fd: " << fd << endl;)
-		makeContent(fd);
+        makeContent(fd);
 	}
-	request.status = 200;
+    if (request.status == 0)
+        request.status = 200;
     // start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 }
 
@@ -915,6 +929,8 @@ void    Response::responseMake()
         default:
             break ;
     }
+    if (!cgiFlag)
+        makeEntity();
     return ;
 }
 
