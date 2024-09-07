@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:30:28 by minsepar          #+#    #+#             */
-/*   Updated: 2024/09/01 15:55:45 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/07 14:33:21 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,9 @@ void    Validator::checkWorkerConnections()
         throw ValidatorException("worker_connections directive must be set only once");
     }
     int workerConnection = (dynamic_cast<Num *>((*v)[0][0][0]))->value;
+    if (workerConnection > 1024 || workerConnection <= 0) {
+        throw ValidatorException("invalid worker_connections number");
+    }
     _httpServer->setWorkerConnections(workerConnection);
 }
 
@@ -170,7 +173,7 @@ void    Validator::checkServerKeepaliveTimeout(ServerConfigData *serverData,
     else
     {
         string keepaliveTimeout = (dynamic_cast<Word *>((*v)[0][0][0]))->lexeme;
-        ssize_t keepaliveTimeoutInt = timeToSeconds(keepaliveTimeout);        
+        ssize_t keepaliveTimeoutInt = timeToSeconds(keepaliveTimeout);    
         serverData->setKeepaliveTimeout(keepaliveTimeoutInt);
     }
 
