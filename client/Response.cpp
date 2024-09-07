@@ -718,7 +718,6 @@ void    Response::makeContent(int fd)
         contentType = "application/octet-stream";
     LOG(cout << "[Response::makeContent] - fd + content-type: " << fd << ' ' << contentType << endl;)
     makeHeader("content-type", contentType);
-    if (
     Kq::plusEvent(fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     cgiFlag = true;
     Kq::cgiFd[fd] = request.clientFd;
