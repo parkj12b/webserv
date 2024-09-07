@@ -251,13 +251,15 @@ void    Client::deleteContent(void)
 {
     if (request.method == GET)
         return ;
-    std::ifstream file(request.contentFileName.c_str());
+    // std::ifstream file(request.contentFileName.c_str());
 
-    if (file.is_open())
-    {
-        file.close();
-        unlink(request.contentFileName.c_str());
-    }
+    // if (file.is_open())
+    // {
+    //     cout << "[Client::deleteContent] - " << file.get
+    //     file.close();
+    // }
+    cout << "file name: " << getContentLine().getFileName().c_str() << endl;
+    unlink(getContentLine().getFileName().c_str()); // 잘 지워주세요 To.Ingyu
 }
 
 void	Client::clientIP(struct sockaddr_in  clntAdr)
@@ -416,6 +418,7 @@ int Client::setContent()
     if (contentLine.getCompletion())
     {
         request.contentFileName = contentLine.getFileName();
+        cout  << "[Client::setContent] - request contentFileName: " << contentLine.getFileName() << endl;
         if (headerLine.getTe() == NOT)
         {
             if (!msg.empty())
