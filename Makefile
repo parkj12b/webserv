@@ -56,7 +56,7 @@ BIN_DIR = ./bin
 
 CPP = c++
 
-FLAGS = -std=c++98 -Wall -Wextra -Werror -Ofast -g -DDEBUG
+FLAGS = -std=c++98 -Wall -Wextra -Werror -Ofast -g #-DDEBUG
 
 NAME = webserv
 

@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:33:06 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/06 17:23:10 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/07 16:59:32 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int main(int argc, char **argv, char **envp)
     // atexit(check);
     Parser::initializeDirectiveNum();
     Parser::initializeDirectiveSyntax();
-    cout << "========parser========" << endl;
+    LOG(cout << "========parser========" << endl;)
     Directives::init();
     string path = DEFAULT_CONFIG_PATH;
     if (argc == 2)

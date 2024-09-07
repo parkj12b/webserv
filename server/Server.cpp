@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/07 13:52:06 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/07 17:01:20 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,19 +319,19 @@ EVENT   Server::clientWrite(struct kevent& store)
         LOG(cout <<"openCheck error: "<< openCheck<<endl;)
         // return (ERROR);
     }
-    cout << "buffer: " << buffer << endl;
+    LOG(cout << "buffer: " << buffer << endl;)
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     // if (!throwIfError(errno, index))
     //     return (ERROR);  //exit(ERROR)
     if (index < 0 || index > client[store.ident].responseIndex())
         return (ERROR);
-    // cout<<"msg: " <<buffer<<endl;
+    // LOG(cout<<"msg: " <<buffer<<endl;)
     // write(writeLogs, buffer, client[store.ident].responseIndex());
     // write(1, buffer, client[store.ident].responseIndex());
     LOG(std::cout<<"write index: " <<index<<endl;)
     // if (index > client[store.ident].responseIndex())
     // {
-    //     std::cout<<"ERROR wirte"<<endl;
+    //     LOG(std::cout<<"ERROR wirte"<<endl;)
     //     return (ERROR);
     // }
     client[store.ident].plusIndex(index);
