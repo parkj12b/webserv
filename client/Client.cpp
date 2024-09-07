@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/07 13:26:11 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/07 17:33:23 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 #include "LocationConfigData.hpp"
 #include "HTTPServer.hpp"
 #include "UtilTemplate.hpp"
-
-extern int logs;
 
 LocationConfigData *Client::recurFindLocation(string url,
     LocationConfigData *locationConfigData)
@@ -499,7 +497,6 @@ void    Client::setMessage(const char* msgRequest, int &readSize)
 {
     msgSize += readSize;
     msg.append(msgRequest, readSize);
-    write(logs, msgRequest, readSize);
     if (setStart())  //max size literal
     {
         request.header["host"].push_back(Server::serverConfig->getDefaultServer(port)->getServerName()[0]);

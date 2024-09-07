@@ -13,8 +13,6 @@
 #include "ContentLine.hpp"
 #include "UtilTemplate.hpp" 
 
-extern int logs;
-
 ContentLine::ContentLine() : first(true), completion(false), fd(0), port(0), contentLength(0), maxSize(0)
 {}
 

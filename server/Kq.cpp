@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/07 17:00:31 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/07 17:33:42 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 #include "UtilTemplate.hpp" 
 
 using namespace std;
-
-extern int logs;
 
 Kq::Kq()
 {}

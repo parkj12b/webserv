@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/07 17:01:20 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/07 17:33:54 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,6 @@
 #include "Server.hpp"
 #include "Response.hpp"
 #include "UtilTemplate.hpp"
-
-extern int logs;
-extern int writeLogs;
 
 HTTPServer *Server::serverConfig = NULL;
 
@@ -274,7 +271,6 @@ EVENT Server::clientRead(struct kevent& store)
     }
     LOG(std::cout<<"Client Read " << readSize << std::endl);
     buffer[readSize] = '\0';
-    // write(logs, buffer, readSize);
     client[store.ident].setMessage(buffer, readSize);
     client[store.ident].setConnection(true);
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
@@ -326,7 +322,6 @@ EVENT   Server::clientWrite(struct kevent& store)
     if (index < 0 || index > client[store.ident].responseIndex())
         return (ERROR);
     // LOG(cout<<"msg: " <<buffer<<endl;)
-    // write(writeLogs, buffer, client[store.ident].responseIndex());
     // write(1, buffer, client[store.ident].responseIndex());
     LOG(std::cout<<"write index: " <<index<<endl;)
     // if (index > client[store.ident].responseIndex())
