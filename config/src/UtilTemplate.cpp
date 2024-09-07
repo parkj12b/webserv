@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 15:26:20 by minsepar          #+#    #+#             */
-/*   Updated: 2024/09/07 13:27:30 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/07 14:32:01 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ ssize_t timeToSeconds(string time)
     if (time.find_first_of("s") != string::npos) {
         time = time.substr(0, time.size() - 1);
         timeInt = strtol(time.c_str(), NULL, 10);
-    } else if (time.find_first_of("ms") != string::npos) {
+    } else if (time.find("ms") != string::npos) {
         time = time.substr(0, time.size() - 2);
         timeInt = strtol(time.c_str(), NULL, 10) / 1000;
     } else if (time.find_first_of("m") != string::npos) {
@@ -78,6 +78,8 @@ ssize_t timeToSeconds(string time)
         time = time.substr(0, time.size() - 1);
         timeInt = strtol(time.c_str(), NULL, 10) * 60 * 60 * 24;
     }
+    if (errno == ERANGE)
+        return LONG_MAX;
     return timeInt;
 }
 

@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:30:28 by minsepar          #+#    #+#             */
-/*   Updated: 2024/09/07 14:14:47 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/07 14:33:21 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ void    Validator::checkServerKeepaliveTimeout(ServerConfigData *serverData,
     else
     {
         string keepaliveTimeout = (dynamic_cast<Word *>((*v)[0][0][0]))->lexeme;
-        ssize_t keepaliveTimeoutInt = timeToSeconds(keepaliveTimeout);        
+        ssize_t keepaliveTimeoutInt = timeToSeconds(keepaliveTimeout);    
         serverData->setKeepaliveTimeout(keepaliveTimeoutInt);
     }
 
