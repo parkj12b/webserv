@@ -336,7 +336,7 @@ void    Kq::eventTimer(struct kevent& store)
     serverFd = findServer[store.ident];
     if (serverFd == 0)
         return ;
-    cout << "timer fd: " << store.ident << endl;
+    LOG(cout << "timer fd: " << store.ident << endl);
     event = server[serverFd].clientTimer(store);
     switch (event)
     {
@@ -345,12 +345,12 @@ void    Kq::eventTimer(struct kevent& store)
             break ;
         case ERROR:
         case FINISH:
-            cout << "timeOut Finish" << endl;
+            LOG(cout << "timeOut Finish" << endl);
             // Response&                       response = server[serverFd].getClient()[store.ident].getResponse();
             std::map<int, int>::iterator    itm = cgiFdToClient.find(store.ident);
             if (itm != cgiFdToClient.end())
             {
-                cout << "pidPipe[cgiFdToClient[store.ident]]: " << pidPipe[cgiFdToClient[store.ident]] << endl;
+                LOG(cout << "pidPipe[cgiFdToClient[store.ident]]: " << pidPipe[cgiFdToClient[store.ident]] << endl);
                 kill(pidPipe[cgiFdToClient[store.ident]], SIGKILL);
                 cout << "kill" << endl;
                 plusEvent(cgiFdToClient[store.ident], EVFILT_READ, EV_DELETE, 0, 0, 0);

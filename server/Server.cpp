@@ -368,8 +368,7 @@ EVENT   Server::clientTimer(struct kevent& store)
         return (ING);
     flag = client[store.ident].getConnection();
     client[store.ident].setConnection(false);
-    LOG(cout << "timeout: " << getStandardTime(store.ident) << endl);
-    cout << "timeout: " << getStandardTime(store.ident) * 1000 << endl;
+    LOG(cout << "timeout: " << getStandardTime(store.ident) * 1000<< endl);
     if (flag)
         return (ING);
     LOG(std::cout<<"TIMER OUT"<<std::endl);
