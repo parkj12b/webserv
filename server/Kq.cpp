@@ -212,6 +212,7 @@ void    Kq::eventRead(struct kevent& store)
         {
             LOG(cerr<<"No enroll cgi: "<<store.ident << endl;)
             LOG(std::cout<<"No enroll cgi: "<<store.ident << std::endl);
+            cgiFdToClient.erase(cgiFd[iter->first]);
             cgiFd.erase(iter->first);
             plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
             LOG(cout << "ERRONO: " << errno << endl;)
@@ -227,6 +228,7 @@ void    Kq::eventRead(struct kevent& store)
 		{
 			case EXPECT:
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+                cgiFdToClient.erase(cgiFd[store.ident]);
                 cgiFd.erase(store.ident);
                 Kq::closeFd.push_back(cgiFd[store.ident]);
                 Kq::closeFd.push_back(store.ident);
@@ -238,6 +240,7 @@ void    Kq::eventRead(struct kevent& store)
                 LOG(cout<<"ERROR CLOSE"<<endl;)
                 LOG(cout << "[Server::eventRead] - (ERROR) FD: " << iter->first << endl;)
                 LOG(std::cout<<"first CGI Error: "<<iter->first<<std::endl);
+                cgiFdToClient.erase(cgiFd[store.ident]);
                 cgiFd.erase(store.ident);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 Kq::closeFd.push_back(store.ident);
@@ -249,6 +252,7 @@ void    Kq::eventRead(struct kevent& store)
                 LOG(cout << "[Server::eventRead] - (FINISH) FD: " << iter->first << endl;)
                 LOG(std::cout<<"CGI Finish: "<<iter->first<<std::endl);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
+                cgiFdToClient.erase(cgiFd[store.ident]);
 				cgiFd.erase(store.ident);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 Kq::closeFd.push_back(store.ident);
@@ -281,7 +285,7 @@ void    Kq::eventRead(struct kevent& store)
                     plusEvent(store.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
                 }
 				plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
-				plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, server[serverFd].getStandardTime(store.ident), 0);  //75초
+				plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, server[serverFd].getStandardTime(store.ident) * 1000, 0);  //75초
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 LOG(std::cout<<"keep-alive: "<<server[serverFd].getStandardTime(store.ident)<<endl);
 				break ;
@@ -332,6 +336,7 @@ void    Kq::eventTimer(struct kevent& store)
     serverFd = findServer[store.ident];
     if (serverFd == 0)
         return ;
+    cout << "timer fd: " << store.ident << endl;
     event = server[serverFd].clientTimer(store);
     switch (event)
     {
@@ -340,13 +345,21 @@ void    Kq::eventTimer(struct kevent& store)
             break ;
         case ERROR:
         case FINISH:
-            cout << "cgiFdToClient: " << cgiFdToClient[store.ident] << endl;
-            if (cgiFdToClient[store.ident] != 0)
+            cout << "timeOut Finish" << endl;
+            // Response&                       response = server[serverFd].getClient()[store.ident].getResponse();
+            std::map<int, int>::iterator    itm = cgiFdToClient.find(store.ident);
+            if (itm != cgiFdToClient.end())
             {
-                cout << "kill" << endl;
-                server[serverFd].getClient()[store.ident].getResponse().makeError();
+                cout << "pidPipe[cgiFdToClient[store.ident]]: " << pidPipe[cgiFdToClient[store.ident]] << endl;
                 kill(pidPipe[cgiFdToClient[store.ident]], SIGKILL);
+                cout << "kill" << endl;
+                plusEvent(cgiFdToClient[store.ident], EVFILT_READ, EV_DELETE, 0, 0, 0);
                 Kq::processor.push_back(cgiFdToClient[store.ident]);
+                pidPipe.erase(cgiFdToClient[store.ident]);
+                cgiFd.erase(cgiFdToClient[store.ident]);
+                cgiFdToClient.erase(store.ident);
+                server[serverFd].getClient()[store.ident].getResponse().setRequestStatus(500);
+                server[serverFd].getClient()[store.ident].getResponse().makeError();
                 break ;
             }
             clientFin(store);
@@ -371,7 +384,6 @@ void    Kq::mainLoop()
         else if (pid > 0)
         {
             it = Kq::processor.erase(it);
-            
         }
         else
         {
