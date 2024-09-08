@@ -13,8 +13,6 @@
 #include "ContentLine.hpp"
 #include "UtilTemplate.hpp" 
 
-extern int logs;
-
 ContentLine::ContentLine() : first(true), completion(false), fd(0), port(0), contentLength(0), maxSize(0)
 {}
 
@@ -110,7 +108,7 @@ bool    ContentLine::tempFileMake(int &fd_)
     std::string     fileName_ = CgiProcessor::EXECUTE_PATH + "/.tempContent/";
     size_t          num;
 
-    cout << "content errno: " << errno << endl;
+    LOG(cout << "content errno: " << errno << endl;)
     mkdir(".tempContent", 0777);
     num = fd_;
     while (1)
@@ -130,7 +128,7 @@ bool    ContentLine::tempFileMake(int &fd_)
         return (false);
     LOG(std::cout<<"fileName: "<<fileName<<std::endl);
         // contentLength = 0;
-        cout << "content errno: " << errno << endl;
+        LOG(cout << "content errno: " << errno << endl;)
     return (true);
 }
 
@@ -243,7 +241,7 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
         chunked.append(&str[0], readSize);
         readSize = 0;
         str.clear();
-        cout<<"chunked: "<<chunked<<endl;
+        LOG(cout<<"chunked: "<<chunked<<endl;)
         flag = chunked.find("0\r\n\r\n");
         // flag = str.find("0\r\n");  //talnet 때문에 임시로 대체함
         //에러 발생시 중간에 빠져 나왔을 떄

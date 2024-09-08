@@ -144,7 +144,7 @@ bool	CgiProcessor::isValidUploadPath()
 		return (false);
 	}
 	string uploadPath = locationConfig->getFastcgiParam()["UPLOAD_PATH"];
-	cout << "[isValidUploadPath() Function] - uploadPath: " << uploadPath << endl;
+	LOG(cout << "[isValidUploadPath() Function] - uploadPath: " << uploadPath << endl;)
 	if (!uploadPath.compare("") || !isDirectory(uploadPath.c_str()))
 	{
 		request.status = 404;
@@ -178,7 +178,7 @@ void	CgiProcessor::checkPostContentType(const string path)
 		if (!request.header["content-type"].front().compare("multipart/form-data")
 			&& !isValidUploadPath())
 		{
-			cout << "Upload Path Error" << endl;
+			LOG(cout << "Upload Path Error" << endl;)
 			return ;
 		}
 		insertEnv("CONTENT_FILENAME", request.contentFileName);
@@ -187,7 +187,7 @@ void	CgiProcessor::checkPostContentType(const string path)
 	else
 		request.status = 400;
 	LOG(cout << "good: " << request.status << endl);
-	cout << "before errno: " << errno << endl;
+	LOG(cout << "before errno: " << errno << endl;)
 }
 
 bool	CgiProcessor::isDirectory(const char *binPath)
@@ -241,7 +241,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 	setURLEnv();
 	setStartHeaderEnv();
 	int pipefd[2];
-	cout << "path: " << path << endl;
+	LOG(cout << "path: " << path << endl;)
 	if (!findCgiCmdPath() || pipe(pipefd) < 0)
 	{
 		LOG(cout << "No CGI Command " << cgiCommand << endl);
@@ -258,7 +258,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 	pid_t pid = fork();
 	if (pid == -1)
 	{
-		cout << "fork() error" << endl;
+		LOG(cout << "fork() error" << endl;)
 		close(pipefd[0]);  //makeError 아래에서 처리함
 		close(pipefd[1]);  //makeError 아래에서 처리함
 		request.status = 500;
@@ -309,6 +309,7 @@ void	CgiProcessor::executeCGIScript(const string path)
 		}
 		Kq::plusEvent(pipefd[0], EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 		Kq::cgiFd[pipefd[0]] = request.clientFd;
+		Kq::cgiFdToClient[request.clientFd] = pipefd[0];
 		Kq::pidPipe[pipefd[0]] = pid;
 	}
 }
