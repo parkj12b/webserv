@@ -58,6 +58,11 @@ std::map<int, Client>  Server::getClient(void) const
     return (client);
 }
 
+std::map<int, Client>  &Server::getClient(void)
+{
+    return (client);
+}
+
 bool    Server::getResponseCgi(int fd)
 {
     return (client[fd].getResponseCgi());
@@ -68,8 +73,11 @@ ssize_t Server::getStandardTime(int fd)
     ssize_t   standardTime = client[fd].getStandardTime();
 
     if (standardTime < 0)
-        return (75000);
-    return (standardTime * 1000);
+    {
+        cout << "boom" << endl;
+        return (75);
+    }
+    return (standardTime);
 }
 
 int setLinger(int sockfd, int linger_time) {
@@ -360,7 +368,7 @@ EVENT   Server::clientTimer(struct kevent& store)
         return (ING);
     flag = client[store.ident].getConnection();
     client[store.ident].setConnection(false);
-    LOG(cout << "timeout: " << getStandardTime(store.ident) << endl);
+    LOG(cout << "timeout: " << getStandardTime(store.ident) * 1000<< endl);
     if (flag)
         return (ING);
     LOG(std::cout<<"TIMER OUT"<<std::endl);
