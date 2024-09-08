@@ -32,6 +32,8 @@ def generate_html(query_params, headers):
 
 def main():
     # CGI 환경에서 쿼리 문자열을 가져오기
+	while True:
+		continue
 	form = cgi.FieldStorage()
 
     # 쿼리 문자열을 딕셔너리 형태로 저장

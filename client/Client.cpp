@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/05 16:19:17 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/07 17:33:23 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 #include "LocationConfigData.hpp"
 #include "HTTPServer.hpp"
 #include "UtilTemplate.hpp"
-
-extern int logs;
 
 LocationConfigData *Client::recurFindLocation(string url,
     LocationConfigData *locationConfigData)
@@ -224,13 +222,15 @@ void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content, siz
 {
 	size_t  pos;
 
-    std::cout<<"cgiContentLength: "<<cgiContentLength<<std::endl;
+    LOG(std::cout<<"cgiContentLength: "<<cgiContentLength<<std::endl;)
     pos = response.setCgiContent(content, status);
-    std::cout<<"cgi pos: "<<pos<<std::endl;
+    if (status >= 400)
+        return ;
+    LOG(std::cout<<"cgi pos: "<<pos<<std::endl;)
     response.setCgiContentLength(cgiContentLength - pos);
     responseAmount = response.getStartHeaderLength() + cgiContentLength - pos;
     index = 0;
-    std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl<<endl;
+    LOG(std::cout<<"responseAmount: "<<response.getStartHeaderLength() + cgiContentLength - pos<<std::endl<<endl;)
     msg = response.getEntity();
     LOG(std::cout<<"msg: "<<msg<<std::endl);
 }
@@ -411,9 +411,9 @@ int Client::setContent()
     // LOG(std::cout<<"msg: "<<msg<<endl);
     if (contentLine.makeContentLine(msg, msgSize, request.status, fd) < 0)
         return (1);
+    request.contentFileName = contentLine.getFileName();
     if (contentLine.getCompletion())
     {
-        request.contentFileName = contentLine.getFileName();
         if (headerLine.getTe() == NOT)
         {
             if (!msg.empty())
@@ -497,7 +497,6 @@ void    Client::setMessage(const char* msgRequest, int &readSize)
 {
     msgSize += readSize;
     msg.append(msgRequest, readSize);
-    write(logs, msgRequest, readSize);
     if (setStart())  //max size literal
     {
         request.header["host"].push_back(Server::serverConfig->getDefaultServer(port)->getServerName()[0]);

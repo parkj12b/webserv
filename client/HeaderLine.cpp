@@ -6,13 +6,11 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 18:56:57 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/13 18:26:46 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/07 17:33:33 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HeaderLine.hpp"
-
-extern int logs;
 
 //header 줄에서 여러 개의 value를 받을 수 있는 key들을 모음
 /*

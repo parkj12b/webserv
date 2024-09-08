@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/06 20:59:20 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/07 20:58:23 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,6 @@
 #include "Server.hpp"
 #include "Response.hpp"
 #include "UtilTemplate.hpp"
-
-extern int logs;
-extern int writeLogs;
 
 HTTPServer *Server::serverConfig = NULL;
 
@@ -123,13 +120,13 @@ EVENT   Server::cgiGet(struct kevent& store)
 
     if (store.flags & EV_ERROR)
     {
-        cout << "cgiGet errno: " << store.data << endl;
+        LOG(cout << "cgiGet errno: " << store.data << endl;)
         return (EXPECT);
     }
-    cerr << "cgiGet" << endl;
+    LOG(cerr << "cgiGet" << endl;)
     if (cgiContentLength.find(store.ident) == cgiContentLength.end())
     {
-        cout << "clear setting..." << endl;
+        LOG(cout << "clear setting..." << endl;)
         cgiContentLength[store.ident] = 0;
         cgiContent[store.ident].clear();
     }
@@ -140,10 +137,10 @@ EVENT   Server::cgiGet(struct kevent& store)
     buf[readSize] = '\0';
     cgiContent[store.ident].append(buf, readSize);
     cgiContentLength[store.ident] += readSize;
-    cout << "store.data: " << store.data << " readSize: " << readSize << endl;
+    LOG(cout << "store.data: " << store.data << " readSize: " << readSize << endl;)
     if (store.data - readSize <= 0)
     {
-        cout << "write message setting start..." << endl;
+        LOG(cout << "write message setting start..." << endl;)
         client[Kq::cgiFd[store.ident]].setCgiGetEntity(cgiContentLength[store.ident], cgiContent[store.ident]);
         cgiContent[store.ident].clear();
         cgiContentLength[store.ident] = 0;
@@ -163,7 +160,7 @@ EVENT   Server::cgiRead(struct kevent& store)
 
     if (store.flags & EV_ERROR)
         return (ERROR);
-    cerr << "cgiRead" << endl;
+    LOG(cerr << "cgiRead" << endl;)
 	LOG(cout << "cgiRead fd: " << store.ident << endl);
     //초기 세팅
     if (cgiContentLength.find(store.ident) == cgiContentLength.end())
@@ -187,19 +184,17 @@ EVENT   Server::cgiRead(struct kevent& store)
         return (ERROR);
     }  //makeError 같이 고민해보기
 	LOG(cout << "CGI Read Size : " << readSize << endl);
-    // if (readSize < 0)
-    //     return (ERROR);
     if (readSize > 0)
     {
         buf[readSize] = '\0';
+        if (static_cast<unsigned long>(store.data) > cgiContent[store.ident].size())
+            cgiContent[store.ident].reserve(store.data + 1);
         cgiContent[store.ident].append(buf, readSize);
         cgiContentLength[store.ident] += readSize;
-        // cout << "cgiContent[store.ident] : " << cgiContent[store.ident] << endl;
     }
-    // LOG(std::cout<<"cgi: "<<cgiContent[store.ident]<<std::endl);
     LOG(cout<<"store.data: "<< store.data<<endl);
-    cout << "pidPipe: " << Kq::pidPipe[store.ident] << endl;
-    cout << "store.data: " << store.data << " readSize: " << readSize << endl;
+    LOG(cout << "pidPipe: " << Kq::pidPipe[store.ident] << endl;)
+    LOG(cout << "store.data: " << store.data << " readSize: " << readSize << endl;)
 	if (readSize == 0)
 	{
         size_t  status = 0;
@@ -208,20 +203,18 @@ EVENT   Server::cgiRead(struct kevent& store)
         waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
         vector<pid_t>::iterator it = find(Kq::processor.begin(), Kq::processor.end(), Kq::pidPipe[store.ident]);
         if (it != Kq::processor.end())
+        {
             Kq::processor.erase(it);
-        cout << "pidPipe: " << Kq::pidPipe[store.ident] << endl;
+            Kq::cgiFdToClient.erase(Kq::cgiFd[store.ident]);
+        }
+        LOG(cout << "pidPipe: " << Kq::pidPipe[store.ident] << endl;)
         if (WIFEXITED(waitStatus))
         {
             status = WEXITSTATUS(waitStatus);
             if (status != 0)
-            {
                 status = 600;
-            }
             LOG(std::cout<<"status: "<< status << std::endl);
         }
-        
-        if (readSize < 0)
-            status = 600;
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
         // LOG(cout<<"status: "<<status<<endl);
@@ -249,7 +242,7 @@ EVENT Server::clientRead(struct kevent& store)
     //eof신호를 못 받게 됨
     if (store.flags & EV_ERROR)
         return (ERROR);
-    cerr << "clientRead" << endl;
+    LOG(cerr << "clientRead" << endl;)
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
     // if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 100)
@@ -263,25 +256,24 @@ EVENT Server::clientRead(struct kevent& store)
     // }
     if (store.flags & EV_ERROR)
     {
-        cout << "clientRead errno: " << errno << endl;
+        LOG(cout << "clientRead errno: " << errno << endl;)
         return (ERROR);
     }
     readSize = read(store.ident, buffer, BUFFER_SIZE * client[store.ident].getSocketReadSize());
     // throwIfError(errno, readSize);
     if (readSize <= 0) // read가 발생했는데 읽은게 없다면 에러
     {
-        std::cout<<"read error or socket close\n";
+        LOG(std::cout<<"read error or socket close\n";)
         client[store.ident].deleteContent();
         return (ERROR);
     }
     if (readSize == BUFFER_SIZE * client[store.ident].getSocketReadSize())
     {
         client[store.ident].plusSocketReadSize();
-        cout << "buffer read size: " << BUFFER_SIZE * client[store.ident].getSocketReadSize()<<endl;
+        LOG(cout << "buffer read size: " << BUFFER_SIZE * client[store.ident].getSocketReadSize()<<endl;)
     }
     LOG(std::cout<<"Client Read " << readSize << std::endl);
     buffer[readSize] = '\0';
-    // write(logs, buffer, readSize);
     client[store.ident].setMessage(buffer, readSize);
     client[store.ident].setConnection(true);
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
@@ -323,22 +315,21 @@ EVENT   Server::clientWrite(struct kevent& store)
     }
     if (openCheck < 0)
     {
-        cout <<"openCheck error: "<< openCheck<<endl;
+        LOG(cout <<"openCheck error: "<< openCheck<<endl;)
         // return (ERROR);
     }
-    cout << "buffer:" << buffer << endl;
+    LOG(cout << "buffer: " << buffer << endl;)
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     // if (!throwIfError(errno, index))
     //     return (ERROR);  //exit(ERROR)
     if (index < 0 || index > client[store.ident].responseIndex())
         return (ERROR);
-    // cout<<"msg: " <<buffer<<endl;
-    // write(writeLogs, buffer, client[store.ident].responseIndex());
+    // LOG(cout<<"msg: " <<buffer<<endl;)
     // write(1, buffer, client[store.ident].responseIndex());
     LOG(std::cout<<"write index: " <<index<<endl;)
     // if (index > client[store.ident].responseIndex())
     // {
-    //     std::cout<<"ERROR wirte"<<endl;
+    //     LOG(std::cout<<"ERROR wirte"<<endl;)
     //     return (ERROR);
     // }
     client[store.ident].plusIndex(index);

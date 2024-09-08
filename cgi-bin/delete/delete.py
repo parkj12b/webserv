@@ -10,7 +10,7 @@ cgitb.enable()
 
 def make_error(code):
     print(f"status: {code}\r")
-    exit(1)
+    exit(0)
 
 query_string = os.environ.get("QUERY_STRING", "")
 print("query_string", query_string, file=sys.stderr)
@@ -41,6 +41,7 @@ def checkFileExist():
     filename = os.path.basename(value)
     filepath = os.path.join(upload_dir, filename)
     if not os.path.exists(filepath):
+        print(filepath, file=sys.stderr)
         make_error(404)
     q.put(filepath)
 

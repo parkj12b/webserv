@@ -230,7 +230,7 @@ void    Response::makeFilePath(string& str)
                 str = temp + "/";
             else
             {
-                cout << "403 2\n";
+                LOG(cout << "403 2\n";)
                 request.status = 403;
             }
             return ;
@@ -417,8 +417,13 @@ size_t  Response::setCgiHeader(string &content_, size_t &status)
                         makeError();
                         return (0);
                     }
+                    // if (request.status >= 400)
+                    //     makeHeader(headerNameKey, toString(request.status));
+                    // else
+                    //     makeHeader(headerNameKey, headerNamePull.substr(headerPos + 1));
                 }
-                makeHeader(headerNameKey, headerNamePull.substr(headerPos + 1));
+                else
+                    makeHeader(headerNameKey, headerNamePull.substr(headerPos + 1));
                 LOG(cout<<headerNameKey<<" : "<<headerNamePull.substr(headerPos + 1)<<endl);
                 return (crlfPos + 2);
             }
@@ -435,6 +440,7 @@ void        Response::setCgiGetContent(string &content_)
 
 void	    Response::setCgiGetHeader(size_t contentLength_)
 {
+    LOG(cout << "setCgiGetHeader" << endl << endl;)
     makeHeader("content-length", toString(contentLength_));
 }
 
@@ -473,6 +479,7 @@ void	Response::setCgiContentLength(size_t contentLength_)
     contentLength = contentLength_;
     LOG(cout<<"here    here "<< contentLength_<<endl;)
     makeHeader("content-length", toString(contentLength));
+    LOG(cout << "setCgiContentLength" << endl << endl;)
     makeEntity();
     // LOG(std::cout<<"header: \n\n"<<header);
     // LOG(std::cout<<"================"<<std::endl);
@@ -637,7 +644,10 @@ void    Response::makeError()
         fd = open(errorPath.c_str(), O_RDONLY);
     // throwIfError(errno, fd);   //고민
     if (errorPath != "" && fd >= 0)
+    {
+        request.url = errorPath;
         makeContent(fd);
+    }
     else
     {
         CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
@@ -694,6 +704,8 @@ void    Response::makeHeader(string key, string value)
 
 void    Response::makeContent(int fd)
 {
+    int         statReturn;
+    struct stat fileStat;
     string  location = request.url;
     size_t  pos = location.find_last_of('.');
 
@@ -710,12 +722,24 @@ void    Response::makeContent(int fd)
     else
         contentType = "application/octet-stream";
     LOG(cout << "[Response::makeContent] - fd + content-type: " << fd << ' ' << contentType << endl;)
+    statReturn = stat(request.url.c_str(), &fileStat);
+    if (throwIfError(errno, statReturn) < 0)  //makeError
+    {
+        makeError();
+        return ;
+    }
     makeHeader("content-type", contentType);
+    if (fileStat.st_size == 0)
+    {
+        request.status = 200;
+        makeHeader("content-length", "0");
+        return ;
+    }
     Kq::plusEvent(fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     cgiFlag = true;
     Kq::cgiFd[fd] = request.clientFd;
     Kq::pidPipe[fd] = -1;
-    cout << "cgiFd[fd]: " << request.clientFd << endl;
+    LOG(cout << "cgiFd[fd]: " << request.clientFd << endl;)
     // ssize_t readSize;
     // char    buffer[4096];
     // ssize_t count = 0;
@@ -742,7 +766,6 @@ void    Response::makeEntity()
     entity = "HTTP/1.1 " + toString(request.status) + statusContent[request.status] + "\r\n";
     if (!header.empty())
         entity += header + "\r\n";
-    LOG(cout << "header: " << header << endl;)
     startHeaderLength = entity.size();
     if (!content.empty())
         entity.append(content);
@@ -755,7 +778,7 @@ void    Response::makeGet()
     int fd;
 
     LOG(std::cout<<"Method: GET"<<std::endl);
-    cout << "cgiFlag: " <<cgiFlag<<endl;
+    LOG(cout << "cgiFlag: " <<cgiFlag<<endl;)
     LOG(std::cout<<request.url.c_str()<<std::endl);
     CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
 
@@ -794,22 +817,23 @@ void    Response::makeGet()
 	}
 	else
 	{
-		fd = open(request.url.c_str(), O_RDONLY);
+        fd = open(request.url.c_str(), O_RDONLY);
         throwIfError(errno, fd);   //아래에 있다.
-		if (fd < 0)
-		{
-			request.status = 404;
-            cout<<"fd error"<<endl;
-			// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
-			// while (!cgiProcessor.getFin())
-			// 	cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);
+        if (fd < 0)
+        {
+            request.status = 404;
+            LOG(cout << "fd error" << endl;)
+            // start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
+            // while (!cgiProcessor.getFin())
+            // 	cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);
             makeError();
-			return ;
-		}
-        cout << "request.url: " << request.url << " fd: " << fd << endl;
-		makeContent(fd);
+            return ;
+        }
+        LOG(cout << "request.url: " << request.url << " fd: " << fd << endl;)
+        makeContent(fd);
 	}
-	request.status = 200;
+    if (request.status == 0)
+        request.status = 200;
     // start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 }
 
@@ -848,9 +872,10 @@ void    Response::makeDelete()
     if (cgiFlag)
     {
         CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
+        chdir(getDir(request.url).c_str()); 
         if (!cgiProcessor.isValidUploadPath())
         {
-            cout << "Upload Path Error" << endl;
+            LOG(cout << "Upload Path Error" << endl;)
             makeError();
             return ;
         }
@@ -871,7 +896,7 @@ void    Response::makeDelete()
 
 void    Response::responseMake()
 {
-    cout << "cgiFlag: " <<cgiFlag<<endl;
+    LOG(cout << "cgiFlag: " <<cgiFlag<<endl;)
     if (request.status > 0 || init())
     {
         makeError();
@@ -907,6 +932,8 @@ void    Response::responseMake()
         default:
             break ;
     }
+    if (!cgiFlag)
+        makeEntity();
     return ;
 }
 

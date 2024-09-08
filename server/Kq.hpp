@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:09:01 by inghwang          #+#    #+#             */
-/*   Updated: 2024/08/30 19:30:32 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/07 20:32:23 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ class Kq
 		static std::map<int, int>	cgiFd;
         static std::map<int, pid_t> pidPipe;
         static std::vector<int>     closeFd;
+        static std::map<int, int>   cgiFdToClient;
         Kq(string pathEnv_);
         Kq(const Kq& src);
         Kq& operator=(const Kq& src);
