@@ -273,7 +273,7 @@ void    Kq::eventRead(struct kevent& store)
 		switch (event)
 		{
 			case ERROR:
-                // plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
+                plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
 				clientFin(store);
 				break ;
 			case ING:
@@ -347,20 +347,24 @@ void    Kq::eventTimer(struct kevent& store)
         case FINISH:
             LOG(cout << "timeOut Finish" << endl);
             // Response&                       response = server[serverFd].getClient()[store.ident].getResponse();
-            std::map<int, int>::iterator    itm = cgiFdToClient.find(store.ident);
-            if (itm != cgiFdToClient.end())
+            std::map<int, int>::iterator    itClient = cgiFdToClient.find(store.ident);
+            if (itClient != cgiFdToClient.end())
             {
                 LOG(cout << "pidPipe[cgiFdToClient[store.ident]]: " << pidPipe[cgiFdToClient[store.ident]] << endl);
-                kill(pidPipe[cgiFdToClient[store.ident]], SIGKILL);
-                cout << "kill" << endl;
-                plusEvent(cgiFdToClient[store.ident], EVFILT_READ, EV_DELETE, 0, 0, 0);
-                Kq::processor.push_back(cgiFdToClient[store.ident]);
-                pidPipe.erase(cgiFdToClient[store.ident]);
-                cgiFd.erase(cgiFdToClient[store.ident]);
-                cgiFdToClient.erase(store.ident);
-                server[serverFd].getClient()[store.ident].getResponse().setRequestStatus(500);
-                server[serverFd].getClient()[store.ident].getResponse().makeError();
-                break ;
+                std::map<int, int>::iterator    itPid = pidPipe.find(cgiFdToClient[store.ident]);
+                if (itPid != pidPipe.end())
+                {
+                    kill(pidPipe[cgiFdToClient[store.ident]], SIGKILL);
+                    cout << "kill" << endl;
+                    plusEvent(cgiFdToClient[store.ident], EVFILT_READ, EV_DELETE, 0, 0, 0);
+                    Kq::processor.push_back(cgiFdToClient[store.ident]);
+                    pidPipe.erase(cgiFdToClient[store.ident]);
+                    cgiFd.erase(cgiFdToClient[store.ident]);
+                    cgiFdToClient.erase(store.ident);
+                    server[serverFd].getClient()[store.ident].getResponse().setRequestStatus(500);
+                    server[serverFd].getClient()[store.ident].getResponse().makeError();
+                    break ;
+                }
             }
             clientFin(store);
             break ;
