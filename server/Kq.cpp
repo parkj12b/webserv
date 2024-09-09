@@ -355,7 +355,7 @@ void    Kq::eventTimer(struct kevent& store)
                 if (itPid != pidPipe.end())
                 {
                     kill(pidPipe[cgiFdToClient[store.ident]], SIGKILL);
-                    cout << "kill" << endl;
+                    LOG(cout << "kill" << endl);
                     plusEvent(cgiFdToClient[store.ident], EVFILT_READ, EV_DELETE, 0, 0, 0);
                     Kq::processor.push_back(cgiFdToClient[store.ident]);
                     pidPipe.erase(cgiFdToClient[store.ident]);
