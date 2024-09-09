@@ -365,6 +365,8 @@ void    Kq::eventTimer(struct kevent& store)
                     server[serverFd].getClient()[store.ident].getResponse().makeError();
                     break ;
                 }
+                cgiFd.erase(cgiFdToClient[store.ident]);
+                cgiFdToClient.erase(store.ident);
             }
             clientFin(store);
             break ;
