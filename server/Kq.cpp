@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:08:58 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/09 14:43:52 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/09 14:50:34 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -355,9 +355,9 @@ void    Kq::eventTimer(struct kevent& store)
                 if (itPid != pidPipe.end())
                 {
                     kill(pidPipe[cgiFdToClient[store.ident]], SIGKILL);
-                    cout << "kill" << endl;
+                    LOG(cout << "kill" << endl);
                     plusEvent(cgiFdToClient[store.ident], EVFILT_READ, EV_DELETE, 0, 0, 0);
-                    cout << "cgiFdToClient[store.ident]: " << cgiFdToClient[store.ident] << endl;
+                    LOG(cout << "cgiFdToClient[store.ident]: " << cgiFdToClient[store.ident] << endl);
                     // Kq::processor.push_back(cgiFdToClient[store.ident]);
                     Kq::closeFd.push_back(cgiFdToClient[store.ident]);
                     pidPipe.erase(cgiFdToClient[store.ident]);

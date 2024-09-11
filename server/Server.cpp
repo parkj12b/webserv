@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 10:56:52 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/07 20:58:23 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/09 15:39:14 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include "Server.hpp"
 #include "Response.hpp"
 #include "UtilTemplate.hpp"
+
+extern int readLog;
 
 HTTPServer *Server::serverConfig = NULL;
 
@@ -282,6 +284,7 @@ EVENT Server::clientRead(struct kevent& store)
     }
     LOG(std::cout<<"Client Read " << readSize << std::endl);
     buffer[readSize] = '\0';
+    write(readLog, buffer, readSize);
     client[store.ident].setMessage(buffer, readSize);
     client[store.ident].setConnection(true);
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
@@ -326,7 +329,6 @@ EVENT   Server::clientWrite(struct kevent& store)
         LOG(cout <<"openCheck error: "<< openCheck<<endl;)
         // return (ERROR);
     }
-    LOG(cout << "buffer: " << buffer << endl;)
     index = write(store.ident, buffer, client[store.ident].responseIndex());
     // if (!throwIfError(errno, index))
     //     return (ERROR);  //exit(ERROR)
