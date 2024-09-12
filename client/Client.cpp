@@ -13,7 +13,6 @@
 #include "Client.hpp"
 #include "ServerConfigData.hpp"
 #include "LocationConfigData.hpp"
-#include "HTTPServer.hpp"
 #include "UtilTemplate.hpp"
 
 LocationConfigData *Client::recurFindLocation(string url,
@@ -316,7 +315,6 @@ int Client::setHeader()
 {
     size_t                                                    flag;
     std::string                                               str;
-    std::map<std::string, std::deque<std::string> >::iterator itm;
 
     if (!startLine.getCompletion() || headerLine.getCompletion() || request.fin || request.status)
         return (0);
@@ -444,7 +442,7 @@ int Client::setTrailer(void)
     size_t      flag;
     std::string str;
 
-    if (!contentLine.getCompletion() || headerLine.getTe() != YES || request.fin == true || request.status > 0)
+    if (!contentLine.getCompletion() || headerLine.getTe() != YES || request.fin || request.status > 0)
         return (0);
     LOG(std::cout<<"...setTrailer parsing...\n");
     while (1)
@@ -572,8 +570,7 @@ void    Client::plusIndex(size_t plus)
 bool    Client::setMatchingLocation(string url)
 {
     LOG(cout << "url " << url << endl);
-    // size_t lastSlash = url.find_last_of('/');
-    // url = url.substr(0, lastSlash);
+
     string host = request.header["host"].front();
     ServerConfigData *serverConfigData;
     try {

@@ -203,8 +203,8 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
         {
             contentLength -= static_cast<int>(readSize);
             // content.push_back(str);
-            flag = write(fd, &str[0], readSize);
-            readSize = 0;
+            write(fd, &str[0], readSize);
+            readSize  = 0;
             str.clear();
             if (contentLength == 0)
             {

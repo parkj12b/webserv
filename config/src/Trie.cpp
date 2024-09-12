@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include <string>
-#include <stdexcept>
-#include <algorithm>
 #include "Trie.hpp"
 
 using namespace std;
