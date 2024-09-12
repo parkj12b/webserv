@@ -208,22 +208,25 @@ EVENT   Server::cgiRead(struct kevent& store)
 	if (readSize == 0)
 	{
         size_t  status = 0;
+        pid_t   result;
         int     waitStatus = 0;
         
-        waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
+        result = waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
         vector<pid_t>::iterator it = find(Kq::processor.begin(), Kq::processor.end(), Kq::pidPipe[store.ident]);
-        if (it != Kq::processor.end())
-        {
-            Kq::processor.erase(it);
-            Kq::cgiFdToClient.erase(Kq::cgiFd[store.ident]);
-        }
+        // if (it != Kq::processor.end())
+        // {
+        // }
         LOG(cout << "pidPipe: " << Kq::pidPipe[store.ident] << endl;)
-        if (WIFEXITED(waitStatus))
+        if (result > 0)
         {
             status = WEXITSTATUS(waitStatus);
-            if (status != 0)
+            if (!WIFEXITED(waitStatus) || status != 0)
                 status = 600;
+            // else if (status != 0)
+            //     status = 600;
             LOG(std::cout<<"status: "<< status << std::endl);
+            Kq::processor.erase(it);
+            Kq::cgiFdToClient.erase(Kq::cgiFd[store.ident]);
         }
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
@@ -349,13 +352,14 @@ EVENT   Server::clientWrite(struct kevent& store)
     if (client[store.ident].getRequestStatus() == 100)
         return (EXPECT);
     client[store.ident].deleteContent();
-    client[store.ident].resetClient();
     if (!client[store.ident].getConnect() || client[store.ident].getResponseStatus() >= 400)
     {
+        client[store.ident].resetClient();
         LOG(std::cout<<"connection fin"<<std::endl);
         LOG(cout << "Request.status: " << client[store.ident].getResponseStatus() << endl);
         return (ERROR);
     }
+    client[store.ident].resetClient();
     LOG(std::cout<<"keep-alive"<<std::endl);
     return (FINISH);
 }

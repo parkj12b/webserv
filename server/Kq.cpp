@@ -355,16 +355,19 @@ void    Kq::eventTimer(struct kevent& store)
                 if (itPid != pidPipe.end())
                 {
                     kill(pidPipe[cgiFdToClient[store.ident]], SIGKILL);
+                    waitpid(pidPipe[cgiFdToClient[store.ident]], NULL, 0);
                     LOG(cout << "kill" << endl);
                     plusEvent(cgiFdToClient[store.ident], EVFILT_READ, EV_DELETE, 0, 0, 0);
                     LOG(cout << "cgiFdToClient[store.ident]: " << cgiFdToClient[store.ident] << endl);
-                    // Kq::processor.push_back(cgiFdToClient[store.ident]);
+                    Kq::processor.push_back(cgiFdToClient[store.ident]);
                     Kq::closeFd.push_back(cgiFdToClient[store.ident]);
                     pidPipe.erase(cgiFdToClient[store.ident]);
                     cgiFd.erase(cgiFdToClient[store.ident]);
                     cgiFdToClient.erase(store.ident);
-                    server[serverFd].getClient()[store.ident].getResponse().setRequestStatus(500);
+                    server[serverFd].getClient()[store.ident].getResponse().setRequestStatus(408);
+                    LOG(cout << "time out make error" << endl);
                     server[serverFd].getClient()[store.ident].getResponse().makeError();
+                    // plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
                     break ;
                 }
                 cgiFd.erase(cgiFdToClient[store.ident]);
