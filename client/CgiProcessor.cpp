@@ -186,8 +186,6 @@ void	CgiProcessor::checkPostContentType(const string path)
 	}
 	else
 		request.status = 400;
-	LOG(cout << "good: " << request.status << endl);
-	LOG(cout << "before errno: " << errno << endl;)
 }
 
 bool	CgiProcessor::isDirectory(const char *binPath)
@@ -286,10 +284,6 @@ void	CgiProcessor::executeCGIScript(const string path)
 		int fd = open(request.contentFileName.c_str(), O_RDONLY, 0644);
 		dup2(fd, STDIN_FILENO);
 		close(fd);
-		// throwIfError(errno, fd);
-		// throwIfError(errno, dup2(fd, STDIN_FILENO));
-		// throwIfError(errno, close(fd));
-		// chdir()
 		if (execve(&cgiCommand[0], argv, envp) == -1)
 		{
 			request.status = 500;
@@ -301,7 +295,6 @@ void	CgiProcessor::executeCGIScript(const string path)
 	{
 		close(pipefd[1]);
 		Kq::processor.push_back(pid);
-		// throwIfError(errno, close(pipefd[1]));
 		if (!throwIfError(errno, chdir(EXECUTE_PATH.c_str())))  //이게 실패할 경우에 무조건 적으로 터짐
 		{
 			request.status = 500;

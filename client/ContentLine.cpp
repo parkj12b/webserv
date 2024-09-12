@@ -108,7 +108,6 @@ bool    ContentLine::tempFileMake(int &fd_)
     std::string     fileName_ = CgiProcessor::EXECUTE_PATH + "/.tempContent/";
     size_t          num;
 
-    LOG(cout << "content errno: " << errno << endl;)
     mkdir(".tempContent", 0777);
     num = fd_;
     while (1)
@@ -122,13 +121,10 @@ bool    ContentLine::tempFileMake(int &fd_)
         num++;
     }
     fd = open(fileName.c_str(), O_WRONLY | O_CREAT, 0777);
-    // throwIfError(errno, fd);  //makeError 아래에서 처리함
     LOG(std::cout<<"MAkE FILE"<<std::endl);
     if (fd < 0)
         return (false);
     LOG(std::cout<<"fileName: "<<fileName<<std::endl);
-        // contentLength = 0;
-        LOG(cout << "content errno: " << errno << endl;)
     return (true);
 }
 
