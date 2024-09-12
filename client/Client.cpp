@@ -562,8 +562,7 @@ void    Client::plusIndex(size_t plus)
 bool    Client::setMatchingLocation(string url)
 {
     LOG(cout << "url " << url << endl);
-    // size_t lastSlash = url.find_last_of('/');
-    // url = url.substr(0, lastSlash);
+
     string host = request.header["host"].front();
     ServerConfigData *serverConfigData;
     try {

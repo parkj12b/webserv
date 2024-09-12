@@ -81,9 +81,6 @@ void Parser::directive()
     size_t i = 0;
     size_t numChecks = syntaxList.size();
     while (i < numChecks) {
-        vector< Token *> subV;
-        if (i < v.size())
-            subV = v[i];
         if (i >= syntaxList.size())
             error("syntax error: too many arguments");
         Syntax s = syntaxList[i];
@@ -197,7 +194,6 @@ void    Parser::context()
         case LIMIT_EXCEPT:
             LOG(cout << "limit_except: " << curLocation << endl);
             t = curLocation->getEnv()->getHeadDirectiveByIndex(1)[0]->clone();
-            path = dynamic_cast<Word *>(t)->lexeme;
             if (curLocation == NULL)
                 throw runtime_error("limit_except without location");
             // locationConfig = curLocation->getLocationConfig(path, prePostNum);
