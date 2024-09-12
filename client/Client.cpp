@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/09 15:16:51 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/12 15:08:17 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -334,7 +334,11 @@ int Client::setHeader()
                 LOG(std::cout<<"standardTime: " <<standardTime<<std::endl);
                 LOG(std::cout<<"server name: "<<Server::serverConfig->getDefaultServer(port)->getServerName()[0]<<endl;)
                 LOG(cout << "response in location: " << &response << endl);
-                LOG(cout << "host: "<<request.header["host"].front()<<endl);
+                if (request.header["host"].empty())
+                {
+                    request.status = 400;
+                    return (1);
+                }
                 if (setMatchingLocation(request.url))
                 {
                     request.status = 404;
