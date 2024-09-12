@@ -451,7 +451,7 @@ size_t  Response::setCgiContent(string &content_, size_t &status)
 
     if (status == 600)
     {
-        request.status = 500;
+        request.status = 408;
         makeError();
         return (0);
     }
