@@ -140,7 +140,6 @@ int ContentLine::chunkedEntity(int &status)
     int                 size;
 
     ans = 0;
-    //chunked인데  \r\n이 아니라 \n
     while (getline(chunkedStream, temp))
     {
         if (temp[temp.size() - 1] != '\r')

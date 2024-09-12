@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:33:06 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/07 17:33:16 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/09 15:22:12 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #include <streambuf>
 #include <errno.h>
 #include <csignal>
+
+int readLog;
 
 void    check()
 {
@@ -70,10 +72,12 @@ int main(int argc, char **argv, char **envp)
     parser.program();
     Validator v(parser);
     Server::serverConfig = v.validate();
-    
+
+    readLog = open("./readLog", O_CREAT | O_WRONLY | O_TRUNC, 0644);
     //fd를 닫지 않았을 가능성이 존재함
     Kq  kq(pathEnv);
     std::ios::sync_with_stdio(false);
     while (1)
         kq.mainLoop();
+    close(readLog);
 }

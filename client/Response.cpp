@@ -451,7 +451,7 @@ size_t  Response::setCgiContent(string &content_, size_t &status)
 
     if (status == 600)
     {
-        request.status = 500;
+        request.status = 408;
         makeError();
         return (0);
     }
@@ -619,7 +619,6 @@ void    Response::makeDefaultHeader()
 void    Response::makeError()
 {
     LOG(cout << "makeError\n"<<request.status<<std::endl);
-    cout << "makeError\n"<<request.status<<std::endl;
     if (request.status >= 300 && request.status < 400)
         return ;
     if (request.status == 100)
