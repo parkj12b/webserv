@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:33:06 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/06 17:23:10 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/07 17:33:16 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,6 @@
 #include <streambuf>
 #include <errno.h>
 #include <csignal>
-
-int logs = open("./log", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-int writeLogs = open("./writeLog", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 
 void    check()
 {
@@ -54,7 +51,7 @@ int main(int argc, char **argv, char **envp)
     // atexit(check);
     Parser::initializeDirectiveNum();
     Parser::initializeDirectiveSyntax();
-    cout << "========parser========" << endl;
+    LOG(cout << "========parser========" << endl;)
     Directives::init();
     string path = DEFAULT_CONFIG_PATH;
     if (argc == 2)
@@ -78,7 +75,5 @@ int main(int argc, char **argv, char **envp)
     Kq  kq(pathEnv);
     std::ios::sync_with_stdio(false);
     while (1)
-        kq.mainLoop();   
-    close(logs);
-    close(writeLogs);
+        kq.mainLoop();
 }
