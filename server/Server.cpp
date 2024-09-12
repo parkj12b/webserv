@@ -213,24 +213,19 @@ EVENT   Server::cgiRead(struct kevent& store)
         
         result = waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
         vector<pid_t>::iterator it = find(Kq::processor.begin(), Kq::processor.end(), Kq::pidPipe[store.ident]);
-        // if (it != Kq::processor.end())
-        // {
-        // }
         LOG(cout << "pidPipe: " << Kq::pidPipe[store.ident] << endl;)
         if (result > 0)
         {
             status = WEXITSTATUS(waitStatus);
             if (!WIFEXITED(waitStatus) || status != 0)
                 status = 600;
-            // else if (status != 0)
-            //     status = 600;
             LOG(std::cout<<"status: "<< status << std::endl);
             Kq::processor.erase(it);
             Kq::cgiFdToClient.erase(Kq::cgiFd[store.ident]);
         }
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
-        // LOG(cout<<"status: "<<status<<endl);
+        LOG(cout<<"status: "<<status<<endl);
         cgiContent[store.ident].clear();
         cgiContentLength[store.ident] = 0;
         cgiContentLength.erase(store.ident);
