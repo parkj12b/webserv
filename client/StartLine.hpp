@@ -70,7 +70,7 @@ class StartLine
         std::string                     getLocation() const;    
         map<string, string>   getQuery() const;
         //sub logic
-        bool                             urlQuery(); //query parsing
+        void                             urlQuery(); //query parsing
         //logic
         int check(std::string firstLine);   //startline make
 };
