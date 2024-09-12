@@ -619,7 +619,6 @@ void    Response::makeDefaultHeader()
 void    Response::makeError()
 {
     LOG(cout << "makeError\n"<<request.status<<std::endl);
-    cout << "makeError\n"<<request.status<<std::endl;
     if (request.status >= 300 && request.status < 400)
         return ;
     if (request.status == 100)
