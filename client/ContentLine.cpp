@@ -16,7 +16,7 @@
 ContentLine::ContentLine() : first(true), completion(false), fd(0), port(0), contentLength(0), maxSize(0)
 {}
 
-ContentLine::ContentLine(const ContentLine& src) : first(src.getFirst()), completion(src.getCompletion()), contentType(src.getContentType()), fd(src.getFd()), port(src.getPort()), contentLength(src.getContentLength()), maxSize(src.getMaxSize()), chunked(src.getChunked()), content(src.getContent())
+ContentLine::ContentLine(const ContentLine& src) : first(src.getFirst()), completion(src.getCompletion()), contentType(src.getContentType()), fd(src.getFd()), port(src.getPort()), contentLength(src.getContentLength()), maxSize(src.getMaxSize()), fileName(src.getFileName()), chunked(src.getChunked()), content(src.getContent())
 {}
 
 ContentLine::~ContentLine()
@@ -204,7 +204,7 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
             contentLength -= static_cast<int>(readSize);
             // content.push_back(str);
             flag = write(fd, &str[0], readSize);
-            readSize  = 0;
+            readSize = 0;
             str.clear();
             if (contentLength == 0)
             {
@@ -236,10 +236,10 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
         chunked.append(&str[0], readSize);
         readSize = 0;
         str.clear();
-        LOG(cout<<"chunked: "<<chunked<<endl;)
+        LOG(cout<<"chunked: "<<chunked<<endl);
         flag = chunked.find("0\r\n\r\n");
         // flag = str.find("0\r\n");  //talnet 때문에 임시로 대체함
-        //에러 발생시 중간에 빠져 나왔을 떄
+        // 에러 발생시 중간에 빠져 나왔을 떄
         if (flag != std::string::npos)
         {
             //chunked 크기 확인하기
@@ -247,9 +247,7 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
             chunked = chunked.substr(0, flag);
             // str = str.substr(flag + 3);
             if (chunkedEntity(status) < 0)
-            {
                 return (-1);
-            }
             readSize = str.size();
         }
     }

@@ -147,11 +147,6 @@ int     StartLine::check(std::string firstLine)
             case 1:  //allow checking and root checking (config parser)
                 url = str;  //.찾으면 지우기
                 urlQuery();
-                // host 가 필요하기 때문에 여기서 처리 할 수 없음
-                // if (setMatchingLocation(url))
-                //     return (500);
-                // url이 잘못된 형식이면 400 형식은 맞지만 존재하지 않는다면 404(Not Found)
-                // 여기서 url검사와 allow검사 같이 진행하는 것이 좋을듯
                 break ;
             case 2:
                 version = originVersion[str];

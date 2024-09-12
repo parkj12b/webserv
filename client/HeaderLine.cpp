@@ -441,16 +441,6 @@ int HeaderLine::headerError()
             return (400);
         te = YES;
     }
-    itm = header.find("expect");
-    if (itm != header.end())
-    {
-        if (itm->second.front() != "100-continue")
-            return (417);
-        else if (contentType == ENOT)
-            return (408);
-        completion = true;
-        return (100);
-    }
     itm = header.find("connection");
     if (itm != header.end())
     {
@@ -458,5 +448,15 @@ int HeaderLine::headerError()
             connect = false;
     }
     completion = true;
+    // itm = header.find("expect");
+    // if (itm != header.end())
+    // {
+    //     if (itm->second.front() != "100-continue")
+    //         return (417);
+    //     else if (contentType == ENOT)
+    //         return (400);
+    //     completion = true;
+    //     return (100);
+    // }
     return (0);
 }
