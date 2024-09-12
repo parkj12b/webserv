@@ -15,7 +15,7 @@
 #include "Response.hpp"
 #include "UtilTemplate.hpp"
 
-extern int readLog;
+// extern int readLog;
 
 HTTPServer *Server::serverConfig = NULL;
 
@@ -208,9 +208,10 @@ EVENT   Server::cgiRead(struct kevent& store)
 	if (readSize == 0)
 	{
         size_t  status = 0;
+        pid_t   result;
         int     waitStatus = 0;
         
-        waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
+        result = waitpid(Kq::pidPipe[store.ident], &waitStatus, WNOHANG);
         vector<pid_t>::iterator it = find(Kq::processor.begin(), Kq::processor.end(), Kq::pidPipe[store.ident]);
         if (it != Kq::processor.end())
         {
@@ -218,12 +219,19 @@ EVENT   Server::cgiRead(struct kevent& store)
             Kq::cgiFdToClient.erase(Kq::cgiFd[store.ident]);
         }
         LOG(cout << "pidPipe: " << Kq::pidPipe[store.ident] << endl;)
-        if (WIFEXITED(waitStatus))
+        if (result > 0)
         {
-            status = WEXITSTATUS(waitStatus);
-            if (status != 0)
-                status = 600;
-            LOG(std::cout<<"status: "<< status << std::endl);
+            status = 600;
+            // status = WEXITSTATUS(waitStatus);
+            // cout << "WIFEXITED(waitStatus): "<< WIFEXITED(waitStatus) << endl;
+            // cout << "checkoout: " << status << endl;
+            // if (status != 0)
+            //     status = 600;
+            // if (!WIFEXITED(waitStatus))
+            //     status = 600;
+            // if (!WIFEXITED(waitStatus))
+            //     status = 600;
+            // LOG(std::cout<<"status: "<< status << std::endl);
         }
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
@@ -284,7 +292,7 @@ EVENT Server::clientRead(struct kevent& store)
     }
     LOG(std::cout<<"Client Read " << readSize << std::endl);
     buffer[readSize] = '\0';
-    write(readLog, buffer, readSize);
+    // write(readLog, buffer, readSize);
     client[store.ident].setMessage(buffer, readSize);
     client[store.ident].setConnection(true);
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
