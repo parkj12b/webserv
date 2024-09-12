@@ -1,9 +1,7 @@
 #include <sys/stat.h>
-#include <dirent.h>
 #include "UtilTemplate.hpp"
 #include "CgiProcessor.hpp"
 #include "Kq.hpp"
-#include "UtilTemplate.hpp" 
 
 string initEXCUTEPATH()
 {

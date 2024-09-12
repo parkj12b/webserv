@@ -300,7 +300,7 @@ EVENT Server::clientRead(struct kevent& store)
 
 EVENT   Server::clientWrite(struct kevent& store)
 {
-    std::vector<Client*>::iterator   it;
+//    std::vector<Client*>::iterator   it;
     ssize_t     openCheck;
     size_t      index;
     const char* buffer = client[store.ident].respondMsgIndex();

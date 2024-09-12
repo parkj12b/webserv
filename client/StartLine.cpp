@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "StartLine.hpp"
-#include "HTTPServer.hpp"
-#include "Server.hpp"
 #include "UtilTemplate.hpp" 
 
 std::map<std::string, Method> originMethodInit()

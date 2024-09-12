@@ -356,7 +356,6 @@ int HeaderLine::parseTrailer(std::string &temp)
 
 int HeaderLine::makeHeader(std::string& temp)
 {
-    std::string str;
     size_t      colon;
 
     if (eraseSpace(temp, false))

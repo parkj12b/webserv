@@ -16,8 +16,6 @@
 #include "Response.hpp"
 #include "Server.hpp"
 #include "LocationConfigData.hpp"
-#include "ServerConfigData.hpp"
-#include "Trie.hpp"
 #include "UtilTemplate.hpp"
 #include "StartLine.hpp"
 #include "CgiProcessor.hpp"
@@ -212,7 +210,7 @@ void    Response::makeFilePath(string& str)
         LOG(cout << "404 1\n");
         return ;
     }
-    if (isWithinBasePath(location->getRoot(), strDir) == false)
+    if (!isWithinBasePath(location->getRoot(), strDir))
     {
         request.status = 403;
         LOG(cout << "403 1\n");
@@ -224,7 +222,7 @@ void    Response::makeFilePath(string& str)
         LOG(cout << "index: " << location->getIndex() << endl);
         string temp = str;
         str += "/" + location->getIndex();
-        if (isFile(str.c_str()) == false)
+        if (!isFile(str.c_str()))
         {
             if (request.method == GET && location->getAutoindex())
                 str = temp + "/";
@@ -236,7 +234,7 @@ void    Response::makeFilePath(string& str)
             return ;
         }
     }
-    else if (isFile(str.c_str()) == false)
+    else if (!isFile(str.c_str()))
     {
         LOG(cout << "not file: " << str << endl);
         request.status = 404;
@@ -390,7 +388,6 @@ size_t  Response::setCgiHeader(string &content_, size_t &status)
     size_t  headerPos;
     string  headerNamePull;
     string  headerNameKey;
-    string  headerNameValue;
 
     crlfPos = content_.find("\r\n");
     if (crlfPos != string::npos)
@@ -456,7 +453,7 @@ size_t  Response::setCgiContent(string &content_, size_t &status)
         return (0);
     }
     pos = content_.find("\r\n");
-    if (pos != string::npos && pos == 0)
+    if (pos == 0)
     {
         content_ = content_.substr(pos + 2);
         pos = 2;
