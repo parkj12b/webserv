@@ -303,7 +303,6 @@ int Client::setStart()
     {
         if (msg.size() > 8192)
         {
-            //location && keep-alive
             standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
             request.status = 414;
             return (2);
@@ -347,14 +346,18 @@ int Client::setHeader()
                 }
                 if ((request.status = headerLine.headerError()) > 0)
                 {
-                    if (request.status == 100 && !msg.empty())
-                        request.status = 0;
-                }
-                if (request.status > 0)
-                {
+                    // if (request.status == 100 && !msg.empty())
+                    //     request.status = 0;
                     LOG(std::cout<<"default error"<<std::endl);
+                    std::cout<<"default error"<<std::endl;
                     return (2);
                 }
+                // if (request.status > 0)
+                // {
+                //     LOG(std::cout<<"default error"<<std::endl);
+                //     std::cout<<"default error"<<std::endl;
+                //     return (2);
+                // }
                 request.header = headerLine.getHeader();
                 contentLine.initContentLine(headerLine.getContentLength(), headerLine.getContentType());
                 connect = headerLine.getConnect();
@@ -511,6 +514,8 @@ void    Client::setMessage(const char* msgRequest, int &readSize)
     }
     if (setHeader())  //max size literal, 헤더 파싱
     {
+        if (request.status == 100)
+            return ;
         request.fin = true;
         while (!request.header["host"].empty())
             request.header["host"].pop_back();

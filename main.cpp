@@ -17,7 +17,7 @@
 #include "Directives.hpp"
 #include "Server.hpp"
 
-// int readLog;
+int readLog;
 
 void    check()
 {
@@ -68,11 +68,11 @@ int main(int argc, char **argv, char **envp)
     Validator v(parser);
     Server::serverConfig = v.validate();
 
-    // readLog = open("./readLog", O_CREAT | O_WRONLY | O_TRUNC, 0644);
+    readLog = open("./readLog", O_CREAT | O_WRONLY | O_TRUNC, 0644);
     //fd를 닫지 않았을 가능성이 존재함
     Kq  kq(pathEnv);
     std::ios::sync_with_stdio(false);
     while (1)
         kq.mainLoop();
-    // close(readLog);
+    close(readLog);
 }
