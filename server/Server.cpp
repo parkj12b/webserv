@@ -15,7 +15,7 @@
 #include "Response.hpp"
 #include "UtilTemplate.hpp"
 
-extern int readLog;
+// extern int readLog;
 
 HTTPServer *Server::serverConfig = NULL;
 
@@ -141,7 +141,6 @@ EVENT   Server::cgiGet(struct kevent& store)
         cgiContent[store.ident].clear();
     }
     readSize = read(store.ident, buf, BUFFER_SIZE);
-    // throwIfError(errno, readSize);  //logic 맞는지 체크하기
     if (readSize < 0)
         return (ING);
     buf[readSize] = '\0';
@@ -264,25 +263,25 @@ EVENT Server::clientRead(struct kevent& store)
     // }
     if (store.flags & EV_ERROR)
     {
-        LOG(cout << "clientRead errno: " << errno << endl;)
+        LOG(cout << "clientRead errno: " << errno << endl);
         return (ERROR);
     }
     readSize = read(store.ident, buffer, BUFFER_SIZE * client[store.ident].getSocketReadSize());
     // throwIfError(errno, readSize);
     if (readSize <= 0) // read가 발생했는데 읽은게 없다면 에러
     {
-        LOG(std::cout<<"read error or socket close\n";)
+        LOG(std::cout<<"read error or socket close\n");
         client[store.ident].deleteContent();
         return (ERROR);
     }
     if (readSize == BUFFER_SIZE * client[store.ident].getSocketReadSize())
     {
         client[store.ident].plusSocketReadSize();
-        LOG(cout << "buffer read size: " << BUFFER_SIZE * client[store.ident].getSocketReadSize()<<endl;)
+        LOG(cout << "buffer read size: " << BUFFER_SIZE * client[store.ident].getSocketReadSize()<<endl);
     }
     LOG(std::cout<<"Client Read " << readSize << std::endl);
     buffer[readSize] = '\0';
-    write(readLog, buffer, readSize);
+    // write(readLog, buffer, readSize);
     client[store.ident].setMessage(buffer, readSize);
     client[store.ident].setConnection(true);
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)

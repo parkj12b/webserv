@@ -536,7 +536,6 @@ int Response::getDefaultErrorPage(int statusCode)
 
     if (errorStr.size() > 0)
         fd = open(errorStr.c_str(), O_RDONLY);
-    // throwIfError(errno, fd);  //고민
     if (fd != -1)
         return (fd);
     if (statusCode >= 400 && statusCode < 500)
@@ -642,7 +641,6 @@ void    Response::makeError()
     int fd = -1;
     if (errorPath != "")
         fd = open(errorPath.c_str(), O_RDONLY);
-    // throwIfError(errno, fd);   //고민
     if (errorPath != "" && fd >= 0)
     {
         request.url = errorPath;

@@ -193,7 +193,9 @@ void    Kq::eventRead(struct kevent& store)
     EVENT   event;
 	map<int, int>::iterator iter = cgiFd.begin();
 
-    LOG(cerr << "eventRead" << endl;)
+
+    LOG(cerr << "event read" << endl);
+    LOG(cout << "event read" << endl);
     if (store.ident == 0)
         return ;
 	//vector에 담기 혹은 다른 방안 생각하기 serverFd가 map일 텐데 이거를 pipe일 경우에 value값을 1로
@@ -205,19 +207,15 @@ void    Kq::eventRead(struct kevent& store)
 	}
 	if (iter != cgiFd.end())
 	{
-        // LOG(std::cout<<"cgi here\n");
         LOG(std::cout<<"READ EVENT CGI: "<<store.ident<<endl;)
 		serverFd = findServer[cgiFd[store.ident]]; // client fd (store.ident) 이벤트 발생 fd 를 통해 server fd를 찾음
 		if (serverFd == 0)
         {
-            LOG(cerr<<"No enroll cgi: "<<store.ident << endl;)
             LOG(std::cout<<"No enroll cgi: "<<store.ident << std::endl);
             cgiFdToClient.erase(cgiFd[iter->first]);
             cgiFd.erase(iter->first);
             plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-            LOG(cout << "ERRONO: " << errno << endl;)
             Kq::closeFd.push_back(store.ident);
-            // throwIfError(errno, close(store.ident));
 			return ;
         }
         if (Kq::pidPipe[iter->first] == -1)
@@ -244,10 +242,8 @@ void    Kq::eventRead(struct kevent& store)
                 cgiFd.erase(store.ident);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 Kq::closeFd.push_back(store.ident);
-                // throwIfError(errno, close(store.ident));
                 break ;
 			case FINISH:
-                LOG(std::cout<<"WRITE FD: "<<cgiFd[store.ident]<<" ERRNO:"<<errno<<std::endl);
                 LOG(cout<<"FINISH CLOSE"<<endl;)
                 LOG(cout << "[Server::eventRead] - (FINISH) FD: " << iter->first << endl;)
                 LOG(std::cout<<"CGI Finish: "<<iter->first<<std::endl);
@@ -298,6 +294,8 @@ void    Kq::eventWrite(struct kevent& store)
     int     serverFd;
     EVENT   event;
 
+    LOG(cerr << "event write" << endl;)
+    LOG(std::cout<<"event write"<<std::endl);
     if (store.ident == 0)
         return ;
     serverFd = findServer[store.ident];
@@ -307,9 +305,7 @@ void    Kq::eventWrite(struct kevent& store)
         return ;
     }
     if (store.flags & EV_ERROR)
-    {
         event = ERROR;
-    }
     else
         event = server[serverFd].clientWrite(store);
     switch (event)
@@ -333,6 +329,8 @@ void    Kq::eventTimer(struct kevent& store)
     int     serverFd;
     EVENT   event;
 
+    LOG(cerr << "event timer" << endl;)
+    LOG(cout << "event timer" << endl);
     serverFd = findServer[store.ident];
     if (serverFd == 0)
         return ;
@@ -390,24 +388,17 @@ void    Kq::mainLoop()
     for (std::vector<pid_t>::iterator it = Kq::processor.begin(); it != Kq::processor.end();)
     {
         pid_t pid = waitpid(*it, &status, WNOHANG);
-        if (pid == 0)
+        if (pid <= 0)
             it++;
         else if (pid > 0)
-        {
             it = Kq::processor.erase(it);
-        }
-        else
-        {
-            LOG(cout << "pid: " << *it << endl;)
-            it = Kq::processor.erase(it);
-        }
     }
     // Kq::processor = notFin;
     //changed EVENTCNT to connectionCnt
     LOG(cout << "connectionCnt: " << connectionCnt << endl;)
     if ((count = kevent(kq, &fdList[0], fdList.size(), store, connectionCnt, NULL)) <= 0)
     {
-        LOG(cout << "ERROR or kevent Zero" << endl;)
+        LOG(cout << "ERROR or kevent Zero: " << count << endl;)
         return ;
     }
     fdList.clear();
@@ -420,7 +411,7 @@ void    Kq::mainLoop()
             LOG(cout << "server: " << store[i].ident << endl;)
             if (store[i].flags == EV_ERROR)
             {
-                LOG(cerr << "server EV_ERROR" << endl;)
+                LOG(cerr << "server EV_ERROR" << endl);
                 serverError(store[i]);  //server에 연결된 모든 client 종료
             }
             else if (store[i].filter == EVFILT_READ) //read event(complete)
@@ -428,29 +419,23 @@ void    Kq::mainLoop()
         }
         else
         {
-            LOG(cout << "client: " << store[i].ident << endl;)
+            LOG(cout << "client: " << store[i].ident << endl);
             LOG(std::cout<<"store[i].ident: "<<store[i].ident<<std::endl);
             if (store[i].flags & EV_ERROR) // 오류 플래그 확인
             {
-                LOG(std::cerr << "Event error: " << strerror(store[i].data) << std::endl;)
-                LOG(cerr << "store[i].flags: " << store[i].flags << endl;)
+                LOG(std::cerr << "Event error: " << strerror(store[i].data) << std::endl);
+                LOG(cerr << "store[i].flags: " << store[i].flags << endl);
             }
             if (store[i].filter == EVFILT_READ)
             {
-                LOG(cerr << "read" << endl;)
-                LOG(std::cout<<"read"<<std::endl);
                 eventRead(store[i]);
             }
             else if (store[i].filter == EVFILT_WRITE)
             {
-                LOG(cerr << "write" << endl;)
-                LOG(std::cout<<"write"<<std::endl);
                 eventWrite(store[i]);
             }
             else if (store[i].filter == EVFILT_TIMER)
             {
-                LOG(cerr << "timer" << endl;)
-                LOG(std::cout<<"timer"<<std::endl);
                 eventTimer(store[i]);
             }
         }
