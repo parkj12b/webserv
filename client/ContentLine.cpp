@@ -140,7 +140,6 @@ int ContentLine::chunkedEntity(int &status)
     int                 size;
 
     ans = 0;
-    //chunked인데  \r\n이 아니라 \n
     while (getline(chunkedStream, temp))
     {
         if (temp[temp.size() - 1] != '\r')
@@ -151,7 +150,7 @@ int ContentLine::chunkedEntity(int &status)
         {
             try
             {
-                size = std::stoi(temp, nullptr, 16);
+                size = std::stoi(temp, NULL, 16);
             }
             catch(const std::exception& e)
             {

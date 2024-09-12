@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/07 17:33:23 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/09 15:16:51 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -486,7 +486,6 @@ void    Client::resetClient()
     msgSize = 0;
     index = 0;
     responseAmount = 0;
-    standardTime = 75;
     msg.clear();
     // 여기서 뭔가 ServerConfigData, LocationConfigData를 초기화해주는 기분이 듦
     startLine = StartLine(port);

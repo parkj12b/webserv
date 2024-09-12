@@ -74,6 +74,7 @@ class Server
         int                     getPort(void) const;
         std::map<int, size_t>   getCgiContentLength(void) const;
         std::map<int, Client>   getClient(void) const;
+        std::map<int, Client>   &getClient(void);
         //logic
         bool    getResponseCgi(int fd);
         ssize_t getStandardTime(int fd);
