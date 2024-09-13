@@ -306,12 +306,7 @@ EVENT   Server::clientWrite(struct kevent& store)
     if (store.flags & EV_ERROR)
         return (ERROR);
     if (store.ident == 0 || client[store.ident].getFd() == 0)
-    {
         return (ING);
-    }
-    // int flags = fcntl(store.ident, F_GETFL, 0);
-    // if (!(flags & O_RDWR))
-    //     return (ERROR);
     LOG(std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl);
     openCheck = recv(store.ident, readBuffer, sizeof(readBuffer), MSG_PEEK);
     if (openCheck == 0)
@@ -325,18 +320,11 @@ EVENT   Server::clientWrite(struct kevent& store)
         // return (ERROR);
     }
     index = write(store.ident, buffer, client[store.ident].responseIndex());
-    // if (!throwIfError(errno, index))
-    //     return (ERROR);  //exit(ERROR)
     if (index < 0 || index > client[store.ident].responseIndex())
         return (ERROR);
     // LOG(cout<<"msg: " <<buffer<<endl;)
     // write(1, buffer, client[store.ident].responseIndex());
-    LOG(std::cout<<"write index: " <<index<<endl;)
-    // if (index > client[store.ident].responseIndex())
-    // {
-    //     LOG(std::cout<<"ERROR wirte"<<endl;)
-    //     return (ERROR);
-    // }
+    LOG(std::cout<<"write index: " <<index<<endl);
     client[store.ident].plusIndex(index);
     client[store.ident].setConnection(true);
     if (client[store.ident].responseIndex())
@@ -361,7 +349,7 @@ EVENT   Server::clientTimer(struct kevent& store)
     bool    flag;
 
     if (store.flags & EV_ERROR)
-        return (FINISH);
+        return (ERROR);
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
     flag = client[store.ident].getConnection();

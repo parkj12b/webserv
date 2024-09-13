@@ -283,7 +283,7 @@ void    Kq::eventRead(struct kevent& store)
 				plusEvent(store.ident, EVFILT_TIMER, EV_DELETE, 0, 0, 0);
 				plusEvent(store.ident, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, server[serverFd].getStandardTime(store.ident) * 1000, 0);  //75초
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-                LOG(std::cout<<"keep-alive: "<<server[serverFd].getStandardTime(store.ident)<<endl);
+                LOG(std::cout << "keep-alive: "<<server[serverFd].getStandardTime(store.ident) << endl);
 				break ;
 		}
 	}
@@ -304,10 +304,7 @@ void    Kq::eventWrite(struct kevent& store)
         LOG(std::cout<<"No enroll write: "<<store.ident << std::endl);
         return ;
     }
-    if (store.flags & EV_ERROR)
-        event = ERROR;
-    else
-        event = server[serverFd].clientWrite(store);
+    event = server[serverFd].clientWrite(store);
     switch (event)
     {
         case ING:
