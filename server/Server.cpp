@@ -248,8 +248,11 @@ EVENT Server::clientRead(struct kevent& store)
 
     //eof신호를 못 받게 됨
     if (store.flags & EV_ERROR)
+    {
+        LOG(cout << "clientRead errno: " << errno << endl);
         return (ERROR);
-    LOG(cerr << "clientRead" << endl;)
+    }
+    LOG(cerr << "clientRead" << endl);
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
     // if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 100)
@@ -261,11 +264,6 @@ EVENT Server::clientRead(struct kevent& store)
     //     LOG(std::cout<<"write: client close"<<std::endl);
     //     return (ERROR);
     // }
-    if (store.flags & EV_ERROR)
-    {
-        LOG(cout << "clientRead errno: " << errno << endl);
-        return (ERROR);
-    }
     readSize = read(store.ident, buffer, BUFFER_SIZE * client[store.ident].getSocketReadSize());
     // throwIfError(errno, readSize);
     if (readSize <= 0) // read가 발생했는데 읽은게 없다면 에러

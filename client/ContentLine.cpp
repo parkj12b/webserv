@@ -139,9 +139,11 @@ int ContentLine::chunkedEntity(int &status)
     while (getline(chunkedStream, temp))
     {
         if (temp[temp.size() - 1] != '\r')
+        {
+            status = 400;
             return (-1);
-        if (temp[temp.size() - 1] == '\r') //temp[temp.size() - 1] == '\r'
-            temp.erase(temp.size() - 1);
+        }
+        temp.erase(temp.size() - 1);
         if (ans % 2 == 0)
         {
             try
@@ -161,7 +163,6 @@ int ContentLine::chunkedEntity(int &status)
         }
         else
         {
-            // content.push_back(temp);
             write(fd, &temp[0], size);
         }
         ans++;

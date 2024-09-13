@@ -297,7 +297,6 @@ int Client::setStart()
         request.location = startLine.getLocation();
         request.version = startLine.getVersion();
         request.query = startLine.getQuery();
-        // standardTime = Server::serverConfig->getServerData;  //여기서 keep-alive setting
     }
     else
     {
@@ -346,10 +345,7 @@ int Client::setHeader()
                 }
                 if ((request.status = headerLine.headerError()) > 0)
                 {
-                    // if (request.status == 100 && !msg.empty())
-                    //     request.status = 0;
                     LOG(std::cout<<"default error"<<std::endl);
-                    std::cout<<"default error"<<std::endl;
                     return (2);
                 }
                 // if (request.status > 0)
@@ -391,7 +387,7 @@ int Client::setHeader()
     {
         //아직 다 들어오지 않은 데이터가 있을 수도 있잔녀 이건 우선 생각하지 않음
         //데이터가 후에 들어온다고 가정한다면 그때 가서 처리를 해주면 됨 하지만 들어오지 않고 eof가 들어오면 맞는 데이터임에도 error로 처리하기 때문에 여기서 이렇게 처리하는 것이 맡다. 
-        LOG(cout<<"checking..."<<endl;)
+        LOG(cout<<"checking..."<<endl);
         if (request.method == GET)
             request.fin = true;
         else if (msg.empty() && headerLine.getContentType() == ENOT)
@@ -426,7 +422,7 @@ int Client::setContent()
         {
             if (!msg.empty())
             {
-                LOG(cout << "getTe: " << msg << endl);
+                LOG(cout << "getTeError: " << msg << endl);
                 request.status = 400;
                 return (2);
             }
@@ -609,8 +605,8 @@ bool    Client::setMatchingLocation(string url)
     temp = "/" + temp;
     response.setLocationConfigData(recurFindLocation(temp, location));
     LOG(cout << "path: " << response.getLocationConfigData()->getPath() << endl);
-    LOG(cout << "location " << location << endl);
-    LOG(cout << "lower location " << request.location << endl);
+    LOG(cout << "location: " << location << endl);
+    LOG(cout << "lower location: " << request.location << endl);
     LOG(cout << "location here: " << location << endl);
     return (false);
 }
@@ -640,10 +636,5 @@ void    Client::showMessage(void)
             LOG(std::cout<<*itd<<"  ");
         LOG(std::cout<<"\n");
     }
-    //LOG(std::cout<<"=====entity line=====\n");
-    // for (std::vector<std::string>::iterator it = request.content.begin(); it != request.content.end(); it++)
-    // {
-    //     LOG(std::cout<<*it);
-    // }
     LOG(std::cout<<"\n\n");
 }
