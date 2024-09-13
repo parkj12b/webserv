@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "StartLine.hpp"
-#include "HTTPServer.hpp"
-#include "Server.hpp"
 #include "UtilTemplate.hpp" 
 
 std::map<std::string, Method> originMethodInit()
@@ -21,7 +19,6 @@ std::map<std::string, Method> originMethodInit()
     std::map<std::string, Method> m;
 
     m["GET"] = GET;
-    // m["HEAD"] = HEAD;
     m["POST"] = POST;
     m["DELETE"] = DELETE;
     return (m);
@@ -100,7 +97,7 @@ std::map<std::string, std::string>    StartLine::getQuery() const
     return (query);
 }
 
-bool    StartLine::urlQuery()
+void    StartLine::urlQuery()
 {
     size_t      pos;
     std::string queryTemp;
@@ -124,7 +121,6 @@ bool    StartLine::urlQuery()
                 query[str.substr(0, pos)] = str.substr(pos + 1);
         }
     }
-    return (false);
 }
 
 int     StartLine::check(std::string firstLine)
@@ -137,6 +133,8 @@ int     StartLine::check(std::string firstLine)
     LOG(std::cout<<port<<std::endl);
     while (getline(strStream, str, ' '))
     {
+        if (str.empty())
+            return (400);
         switch (answer)
         {
             case 0:
@@ -145,16 +143,8 @@ int     StartLine::check(std::string firstLine)
                     return (405);
                 break ;
             case 1:  //allow checking and root checking (config parser)
-                if (str.empty())
-                    return (400);
                 url = str;  //.찾으면 지우기
-                if (urlQuery())
-                    return (400);
-                // host 가 필요하기 때문에 여기서 처리 할 수 없음
-                // if (setMatchingLocation(url))
-                //     return (500);
-                // url이 잘못된 형식이면 400 형식은 맞지만 존재하지 않는다면 404(Not Found)
-                // 여기서 url검사와 allow검사 같이 진행하는 것이 좋을듯
+                urlQuery();
                 break ;
             case 2:
                 version = originVersion[str];

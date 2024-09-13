@@ -64,8 +64,6 @@ def process_file(file_item):
     else:
         make_error()
 def main():
-    while 1:
-        continue
     handle_file_uploads()
 
 if __name__ == "__main__":

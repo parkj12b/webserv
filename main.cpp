@@ -11,16 +11,11 @@
 /* ************************************************************************** */
 
 #include "Kq.hpp"
-#include "HTTPServer.hpp"
 #include "Lexer.hpp"
 #include "Parser.hpp"
 #include "Validator.hpp"
 #include "Directives.hpp"
 #include "Server.hpp"
-#include <sstream>
-#include <streambuf>
-#include <errno.h>
-#include <csignal>
 
 int readLog;
 

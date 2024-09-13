@@ -6,14 +6,13 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 17:11:14 by inghwang          #+#    #+#             */
-/*   Updated: 2024/09/09 15:16:51 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/12 15:08:17 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
 #include "ServerConfigData.hpp"
 #include "LocationConfigData.hpp"
-#include "HTTPServer.hpp"
 #include "UtilTemplate.hpp"
 
 LocationConfigData *Client::recurFindLocation(string url,
@@ -225,7 +224,10 @@ void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content, siz
     LOG(std::cout<<"cgiContentLength: "<<cgiContentLength<<std::endl;)
     pos = response.setCgiContent(content, status);
     if (status >= 400)
+    {
+        
         return ;
+    }
     LOG(std::cout<<"cgi pos: "<<pos<<std::endl;)
     response.setCgiContentLength(cgiContentLength - pos);
     responseAmount = response.getStartHeaderLength() + cgiContentLength - pos;
@@ -296,13 +298,11 @@ int Client::setStart()
         request.location = startLine.getLocation();
         request.version = startLine.getVersion();
         request.query = startLine.getQuery();
-        // standardTime = Server::serverConfig->getServerData;  //여기서 keep-alive setting
     }
     else
     {
         if (msg.size() > 8192)
         {
-            //location && keep-alive
             standardTime = Server::serverConfig->getDefaultServer(port)->getKeepaliveTimeout();  //여기서 keep-alive setting
             request.status = 414;
             return (2);
@@ -315,7 +315,6 @@ int Client::setHeader()
 {
     size_t                                                    flag;
     std::string                                               str;
-    std::map<std::string, std::deque<std::string> >::iterator itm;
 
     if (!startLine.getCompletion() || headerLine.getCompletion() || request.fin || request.status)
         return (0);
@@ -335,7 +334,11 @@ int Client::setHeader()
                 LOG(std::cout<<"standardTime: " <<standardTime<<std::endl);
                 LOG(std::cout<<"server name: "<<Server::serverConfig->getDefaultServer(port)->getServerName()[0]<<endl;)
                 LOG(cout << "response in location: " << &response << endl);
-                LOG(cout << "host: "<<request.header["host"].front()<<endl);
+                if (request.header["host"].empty())
+                {
+                    request.status = 400;
+                    return (1);
+                }
                 if (setMatchingLocation(request.url))
                 {
                     request.status = 404;
@@ -343,14 +346,15 @@ int Client::setHeader()
                 }
                 if ((request.status = headerLine.headerError()) > 0)
                 {
-                    if (request.status == 100 && !msg.empty())
-                        request.status = 0;
-                }
-                if (request.status > 0)
-                {
                     LOG(std::cout<<"default error"<<std::endl);
                     return (2);
                 }
+                // if (request.status > 0)
+                // {
+                //     LOG(std::cout<<"default error"<<std::endl);
+                //     std::cout<<"default error"<<std::endl;
+                //     return (2);
+                // }
                 request.header = headerLine.getHeader();
                 contentLine.initContentLine(headerLine.getContentLength(), headerLine.getContentType());
                 connect = headerLine.getConnect();
@@ -384,7 +388,7 @@ int Client::setHeader()
     {
         //아직 다 들어오지 않은 데이터가 있을 수도 있잔녀 이건 우선 생각하지 않음
         //데이터가 후에 들어온다고 가정한다면 그때 가서 처리를 해주면 됨 하지만 들어오지 않고 eof가 들어오면 맞는 데이터임에도 error로 처리하기 때문에 여기서 이렇게 처리하는 것이 맡다. 
-        LOG(cout<<"checking..."<<endl;)
+        LOG(cout<<"checking..."<<endl);
         if (request.method == GET)
             request.fin = true;
         else if (msg.empty() && headerLine.getContentType() == ENOT)
@@ -419,7 +423,7 @@ int Client::setContent()
         {
             if (!msg.empty())
             {
-                LOG(cout << "getTe: " << msg << endl);
+                LOG(cout << "getTeError: " << msg << endl);
                 request.status = 400;
                 return (2);
             }
@@ -435,7 +439,7 @@ int Client::setTrailer(void)
     size_t      flag;
     std::string str;
 
-    if (!contentLine.getCompletion() || headerLine.getTe() != YES || request.fin == true || request.status > 0)
+    if (!contentLine.getCompletion() || headerLine.getTe() != YES || request.fin || request.status > 0)
         return (0);
     LOG(std::cout<<"...setTrailer parsing...\n");
     while (1)
@@ -507,8 +511,10 @@ void    Client::setMessage(const char* msgRequest, int &readSize)
     }
     if (setHeader())  //max size literal, 헤더 파싱
     {
+        if (request.status == 100)
+            return ;
         request.fin = true;
-        if (!request.header["host"].empty())
+        while (!request.header["host"].empty())
             request.header["host"].pop_back();
         request.header["host"].push_back(Server::serverConfig->getDefaultServer(port)->getServerName()[0]);
         LOG(std::cout<<"Header Error\n");
@@ -561,8 +567,7 @@ void    Client::plusIndex(size_t plus)
 bool    Client::setMatchingLocation(string url)
 {
     LOG(cout << "url " << url << endl);
-    // size_t lastSlash = url.find_last_of('/');
-    // url = url.substr(0, lastSlash);
+
     string host = request.header["host"].front();
     ServerConfigData *serverConfigData;
     try {
@@ -601,8 +606,8 @@ bool    Client::setMatchingLocation(string url)
     temp = "/" + temp;
     response.setLocationConfigData(recurFindLocation(temp, location));
     LOG(cout << "path: " << response.getLocationConfigData()->getPath() << endl);
-    LOG(cout << "location " << location << endl);
-    LOG(cout << "lower location " << request.location << endl);
+    LOG(cout << "location: " << location << endl);
+    LOG(cout << "lower location: " << request.location << endl);
     LOG(cout << "location here: " << location << endl);
     return (false);
 }
@@ -632,10 +637,5 @@ void    Client::showMessage(void)
             LOG(std::cout<<*itd<<"  ");
         LOG(std::cout<<"\n");
     }
-    //LOG(std::cout<<"=====entity line=====\n");
-    // for (std::vector<std::string>::iterator it = request.content.begin(); it != request.content.end(); it++)
-    // {
-    //     LOG(std::cout<<*it);
-    // }
     LOG(std::cout<<"\n\n");
 }

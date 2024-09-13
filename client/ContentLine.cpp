@@ -16,7 +16,7 @@
 ContentLine::ContentLine() : first(true), completion(false), fd(0), port(0), contentLength(0), maxSize(0)
 {}
 
-ContentLine::ContentLine(const ContentLine& src) : first(src.getFirst()), completion(src.getCompletion()), contentType(src.getContentType()), fd(src.getFd()), port(src.getPort()), contentLength(src.getContentLength()), maxSize(src.getMaxSize()), chunked(src.getChunked()), content(src.getContent())
+ContentLine::ContentLine(const ContentLine& src) : first(src.getFirst()), completion(src.getCompletion()), contentType(src.getContentType()), fd(src.getFd()), port(src.getPort()), contentLength(src.getContentLength()), maxSize(src.getMaxSize()), fileName(src.getFileName()), chunked(src.getChunked()), content(src.getContent())
 {}
 
 ContentLine::~ContentLine()
@@ -108,7 +108,6 @@ bool    ContentLine::tempFileMake(int &fd_)
     std::string     fileName_ = CgiProcessor::EXECUTE_PATH + "/.tempContent/";
     size_t          num;
 
-    LOG(cout << "content errno: " << errno << endl;)
     mkdir(".tempContent", 0777);
     num = fd_;
     while (1)
@@ -122,13 +121,10 @@ bool    ContentLine::tempFileMake(int &fd_)
         num++;
     }
     fd = open(fileName.c_str(), O_WRONLY | O_CREAT, 0777);
-    // throwIfError(errno, fd);  //makeError 아래에서 처리함
     LOG(std::cout<<"MAkE FILE"<<std::endl);
     if (fd < 0)
         return (false);
     LOG(std::cout<<"fileName: "<<fileName<<std::endl);
-        // contentLength = 0;
-        LOG(cout << "content errno: " << errno << endl;)
     return (true);
 }
 
@@ -143,9 +139,11 @@ int ContentLine::chunkedEntity(int &status)
     while (getline(chunkedStream, temp))
     {
         if (temp[temp.size() - 1] != '\r')
+        {
+            status = 400;
             return (-1);
-        if (temp[temp.size() - 1] == '\r') //temp[temp.size() - 1] == '\r'
-            temp.erase(temp.size() - 1);
+        }
+        temp.erase(temp.size() - 1);
         if (ans % 2 == 0)
         {
             try
@@ -165,7 +163,6 @@ int ContentLine::chunkedEntity(int &status)
         }
         else
         {
-            // content.push_back(temp);
             write(fd, &temp[0], size);
         }
         ans++;
@@ -207,7 +204,7 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
         {
             contentLength -= static_cast<int>(readSize);
             // content.push_back(str);
-            flag = write(fd, &str[0], readSize);
+            write(fd, &str[0], readSize);
             readSize  = 0;
             str.clear();
             if (contentLength == 0)
@@ -240,10 +237,10 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
         chunked.append(&str[0], readSize);
         readSize = 0;
         str.clear();
-        LOG(cout<<"chunked: "<<chunked<<endl;)
+        LOG(cout<<"chunked: "<<chunked<<endl);
         flag = chunked.find("0\r\n\r\n");
         // flag = str.find("0\r\n");  //talnet 때문에 임시로 대체함
-        //에러 발생시 중간에 빠져 나왔을 떄
+        // 에러 발생시 중간에 빠져 나왔을 떄
         if (flag != std::string::npos)
         {
             //chunked 크기 확인하기
@@ -251,9 +248,7 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
             chunked = chunked.substr(0, flag);
             // str = str.substr(flag + 3);
             if (chunkedEntity(status) < 0)
-            {
                 return (-1);
-            }
             readSize = str.size();
         }
     }

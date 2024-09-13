@@ -141,7 +141,6 @@ EVENT   Server::cgiGet(struct kevent& store)
         cgiContent[store.ident].clear();
     }
     readSize = read(store.ident, buf, BUFFER_SIZE);
-    // throwIfError(errno, readSize);  //logic 맞는지 체크하기
     if (readSize < 0)
         return (ING);
     buf[readSize] = '\0';
@@ -249,8 +248,11 @@ EVENT Server::clientRead(struct kevent& store)
 
     //eof신호를 못 받게 됨
     if (store.flags & EV_ERROR)
+    {
+        LOG(cout << "clientRead errno: " << errno << endl);
         return (ERROR);
-    LOG(cerr << "clientRead" << endl;)
+    }
+    LOG(cerr << "clientRead" << endl);
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
     // if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 100)
@@ -262,23 +264,18 @@ EVENT Server::clientRead(struct kevent& store)
     //     LOG(std::cout<<"write: client close"<<std::endl);
     //     return (ERROR);
     // }
-    if (store.flags & EV_ERROR)
-    {
-        LOG(cout << "clientRead errno: " << errno << endl;)
-        return (ERROR);
-    }
     readSize = read(store.ident, buffer, BUFFER_SIZE * client[store.ident].getSocketReadSize());
     // throwIfError(errno, readSize);
     if (readSize <= 0) // read가 발생했는데 읽은게 없다면 에러
     {
-        LOG(std::cout<<"read error or socket close\n";)
+        LOG(std::cout<<"read error or socket close\n");
         client[store.ident].deleteContent();
         return (ERROR);
     }
     if (readSize == BUFFER_SIZE * client[store.ident].getSocketReadSize())
     {
         client[store.ident].plusSocketReadSize();
-        LOG(cout << "buffer read size: " << BUFFER_SIZE * client[store.ident].getSocketReadSize()<<endl;)
+        LOG(cout << "buffer read size: " << BUFFER_SIZE * client[store.ident].getSocketReadSize()<<endl);
     }
     LOG(std::cout<<"Client Read " << readSize << std::endl);
     buffer[readSize] = '\0';
@@ -288,8 +285,8 @@ EVENT Server::clientRead(struct kevent& store)
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
     {
         client[store.ident].setResponseMessage();
-        if (client[store.ident].getRequestStatus() == 100)
-            return (EXPECT);
+        // if (client[store.ident].getRequestStatus() == 100)
+        //     return (EXPECT);
         //debug
         if (client[store.ident].getRequestFin())
             client[store.ident].showMessage();
@@ -300,7 +297,7 @@ EVENT Server::clientRead(struct kevent& store)
 
 EVENT   Server::clientWrite(struct kevent& store)
 {
-    std::vector<Client*>::iterator   it;
+//    std::vector<Client*>::iterator   it;
     ssize_t     openCheck;
     size_t      index;
     const char* buffer = client[store.ident].respondMsgIndex();
@@ -309,12 +306,7 @@ EVENT   Server::clientWrite(struct kevent& store)
     if (store.flags & EV_ERROR)
         return (ERROR);
     if (store.ident == 0 || client[store.ident].getFd() == 0)
-    {
         return (ING);
-    }
-    // int flags = fcntl(store.ident, F_GETFL, 0);
-    // if (!(flags & O_RDWR))
-    //     return (ERROR);
     LOG(std::cout<<store.ident<<" "<<client[store.ident].responseIndex()<<std::endl);
     openCheck = recv(store.ident, readBuffer, sizeof(readBuffer), MSG_PEEK);
     if (openCheck == 0)
@@ -328,24 +320,17 @@ EVENT   Server::clientWrite(struct kevent& store)
         // return (ERROR);
     }
     index = write(store.ident, buffer, client[store.ident].responseIndex());
-    // if (!throwIfError(errno, index))
-    //     return (ERROR);  //exit(ERROR)
     if (index < 0 || index > client[store.ident].responseIndex())
         return (ERROR);
     // LOG(cout<<"msg: " <<buffer<<endl;)
     // write(1, buffer, client[store.ident].responseIndex());
-    LOG(std::cout<<"write index: " <<index<<endl;)
-    // if (index > client[store.ident].responseIndex())
-    // {
-    //     LOG(std::cout<<"ERROR wirte"<<endl;)
-    //     return (ERROR);
-    // }
+    LOG(std::cout<<"write index: " <<index<<endl);
     client[store.ident].plusIndex(index);
     client[store.ident].setConnection(true);
     if (client[store.ident].responseIndex())
         return (ING);
-    if (client[store.ident].getRequestStatus() == 100)
-        return (EXPECT);
+    // if (client[store.ident].getRequestStatus() == 100)
+    //     return (EXPECT);
     client[store.ident].deleteContent();
     if (!client[store.ident].getConnect() || client[store.ident].getResponseStatus() >= 400)
     {
@@ -364,7 +349,7 @@ EVENT   Server::clientTimer(struct kevent& store)
     bool    flag;
 
     if (store.flags & EV_ERROR)
-        return (FINISH);
+        return (ERROR);
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
     flag = client[store.ident].getConnection();
