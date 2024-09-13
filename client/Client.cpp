@@ -256,7 +256,6 @@ void    Client::deleteContent(void)
     //     cout << "[Client::deleteContent] - " << file.get
     //     file.close();
     // }
-    cout << "file name: " << getContentLine().getFileName().c_str() << endl;
     unlink(getContentLine().getFileName().c_str()); // 잘 지워주세요 To.Ingyu
 }
 
