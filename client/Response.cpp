@@ -617,8 +617,8 @@ void    Response::makeError()
     LOG(cout << "makeError\n"<<request.status<<std::endl);
     if (request.status >= 300 && request.status < 400)
         return ;
-    if (request.status == 100)
-        return ;
+    // if (request.status == 100)
+    //     return ;
 	LOG(cout << request.clientFd << std::endl);
     LocationConfigData	*location = getLocationConfigData();
     map<int, string>	errorPage;
@@ -895,7 +895,7 @@ void    Response::responseMake()
     if (request.status > 0 || init())
     {
         makeError();
-        makeEntity();
+        // makeEntity();  //why
         return ;
     }
     // LOG(cout << "request.status: " << request.status << endl);
