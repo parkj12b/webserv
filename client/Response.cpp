@@ -474,9 +474,8 @@ size_t  Response::setCgiContent(string &content_, size_t &status)
 void	Response::setCgiContentLength(size_t contentLength_)
 {
     contentLength = contentLength_;
-    LOG(cout<<"here    here "<< contentLength_<<endl;)
     makeHeader("content-length", toString(contentLength));
-    LOG(cout << "setCgiContentLength" << endl << endl;)
+    LOG(cout << "setCgiContentLength" << endl << endl);
     makeEntity();
     // LOG(std::cout<<"header: \n\n"<<header);
     // LOG(std::cout<<"================"<<std::endl);
@@ -608,7 +607,10 @@ void    Response::makeDefaultHeader()
     date = day[0] + ", " + day[2] + " " + day[1] + " " + day[4] + " " + day[3] + " GMT";
     makeHeader("date", date);
     makeHeader("server", "inghwang/0.0");
-    makeHeader("connection", "keep-alive");
+    // if (request.status < 400)
+    //     makeHeader("connection", "keep-alive");
+    // else
+    //     makeHeader("connection", "close");
     makeCookie(date);
 }
 
@@ -641,7 +643,7 @@ void    Response::makeError()
     if (errorPath != "" && fd >= 0)
     {
         request.url = errorPath;
-        makeContent(fd);
+        makeContent(fd);  //how
     }
     else
     {
@@ -686,7 +688,7 @@ int Response::checkAllowedMethod()
     {
         request.status = 405;
         makeError();
-        makeEntity();
+        // makeEntity();  //why
         return (1);
     }
     return (0);
@@ -694,6 +696,9 @@ int Response::checkAllowedMethod()
 
 void    Response::makeHeader(string key, string value)
 {
+    if (std::find(keyHeader.begin(), keyHeader.end(), key) != keyHeader.end())
+        return ;
+    keyHeader.push_back(key);
     header += key + ": " + value + "\r\n";
 }
 
@@ -720,7 +725,7 @@ void    Response::makeContent(int fd)
     statReturn = stat(request.url.c_str(), &fileStat);
     if (throwIfError(errno, statReturn) < 0)  //makeError
     {
-        makeError();
+        request.status = 500;
         return ;
     }
     makeHeader("content-type", contentType);
@@ -734,7 +739,7 @@ void    Response::makeContent(int fd)
     cgiFlag = true;
     Kq::cgiFd[fd] = request.clientFd;
     Kq::pidPipe[fd] = -1;
-    LOG(cout << "cgiFd[fd]: " << request.clientFd << endl;)
+    LOG(cout << "cgiFd[fd]: " << request.clientFd << endl);
     // ssize_t readSize;
     // char    buffer[4096];
     // ssize_t count = 0;
@@ -754,6 +759,10 @@ void    Response::makeContent(int fd)
 
 void    Response::makeEntity()
 {
+    if (request.status >= 400)
+        makeHeader("connection", "close");
+    else
+        makeHeader("connection", "keep-alive");
     entity.clear();
     // LOG(std::cout<<request.status<<std::endl);
     if (request.status == 0)
@@ -808,7 +817,6 @@ void    Response::makeGet()
 		// content += cgiProcessor.getCgiContent();
 		// LOG(cout << cgiProcessor.getCgiContent() << '\n');
         // LOG(std::cout<<header);
-        return ;
 	}
 	else
 	{
@@ -821,14 +829,15 @@ void    Response::makeGet()
             // start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
             // while (!cgiProcessor.getFin())
             // 	cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);
-            makeError();
-            return ;
         }
-        LOG(cout << "request.url: " << request.url << " fd: " << fd << endl;)
-        makeContent(fd);
+        else
+        {
+            LOG(cout << "request.url: " << request.url << " fd: " << fd << endl;)
+            makeContent(fd);
+        }
+        if (request.status >= 400)
+            makeError();
 	}
-    if (request.status == 0)
-        request.status = 200;
     // start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
 }
 
@@ -846,15 +855,10 @@ void    Response::makePost()
     else
     {
         int fd = open(request.url.c_str(), O_RDONLY);
-        throwIfError(errno, fd);  //아래에 존재함 지울 것
 		if (fd < 0)
-		{
 			request.status = 404;
-			// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
-			makeError();
-			return ;
-		}
-		makeContent(fd);
+        else
+            makeContent(fd);
     }
 	if (request.status >= 400)
         makeError();
@@ -906,11 +910,12 @@ void    Response::responseMake()
     if (checkRedirect())
         return ;
     makeFilePath(request.url);
-    if (request.status > 0)
+    // if (request.status > 0)  //why
+    if (request.status >= 400)  //why
     {
         LOG(std::cout<<"ERROR\n"<<std::endl);
         makeError();
-        makeEntity();
+        // makeEntity();  //why
         return ;
     }
     switch (request.method)
