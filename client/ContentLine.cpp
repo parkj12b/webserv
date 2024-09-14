@@ -123,7 +123,10 @@ bool    ContentLine::tempFileMake(int &fd_)
     fd = open(fileName.c_str(), O_WRONLY | O_CREAT, 0777);
     LOG(std::cout<<"MAkE FILE"<<std::endl);
     if (fd < 0)
+    {
+        LOG(std::cout<<"fd error"<<std::endl);
         return (false);
+    }
     LOG(std::cout<<"fileName: "<<fileName<<std::endl);
     return (true);
 }
@@ -194,7 +197,7 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
         if (!tempFileMake(fd_))
         {
             status = 500;
-            return (1);
+            return (-1);
         }
         first = false;
     }
