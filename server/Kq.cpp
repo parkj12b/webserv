@@ -339,6 +339,8 @@ void    Kq::eventTimer(struct kevent& store)
 
     LOG(cerr << "event timer" << endl;)
     LOG(cout << "event timer" << endl);
+    if (store.ident == 0)
+        return ;
     serverFd = findServer[store.ident];
     if (serverFd == 0)
         return ;
