@@ -125,7 +125,6 @@ class Response
         int     checkRedirect();                //check redirect
         int     checkAllowedMethod();           //check allowed method
         void    makeFilePath(std::string& str); //make real url
-        int     getDefaultErrorPage(int statusCode); // returns fd of default error page
         void    makeHeader(std::string key, std::string value); //key -> value
         void    makeContent(int fd);                            //make content
         bool    isValidUploadPath();                            //check upload path

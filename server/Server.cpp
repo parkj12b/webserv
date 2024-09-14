@@ -175,7 +175,6 @@ EVENT   Server::cgiRead(struct kevent& store)
 
     if (store.flags & EV_ERROR)
     {
-        Kq::clientToCgiFd.erase(Kq::cgiFd[store.ident]);
         return (EXPECT);
     }
     LOG(cerr << "cgiRead" << endl);
@@ -199,7 +198,6 @@ EVENT   Server::cgiRead(struct kevent& store)
     {
         client[Kq::cgiFd[store.ident]].getResponse().setRequestStatus(500);
         client[Kq::cgiFd[store.ident]].getResponse().makeError();
-        Kq::clientToCgiFd.erase(Kq::cgiFd[store.ident]);
         return (ERROR);
     }  //makeError 같이 고민해보기
 	LOG(cout << "CGI Read Size : " << readSize << endl);
@@ -236,7 +234,6 @@ EVENT   Server::cgiRead(struct kevent& store)
         cgiContent[store.ident].clear();
         cgiContentLength[store.ident] = 0;
         cgiContentLength.erase(store.ident);
-        Kq::clientToCgiFd.erase(Kq::cgiFd[store.ident]);
         if (status >= 400)
             return (ERROR);
         LOG(std::cout << "msg: " << client[Kq::cgiFd[store.ident]].getMsg() << endl);
