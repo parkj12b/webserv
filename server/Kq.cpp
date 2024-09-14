@@ -231,7 +231,9 @@ void    Kq::eventRead(struct kevent& store)
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 plusEvent(cgiFd[store.ident], EVFILT_TIMER, EV_DELETE, 0, 0, 0);
                 closeFd.push_back(store.ident);
-                closeFd.push_back(cgiFd[store.ident]);
+                if (findServer[cgiFd[store.ident]] != 0)
+                    server[findServer[cgiFd[store.ident]]].clientFin(cgiFd[store.ident]);
+                // closeFd.push_back(cgiFd[store.ident]);
                 // clientToCgiFd.erase(cgiFd[store.ident]);
                 cgiFd.erase(store.ident);
                 pidPipe.erase(store.ident);

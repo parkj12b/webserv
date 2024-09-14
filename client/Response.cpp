@@ -414,10 +414,6 @@ size_t  Response::setCgiHeader(string &content_, size_t &status)
                         makeError();
                         return (0);
                     }
-                    // if (request.status >= 400)
-                    //     makeHeader(headerNameKey, toString(request.status));
-                    // else
-                    //     makeHeader(headerNameKey, headerNamePull.substr(headerPos + 1));
                 }
                 else
                     makeHeader(headerNameKey, headerNamePull.substr(headerPos + 1));
