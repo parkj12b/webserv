@@ -739,21 +739,6 @@ void    Response::makeContent(int fd)
     Kq::cgiFd[fd] = request.clientFd;
     Kq::pidPipe[fd] = -1;
     LOG(cout << "cgiFd[fd]: " << request.clientFd << endl);
-    // ssize_t readSize;
-    // char    buffer[4096];
-    // ssize_t count = 0;
-    // while (1)
-    // {
-    //     readSize = read(fd, buffer, 4095);
-    //     if (readSize <= 0)
-    //         break ;
-    //     content.append(buffer, readSize);
-    //     count += readSize;
-    // }
-    // LOG(cout<<"Content Size: "<<content.size()<<endl);
-    // contentLength = count;
-    // makeHeader("content-length", toString(count));
-    // close(fd);
 }
 
 void    Response::makeEntity()
@@ -763,7 +748,6 @@ void    Response::makeEntity()
     else
         makeHeader("connection", "keep-alive");
     entity.clear();
-    // LOG(std::cout<<request.status<<std::endl);
     if (request.status == 0)
         request.status = 200;
     entity = "HTTP/1.1 " + toString(request.status) + statusContent[request.status] + "\r\n";
@@ -772,8 +756,6 @@ void    Response::makeEntity()
     startHeaderLength = entity.size();
     if (!content.empty())
         entity.append(content);
-    // LOG(std::cout<<"request.status: "<<request.status<<std::endl);
-    // LOG(cout<<entity.size()<<endl);
 }
 
 void    Response::makeGet()
@@ -784,17 +766,6 @@ void    Response::makeGet()
     LOG(cout << "cgiFlag: " <<cgiFlag<<endl;)
     LOG(std::cout<<request.url.c_str()<<std::endl);
     CgiProcessor cgiProcessor(request, serverConfig, locationConfig, pathEnv);
-
-    // cout << "is directory: " << isDirectory(request.url.c_str()) << endl;
-    // cout << "location: " << getLocationConfigData()->getPath() << endl;
-    // cout << "autoindex: " << getLocationConfigData()->getAutoindex() << endl;
-    
-    // LOG(cout << "is directory: " << isDirectory(request.url.c_str()) << endl);
-    // LOG(cout << "location: " << getLocationConfigData()->getPath() << endl);
-    // LOG(cout << "autoindex: " << getLocationConfigData()->getAutoindex() << endl);
-
-    //directory 검사는 makeFilePath 에서 함
-    // LOG(cout << "request url: " << request.url << endl);
     if (isDirectory(request.url.c_str()))
     {
         cgiFlag = true;
@@ -809,13 +780,6 @@ void    Response::makeGet()
 			while (!cgiProcessor.getFin())
 				cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);
 		}
-		// 나중에 content-length가 0일 때, 서버 에러 추가
-		// start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
-		// makeHeader("content-type", "text/html");
-		// makeHeader("content-length", toString(contentLength)); //여기서 추가하고 나중에 또 추가함
-		// content += cgiProcessor.getCgiContent();
-		// LOG(cout << cgiProcessor.getCgiContent() << '\n');
-        // LOG(std::cout<<header);
 	}
 	else
 	{
@@ -825,9 +789,6 @@ void    Response::makeGet()
         {
             request.status = 404;
             LOG(cout << "fd error" << endl;)
-            // start = "HTTP1.1 " + to_string(request.status) + statusContent[request.status] + "\r\n";
-            // while (!cgiProcessor.getFin())
-            // 	cgiProcessor.executeCGIScript(CgiProcessor::EXECUTE_PATH + CGI_ERROR_PAGE);
         }
         else
         {
@@ -900,11 +861,9 @@ void    Response::responseMake()
         makeError();
         return ;
     }
-    // LOG(cout << "request.status: " << request.status << endl);
     makeDefaultHeader();
     if (checkAllowedMethod())
         return ;
-    // LOG(cout << "path: " << locationConfig->getPath() << endl);
     if (checkRedirect())
         return ;
     makeFilePath(request.url);
