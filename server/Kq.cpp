@@ -170,6 +170,8 @@ void    Kq::plusEvent(uintptr_t fd, int16_t filter, uint16_t flags, uint32_t ffl
 {
     struct kevent   temp;
 
+    if (fd <= 0)
+        return ;
     EV_SET(&temp, fd, filter, flags, fflags, data, udata);
     fdList.push_back(temp);  //temp를 복사해서 저장을 함
 }
@@ -215,10 +217,10 @@ void    Kq::eventRead(struct kevent& store)
             cgiFdToClient.erase(cgiFd[iter->first]);
             cgiFd.erase(iter->first);
             plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-            Kq::closeFd.push_back(store.ident);
+            closeFd.push_back(store.ident);
 			return ;
         }
-        if (Kq::pidPipe[iter->first] == -1)
+        if (pidPipe[iter->first] == -1)
             event = server[serverFd].cgiGet(store);
         else
             event = server[serverFd].cgiRead(store);
@@ -226,32 +228,36 @@ void    Kq::eventRead(struct kevent& store)
 		{
 			case EXPECT:
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-                cgiFdToClient.erase(cgiFd[store.ident]);
+                plusEvent(cgiFd[store.ident], EVFILT_TIMER, EV_DELETE, 0, 0, 0);
+                closeFd.push_back(store.ident);
+                closeFd.push_back(cgiFd[store.ident]);
+                // cgiFdToClient.erase(cgiFd[store.ident]);
                 cgiFd.erase(store.ident);
-                Kq::closeFd.push_back(cgiFd[store.ident]);
-                Kq::closeFd.push_back(store.ident);
+                pidPipe.erase(store.ident);
                 break ;
 			case ING:
                 LOG(cout << "[Server::eventRead] - (ING, EXPECT) FD: " << iter->first << endl;)
 				break ;
 			case ERROR:
-                LOG(cout<<"ERROR CLOSE"<<endl;)
+                LOG(cout<<"ERROR CLOSE"<<endl);
                 LOG(cout << "[Server::eventRead] - (ERROR) FD: " << iter->first << endl;)
                 LOG(std::cout<<"first CGI Error: "<<iter->first<<std::endl);
-                cgiFdToClient.erase(cgiFd[store.ident]);
-                cgiFd.erase(store.ident);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-                Kq::closeFd.push_back(store.ident);
+                closeFd.push_back(store.ident);
+                // cgiFdToClient.erase(cgiFd[store.ident]);  //지우기
+                cgiFd.erase(store.ident);
+                pidPipe.erase(store.ident);
                 break ;
 			case FINISH:
-                LOG(cout<<"FINISH CLOSE"<<endl;)
+                LOG(cout<<"FINISH CLOSE"<<endl);
                 LOG(cout << "[Server::eventRead] - (FINISH) FD: " << iter->first << endl;)
                 LOG(std::cout<<"CGI Finish: "<<iter->first<<std::endl);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
-                cgiFdToClient.erase(cgiFd[store.ident]);
+                // cgiFdToClient.erase(cgiFd[store.ident]);  //지우기
 				cgiFd.erase(store.ident);
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
-                Kq::closeFd.push_back(store.ident);
+                closeFd.push_back(store.ident);
+                pidPipe.erase(store.ident);
                 // throwIfError(errno, close(store.ident));
 				break ;
 		}
@@ -412,9 +418,7 @@ void    Kq::mainLoop()
         else if (pid > 0)
             it = Kq::processor.erase(it);
     }
-    // Kq::processor = notFin;
-    //changed EVENTCNT to connectionCnt
-    LOG(cout << "connectionCnt: " << connectionCnt << endl;)
+    LOG(cout << "connectionCnt: " << connectionCnt << endl);
     if ((count = kevent(kq, &fdList[0], fdList.size(), store, connectionCnt, NULL)) <= 0)
     {
         LOG(cout << "ERROR or kevent Zero: " << count << endl;)
@@ -424,7 +428,6 @@ void    Kq::mainLoop()
     LOG(cout << "count: " << count << endl;)
     for (int i = 0; i < count; i++)
     {
-        // LOG(cout << "Kq errno: " << errno << endl;)
         if (server.find(static_cast<int>(store[i].ident)) != server.end())
         {
             LOG(cout << "server: " << store[i].ident << endl;)
