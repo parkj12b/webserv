@@ -365,12 +365,10 @@ void    Kq::eventTimer(struct kevent& store)
                     // Kq::processor.push_back(clientToCgiFd[store.ident]);
                     Kq::closeFd.push_back(clientToCgiFd[store.ident]);
                     pidPipe.erase(clientToCgiFd[store.ident]);
-                    cgiFd.erase(clientToCgiFd[store.ident]);
                     if (clientToCgiFd.find(store.ident) != clientToCgiFd.end())
                         clientToCgiFd.erase(store.ident);
                 }
                 cgiFd.erase(clientToCgiFd[store.ident]);
-                clientToCgiFd.erase(store.ident);
             }
             clientFin(store);
             break ;
