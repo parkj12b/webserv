@@ -247,7 +247,7 @@ int ContentLine::makeContentLine(std::string &str, size_t &readSize, int &status
         {
             //chunked 크기 확인하기
             str = chunked.substr(flag + 3);
-            if (str[0] == '\r')
+            if (str[0] == '\r' && str[1] == '\n')
                 str = str.substr(2);
             chunked = chunked.substr(0, flag);
             // str = str.substr(flag + 3);
