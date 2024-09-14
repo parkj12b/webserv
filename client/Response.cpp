@@ -556,8 +556,7 @@ void    Response::makeCookie(string& date)
             }
         } while (session.find(cookieValue) != session.end());
         session[result] = date;
-        value = "session_id=" + result + "; Max-Age=3600";  //1시간
-        // value = "session_id=" + result + "; Max-Age=60";  //1분
+        value = "session_id=" + result + "; Max-Age=3600";
         makeHeader("Set-Cookie", value);
     }
     else
@@ -597,16 +596,13 @@ void    Response::makeDefaultHeader()
         if (temp == "")
             continue;
         pos = temp.find_last_not_of('\n');
-        temp.erase(pos + 1);
+        if (pos != std::string::npos)
+            temp.erase(pos + 1);
         day[order++] = temp;
     }
     date = day[0] + ", " + day[2] + " " + day[1] + " " + day[4] + " " + day[3] + " GMT";
     makeHeader("date", date);
     makeHeader("server", "inghwang/0.0");
-    // if (request.status < 400)
-    //     makeHeader("connection", "keep-alive");
-    // else
-    //     makeHeader("connection", "close");
     makeCookie(date);
 }
 
