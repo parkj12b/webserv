@@ -520,23 +520,6 @@ bool    Response::init()
     return (false);
 }
 
-int Response::getDefaultErrorPage(int statusCode)
-{
-    string errorStr = getLocationConfigData()->getErrorPage()[statusCode];
-
-    int fd = -1;
-
-    if (errorStr.size() > 0)
-        fd = open(errorStr.c_str(), O_RDONLY);
-    if (fd != -1)
-        return (fd);
-    if (statusCode >= 400 && statusCode < 500)
-        return (open(DEFAULT_400_ERROR_PAGE, O_RDONLY));
-    if (statusCode >= 500)
-        return (open(DEFAULT_500_ERROR_PAGE, O_RDONLY));
-    return (open(DEFAULT_400_ERROR_PAGE, O_RDONLY));
-}
-
 void    Response::makeCookie(string& date)
 {
     const string    characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -729,6 +712,7 @@ void    Response::makeContent(int fd)
     Kq::plusEvent(fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     cgiFlag = true;
     Kq::cgiFd[fd] = request.clientFd;
+    Kq::clientToCgiFd[request.clientFd] = fd;
     Kq::pidPipe[fd] = -1;
     LOG(cout << "cgiFd[fd]: " << request.clientFd << endl);
 }
@@ -781,6 +765,8 @@ void    Response::makeGet()
         if (fd < 0)
         {
             request.status = 404;
+            if (errno == EACCES)
+                request.status = 403;
             LOG(cout << "fd error" << endl;)
         }
         else
@@ -809,7 +795,11 @@ void    Response::makePost()
     {
         int fd = open(request.url.c_str(), O_RDONLY);
 		if (fd < 0)
+        {
 			request.status = 404;
+            if (errno == EACCES)
+                request.status = 403;
+        }
         else
             makeContent(fd);
     }
