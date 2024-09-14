@@ -13,7 +13,6 @@ def make_error(code):
     exit(0)
 
 query_string = os.environ.get("QUERY_STRING", "")
-print("query_string", query_string, file=sys.stderr)
 if query_string == "":
     make_error(400)
 query_params = urllib.parse.parse_qs(query_string)
