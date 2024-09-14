@@ -112,7 +112,7 @@ class Response
         void        setLocationConfigData(LocationConfigData *locationConfig);
         size_t      setCgiHeader(string &content_, size_t &status);
         void        setCgiGetContent(string &content_);
-		void	    setCgiGetHeader(size_t contentLength_);
+		void	    setCgiGetHeader(size_t &contentLength_);
 		size_t      setCgiContent(string &content_, size_t &status);
 		void	    setCgiContentLength(size_t contentLength_);
         //sub logic

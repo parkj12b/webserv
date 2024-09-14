@@ -251,7 +251,7 @@ void    Kq::eventRead(struct kevent& store)
                 break ;
 			case FINISH:
                 LOG(cout<<"FINISH CLOSE"<<endl);
-                LOG(cout << "[Server::eventRead] - (FINISH) FD: " << iter->first << endl;)
+                LOG(cout << "[Server::eventRead] - (FINISH) FD: " << iter->first << endl);
                 LOG(std::cout<<"CGI Finish: "<<iter->first<<std::endl);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
                 // clientToCgiFd.erase(cgiFd[store.ident]);  //지우기

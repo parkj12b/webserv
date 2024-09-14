@@ -435,7 +435,7 @@ void        Response::setCgiGetContent(string &content_)
     makeEntity();
 }
 
-void	    Response::setCgiGetHeader(size_t contentLength_)
+void	    Response::setCgiGetHeader(size_t &contentLength_)
 {
     LOG(cout << "setCgiGetHeader" << endl << endl;)
     makeHeader("content-length", toString(contentLength_));

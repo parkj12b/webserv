@@ -178,7 +178,6 @@ EVENT   Server::cgiRead(struct kevent& store)
     {
         Kq::clientToCgiFd.erase(Kq::cgiFd[store.ident]);
         client[Kq::cgiFd[store.ident]].deleteContent();
-        Kq::clientToCgiFd.erase(Kq::cgiFd[store.ident]);
         return (EXPECT);
     }
     LOG(cerr << "cgiRead" << endl);
