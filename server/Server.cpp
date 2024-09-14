@@ -131,7 +131,6 @@ EVENT   Server::cgiGet(struct kevent& store)
     if (store.flags & EV_ERROR)
     {
         LOG(cout << "cgiGet errno: " << store.data << endl);
-        client[Kq::cgiFd[store.ident]].deleteContent();
         return (EXPECT);
     }
     LOG(cerr << "cgiGet" << endl);
@@ -176,8 +175,6 @@ EVENT   Server::cgiRead(struct kevent& store)
 
     if (store.flags & EV_ERROR)
     {
-        Kq::clientToCgiFd.erase(Kq::cgiFd[store.ident]);
-        client[Kq::cgiFd[store.ident]].deleteContent();
         Kq::clientToCgiFd.erase(Kq::cgiFd[store.ident]);
         return (EXPECT);
     }
@@ -236,14 +233,12 @@ EVENT   Server::cgiRead(struct kevent& store)
         }
         LOG(std::cout<<"ERROR Kq::cgiFd[store.ident] : "<<Kq::cgiFd[store.ident]<<std::endl);
         client[Kq::cgiFd[store.ident]].setCgiResponseEntity(cgiContentLength[store.ident], cgiContent[store.ident], status);
-        LOG(cout<<"status: "<<status<<endl);
         cgiContent[store.ident].clear();
         cgiContentLength[store.ident] = 0;
         cgiContentLength.erase(store.ident);
         Kq::clientToCgiFd.erase(Kq::cgiFd[store.ident]);
         if (status >= 400)
             return (ERROR);
-        LOG(cout << "status 1: " << status << endl);
         LOG(std::cout << "msg: " << client[Kq::cgiFd[store.ident]].getMsg() << endl);
         return (FINISH);
 	}
@@ -267,21 +262,11 @@ EVENT Server::clientRead(struct kevent& store)
     LOG(cerr << "clientRead" << endl);
     if (store.ident == 0 || client[store.ident].getFd() == 0)
         return (ING);
-    // if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 100)
-    //     return (ING);
-    // openCheck = recv(store.ident, readBuffer, sizeof(readBuffer), MSG_PEEK);
-    // // throwIfError(errno);
-    // if (openCheck == 0)
-    // {
-    //     LOG(std::cout<<"write: client close"<<std::endl);
-    //     return (ERROR);
-    // }
     readSize = read(store.ident, buffer, BUFFER_SIZE * client[store.ident].getSocketReadSize());
     // throwIfError(errno, readSize);
     if (readSize <= 0) // read가 발생했는데 읽은게 없다면 에러
     {
         LOG(std::cout<<"read error or socket close\n");
-        client[store.ident].deleteContent();
         return (ERROR);
     }
     if (readSize == BUFFER_SIZE * client[store.ident].getSocketReadSize())
