@@ -362,11 +362,12 @@ void    Kq::eventTimer(struct kevent& store)
                     // waitpid(pidPipe[clientToCgiFd[store.ident]], NULL, 0);
                     LOG(cout << "kill" << endl);
                     plusEvent(clientToCgiFd[store.ident], EVFILT_READ, EV_DELETE, 0, 0, 0);
-                    Kq::processor.push_back(clientToCgiFd[store.ident]);
+                    // Kq::processor.push_back(clientToCgiFd[store.ident]);
                     Kq::closeFd.push_back(clientToCgiFd[store.ident]);
                     pidPipe.erase(clientToCgiFd[store.ident]);
                     cgiFd.erase(clientToCgiFd[store.ident]);
-                    clientToCgiFd.erase(store.ident);
+                    if (clientToCgiFd.find(store.ident) != clientToCgiFd.end())
+                        clientToCgiFd.erase(store.ident);
                 }
                 cgiFd.erase(clientToCgiFd[store.ident]);
                 clientToCgiFd.erase(store.ident);
@@ -391,7 +392,8 @@ void    Kq::eventTimer(struct kevent& store)
                     Kq::closeFd.push_back(clientToCgiFd[store.ident]);
                     pidPipe.erase(clientToCgiFd[store.ident]);
                     cgiFd.erase(clientToCgiFd[store.ident]);
-                    clientToCgiFd.erase(store.ident);
+                    if (clientToCgiFd.find(store.ident) != clientToCgiFd.end())
+                        clientToCgiFd.erase(store.ident);
                     server[serverFd].getClient()[store.ident].getResponse().setRequestStatus(408);
                     LOG(cout << "time out make error" << endl);
                     server[serverFd].getClient()[store.ident].getResponse().makeError();
