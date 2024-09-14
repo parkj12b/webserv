@@ -224,9 +224,7 @@ void	Client::setCgiResponseEntity(size_t &cgiContentLength, string &content, siz
     LOG(std::cout<<"cgiContentLength: "<<cgiContentLength<<std::endl;)
     pos = response.setCgiContent(content, status);
     if (status >= 400)
-    {
         return ;
-    }
     LOG(std::cout<<"cgi pos: "<<pos<<std::endl);
     response.setCgiContentLength(cgiContentLength - pos);
     responseAmount = response.getStartHeaderLength() + cgiContentLength - pos;
@@ -312,8 +310,8 @@ int Client::setStart()
 
 int Client::setHeader()
 {
-    size_t                                                    flag;
-    std::string                                               str;
+    size_t      flag;
+    std::string str;
 
     if (!startLine.getCompletion() || headerLine.getCompletion() || request.fin || request.status)
         return (0);
@@ -510,8 +508,6 @@ void    Client::setMessage(const char* msgRequest, int &readSize)
     }
     if (setHeader())  //max size literal, 헤더 파싱
     {
-        if (request.status == 100)
-            return ;
         request.fin = true;
         while (!request.header["host"].empty())
             request.header["host"].pop_back();

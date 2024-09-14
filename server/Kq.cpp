@@ -166,7 +166,7 @@ void    Kq::serverError(struct kevent& store)
     temp.serverError();
 }
 
-void    Kq::plusEvent(uintptr_t fd, int16_t filter, uint16_t flags, uint32_t fflags, intptr_t data, void *udata)
+void    Kq::plusEvent(unsigned long fd, short filter, unsigned short flags, unsigned long fflags, long data, void *udata)
 {
     struct kevent   temp;
 
@@ -231,7 +231,9 @@ void    Kq::eventRead(struct kevent& store)
                 plusEvent(store.ident, EVFILT_READ, EV_DELETE, 0, 0, 0);
                 plusEvent(cgiFd[store.ident], EVFILT_TIMER, EV_DELETE, 0, 0, 0);
                 closeFd.push_back(store.ident);
-                closeFd.push_back(cgiFd[store.ident]);
+                if (findServer[cgiFd[store.ident]] != 0)
+                    server[findServer[cgiFd[store.ident]]].clientFin(cgiFd[store.ident]);
+                // closeFd.push_back(cgiFd[store.ident]);
                 // clientToCgiFd.erase(cgiFd[store.ident]);
                 cgiFd.erase(store.ident);
                 pidPipe.erase(store.ident);
@@ -251,7 +253,7 @@ void    Kq::eventRead(struct kevent& store)
                 break ;
 			case FINISH:
                 LOG(cout<<"FINISH CLOSE"<<endl);
-                LOG(cout << "[Server::eventRead] - (FINISH) FD: " << iter->first << endl;)
+                LOG(cout << "[Server::eventRead] - (FINISH) FD: " << iter->first << endl);
                 LOG(std::cout<<"CGI Finish: "<<iter->first<<std::endl);
                 plusEvent(cgiFd[store.ident], EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
                 // clientToCgiFd.erase(cgiFd[store.ident]);  //지우기
