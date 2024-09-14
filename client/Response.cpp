@@ -695,9 +695,9 @@ int Response::checkAllowedMethod()
 
 void    Response::makeHeader(string key, string value)
 {
-    if (std::find(keyHeader.begin(), keyHeader.end(), key) != keyHeader.end())
-        return ;
-    keyHeader.push_back(key);
+    // if (std::find(keyHeader.begin(), keyHeader.end(), key) != keyHeader.end())
+    //     return ;
+    // keyHeader.push_back(key);
     header += key + ": " + value + "\r\n";
 }
 
