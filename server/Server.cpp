@@ -176,9 +176,9 @@ EVENT   Server::cgiRead(struct kevent& store)
 
     if (store.flags & EV_ERROR)
     {
-        Kq::cgiFdToClient.erase(Kq::cgiFd[store.ident]);
+        Kq::clientToCgiFd.erase(Kq::cgiFd[store.ident]);
         client[Kq::cgiFd[store.ident]].deleteContent();
-        Kq::cgiFdToClient.erase(Kq::cgiFd[store.ident]);
+        Kq::clientToCgiFd.erase(Kq::cgiFd[store.ident]);
         return (EXPECT);
     }
     LOG(cerr << "cgiRead" << endl);
@@ -202,7 +202,7 @@ EVENT   Server::cgiRead(struct kevent& store)
     {
         client[Kq::cgiFd[store.ident]].getResponse().setRequestStatus(500);
         client[Kq::cgiFd[store.ident]].getResponse().makeError();
-        Kq::cgiFdToClient.erase(Kq::cgiFd[store.ident]);
+        Kq::clientToCgiFd.erase(Kq::cgiFd[store.ident]);
         return (ERROR);
     }  //makeError 같이 고민해보기
 	LOG(cout << "CGI Read Size : " << readSize << endl);
@@ -240,7 +240,7 @@ EVENT   Server::cgiRead(struct kevent& store)
         cgiContent[store.ident].clear();
         cgiContentLength[store.ident] = 0;
         cgiContentLength.erase(store.ident);
-        Kq::cgiFdToClient.erase(Kq::cgiFd[store.ident]);
+        Kq::clientToCgiFd.erase(Kq::cgiFd[store.ident]);
         if (status >= 400)
             return (ERROR);
         LOG(cout << "status 1: " << status << endl);
