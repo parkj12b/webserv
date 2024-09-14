@@ -82,6 +82,8 @@ void	CgiProcessor::setStartHeaderEnv()
 		method = "GET";
 	else if (request.method == POST)
 		method = "POST";
+	else if (request.method == DELETE)
+		method = "DELETE";
 	insertEnv("REQUEST_METHOD", method);
 	if (request.header.find("content-length") != request.header.end()
 		&& request.header["content-length"].size() > 0)
