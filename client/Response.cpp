@@ -758,11 +758,11 @@ void    Response::makeContent(int fd)
 
 void    Response::makeEntity()
 {
+    entity.clear();
     if (request.status >= 400)
         makeHeader("connection", "close");
     else
         makeHeader("connection", "keep-alive");
-    entity.clear();
     // LOG(std::cout<<request.status<<std::endl);
     if (request.status == 0)
         request.status = 200;
