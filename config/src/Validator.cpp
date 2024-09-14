@@ -6,7 +6,7 @@
 /*   By: minsepar <minsepar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 16:30:28 by minsepar          #+#    #+#             */
-/*   Updated: 2024/09/07 15:53:38 by minsepar         ###   ########.fr       */
+/*   Updated: 2024/09/14 15:08:26 by minsepar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,10 @@ HTTPServer    *Validator::validate()
 void    Validator::checkWorkerConnections()
 {
     Env *event = _parser.getEvent();
+    if (event == NULL) {
+        _httpServer->setWorkerConnections(DEFAULT_WORKER_CONNECTIONS);
+        return ;
+    }
     vector<vector<vector< Token *> > > *v = event->getVar("worker_connections");
     if (v == NULL) {
         _httpServer->setWorkerConnections(DEFAULT_WORKER_CONNECTIONS);

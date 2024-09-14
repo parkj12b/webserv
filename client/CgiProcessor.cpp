@@ -122,18 +122,21 @@ void	CgiProcessor::selectCgiCmd(string url)
 	// Find CGI Script File in URL
 	const string	availCgiExtensions[2] = {".py", ".php"};
 	string			cgiExtension;
-	size_t			cgiFilePos;
+	// size_t			cgiFilePos;
+	string			fileExtension;
 	LOG(cout << "Url: " << url << endl);
+
+	fileExtension = url.substr(url.find_last_of('.'));
 	for (int i=0; i<2; i++)
 	{
 		cgiExtension = availCgiExtensions[i];
-		cgiFilePos = url.find(cgiExtension);
-		if (cgiFilePos != string::npos)
+		if (fileExtension == cgiExtension)
 			break ;
 	}
 	LOG(cout << "cgiExtension: " << cgiExtension << endl);
 	cgiCommand = (!cgiExtension.compare(".py")) ? "python3" : "php-cgi";
-	scriptFile = url.substr(0, cgiFilePos + cgiExtension.size());
+	// scriptFile = url.substr(0, cgiFilePos + cgiExtension.size());
+	scriptFile = url;
 }
 
 bool	CgiProcessor::isValidUploadPath()

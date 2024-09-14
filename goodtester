@@ -1,12 +1,5 @@
 POST / HTTP/1.1
 Host: localhost
-Transfer-Encoding: chunked
-Trailer: hi
 
-5
-hihih
-4
-hihi
-0
-hi: good morning
+abc
 
