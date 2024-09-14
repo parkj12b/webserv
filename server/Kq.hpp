@@ -66,7 +66,7 @@ class Kq
         void    clientFin(struct kevent& store);    //client error client socket close
         void    serverError(struct kevent& store);  //server error clients connected server and server sockets close
         //logic
-        static void    plusEvent(uintptr_t fd, int16_t filter, uint16_t flags, uint32_t fflags, intptr_t data, void *udata);   //event enoll
+        static void    plusEvent(unsigned long fd, short filter, unsigned short flags, unsigned long fflags, long data, void *udata);   //event enoll
         void    plusClient(int serverFd);           //client and server connect
         void    eventRead(struct kevent& store);    //kq event read
         void    eventWrite(struct kevent& store);   //kq event write

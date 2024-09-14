@@ -166,7 +166,7 @@ void    Kq::serverError(struct kevent& store)
     temp.serverError();
 }
 
-void    Kq::plusEvent(uintptr_t fd, int16_t filter, uint16_t flags, uint32_t fflags, intptr_t data, void *udata)
+void    Kq::plusEvent(unsigned long fd, short filter, unsigned short flags, unsigned long fflags, long data, void *udata)
 {
     struct kevent   temp;
 
