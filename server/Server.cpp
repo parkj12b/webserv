@@ -15,7 +15,7 @@
 #include "Response.hpp"
 #include "UtilTemplate.hpp"
 
-extern int readLog;
+// extern int readLog;
 
 HTTPServer *Server::serverConfig = NULL;
 
@@ -273,7 +273,7 @@ EVENT Server::clientRead(struct kevent& store)
     }
     LOG(std::cout<<"Client Read " << readSize << std::endl);
     buffer[readSize] = '\0';
-    write(readLog, buffer, readSize);
+    // write(readLog, buffer, readSize);
     client[store.ident].setMessage(buffer, readSize);
     client[store.ident].setConnection(true);
     if (client[store.ident].getRequestFin() || client[store.ident].getRequestStatus() > 0)
