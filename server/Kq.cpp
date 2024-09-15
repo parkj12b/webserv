@@ -357,7 +357,8 @@ void    Kq::eventTimer(struct kevent& store)
                 itPid = pidPipe.find(clientToCgiFd[store.ident]);
                 if (itPid != pidPipe.end())
                 {
-                    kill(pidPipe[clientToCgiFd[store.ident]], SIGKILL);
+                    if (pidPipe[clientToCgiFd[store.ident]] > 0)
+                        kill(pidPipe[clientToCgiFd[store.ident]], SIGKILL);
                     // waitpid(pidPipe[clientToCgiFd[store.ident]], NULL, 0);
                     LOG(cout << "kill" << endl);
                     pidPipe.erase(clientToCgiFd[store.ident]);
@@ -380,7 +381,8 @@ void    Kq::eventTimer(struct kevent& store)
                 itPid = pidPipe.find(clientToCgiFd[store.ident]);
                 if (itPid != pidPipe.end())
                 {
-                    kill(pidPipe[clientToCgiFd[store.ident]], SIGKILL);
+                    if (pidPipe[clientToCgiFd[store.ident]] > 0)
+                        kill(pidPipe[clientToCgiFd[store.ident]], SIGKILL);
                     // waitpid(pidPipe[clientToCgiFd[store.ident]], NULL, 0);
                     LOG(cout << "kill" << endl);
                     pidPipe.erase(clientToCgiFd[store.ident]);
