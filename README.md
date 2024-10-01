@@ -32,3 +32,12 @@ Validated 09/15/2024. Grade: 125%
 
 ## Clone
 
+```shell
+https://github.com/parkj12b/webserv.git
+```
+
+## Possible Further Improvements
+- multi-process, multi-thread design
+- logging implementation
+- Refactoring OOP design
+- FastCGI
