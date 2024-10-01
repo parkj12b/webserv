@@ -1,5 +1,5 @@
 # webserv
-project from 42 seoul. Mkaing a c++98, HTTP/1.1 compliant, HTTP server.
+project from 42 seoul. Making a c++98, HTTP/1.1 compliant, HTTP server.
 
 <p align="center">
 <img src="https://github.com/parkj12b/42-project-badges/blob/main/badges/webservm.png?raw=true">  
